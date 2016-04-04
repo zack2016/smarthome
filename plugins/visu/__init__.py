@@ -26,6 +26,7 @@ import json
 import logging
 import struct
 import ssl
+import struct
 import threading
 
 import lib.connection
