@@ -2,7 +2,7 @@
 #
 #########################################################################
 #  Copyright 2016 René Frieß                        rene.friess@gmail.com
-#  Version 0.914
+#  Version 0.92
 #########################################################################
 #  Free for non-commercial use
 #  
@@ -44,31 +44,35 @@ from requests.auth import HTTPDigestAuth
 class MonitoringService():
     """
     Class which connects to the FritzBox service of the Callmonitor: http://www.wehavemorefun.de/fritzbox/Callmonitor
-    Can currently handle three items: 
-    - is_call_incoming:    avm_data_type = is_call_incoming, type = bool
-    - last_caller:         avm_data_type = last_caller, type = str
-    - last_call_date:      avm_data_type = last_call_date, type = str
+
+    | Can currently handle three items:
+    | - avm_data_type = is_call_incoming, type = bool
+    | - avm_data_type = last_caller, type = str
+    | - avm_data_type = last_call_date, type = str
     """
-    def __init__(self, host, port, avm_identifier, callback):
+    def __init__(self, host, port, avm_identifier, callback, call_monitor_incoming_filter):
         self.logger = logging.getLogger(__name__)
         self._host = host
         self._port = port
         self._avm_identifier = avm_identifier
         self._callback = callback
-        self._items = []
-        self._items_incoming = []
-        self._items_outgoing = []
+        self._trigger_items = []        # items which can be used to trigger sth, e.g. a logic
+        self._items = []                # more general items for the call monitor
+        self._items_incoming = []       # items for incoming calls
+        self._items_outgoing = []       # items for outgoing calls
+        self._duration_item = dict()    # 2 items, on for counting the incoming, one for counting the outgoing call duration
         self._call_active = dict()
         self._call_active['incoming'] = False
         self._call_active['outgoing'] = False
-        self._duration_item = dict()
         self._call_incoming_cid = dict()
         self._call_outgoing_cid = dict()
-        self._old_event = dict()
-        self._event = dict()
+        self._call_monitor_incoming_filter = call_monitor_incoming_filter
         self.conn = None
     
     def connect(self):
+        """
+        Connects to the call monitor of the AVM device
+        """
         self.conn = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         try:
             self.conn.connect((self._host, self._port))
@@ -79,22 +83,42 @@ class MonitoringService():
             return
 
     def disconnect(self):
+        """
+        Disconnects from the call monitor of the AVM device
+        """
         self._listen_active = False
         try:
             self._listen_thread.join(1)
         except:
             pass
         self.conn.shutdown(2)
+
+    def reconnect(self):
+        """
+        Reconnects to the call monitor of the AVM device
+        """
+        self.disconnect()
+        self.connect()
     
     def register_item(self, item):
+        """
+        Registers an item to the MonitoringService
+
+        :param item: item to register
+        """
         if item.conf['avm_data_type'] in ['is_call_incoming', 'last_caller_incoming', 'last_call_date_incoming', 'call_event_incoming']:
             self._items_incoming.append(item)
         elif item.conf['avm_data_type'] in ['is_call_outgoing', 'last_caller_outgoing', 'last_call_date_outgoing', 'call_event_outgoing']:
             self._items_outgoing.append(item)
+        elif item.conf['avm_data_type'] == 'monitor_trigger':
+            self._trigger_items.append(item)
         else:
             self._items.append(item)
 
     def set_duration_item(self, item):
+        """
+        Sets specific items which count the duration of an incoming or outgoing call
+        """
         self._duration_item[item.conf['avm_data_type']] = item
 
     def _listen(self, recv_buffer=4096):
@@ -114,36 +138,6 @@ class MonitoringService():
             time.sleep(1)
         return
 
-    def _parse_line(self, line):
-        """
-        Parses a data set in the form of a line.
-        Data Format:
-        Ausgehende Anrufe: datum;CALL;ConnectionID;Nebenstelle;GenutzteNummer;AngerufeneNummer;SIP+Nummer
-        Eingehende Anrufe: datum;RING;ConnectionID;Anrufer-Nr;Angerufene-Nummer;SIP+Nummer
-        Zustandegekommene Verbindung: datum;CONNECT;ConnectionID;Nebenstelle;Nummer;
-        Ende der Verbindung: datum;DISCONNECT;ConnectionID;dauerInSekunden;
-        """
-        line = line.split(";")
-        if not line[2] in self._old_event:
-            self._old_event[line[2]] = ""
-        if not line[2] in self._event:
-            self._event[line[2]] = line[1]
-        self._old_event[line[2]] = self._event[line[2]] # save event depending on connection id
-        self._event[line[2]] = line[1]
-
-        if (self._event[line[2]] == "RING"):
-            call_from = line[3]
-            call_to = line[4]
-            self._trigger(call_from, call_to, line[0], line[2], '')
-        elif (self._event[line[2]] == "CALL"):
-            call_from = line[4]
-            call_to = line[5]
-            self._trigger(call_from, call_to, line[0], line[2], line[3])
-        elif (self._event[line[2]] == "CONNECT"):
-            self._trigger('', '', line[0], line[2], line[3])
-        elif (self._event[line[2]] == "DISCONNECT"):
-            self._trigger('', '', '', line[2], '')
-
     def _start_counter(self, timestamp, direction):
         if direction == 'incoming':
             self._call_connect_timestamp = time.mktime(
@@ -155,19 +149,21 @@ class MonitoringService():
             self._duration_counter_thread_outgoing = threading.Thread(target=self._count_duration_outgoing, name="MonitoringService_Duration_Outgoing_%s" % self._avm_identifier).start()
     
     def _stop_counter(self, direction):
-        self._call_active[direction] = False
-        try:
-            if direction == 'incoming':
-                self._duration_counter_thread_incoming.join(1)
-            else:
-                self._duration_counter_thread_outgoing.join(1)
-        except:
-            pass
+        # only stop of thread is active
+        if self._call_active[direction]:
+            self._call_active[direction] = False
+            try:
+                if direction == 'incoming':
+                    self._duration_counter_thread_incoming.join(1)
+                else:
+                    self._duration_counter_thread_outgoing.join(1)
+            except:
+                pass
 
     def _count_duration_incoming(self):
         self._call_active['incoming'] = True
         while (self._call_active['incoming'] == True):
-            if self._duration_item['call_duration_incoming'] != None:
+            if not self._duration_item['call_duration_incoming'] is None:
                 duration = time.time() - self._call_connect_timestamp
                 self._duration_item['call_duration_incoming'](int(duration))
             time.sleep(1)
@@ -175,43 +171,92 @@ class MonitoringService():
     def _count_duration_outgoing(self):
         self._call_active['outgoing'] = True
         while (self._call_active['outgoing'] == True):
-            if self._duration_item['call_duration_outgoing'] != None:
+            if not self._duration_item['call_duration_outgoing'] is None:
                 duration = time.time() - self._call_connect_timestamp
                 self._duration_item['call_duration_outgoing'](int(duration))
             time.sleep(1)
 
-    def _trigger(self, call_from, call_to, time, callid, branch):
+    def _parse_line(self, line):
+        """
+        Parses a data set in the form of a line.
+
+        Data Format:
+        Ausgehende Anrufe: datum;CALL;ConnectionID;Nebenstelle;GenutzteNummer;AngerufeneNummer;SIP+Nummer
+        Eingehende Anrufe: datum;RING;ConnectionID;Anrufer-Nr;Angerufene-Nummer;SIP+Nummer
+        Zustandegekommene Verbindung: datum;CONNECT;ConnectionID;Nebenstelle;Nummer;
+        Ende der Verbindung: datum;DISCONNECT;ConnectionID;dauerInSekunden;
+
+        :param line: data line which is parsed
+        """
+        self.logger.debug(line)
+        line = line.split(";")
+
+        if (line[1] == "RING"):
+            call_from = line[3]
+            call_to = line[4]
+            self._trigger(call_from, call_to, line[0], line[2], line[1], '')
+        elif (line[1] == "CALL"):
+            call_from = line[4]
+            call_to = line[5]
+            self._trigger(call_from, call_to, line[0], line[2], line[1], line[3])
+        elif (line[1] == "CONNECT"):
+            self._trigger('', '', line[0], line[2], line[1], line[3])
+        elif (line[1] == "DISCONNECT"):
+            self._trigger('', '', '', line[2], line[1], '')
+
+    def _trigger(self, call_from, call_to, time, callid, event, branch):
         """
         Triggers the event: sets item values and looks up numbers in the phone book.
         """
-        event = self._event[callid]
 
-        if event == 'RING':
-            self._call_incoming_cid = callid # set call id for incoming call
-            self._duration_item['call_duration_incoming'](0) # reset duration for incoming calls
-            for item in self._items_incoming:  # update items for incoming calls
-                if item.conf['avm_data_type'] in ['is_call_incoming']:
-                    item(1)
-                if item.conf['avm_data_type'] in ['is_call_outgoing']:
-                    item(0)
-                elif item.conf['avm_data_type'] in ['last_caller_incoming']:
-                    item(self._callback(call_from))
-                elif item.conf['avm_data_type'] in ['last_call_date_incoming']:
-                    item(time)
-                elif item.conf['avm_data_type'] in ['call_event_incoming']:
-                    item(event.lower())
-            for item in self._items: # update generic items
-                if item.conf['avm_data_type'] in ['call_event']:
-                    item(event.lower())
-                elif item.conf['avm_data_type'] in ['call_direction']:
+        # in each case set current call event and direction
+        for item in self._items:
+            if item.conf['avm_data_type'] == 'call_event':
+                item(event.lower())
+            if item.conf['avm_data_type'] == 'call_direction':
+                if event == 'RING':
                     item("incoming")
+                else:
+                    item("outgoing")
+
+        # call is incoming
+        if event == 'RING':
+            # process "trigger items"
+            for trigger_item in self._trigger_items:
+                trigger_item(0)
+                if trigger_item.conf['avm_data_type'] == 'monitor_trigger':
+                    if trigger_item.conf['avm_incoming_allowed'] == call_from and trigger_item.conf['avm_target_number'] == call_to:
+                        trigger_item(1)
+
+            if self._call_monitor_incoming_filter in call_to:
+                # set call id for incoming call
+                self._call_incoming_cid = callid
+
+                # reset duration for incoming calls
+                self._duration_item['call_duration_incoming'](0)
+
+                # process items specific to incoming calls
+                for item in self._items_incoming:  # update items for incoming calls
+                    if item.conf['avm_data_type'] in ['is_call_incoming']:
+                        item(1)
+                    elif item.conf['avm_data_type'] in ['last_caller_incoming']:
+                        item(self._callback(call_from))
+                    elif item.conf['avm_data_type'] in ['last_call_date_incoming']:
+                        item(time)
+                    elif item.conf['avm_data_type'] in ['call_event_incoming']:
+                        item(event.lower())
+
+        # call is outgoing
         elif event == 'CALL':
-            self._call_outgoing_cid = callid # set call id for outgoing call
-            self._duration_item['call_duration_outgoing'](0) # reset duration for outgoing calls
-            for item in self._items_outgoing:  # update items for outgoing calls
-                if item.conf['avm_data_type'] in ['is_call_incoming']:
-                    item(0)
-                elif item.conf['avm_data_type'] in ['is_call_outgoing']:
+            # set call id for outgoing call
+            self._call_outgoing_cid = callid
+
+            # reset duration for outgoing calls
+            self._duration_item['call_duration_outgoing'](0)
+
+            # process items specific to outgoing calls
+            for item in self._items_outgoing:
+                if item.conf['avm_data_type'] in ['is_call_outgoing']:
                     item(1)
                 elif item.conf['avm_data_type'] in ['last_caller_outgoing']:
                     item(self._callback(call_to))
@@ -219,62 +264,50 @@ class MonitoringService():
                     item(time)
                 elif item.conf['avm_data_type'] in ['call_event_outgoing']:
                     item(event.lower())
-            for item in self._items:  # update generic items
-                if item.conf['avm_data_type'] in ['call_event']:
-                    item(event.lower())
-                elif item.conf['avm_data_type'] in ['call_direction']:
-                    item("outgoing")
-        else: #connect und disconnect
-            if event == 'CONNECT':
-                # start counter thread
-                if self._old_event[callid] == "CALL":  # start counter thread only if duration item set and call is outgoing
-                    if self._duration_item['call_duration_outgoing'] != None:
-                        self._start_counter(time, 'outgoing')
-                elif self._old_event[callid] == "RING":  # start counter thread only if duration item set and call is incoming
-                    if self._duration_item['call_duration_incoming'] != None:
-                        self._start_counter(time, 'incoming')
-                # set item attributes
-                if self._old_event[callid] == "CALL":
-                    for item in self._items_outgoing:
-                        if item.conf['avm_data_type'] in ['call_event_outgoing']:
-                            item(event.lower())
-                elif self._old_event[callid] == "RING":
-                    for item in self._items_incoming:
-                        if item.conf['avm_data_type'] in ['call_event_incoming']:
-                            item(event.lower())
-            elif event == 'DISCONNECT':
-                # stop counter threads
-                if callid == self._call_incoming_cid:
-                    for item in self._items_incoming:
-                        if item.conf['avm_data_type'] in ['call_event_incoming']:
-                            item(event.lower())
-                        elif item.conf['avm_data_type'] in['is_call_incoming']:
-                            item(0)
-                    if self._duration_item['call_duration_incoming'] != None:
-                        self._stop_counter('incoming')
-                        self._call_incoming_cid = None
-                elif callid == self._call_outgoing_cid:
-                    for item in self._items_outgoing:
-                        if item.conf['avm_data_type'] in ['call_event_outgoing']:
-                            item(event.lower())
-                        elif item.conf['avm_data_type'] in ['is_call_outgoing']:
-                            item(0)
-                    if self._duration_item['call_duration_outgoing'] != None:
-                        self._stop_counter('outgoing')
-                        self._call_outgoing_cid = None
 
-                # set item attributes
-                if self._old_event[callid] == "CALL":
-                    for item in self._items_outgoing:
-                        if item.conf['avm_data_type'] in ['call_event_outgoing']:
-                            item(event.lower())
-                elif self._old_event[callid] == "RING":
-                    for item in self._items_incoming:
-                        if item.conf['avm_data_type'] in ['call_event_incoming']:
-                            item(event.lower())
-            for item in self._items:
-                if item.conf['avm_data_type'] in ['call_event']:
-                    item(event.lower())
+        # connection established
+        elif event == 'CONNECT':
+            # handle OUTGOING calls
+            if callid == self._call_outgoing_cid:
+                if not self._duration_item['call_duration_outgoing'] is None:            # start counter thread only if duration item set and call is outgoing
+                    self._stop_counter('outgoing')                                   # stop potential running counter for parallel (older) outgoing call
+                    self._start_counter(time, 'outgoing')
+                for item in self._items_outgoing:
+                    if item.conf['avm_data_type'] in ['call_event_outgoing']:
+                        item(event.lower())
+
+            # handle INCOMING calls
+            elif callid == self._call_incoming_cid:
+                if not self._duration_item['call_duration_incoming'] is None:            # start counter thread only if duration item set and call is incoming
+                    self._stop_counter('incoming')                                   # stop potential running counter for parallel (older) incoming call
+                    self._start_counter(time, 'incoming')
+                for item in self._items_incoming:
+                    if item.conf['avm_data_type'] in ['call_event_incoming']:
+                        item(event.lower())
+
+        # connection ended
+        elif event == 'DISCONNECT':
+            # handle OUTGOING calls
+            if callid == self._call_outgoing_cid:
+                for item in self._items_outgoing:
+                    if item.conf['avm_data_type'] == 'call_event_outgoing':
+                        item(event.lower())
+                    elif item.conf['avm_data_type'] == 'is_call_outgoing':
+                        item(0)
+                if not self._duration_item['call_duration_outgoing'] is None:            # stop counter threads
+                    self._stop_counter('outgoing')
+                self._call_outgoing_cid = None
+
+            # handle INCOMING calls
+            elif callid == self._call_incoming_cid:
+                for item in self._items_incoming:
+                    if item.conf['avm_data_type'] == 'call_event_incoming':
+                        item(event.lower())
+                    elif item.conf['avm_data_type'] == 'is_call_incoming':
+                        item(0)
+                if not self._duration_item['call_duration_incoming'] is None:            # stop counter threads
+                    self._stop_counter('incoming')
+                self._call_incoming_cid = None
 
 class FritzDevice():
     """
@@ -293,48 +326,64 @@ class FritzDevice():
     def get_identifier(self):
         """
         Returns the internal identifier of the FritzDevice
+
+        :return: identifier of the device, as set in plugin.conf
         """
         return self._identifier
 
     def get_host(self):
         """
         Returns the hostname / IP of the FritzDevice
+
+        :return: hostname of the device, as set in plugin.conf
         """
         return self._host
 
     def get_port(self):
         """
         Returns the port of the FritzDevice
+
+        :return: port of the device, as set in plugin.conf
         """
         return self._port
 
     def get_items(self):
         """
         Returns added items
+
+        :return: array of items hold by the device
         """
         return self._items
 
     def get_item_count(self):
         """
         Returns number of added items
+
+        :return: number of items hold by the device
         """
         return len(self._items)
 
     def is_ssl(self):
         """
         Returns information if SSL is enabled
+
+        :return: is ssl enabled, as set in plugin.conf
         """
         return self._ssl
 
     def get_user(self):
         """
         Returns the user for the FritzDevice
+
+        :return: user, as set in plugin.conf
         """
         return self._username
 
     def get_password(self):
         """
         Returns the password for the FritzDevice
+
+        :return: password, as set in plugin.conf
         """
         return self._password
 
@@ -372,17 +421,20 @@ class AVM():
                      ('WANDSLInterfaceConfig','urn:dslforum-org:service:WANDSLInterfaceConfig:1'),
                      ('MyFritz', 'urn:dslforum-org:service:X_AVM-DE_MyFritz:1')])
 
-    def __init__(self, smarthome, username='', password='', host='fritz.box', port='49443', ssl='True', verify='False', cycle=300, avm_identifier='fritzbox', call_monitor='False'):
+    def __init__(self, smarthome, username='', password='', host='fritz.box', port='49443', ssl='True', verify='False', cycle=300, avm_identifier='fritzbox', call_monitor='False', call_monitor_incoming_filter=''):
         """
-        Initalizes the plugin. The parameters describe for this method are pulled from the entry in plugin.conf.        
-        @param username:           Login name of user, cptional for devices which only support passwords
-        @param password:           Password for the FritzDevice
-        @param host:               IP or host name of FritzDevice 
-        @param port:               Port of the FritzDevice (https: 49443, http: 49000)
-        @param ssl:                True or False => https or http in URLs
-        @param verify:             True or False => verification of SSL certificate
-        @param cycle:              Update cycle in seconds
-        @param avm_identifier:     Internal identifier of the FritzDevice
+        Initalizes the plugin. The parameters describe for this method are pulled from the entry in plugin.conf.
+
+        :param username:           Login name of user, cptional for devices which only support passwords
+        :param password:           Password for the FritzDevice
+        :param host:               IP or host name of FritzDevice
+        :param port:               Port of the FritzDevice (https: 49443, http: 49000)
+        :param ssl:                True or False => https or http in URLs
+        :param verify:             True or False => verification of SSL certificate
+        :param cycle:              Update cycle in seconds
+        :param avm_identifier:     Internal identifier of the FritzDevice
+        :param call_monitor:       bool: Shall the MonitoringService for the CallMonitor be started?
+        :param call_monitor_incoming_filter:    Filter only specific numbers to be watched by call monitor
         """
         self.logger = logging.getLogger(__name__)
         self.logger.info('Init AVM Plugin with identifier %s' % avm_identifier)
@@ -405,29 +457,40 @@ class AVM():
         self._fritz_device = FritzDevice(host, port, ssl, username, password, avm_identifier)
         
         if call_monitor == 'True':
-            self._monitoring_service = MonitoringService(self._fritz_device.get_host(), 1012, avm_identifier, self.get_contact_name_by_phone_number)
+            self._monitoring_service = MonitoringService(self._fritz_device.get_host(), 1012, avm_identifier, self.get_contact_name_by_phone_number, call_monitor_incoming_filter)
             self._monitoring_service.connect()
+
+        self._call_monitor_incoming_filter = call_monitor_incoming_filter
 
         self._cycle = int(cycle)
         self._sh = smarthome
         # Response Cache: Dictionary for storing the result of requests which is used for several different items, refreshed each update cycle. Please use distinct keys!
         self._response_cache = dict()
+        self._calllist_cache = []
 
     def run(self):
+        """
+        Run method for the plugin
+        """
         self._sh.scheduler.add(__name__+"_"+self._fritz_device.get_identifier(), self._update_loop, prio=5, cycle=self._cycle, offset=2)
         self.alive = True
 
     def stop(self):
-        self._monitoring_service.disconnect()
+        """
+        Stop method for the plugin
+        """
+        if not self._monitoring_service is None:
+            self._monitoring_service.disconnect()
         self.alive = False
 
     def _assemble_soap_data(self, action, service, argument=''):
         """
         Builds the soap data set (from body and envelope templates for a given request.
-        @param action: string of the action
-        @param service: string of the service
-        @param argument: dictionary (name : value) of arguments
-        @return: string of the soap data
+
+        :param action: string of the action
+        :param service: string of the service
+        :param argument: dictionary (name : value) of arguments
+        :return: string of the soap data
         """
         argument_string = ''
         if argument:
@@ -443,8 +506,9 @@ class AVM():
     def _build_url(self, suffix):
         """
         Builds a request url
-        @param suffix: url suffix, e.g. "/upnp/control/x_tam"
-        @return: string of the url, dependent on settings of the FritzDevice
+
+        :param suffix: url suffix, e.g. "/upnp/control/x_tam"
+        :return: string of the url, dependent on settings of the FritzDevice
         """
         if self._fritz_device.is_ssl():
             url_prefix = "https"
@@ -482,29 +546,43 @@ class AVM():
         #empty response cache
         self._response_cache = dict()
 
+    def get_calllist_from_cache(self):
+        """
+        returns the cached calllist when all items are initialized. The filter set by plugin.conf is applied.
+
+        :return: Array of calllist entries
+        """
+        # request and cache calllist
+        if (self._calllist_cache is None):
+            self._calllist_cache = self.get_calllist(self._call_monitor_incoming_filter)
+        elif len(self._calllist_cache) == 0:
+            self._calllist_cache = self.get_calllist(self._call_monitor_incoming_filter)
+        return self._calllist_cache
+
     def parse_item(self, item):
         """
         Default plugin parse_item method. Is called when the plugin is initialized. Selects each item corresponding to the AVM identifier and adds it to an internal array
+
+        :param item: The item to process.
         """
         if 'avm_identifier' in item.conf:
             value = item.conf['avm_identifier']
             if value == self._fritz_device.get_identifier():
+
                 if item.conf['avm_data_type'] in ['is_call_incoming','is_call_outgoing',
                                                    'last_caller_incoming', 'last_call_date_incoming', 'call_event_incoming',
                                                    'last_caller_outgoing', 'last_call_date_outgoing', 'call_event_outgoing',
-                                                   'call_event', 'call_direction']:
+                                                   'call_event', 'call_direction', 'monitor_trigger']:
                     # items specific to call monitor
-                    # initally get data from calllist
+                    # initally - if item empty - get data from calllist
                     if item.conf['avm_data_type'] == 'last_caller_incoming' and item._value == '':
-                        calllist = self.get_calllist()
-                        for element in calllist:
-                            if element['Type'] == '1':
+                        for element in self.get_calllist_from_cache():
+                            if element['Type'] in ['1', '2']:
                                 item(element['Name'])
                                 break
                     elif item.conf['avm_data_type'] == 'last_call_date_incoming' and item._value == '':
-                        calllist = self.get_calllist()
-                        for element in calllist:
-                            if element['Type'] == '1':
+                        for element in self.get_calllist_from_cache():
+                            if element['Type'] in ['1', '2']:
                                 date = str(element['Date'])
                                 date = date[8:10]+"."+date[5:7]+"."+date[2:4]+" "+date[11:19]
                                 item(date)
@@ -514,14 +592,12 @@ class AVM():
                     elif item.conf['avm_data_type'] == 'is_call_incoming' and item._value == '':
                         item(0)
                     elif item.conf['avm_data_type'] == 'last_caller_outgoing' and item._value == '':
-                        calllist = self.get_calllist()
-                        for element in calllist:
+                        for element in self.get_calllist_from_cache():
                             if element['Type'] == '3':
                                 item(element['Name'])
                                 break
                     elif item.conf['avm_data_type'] == 'last_call_date_outgoing' and item._value == '':
-                        calllist = self.get_calllist()
-                        for element in calllist:
+                        for element in self.get_calllist_from_cache():
                             if element['Type'] == '3':
                                 date = str(element['Date'])
                                 date = date[8:10] + "." + date[5:7] + "." + date[2:4] + " " + date[11:19]
@@ -534,39 +610,36 @@ class AVM():
                     elif item.conf['avm_data_type'] == 'call_event' and item._value == '':
                         item('disconnect')
                     elif item.conf['avm_data_type'] == 'call_direction' and item._value == '':
-                        calllist = self.get_calllist()
-                        for element in calllist:
-                            if element['Type'] == '1':
+                        for element in self.get_calllist_from_cache():
+                            if element['Type'] in ['1','2']:
                                 item('incoming')
                                 break
                             if element['Type'] == '3':
                                 item('outgoing')
                                 break
-
-                    self._monitoring_service.register_item(item)
+                    if not self._monitoring_service is None:
+                        self._monitoring_service.register_item(item)
                 elif item.conf['avm_data_type'] in ['call_duration_incoming', 'call_duration_outgoing']:
                     # items specific to call monitor duration calculation
                     # initally get data from calllist
                     if item.conf['avm_data_type'] == 'call_duration_incoming' and item._value == 0:
-                        calllist = self.get_calllist()
-                        for element in calllist:
-                            if element['Type'] == '1':
+                        for element in self.get_calllist_from_cache():
+                            if element['Type'] in ['1', '2']:
                                 duration = element['Duration']
                                 self.logger.debug(duration)
                                 duration = int(duration[0:1])*60+int(duration[2:4])
                                 item(duration)
                                 break
                     elif item.conf['avm_data_type'] == 'call_duration_outgoing' and item._value == 0:
-                        calllist = self.get_calllist()
-                        for element in calllist:
+                        for element in self.get_calllist_from_cache():
                             if element['Type'] == '3':
                                 duration = element['Duration']
                                 self.logger.debug(duration)
                                 duration = int(duration[0:1]) * 60 + int(duration[2:4])
                                 item(duration)
                                 break
-
-                    self._monitoring_service.set_duration_item(item)
+                    if not self._monitoring_service is None:
+                        self._monitoring_service.set_duration_item(item)
                 else:
                     # normal items
                     self._fritz_device._items.append(item)                
@@ -576,12 +649,14 @@ class AVM():
 
     def update_item(self, item, caller=None, source=None, dest=None):
         """
-        Write items values - in case they were changed from somewhere else than the AVM plugin (=the FritzDevice) to the FritzDevice.
-        Uses:
-        http://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/x_tam.pdf
-        http://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/wlanconfigSCPD.pdf
-        http://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/x_homeauto.pdf
-        @param item: item to be updated towards the FritzDevice (Supported item avm_data_types: wlanconfig, tam, aha_device)
+        | Write items values - in case they were changed from somewhere else than the AVM plugin (=the FritzDevice) to the FritzDevice.
+
+        | Uses:
+        | - http://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/x_tam.pdf
+        | - http://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/wlanconfigSCPD.pdf
+        | - http://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/x_homeauto.pdf
+
+        :param item: item to be updated towards the FritzDevice (Supported item avm_data_types: wlanconfig, tam, aha_device)
         """
         if caller != 'AVM':
             if item.conf['avm_data_type']  in ['wlanconfig','tam']:
@@ -634,12 +709,13 @@ class AVM():
 
     def get_contact_name_by_phone_number(self, phone_number=''):
         """
-        Searches the phone book for a contact by a given (complete) phone number
-        Uses:
-        http://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/x_contactSCPD.pdf        
-        Used information from https://www.symcon.de/forum/threads/25745-FritzBox-mit-SOAP-auslesen-und-steuern
-        @param phone_number: full phone number of contact
-        @return: string of the contact's real name
+        Searches the phonebook for a contact by a given (complete) phone number
+
+        | Uses: http://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/x_contactSCPD.pdf
+        | Implementation of this method used information from https://www.symcon.de/forum/threads/25745-FritzBox-mit-SOAP-auslesen-und-steuern
+
+        :param phone_number: full phone number of contact
+        :return: string of the contact's real name
         """
         url = self._build_url("/upnp/control/x_contact")
         headers = self._header.copy()
@@ -680,14 +756,16 @@ class AVM():
 
         return
 
-    def get_calllist(self):
+    def get_calllist(self, filter_incoming=''):
         """
         Returns an array of all calllist entries
-        Uses:
-        http://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/x_contactSCPD.pdf        
-        
-        @return: Array of calllist entries with the attributes 'Id','Type','Caller','Called','CalledNumber','Name','Numbertype','Device','Port','Date','Duration' (some optional)
+
+        Uses: http://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/x_contactSCPD.pdf
+
+        :param: Filter to filter incoming calls to a specific destination phone number
+        :return: Array of calllist entries with the attributes 'Id','Type','Caller','Called','CalledNumber','Name','Numbertype','Device','Port','Date','Duration' (some optional)
         """
+
         url = self._build_url("/upnp/control/x_contact")
         headers = self._header.copy()
         action = "GetCallList"
@@ -716,18 +794,36 @@ class AVM():
             if (len(calllist_entries) > 0):              
                 for calllist_entry in calllist_entries:
                     result_entry = {}
-                    attributes = ['Id','Type','Caller','Called','CalledNumber','Name','Numbertype','Device','Port','Date','Duration']
-                    
-                    for attribute in attributes:
-                        attribute_value = calllist_entry.getElementsByTagName(attribute)
-                        if len(attribute_value) > 0:
-                            if attribute_value[0].hasChildNodes():
-                                if attribute != 'Date':
-                                    result_entry[attribute] = attribute_value[0].firstChild.data
-                                else:
-                                    result_entry[attribute] = datetime.datetime.strptime(attribute_value[0].firstChild.data, '%d.%m.%y %H:%M')
 
-                    result_entries.append(result_entry)
+                    progress = True
+
+                    if len(filter_incoming) > 0:
+                        type_element = calllist_entry.getElementsByTagName("Type")
+                        if len(type_element) > 0:
+                            if type_element[0].hasChildNodes():
+                                type = int(type_element[0].firstChild.data)
+
+                                if type == 1 or type == 2:
+                                    called_number_element = calllist_entry.getElementsByTagName("CalledNumber")
+                                    if len(called_number_element) > 0:
+                                        if called_number_element[0].hasChildNodes():
+                                            called_number = called_number_element[0].firstChild.data
+                                            #self.logger.debug(called_number+" "+filter_incoming)
+                                            if not filter_incoming in called_number:
+                                                progress = False;
+                    if progress:
+                        attributes = ['Id', 'Type', 'Caller', 'Called', 'CalledNumber', 'Name', 'Numbertype', 'Device',
+                                      'Port', 'Date', 'Duration']
+                        for attribute in attributes:
+                            attribute_value = calllist_entry.getElementsByTagName(attribute)
+                            if len(attribute_value) > 0:
+                                if attribute_value[0].hasChildNodes():
+                                    if attribute != 'Date':
+                                        result_entry[attribute] = attribute_value[0].firstChild.data
+                                    else:
+                                        result_entry[attribute] = datetime.datetime.strptime(attribute_value[0].firstChild.data, '%d.%m.%y %H:%M')
+
+                        result_entries.append(result_entry)
                 return result_entries
             else: 
                 self.logger.debug("No calllist entries on the FritzDevice")
@@ -739,8 +835,8 @@ class AVM():
     def reboot(self):
         """
         Reboots the FritzDevice
-        Uses:
-        http://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/deviceconfigSCPD.pdf
+
+        Uses: http://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/deviceconfigSCPD.pdf
         """
         url = self._build_url("/upnp/control/deviceconfig")
         action = 'Reboot'
@@ -755,9 +851,9 @@ class AVM():
 
     def reconnect(self):
         """
-        Reconnects the FritzDevice to the WAN 
-        Uses:
-        http://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/wanipconnSCPD.pdf
+        Reconnects the FritzDevice to the WAN
+
+        Uses: http://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/wanipconnSCPD.pdf
         """
         url = self._build_url("/igdupnp/control/WANIPConn1")
         action = 'ForceTermination'
@@ -772,11 +868,11 @@ class AVM():
 
     def set_call_origin(self, phone_name):
         """
-        Sets the call origin, e.g. before running "start_call" 
-        Uses: 
-        http://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/x_voipSCPD.pdf
-        
-        @param phone_name: full phone identifier, could be e.g. "**610" for an internal device
+        Sets the call origin, e.g. before running 'start_call'
+
+        Uses: http://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/x_voipSCPD.pdf
+
+        :param phone_name: full phone identifier, could be e.g. '\*\*610' for an internal device
         """
         url = self._build_url("/upnp/control/x_voip")
         action = 'X_AVM-DE_DialNumber'
@@ -792,10 +888,10 @@ class AVM():
     def start_call(self, phone_number):
         """
         Triggers a call for a given phone number
-        Uses:
-        http://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/x_voipSCPD.pdf
+
+        Uses: http://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/x_voipSCPD.pdf
         
-        @param phone_number: full phone number to call
+        :param phone_number: full phone number to call
         """
         url = self._build_url("/upnp/control/x_voip")
         action = 'X_AVM-DE_DialNumber'
@@ -811,8 +907,8 @@ class AVM():
     def cancel_call(self):
         """
         Cancels an active call
-        Uses:
-        http://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/x_voipSCPD.pdf
+
+        Uses: http://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/x_voipSCPD.pdf
         """
         url = self._build_url("/upnp/control/x_voip")
         action = 'X_AVM-DE_DialHangup'
@@ -828,11 +924,12 @@ class AVM():
     def is_host_active(self, mac_address):
         """
         Checks if a MAC address is active on the FritzDevice, e.g. the status can be used for simple presence detection
-        Uses:
-        http://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/hostsSCPD.pdf
-        Also reference: https://blog.pregos.info/2015/11/07/anwesenheitserkennung-fuer-smarthome-mit-der-fritzbox-via-tr-064/        
-        @param mac_address: mac address of the host
-        @return: True or False, depending if the host is active on the FritzDevice
+
+        | Uses: http://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/hostsSCPD.pdf
+        | Also reference: https://blog.pregos.info/2015/11/07/anwesenheitserkennung-fuer-smarthome-mit-der-fritzbox-via-tr-064/
+
+        :param: MAC address of the host
+        :return: True or False, depending if the host is active on the FritzDevice
         """
         url = self._build_url("/upnp/control/hosts")
         headers = self._header.copy()
@@ -853,9 +950,10 @@ class AVM():
     def _update_myfritz(self, item):
         """
         Retrieves information related to myfritz status of the FritzDevice
-        Uses:
-        http://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/x_myfritzSCPD.pdf        
-        @param item: item to be updated (Supported item avm_data_types: myfritz_status)
+
+        Uses: http://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/x_myfritzSCPD.pdf
+
+        :param item: item to be updated (Supported item avm_data_types: myfritz_status)
         """        
         url = self._build_url("/upnp/control/x_myfritz")
         headers = self._header.copy()
@@ -882,10 +980,11 @@ class AVM():
     def _update_host(self, item):
         """
         Retrieves information related to a network_device represented by its MAC address, e.g. the status of the network_device can be used for simple presence detection
-        Uses:
-        http://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/hostsSCPD.pdf
-        Also reference: https://blog.pregos.info/2015/11/07/anwesenheitserkennung-fuer-smarthome-mit-der-fritzbox-via-tr-064/
-        @param item: item to be updated (Supported item avm_data_types: network_device, child item avm_data_types: device_ip, device_connection_type, device_hostname)
+
+        | Uses: http://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/hostsSCPD.pdf
+        | Also reference: https://blog.pregos.info/2015/11/07/anwesenheitserkennung-fuer-smarthome-mit-der-fritzbox-via-tr-064/
+
+        :param item: item to be updated (Supported item avm_data_types: network_device, child item avm_data_types: device_ip, device_connection_type, device_hostname)
         """
         url = self._build_url("/upnp/control/hosts")
         headers = self._header.copy()
@@ -940,9 +1039,10 @@ class AVM():
     def _update_home_automation(self, item):
         """
         Updates AVM home automation device related information
-        Uses:
-        http://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/x_homeauto.pdf
-        @param item: item to be updated (Supported item avm_data_types: aha_device)
+
+        Uses: http://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/x_homeauto.pdf
+
+        :param item: item to be updated (Supported item avm_data_types: aha_device)
         """
         url = self._build_url("/upnp/control/x_homeauto")
         headers = self._header.copy()
@@ -990,10 +1090,11 @@ class AVM():
 
     def _update_fritz_device_info(self, item):
         """
-        Updates FritzDevice specific information    
-        Uses: 
-        http://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/deviceinfoSCPD.pdf        
-        @param item: Item to be updated (Supported item avm_data_types: uptime, software_version, hardware_version,serial_number, description)
+        Updates FritzDevice specific information
+
+        Uses: http://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/deviceinfoSCPD.pdf
+
+        :param item: Item to be updated (Supported item avm_data_types: uptime, software_version, hardware_version,serial_number, description)
         """
         url = self._build_url("/upnp/control/deviceinfo")
         headers = self._header.copy()
@@ -1050,10 +1151,11 @@ class AVM():
     
     def _update_tam(self, item):
         """
-        Updates telephone answering machine (TAM) related information    
-        Uses:
-        http://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/x_tam.pdf
-        @param item: item to be updated (Supported item avm_data_types: tam, child item avm_data_types: tam_name)
+        Updates telephone answering machine (TAM) related information
+
+        Uses: http://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/x_tam.pdf
+
+        :param item: item to be updated (Supported item avm_data_types: tam, child item avm_data_types: tam_name)
         """
         url = self._build_url("/upnp/control/x_tam")
         headers = self._header.copy()
@@ -1135,9 +1237,10 @@ class AVM():
     def _update_wlan_config(self, item):
         """
         Updates wlan related information, all items of this method need an numeric avm_wlan_index (typically 1-3)
-        Uses:
-        http://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/wlanconfigSCPD.pdf
-        @param item: item to be updated (Supported item avm_data_types: wlanconfig, wlan_guest_time_remaining
+
+        Uses: http://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/wlanconfigSCPD.pdf
+
+        :param item: item to be updated (Supported item avm_data_types: wlanconfig, wlan_guest_time_remaining
         """
         if int(item.conf['avm_wlan_index']) > 0:
             url = self._build_url("/upnp/control/wlanconfig%s" % item.conf['avm_wlan_index'])
@@ -1180,9 +1283,10 @@ class AVM():
     def _update_wan_dsl_interface_config(self, item):
         """
         Updates wide area network (WAN) speed related information
-        Uses:
-        http://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/wandslifconfigSCPD.pdf
-        @param item: item to be updated (Supported item avm_data_types: wan_upstream, wan_downstream)
+
+        Uses: http://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/wandslifconfigSCPD.pdf
+
+        :param item: item to be updated (Supported item avm_data_types: wan_upstream, wan_downstream)
         """
         if item.conf['avm_data_type'] in ['wan_upstream', 'wan_downstream']:
             action = 'GetInfo'
@@ -1228,10 +1332,11 @@ class AVM():
         
     def _update_wan_common_interface_configuration(self, item):
         """
-        Updates wide area network (WAN) related information    
-        Uses:
-        http://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/wancommonifconfigSCPD.pdf
-        @param item: item to be updated (Supported item avm_data_types: wan_total_packets_sent, wan_total_packets_received, wan_total_bytes_sent, wan_total_bytes_received)
+        Updates wide area network (WAN) related information
+
+        Uses: http://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/wancommonifconfigSCPD.pdf
+
+        :param item: item to be updated (Supported item avm_data_types: wan_total_packets_sent, wan_total_packets_received, wan_total_bytes_sent, wan_total_bytes_received)
         """
         url = self._build_url("/upnp/control/wancommonifconfig1")
 
@@ -1306,10 +1411,11 @@ class AVM():
 
     def _update_wan_ip_connection(self, item):
         """
-        Updates wide area network (WAN) IP related information    
-        Uses:
-        http://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/wanipconnSCPD.pdf
-        @param item: item to be updated (Supported item avm_data_types: wan_connection_status, wan_is_connected, wan_uptime, wan_ip)
+        Updates wide area network (WAN) IP related information
+
+        Uses: http://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/wanipconnSCPD.pdf
+
+        :param item: item to be updated (Supported item avm_data_types: wan_connection_status, wan_is_connected, wan_uptime, wan_ip)
         """
         url = self._build_url("/igdupnp/control/WANIPConn1")
 
