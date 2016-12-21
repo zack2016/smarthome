@@ -24,6 +24,7 @@ import signal
 import time
 import os
 import sys
+import psutil
 
 
 def daemonize(pidfile,stdin='/dev/null', stdout='/dev/null', stderr=None):
@@ -87,15 +88,16 @@ def daemonize(pidfile,stdin='/dev/null', stdout='/dev/null', stderr=None):
 
 # TODO: refactoring 
 def get_pid(filename):
-    cpid = str(os.getpid())
-    for pid in os.listdir('/proc'):
-        if pid.isdigit() and pid != cpid:
+    cpid = os.getpid()
+
+    for pid in psutil.pids():
+        if pid != cpid:
             try:
-                with open('/proc/{}/cmdline'.format(pid), 'r') as f:
-                    cmdline = f.readline()
-                    if filename in cmdline:
-                        if cmdline.startswith('python'):
-                            return int(pid)
+                p = psutil.Process(pid)
+                cmdline = " ".join(p.cmdline())
+                if filename in cmdline:
+                    if "python" in cmdline.lower():
+                        return int(pid)
             except:
                 pass
     return 0
