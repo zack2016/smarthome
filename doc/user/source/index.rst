@@ -55,7 +55,6 @@ oder im `Chat auf gitter.im <https://gitter.im/smarthomeNG/smarthome>`_ .
    fehlersuche
    faq
    Entwickler Dokumentation (Englisch) <https://www.smarthomeng.de/developer>
-   entwickler_doku
    release/release
    genindex
    impressum
