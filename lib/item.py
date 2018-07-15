@@ -282,6 +282,11 @@ class Items():
 
 
 class Item():
+    """
+    Class from which item objects are created
+
+    This class contains all attributs and methods that items are made of.
+    """
 
     _itemname_prefix = 'items.'     # prefix for scheduler names
 
@@ -645,6 +650,127 @@ class Item():
         return cycle
     
 
+    def path(self):
+        """
+        Path of the item
+
+        :return: String with the path of the item
+        :rtype: string
+        """
+        return self._path
+
+    def id(self):
+        """
+        Path of the item
+
+        Old method name - Use item.path() instead of item.id()
+
+        :return: String with the path of the item
+        :rtype: string
+        """
+        return self._path
+
+    def last_change(self):
+        """
+        Timestamp of last change of item's value
+
+        :return: Timestamp of last change
+        """
+        return self.__last_change
+
+    def age(self):
+        """
+        Age of the item's actual value. Returns the time in seconds since the last change of the value
+
+        :return: Age of the value
+        :rtype: int
+        """
+        delta = self.shtime.now() - self.__last_change
+        return delta.total_seconds()
+
+    def last_update(self):
+        """
+        Timestamp of last update of item's value (not necessarily change)
+
+        :return: Timestamp of last update
+        """
+        return self.__last_update
+
+    def update_age(self):
+        """
+        Update-age of the item's actual value. Returns the time in seconds since the value has been updated (not necessarily changed)
+
+        :return: Update-age of the value
+        :rtype: int
+        """
+        delta = self.shtime.now() - self.__last_update
+        return delta.total_seconds()
+
+    def prev_age(self):
+        delta = self.__last_change - self.__prev_change
+        return delta.total_seconds()
+
+    def prev_update_age(self):
+        delta = self.__last_update - self.__prev_update
+        return delta.total_seconds()
+
+    def prev_change(self):
+        return self.__prev_change
+
+    def prev_update(self):
+        return self.__prev_update
+
+    def prev_value(self):
+        return self.__prev_value
+
+    def changed_by(self):
+        return self.__changed_by
+
+    def updated_by(self):
+        return self.__updated_by
+
+
+    def get_absolutepath(self, relativepath, attribute=''):
+        """
+        Builds an absolute item path relative to the current item
+
+        :param relativepath: string with the relative item path
+        :param attribute: string with the name of the item's attribute, which contains the relative path (for log entries)
+
+        :return: string with the absolute item path
+        """
+        if (len(relativepath) == 0) or ((len(relativepath) > 0) and (relativepath[0] != '.')):
+            return relativepath
+        relpath = relativepath.rstrip()
+        rootpath = self._path
+
+        while (len(relpath) > 0) and (relpath[0] == '.'):
+            relpath = relpath[1:]
+            if (len(relpath) > 0) and (relpath[0] == '.'):
+                if rootpath.rfind('.') == -1:
+                    if rootpath == '':
+                        relpath = ''
+                        logger.error(
+                            "{}.get_absolutepath(): Relative path trying to access above root level on attribute '{}'".format(
+                                self._path, attribute))
+                    else:
+                        rootpath = ''
+                else:
+                    rootpath = rootpath[:rootpath.rfind('.')]
+
+        if relpath != '':
+            if rootpath != '':
+                rootpath += '.' + relpath
+            else:
+                rootpath = relpath
+        logger.info(
+            "{}.get_absolutepath('{}'): Result = '{}' (for attribute '{}')".format(self._path, relativepath, rootpath,
+                                                                                   attribute))
+        if rootpath[-5:] == '.self':
+            rootpath = rootpath.replace('.self', '')
+        rootpath = rootpath.replace('.self.', '.')
+        return rootpath
+
     def expand_relativepathes(self, attr, begintag, endtag):
         """
         converts a configuration attribute containing relative item pathes
@@ -713,44 +839,6 @@ class Item():
         pref += rest
 #        logger.warning("{}.get_stringwithabsolutepathes(): result = '{}'".format(self._path, pref))
         return pref
-
-
-    def get_absolutepath(self, relativepath, attribute=''):
-        """
-        Builds an absolute item path relative to the current item
-
-        :param relativepath: string with the relative item path
-        :param attribute: string with the name of the item's attribute, which contains the relative path (for log entries)
-        
-        :return: string with the absolute item path
-        """
-        if (len(relativepath) == 0) or ((len(relativepath) > 0)  and (relativepath[0] != '.')):
-            return relativepath
-        relpath = relativepath.rstrip()
-        rootpath = self._path
-
-        while (len(relpath) > 0)  and (relpath[0] == '.'):
-            relpath = relpath[1:]
-            if (len(relpath) > 0)  and (relpath[0] == '.'):
-                if rootpath.rfind('.') == -1:
-                    if rootpath == '':
-                        relpath = ''
-                        logger.error("{}.get_absolutepath(): Relative path trying to access above root level on attribute '{}'".format(self._path, attribute))
-                    else:
-                        rootpath = ''
-                else:
-                    rootpath = rootpath[:rootpath.rfind('.')]
-
-        if relpath != '':
-            if rootpath != '':
-                rootpath += '.' + relpath
-            else:
-                rootpath = relpath
-        logger.info("{}.get_absolutepath('{}'): Result = '{}' (for attribute '{}')".format(self._path, relativepath, rootpath, attribute))
-        if rootpath[-5:] == '.self':
-            rootpath = rootpath.replace('.self', '')
-        rootpath = rootpath.replace('.self.', '.')
-        return rootpath
 
 
     def _get_attr_from_parent(self, attr):
@@ -1094,13 +1182,6 @@ class Item():
     def get_method_triggers(self):
         return self.__methods_to_trigger
 
-    def age(self):
-        delta = self.shtime.now() - self.__last_change
-        return delta.total_seconds()
-
-    def update_age(self):
-        delta = self.shtime.now() - self.__last_update
-        return delta.total_seconds()
 
     def autotimer(self, time=None, value=None, compat=ATTRIB_COMPAT_V12):
         if time is not None and value is not None:
@@ -1108,41 +1189,9 @@ class Item():
         else:
             self._autotimer = False
 
-    def changed_by(self):
-        return self.__changed_by
-
-    def updated_by(self):
-        return self.__updated_by
-
     def fade(self, dest, step=1, delta=1):
         dest = float(dest)
         self._sh.trigger(self._path, _fadejob, value={'item': self, 'dest': dest, 'step': step, 'delta': delta})
-
-    def id(self):
-        return self._path
-
-    def last_change(self):
-        return self.__last_change
-
-    def last_update(self):
-        return self.__last_update
-
-    def prev_age(self):
-        delta = self.__last_change - self.__prev_change
-        return delta.total_seconds()
-
-    def prev_update_age(self):
-        delta = self.__last_update - self.__prev_update
-        return delta.total_seconds()
-
-    def prev_change(self):
-        return self.__prev_change
-
-    def prev_update(self):
-        return self.__prev_update
-
-    def prev_value(self):
-        return self.__prev_value
 
     def remove_timer(self):
         self._sh.scheduler.remove(self._itemname_prefix+self.id() + '-Timer')
