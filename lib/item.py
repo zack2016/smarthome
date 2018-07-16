@@ -83,18 +83,19 @@ _items_instance = None    # Pointer to the initialized instance of the Items cla
 
 class Items():
     """
-    Items loader class. Item-methods from bin/smarthome.py are moved here.
-    
+    Items loader class. (Item-methods from bin/smarthome.py are moved here.)
+
+    - An instance is created during initialization by bin/smarthome.py
+    - There should be only one instance of this class. So: Don't create anther instance
+
     :param smarthome: Instance of the smarthome master-object
-    :param configxxx: Basename of the xxx configuration file
     :type samrthome: object
-    :type configxxx: str
     """
 
-    __items = []
-    __item_dict = {}
+    __items = []            # list with the pathes of all items that are defined
+    __item_dict = {}        # dict with all the items that are defined in the form: {"<item-path>": "<item-object>", ...}
 
-    _children = []         # List of top level items
+    _children = []          # List of top level items
 
 
     def __init__(self, smarthome):
@@ -690,7 +691,11 @@ class Item():
         value = self._castvalue_to_itemtype(value, compat)
         cycle = {time: value}
         return cycle
-    
+
+
+    """
+    Following are methods to get attributes of the item
+    """
 
     def path(self):
         """
@@ -827,6 +832,10 @@ class Item():
         """
         return self.__updated_by
 
+
+    """
+    Following are methods to handle relative item pathes
+    """
 
     def get_absolutepath(self, relativepath, attribute=''):
         """
