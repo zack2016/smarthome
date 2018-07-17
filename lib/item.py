@@ -2,7 +2,7 @@
 # vim: set encoding=utf-8 tabstop=4 softtabstop=4 shiftwidth=4 expandtab
 #########################################################################
 # Copyright 2016-2018   Martin Sinn                         m.sinn@gmx.de
-# Copyright 2016-       Christian Straßburg           c.strassburg@gmx.de
+# Copyright 2016        Christian Straßburg           c.strassburg@gmx.de
 # Copyright 2012-2013   Marcus Popp                        marcus@popp.mx
 #########################################################################
 #  This file is part of SmartHomeNG.
@@ -22,6 +22,34 @@
 #########################################################################
 
 
+"""
+This library implements items in SmartHomeNG.
+
+The main class ``Items`` implements the handling for all items. This class has a  static method to get a handle to the
+instance of the Items class, that is created during initialization of SmartHomeNG. This method implements a way to
+access the API for handling items without having to juggle through the object hirarchy of the running SmartHomeNG.
+
+This API enables plugins and logics to access the details of the items initialized in SmartHomeNG.
+
+Each item is represented by an instance of the class ``Item``.
+
+The methods of the class Items implement the API for items.
+They can be used the following way: To call eg. **get_toplevel_items()**, use the following syntax:
+
+.. code-block:: python
+
+    from lib.item import Items
+    sh_items = Items.get_instance()
+
+    # to access a method (eg. get_toplevel_items()):
+    tl_items = sh_items.get_toplevel_items()
+
+
+:Note: Do not use the functions or variables of the main smarthome object any more. They are deprecated. Use the methods of the class **Items** instead.
+
+:Note: This library is part of the core of SmartHomeNG. Regular plugins should not need to use this API.  It is manily implemented for plugins near to the core like **backend** and the core itself!
+
+"""
 import datetime
 import dateutil.parser
 import logging
@@ -55,18 +83,19 @@ _items_instance = None    # Pointer to the initialized instance of the Items cla
 
 class Items():
     """
-    Items loader class. Item-methods from bin/smarthome.py are moved here.
-    
+    Items loader class. (Item-methods from bin/smarthome.py are moved here.)
+
+    - An instance is created during initialization by bin/smarthome.py
+    - There should be only one instance of this class. So: Don't create anther instance
+
     :param smarthome: Instance of the smarthome master-object
-    :param configxxx: Basename of the xxx configuration file
     :type samrthome: object
-    :type configxxx: str
     """
 
-    __items = []
-    __item_dict = {}
+    __items = []            # list with the pathes of all items that are defined
+    __item_dict = {}        # dict with all the items that are defined in the form: {"<item-path>": "<item-object>", ...}
 
-    _children = []         # List of top level items
+    _children = []          # List of top level items
 
 
     def __init__(self, smarthome):
@@ -82,8 +111,47 @@ class Items():
         _items_instance = self
 
 
+    # ------------------------------------------------------------------------------------
+    #   Following (static) method of the class Items implement the API for Items in shNG
+    # ------------------------------------------------------------------------------------
+
+    @staticmethod
+    def get_instance():
+        """
+        Returns the instance of the Items class, to be used to access the items-api
+
+        Use it the following way to access the api:
+
+        .. code-block:: python
+
+            from lib.item import Items
+            items = Items.get_instance()
+
+            # to access a method (eg. return_items()):
+            items.return_items()
+
+
+        :return: items instance
+        :rtype: object of None
+        """
+        return _items_instance
+
+
     def load_itemdefinitions(self, env_dir, items_dir):
-    
+        """
+        Load item definitions
+
+        This method is called during initialization of SmartHomeNG to initialize the item tree.
+        For that, it loads the item definitions from **../items** directory through calling the function **parse_itemsdir()**
+        from **lib.config**
+
+        :param env_dir: path to the directory containing the core's environment item definition files
+        :param items_dir: path to the directory containing the user's item definition files
+        :type env_dir: str
+        :type items_dir: str
+
+        :return:
+        """
         item_conf = None
         item_conf = lib.config.parse_itemsdir(env_dir, item_conf)
         item_conf = lib.config.parse_itemsdir(items_dir, item_conf, addfilenames=True)
@@ -125,31 +193,6 @@ class Items():
 #        for logic in self._logics:
 #            yield logic
 
-
-    # ------------------------------------------------------------------------------------
-    #   Following (static) methods of the class Items implement the API for Items in shNG
-    # ------------------------------------------------------------------------------------
-
-    @staticmethod
-    def get_instance():
-        """
-        Returns the instance of the Items class, to be used to access the items-api
-        
-        Use it the following way to access the api:
-        
-        .. code-block:: python
-
-            from lib.item import Items
-            items = Items.get_instance()
-            
-            # to access a method (eg. return_items()):
-            items.return_items()
-
-        
-        :return: items instance
-        :rtype: object of None
-        """
-        return _items_instance
 
 
 
@@ -648,27 +691,48 @@ class Item():
         value = self._castvalue_to_itemtype(value, compat)
         cycle = {time: value}
         return cycle
-    
+
+
+    """
+    Following are methods to get attributes of the item
+    """
 
     def path(self):
         """
         Path of the item
 
+        ab SmartHomeNG v1.6
+
         :return: String with the path of the item
-        :rtype: string
+        :rtype: str
         """
         return self._path
 
     def id(self):
         """
-        Path of the item
-
         Old method name - Use item.path() instead of item.id()
-
-        :return: String with the path of the item
-        :rtype: string
         """
         return self._path
+
+    def name(self):
+        """
+        Name of the item
+
+        ab SmartHomeNG v1.6
+
+        :return: String with the name of the item
+        :rtype: str
+        """
+        return self._path
+
+    def type(self):
+        """
+        Datatype of the item
+
+        :return: Datatype of the item
+        :rtype: str
+        """
+        return self._type
 
     def last_change(self):
         """
@@ -706,29 +770,72 @@ class Item():
         delta = self.shtime.now() - self.__last_update
         return delta.total_seconds()
 
+    def prev_change(self):
+        """
+        Timestamp of the previous (next-to-last) change of item's value
+
+        :return: Timestamp of previous change
+        """
+        return self.__prev_change
+
     def prev_age(self):
+        """
+        Age of the item's previous value. Returns the time in seconds the item had the the previous value
+
+        :return: Age of the previous value
+        :rtype: int
+        """
         delta = self.__last_change - self.__prev_change
         return delta.total_seconds()
 
+    def prev_update(self):
+        """
+        Timestamp of previous (next-to-last) update of item's value (not necessarily change)
+
+        :return: Timestamp of previous update
+        """
+        return self.__prev_update
+
     def prev_update_age(self):
+        """
+        Update-age of the item's previous value. Returns the time in seconds the previous value existed since it had been updated (not necessarily changed)
+
+        :return: Update-age of the previous value
+        :rtype: int
+        """
         delta = self.__last_update - self.__prev_update
         return delta.total_seconds()
 
-    def prev_change(self):
-        return self.__prev_change
-
-    def prev_update(self):
-        return self.__prev_update
-
     def prev_value(self):
+        """
+        Next-to-last value of the item
+
+        :return: Next-to-last value of the item
+        """
         return self.__prev_value
 
     def changed_by(self):
+        """
+        Returns an indication, which plugin, logic or event changed the item's value
+
+        :return: Changer of item's value
+        :rtype: str
+        """
         return self.__changed_by
 
     def updated_by(self):
+        """
+        Returns an indication, which plugin, logic or event updated (not necessarily changed) the item's value
+
+        :return: Updater of item's value
+        :rtype: str
+        """
         return self.__updated_by
 
+
+    """
+    Following are methods to handle relative item pathes
+    """
 
     def get_absolutepath(self, relativepath, attribute=''):
         """
@@ -1171,6 +1278,12 @@ class Item():
         self.__logics_to_trigger.remove(logic)
 
     def get_logic_triggers(self):
+        """
+        Returns a list of logics to trigger, if the item gets changed
+
+        :return: Logics to trigger
+        .rtype: list
+        """
         return self.__logics_to_trigger
 
     def add_method_trigger(self, method):
@@ -1180,6 +1293,12 @@ class Item():
         self.__methods_to_trigger.remove(method)
 
     def get_method_triggers(self):
+        """
+        Returns a list of item methods to trigger, if this item gets changed
+
+        :return: methods to trigger
+        .rtype: list
+        """
         return self.__methods_to_trigger
 
 
@@ -1237,9 +1356,6 @@ class Item():
             caller = 'Timer'
         next = self.shtime.now() + datetime.timedelta(seconds=time)
         self._sh.scheduler.add(self._itemname_prefix+self.id() + '-Timer', self.__call__, value={'value': value, 'caller': caller}, next=next)
-
-    def type(self):
-        return self._type
 
     def get_children_path(self):
         return [item._path
