@@ -132,7 +132,7 @@ class Items():
 
 
         :return: items instance
-        :rtype: object of None
+        :rtype: object
         """
         return _items_instance
 
@@ -150,7 +150,7 @@ class Items():
         :type env_dir: str
         :type items_dir: str
 
-        :return:
+        :return: None
         """
         item_conf = None
         item_conf = lib.config.parse_itemsdir(env_dir, item_conf)
@@ -179,24 +179,6 @@ class Items():
 #        self._sh.item_count = self.item_count()
 
 
-
-    # aus bin/smarthome.py
-#    def __iter__(self):
-#        for child in self.__children:
-#            yield child
-    def get_toplevel_items(self):
-        for child in self._children:
-            yield child
-
-    # aus lib.logic.py
-#    def __iter__(self):
-#        for logic in self._logics:
-#            yield logic
-
-
-
-
-
     def add_item(self, path, item):
         """
         Function to to add an item to the dictionary of items.
@@ -211,6 +193,28 @@ class Items():
         if path not in self.__items:
             self.__items.append(path)
         self.__item_dict[path] = item
+
+        # aus bin/smarthome.py
+        #    def __iter__(self):
+        #        for child in self.__children:
+        #            yield child
+
+        def get_toplevel_items(self):
+            """
+            Returns a list with all items defined at the top level
+
+            :return: items defined at the top level
+            :rtype: list
+            """
+            for child in self._children:
+                yield child
+
+        # aus lib.logic.py
+
+    #    def __iter__(self):
+    #        for logic in self._logics:
+    #            yield logic
+
 
 
     def return_item(self, string):
@@ -229,8 +233,8 @@ class Items():
 
 
     def return_items(self):
-        """"
-        Function to return a list with all items
+        """
+        Function to return a list with all defined items
 
         :return: List of all items
         :rtype: list
@@ -265,7 +269,7 @@ class Items():
 
 
     def find_items(self, conf):
-        """"
+        """
         Function to find items that match the specified configuration
 
         :param conf: Configuration to look for
@@ -303,18 +307,22 @@ class Items():
 
     def item_count(self):
         """
-        Return the number of items
+        Return the number of defined items
+
+        :return: number of items
+        :rtype: int
         """
         return len(self.__items)
 
 
     def stop(self, signum=None, frame=None):
         """
-        Stop fading of all items
+        Stop what all items are doing
+
+        At the moment, it stops fading of all items
         """
         for item in self.__items:
             self.__item_dict[item]._fading = False
-
 
 
 
@@ -323,6 +331,9 @@ class Items():
 # Item Class
 #####################################################################
 
+"""
+The class ``Item`` implements the methods and attributes of an item. Each item is represented by an instance of the class ``Item``.
+"""
 
 class Item():
     """
@@ -1535,7 +1546,9 @@ def _join_duration_value_string(time, value, compat=''):
 #####################################################################
 
 def json_serialize(obj):
-    """helper method to convert values to json serializable formats"""
+    """
+    helper method to convert values to json serializable formats
+    """
     import datetime
     if isinstance(obj, datetime.datetime):
         return obj.isoformat()
@@ -1544,7 +1557,9 @@ def json_serialize(obj):
     raise TypeError("Type not serializable")
 
 def json_obj_hook(json_dict):
-    """helper method for json deserialization"""
+    """
+    helper method for json deserialization
+    """
     import dateutil
     for (key, value) in json_dict.items():
         try:
