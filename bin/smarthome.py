@@ -284,7 +284,7 @@ class SmartHome():
 
         # test if a valid locale is set in the operating system
         try:
-            if os.environ['LANG'].find('UTF-8') == -1:
+            if not any(utf in os.environ['LANG'].lower() for utf in ['utf-8', 'utf8']):
                 self._logger.error("Locale for the enviroment is not set to a valid value. Set the LANG environment variable to a value supporting UTF-8")
         except:
             self._logger.error("Locale for the enviroment is not set. Defaulting to en_US.UTF-8")
