@@ -1,4 +1,7 @@
 
+.. index:: Metadata
+.. index:: Plugin Metadata
+
 .. role:: bluesup
 
 Plugin Metadata :bluesup:`update`

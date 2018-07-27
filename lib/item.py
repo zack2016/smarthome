@@ -149,8 +149,6 @@ class Items():
         :param items_dir: path to the directory containing the user's item definition files
         :type env_dir: str
         :type items_dir: str
-
-        :return: None
         """
         item_conf = None
         item_conf = lib.config.parse_itemsdir(env_dir, item_conf)
@@ -339,7 +337,11 @@ class Item():
     """
     Class from which item objects are created
 
-    This class contains all attributs and methods that items are made of.
+    The class ``Item`` implements the methods and attributes of an item. Each item is represented by an instance
+    of the class ``Item``. For an item to be valid and usable, it has to be part of the item tree, which is
+    maintained by an object of class ``Items``.
+
+    This class is used by the method ```load_itendefinitions()`` of the **Items** object.
     """
 
     _itemname_prefix = 'items.'     # prefix for scheduler names
@@ -1283,6 +1285,13 @@ class Item():
 
 
     def add_logic_trigger(self, logic):
+        """
+        Add a logic trigger to the item
+
+        :param logic:
+        :type logic:
+        :return:
+        """
         self.__logics_to_trigger.append(logic)
 
     def remove_logic_trigger(self, logic):

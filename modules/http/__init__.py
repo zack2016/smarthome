@@ -547,7 +547,7 @@ class Http():
             conf['/']['tools.auth_basic.on'] = self._basic_auth
             conf['/']['tools.auth_basic.realm'] = self._realm
             conf['/']['tools.auth_basic.checkpassword'] = self.validate_password
-            
+
         conf['/gstatic'] = {}
         conf['/gstatic']['tools.staticdir.on'] = True
         conf['/gstatic']['tools.staticdir.dir'] = self._gstatic_dir

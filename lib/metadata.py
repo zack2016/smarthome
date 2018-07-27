@@ -30,6 +30,7 @@ from lib.constants import (YAML_FILE, FOO, META_DATA_TYPES, META_DATA_DEFAULTS)
 META_MODULE_PARAMETER_SECTION = 'parameters'
 META_PLUGIN_PARAMETER_SECTION = 'parameters'
 META_PLUGIN_ITEMATTRIBUTE_SECTION = 'item_attributes'
+META_STRUCT_SECTION = 'structs'
 #META_DATA_TYPES=['bool', 'int', 'float','num', 'scene', 'str', ['list','list(subtype)'], 'dict', 'ip', 'ipv4', 'ipv6', 'mac', 'knx_ga', 'foo']
 #META_DATA_DEFAULTS={'bool': False, 'int': 0, 'float': 0.0, 'scene': 0, 'str': '', 'list': [], 'dict': {}, 'OrderedDict': {}, 'num': 0, 'scene': 0, 'ip': '0.0.0.0', 'ipv4': '0.0.0.0', 'mac': '00:00:00:00:00:00', 'knx_ga': '', 'foo': None}
 
@@ -42,6 +43,18 @@ class Metadata():
     
     
     def __init__(self, sh, addon_name, addon_type, classpath=''):
+        """
+        Initialzes the metadata for an addon (plugin or module) from the definition file
+
+        :param sh: SmartHomeNG main object
+        :param addon_name:
+        :param addon_type: 'plugin' or 'module'
+        :param classpath:
+        :type sh: object
+        :type addon_name: str
+        :type addon_type: str
+        :type classpath: str
+        """
         self._sh = sh
         self._addon_name = addon_name.lower()
         self._addon_type = addon_type
@@ -61,7 +74,7 @@ class Metadata():
             self.relative_filename = os.path.join( classpath.replace('.', os.sep), addon_type+YAML_FILE )
 #        logger.warning(self._log_premsg+"relative_filename = '{}'".format( self.relative_filename ) )
 
-        # read definitions from metadata file        
+        # read complete definitions from metadata file
         filename = os.path.join( self._sh.get_basedir(), self.relative_filename )
         self.meta = shyaml.yaml_load(filename, ordered=True)
 
@@ -69,16 +82,20 @@ class Metadata():
         self._paramlist = []
         self.itemdefinitions = None
         self._itemdeflist = []
+        self.itemstructs = None
+        self._itemstructlist = []
 
         if self.meta != None:
             # read paramter and item definition sections
             if self._addon_type == 'module':
                 self.parameters = self.meta.get(META_MODULE_PARAMETER_SECTION)
+                self.itemstructs = self.meta.get(META_STRUCT_SECTION)
             else:
                 self.parameters = self.meta.get(META_PLUGIN_PARAMETER_SECTION)
                 self.itemdefinitions = self.meta.get(META_PLUGIN_ITEMATTRIBUTE_SECTION)
+                self.itemstructs = self.meta.get(META_STRUCT_SECTION)
 
-            # test validity of paramter definition section
+            # test validity of parameter definition section
             if self.parameters is not None:
                 self._paramlist = list(self.parameters.keys())
                 logger.info(self._log_premsg+"Metadata paramlist = '{}'".format( str(self._paramlist) ) )
@@ -95,7 +112,24 @@ class Metadata():
                 self._test_definitions(self._itemdeflist, self.itemdefinitions)
             else:
                 logger.info(self._log_premsg+"has no item definitions in metadata")
-            
+
+            # test validity of structs definition section
+            if self.itemstructs != None:
+                self._itemstructlist = list(self.itemstructs.keys())
+                logger.info(self._log_premsg + "Metadata itemstructlist = '{}'".format(self._itemstructlist))
+                for struct in self._itemstructlist:
+                    for i in self.itemstructs[struct]:
+                        self.itemstructs[struct][i] = dict(self.itemstructs[struct][i])
+                        for si in self.itemstructs[struct][i]:
+                            if type(self.itemstructs[struct][i][si]) is collections.OrderedDict:
+                                self.itemstructs[struct][i][si] = dict(self.itemstructs[struct][i][si])
+                    logger.info(self._log_premsg + "Metadata itemstruct '{}' = '{}'".format(struct, dict(self.itemstructs[struct])))
+            if self.itemstructs is not None:
+#                self._test_definitions(self._itemdeflist, self.itemdefinitions)
+                pass
+            else:
+                logger.info(self._log_premsg + "has no item-struct definitions in metadata")
+
         # Read global metadata for addon
         if self.meta != None:
             self.addon_metadata = self.meta.get(addon_type)
