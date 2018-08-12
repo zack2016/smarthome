@@ -24,8 +24,16 @@
 #########################################################################
 
 from lib.module import Modules
-
 from lib.model.smartplugin import *
+
+# If a package is needed, which might be not installed in the Python environment,
+# import it like this:
+#
+# try:
+#     import <exotic package>
+#     REQUIRED_PACKAGE_IMPORTED = True
+# except:
+#     REQUIRED_PACKAGE_IMPORTED = False
 
 
 class SamplePlugin(SmartPlugin):
@@ -40,9 +48,9 @@ class SamplePlugin(SmartPlugin):
         """
         Initalizes the plugin. The parameters describe for this method are pulled from the entry in plugin.conf.
 
-        :param sh:  **Deprecated**: The instance of the smarthome object. For SmartHomeNG versions **beyond** 1.3: **Don't use it**! 
-        :param *args: **Deprecated**: Old way of passing parameter values. For SmartHomeNG versions **beyond** 1.3: **Don't use it**!
-        :param **kwargs:**Deprecated**: Old way of passing parameter values. For SmartHomeNG versions **beyond** 1.3: **Don't use it**!
+        :param sh:  **Deprecated**: The instance of the smarthome object. For SmartHomeNG versions 1.4 and up: **Don't use it**!
+        :param *args: **Deprecated**: Old way of passing parameter values. For SmartHomeNG versions 1.4 and up: **Don't use it**!
+        :param **kwargs:**Deprecated**: Old way of passing parameter values. For SmartHomeNG versions 1.4 and up: **Don't use it**!
         
         If you need the sh object at all, use the method self.get_sh() to get it. There should be almost no need for
         a reference to the sh object any more.
@@ -54,6 +62,14 @@ class SamplePlugin(SmartPlugin):
         returns the value in the datatype that is defined in the metadata.
         """
         self.logger = logging.getLogger(__name__)
+
+        # If an package import with try/except is done, handle an import error like this:
+
+        # Exit if the required package(s) could not be imported
+        # if not REQUIRED_PACKAGE_IMPORTED:
+        #     self.logger.error("{}: Unable to import Python package '<exotic package>'".format(self.get_fullname()))
+        #     self._init_complete = False
+        #     return
 
         # get the parameters for the plugin (as defined in metadata plugin.yaml):
         #   self.param1 = self.get_parameter_value('param1')
