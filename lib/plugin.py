@@ -496,6 +496,10 @@ class PluginWrapper(threading.Thread):
         # Load an instance of the plugin
         try:
             exec("import {0}".format(classpath))
+        except ImportError as e:
+            logger.error("Plugins: Plugin '{}' error importing Python package: {}".format(name, e))
+            logger.error("Plugins: Plugin '{}' initialization failed, plugin not loaded".format(name))
+            return
         except Exception as e:
             logger.exception("Plugin '{0}' exception during import of __init__.py: {1}".format(name, e))
             return
