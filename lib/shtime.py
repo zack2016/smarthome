@@ -22,6 +22,7 @@
 
 import datetime
 import dateutil
+from dateutil.tz import tzlocal
 import logging
 import os
 
@@ -146,6 +147,17 @@ class Shtime:
         """
 
         return self._tzinfo
+
+
+    def tzname(self):
+        """
+        Returns the name about the actual local timezone (e.g. CET)
+
+        :return: Timezone info
+        :rtype: object
+        """
+
+        return datetime.datetime.now(tzlocal()).tzname()
 
 
     def utcnow(self):
