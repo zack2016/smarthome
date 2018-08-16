@@ -1,11 +1,11 @@
 Sample Plugin v1.5
 ==================
 
-This documentation is valid vor SmartHomeNG verseions beyond v1.4.2. Id does not work on v1.4.2
+This documentation is valid for SmartHomeNG versions beyond v1.4.2. It does not work on v1.4.2
 and below.
 
-On this page you find files for writing a new plugin. The plugin consist of a file with Python
-code (__init__.py), a metadata fila (plugin.yaml) and a documentation file (README.md). 
+On this page you find files for writing a new plugin. The plugin consists of a file with Python
+code (__init__.py), a metadata file (plugin.yaml) and a documentation file (README.md). 
 A skeleton of the three files is shown below.
 
 A formatted version of the sample README.md can be found here:
