@@ -174,8 +174,9 @@ class Http():
             self._server2.subscribe()
 
         self._build_hostmaps()
-        
-        self.tplenv = Environment(loader=FileSystemLoader(os.path.join( self.webif_dir, 'templates' ) ))
+
+        globaltemplates = self.gtemplates_dir
+        self.tplenv = Environment(loader=FileSystemLoader([os.path.join( self.webif_dir, 'templates' ), globaltemplates] ))
 
         self._gstatic_dir = self.webif_dir + '/gstatic'
         
