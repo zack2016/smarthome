@@ -14,6 +14,7 @@
   "SYSTEM": {
     "SYSTEMINFO": "Systemeigenschaften",
     "PYPI CHECK": "PyPI Check",
+    "DISCLOSURES": "Urheberrechtshinweise",
     "SHNG_VERSION": "SmartHomeNG Version",
     "IN": "in",
     "SHNG_PLG_VERSION": "SmartHomeNG Plugins Version",
@@ -37,7 +38,7 @@
     "PACKAGES_REQ_TESTSUITE": "Pakete für die Testsuite",
     "PACKAGES_WO_REQ": "Pakete ohne Requirements"
   },
-  "SCHEDULER": {
+  "SCHEDULERS": {
     "ITEM SCHEDULERS": "Item Scheduler",
     "LOGIC SCHEDULERS": "Logik Scheduler",
     "PLUGIN SCHEDULERS": "Plugin Scheduler",
@@ -67,6 +68,55 @@
     "TESTER": "Tester",
     "SUPPORT": "Support",
     "DOCUMENTATION": "Dokumentation"
+  },
+  "SERVICES": {
+    "SERVICES": "Dienste",
+    "EVAL CHECKER": "eval Syntax Prüfer",
+    "YAML CHECKER": "YAML Syntax Prüfer",
+    "CONF TO YAML": "CONF-YAML Konverter"
+  },
+  "ITEMS": {
+    "ITEMS": "Items",
+    "TOTAL": "Gesamt",
+    "MONITORED ITEMS": "Überwachte Items",
+
+    "SEARCH ITEMPATH": "Itempfad suchen",
+    "RESET": "Zurücksetzen",
+    "EXPAND ALL": "Alle aufklappen",
+    "REDUCE ALL": "Alle zuklappen",
+    "RELOAD": "Aktualisieren",
+    "ITEM DETAILS": "Item Informationen",
+    "CHOOSE ITEM IN TREE": "Item im Baum auswählen um Details zu sehen!",
+
+    "ATTRIBUTE": "Attribut",
+    "VALUE": "Wert",
+
+    "PATH": "Item Pfad",
+    "NAME": "Item Name",
+    "TYPE": "Datentyp",
+    "UPDATE INFORMATION": "Änderungsinformationen",
+    "LAST CHANGE": "Letze Änderung",
+    "LAST UPDATE": "Letztes Update",
+
+    "UPDATE AGE": "Zeit seit dem letzten Update",
+    "CHANGE AGE": "Zeit seit dem letzten Change",
+    "UPDATE BY": "Update durch",
+    "CHANGE BY": "Change durch",
+    "PREVIOUS VALUE": "vorheriger Wert",
+    "PREVIOUS UPDATE": "vorheriges Update",
+    "PREVIOUS CHANGE": "vorherige Änderung",
+    "PREVIOUS UPDATE AGE": "Zeit seit dem vorh. Update",
+    "PREVIOUS CHANGE AGE": "Zeit seit dem vorh. Change",
+    "EVALUATION AND TRIGGER": "Initialisierungs-, Evaluations- und Trigger-Konfiguration",
+    "PLUGIN SPECIFIC CONFIGURATION": "Plugin spezifische Konfiguration",
+    "CONNECTED LOGICS": "Verbundene Logiken",
+    "CONNECTED TRIGGERS": "Verbundene Trigger",
+
+    "DEFINED IN": "Definiert in Datei",
+    "ALERT": {
+      "NOT NUMERIC": "FEHLER: Der eingegebene Wert ist nicht numerisch!",
+      "INVALID SCENE NUMBER": "FEHLER: Szenen Nummern müssen zwischen 0 und 63 liegen!"
+    }
   },
   "CLOSE": "Schließen",
 

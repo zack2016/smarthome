@@ -28,8 +28,8 @@ import cherrypy
 import bin.shngversion as shngversion
 
 from lib.module import Modules
-from lib.plugin import Plugins
 from lib.model.smartplugin import SmartPlugin
+from lib.shtime import Shtime
 
 suburl = 'admin'
 
@@ -50,6 +50,7 @@ class Admin():
         
         self.logger = logging.getLogger(__name__)
         self._sh = sh
+        self.shtime = Shtime.get_instance()
         self.logger.debug("Module '{}': Initializing".format(self._shortname))
 
         self.logger.debug("Module '{}': Parameters = '{}'".format(self._shortname, str(self._parameters)))
@@ -66,6 +67,8 @@ class Admin():
 
         try:
             self.pypi_timeout = self._parameters['pypi_timeout']
+            self.itemtree_fullpath = self._parameters['itemtree_fullpath']
+            self.itemtree_searchstart = self._parameters['itemtree_searchstart']
         except:
             self.logger.critical("Module '{}': Inconsistent module (invalid metadata definition)".format(self.shortname))
             self._init_complete = False
@@ -139,6 +142,7 @@ class Admin():
 
 #        page = '<meta http-equiv="refresh" content="0; url=http://' + ip + ':' + str(self.port) + mysuburl + '/" />'
         page = '<meta http-equiv="refresh" content="0; url=' + self.url_root + '/" />'
+        self.logger.warning("error_page: status = {}, message = {}, redirecting to = {}, version = {}".format(status, message, self.url_root, version))
         return page
 
 
@@ -201,6 +205,9 @@ def parse_requirements(file_path):
     fobj.close()
     return req_dict
 
+def translate(s):
+    return s
+
 
 import sys
 import platform
@@ -210,8 +217,11 @@ import socket
 import psutil
 import pwd
 import html
+import collections
 
 import lib.config
+from lib.item import Items
+from lib.plugin import Plugins
 from lib.utils import Utils
 
 class WebInterface():
@@ -221,9 +231,10 @@ class WebInterface():
         self.logger = logging.getLogger(__name__)
         self.pypi_timeout = module.pypi_timeout
         self.module = module
-        self.plugins = Plugins.get_instance()
         self.pypi_sorted_package_list = []
         self.url_root = url_root
+        self.plugins = Plugins.get_instance()
+        self.items = Items.get_instance()
 
     @cherrypy.expose
     def shng_serverinfo_json(self):
@@ -236,6 +247,10 @@ class WebInterface():
         response = {}
         response['default_language'] = self._sh.get_defaultlanguage()
         response['client_ip'] = client_ip
+        response['itemtree_fullpath'] = self.module.itemtree_fullpath
+        response['itemtree_searchstart'] = self.module.itemtree_searchstart
+        response['tz'] = self.module.shtime.tz
+        response['tzname'] = str(self.module.shtime.tzname())
         return json.dumps(response)
 
 
@@ -251,7 +266,8 @@ class WebInterface():
 
         :return:
         """
-        now = datetime.datetime.now().strftime('%d.%m.%Y %H:%M')
+#        now = datetime.datetime.now().strftime('%d.%m.%Y %H:%M')
+        now = str(self.module.shtime.now())
         system = platform.system()
         vers = platform.version()
         # node = platform.node()
@@ -300,6 +316,7 @@ class WebInterface():
         response['ip'] = ip
         response['ipv6'] = ipv6
 
+        self.logger.warning("admin: systeminfo_json: response = {}".format(response))
         return json.dumps(response)
 
 
@@ -865,6 +882,248 @@ class WebInterface():
 
 
     # -----------------------------------------------------------------------------------
+    #    ITEMS
+    # -----------------------------------------------------------------------------------
+
+    @cherrypy.expose
+    def items_json(self, mode="tree"):
+        """
+        returns a list of items as json structure
+
+        :param mode:             tree (default) or list structure
+        """
+        if self.items == None:
+            self.items = Items.get_instance()
+
+        items_sorted = sorted(self.items.return_items(), key=lambda k: str.lower(k['_path']), reverse=False)
+
+        if mode == 'tree':
+            parent_items_sorted = []
+            for item in items_sorted:
+                if "." not in item._path:
+                    parent_items_sorted.append(item)
+
+            (item_data, item_count) = self._build_item_tree(parent_items_sorted)
+            self.logger.warning("admin: items_json: In tree-mode, {} items returned".format(item_count))
+            return json.dumps([item_count, item_data])
+        else:
+            item_list = []
+            for item in items_sorted:
+                item_list.append(item._path)
+            self.logger.warning("admin: items_json: Not in tree-mode, {} items returned".format(len(item_list)))
+            return json.dumps(item_list)
+
+
+    def _build_item_tree(self, parent_items_sorted):
+        item_data = []
+        count_sum = 0
+
+        for item in parent_items_sorted:
+            (nodes, count) = self._build_item_tree(item.return_children())
+            count_sum += count
+            tags = []
+            tags.append(len(nodes))
+            lpath = item._path.split('.')
+            item_data.append({'path': item._path, 'nodename': lpath[len(lpath)-1], 'name': item._name, 'tags': tags, 'nodes': nodes})
+
+        return item_data, len(item_data)+count_sum
+
+    # -----------------------------------------------------------------------------------
+
+    @cherrypy.expose
+    def item_detail_json_html(self, item_path):
+        """
+        returns a list of items as json structure
+        """
+        if self.items == None:
+            self.items = Items.get_instance()
+
+        self.logger.warning("item_detail_json_html: item_path = {}".format(item_path))
+
+        item_data = []
+        item = self.items.return_item(item_path)
+        if item is not None:
+            if item.type() is None or item.type() is '':
+                prev_value = ''
+                value = ''
+            else:
+                prev_value = item.prev_value()
+                value = item._value
+
+            if isinstance(prev_value, datetime.datetime):
+                prev_value = str(prev_value)
+
+            if 'str' in item.type():
+                value = html.escape(value)
+                prev_value = html.escape(prev_value)
+
+            cycle = ''
+            crontab = ''
+            for entry in self._sh.scheduler._scheduler:
+                if entry == "items." + item._path:
+                    if self._sh.scheduler._scheduler[entry]['cycle']:
+                        cycle = self._sh.scheduler._scheduler[entry]['cycle']
+                    if self._sh.scheduler._scheduler[entry]['cron']:
+                        crontab = html.escape(str(self._sh.scheduler._scheduler[entry]['cron']))
+                    break
+            if cycle == '':
+                cycle = '-'
+            if crontab == '':
+                crontab = '-'
+
+            changed_by = item.changed_by()
+            if changed_by[-5:] == ':None':
+                changed_by = changed_by[:-5]
+
+            updated_by = item.updated_by()
+            if updated_by[-5:] == ':None':
+                updated_by = updated_by[:-5]
+
+            if str(item._cache) == 'False':
+                cache = 'off'
+            else:
+                cache = 'on'
+            if str(item._enforce_updates) == 'False':
+                enforce_updates = 'off'
+            else:
+                enforce_updates = 'on'
+
+            item_conf_sorted = collections.OrderedDict(sorted(item.conf.items(), key=lambda t: str.lower(t[0])))
+            if item_conf_sorted.get('sv_widget', '') != '':
+                item_conf_sorted['sv_widget'] = html.escape(item_conf_sorted['sv_widget'])
+
+            logics = []
+            for trigger in item.get_logic_triggers():
+                logics.append(html.escape(format(trigger)))
+            triggers = []
+            for trigger in item.get_method_triggers():
+                trig = format(trigger)
+                trig = trig[1:len(trig) - 27]
+                triggers.append(html.escape(format(trig.replace("<", ""))))
+
+            # build on_update and on_change data
+            on_update_list = self.build_on_list(item._on_update_dest_var, item._on_update)
+            on_change_list = self.build_on_list(item._on_change_dest_var, item._on_change)
+
+            self._trigger_condition_raw = item._trigger_condition_raw
+            if self._trigger_condition_raw == []:
+                self._trigger_condition_raw = ''
+
+            data_dict = {'path': item._path,
+                         'name': item._name,
+                         'type': item.type(),
+                         'value': value,
+                         'change_age': item.age(),
+                         'update_age': item.update_age(),
+                         'last_update': str(item.last_update()),
+                         'last_change': str(item.last_change()),
+                         'changed_by': changed_by,
+                         'updated_by': updated_by,
+                         'previous_value': prev_value,
+                         'previous_change_age': item.prev_age(),
+                         'previous_update_age': item.prev_update_age(),
+                         'previous_update': str(item.prev_update()),
+                         'previous_change': str(item.prev_change()),
+                         'enforce_updates': enforce_updates,
+                         'cache': cache,
+                         'eval': html.escape(self.disp_str(item._eval)),
+                         'trigger': self.disp_str(item._trigger),
+                         'trigger_condition': self.disp_str(item._trigger_condition),
+                         'trigger_condition_raw': self.disp_str(self._trigger_condition_raw),
+                         'on_update': html.escape(self.list_to_displaystring(on_update_list)),
+                         'on_change': html.escape(self.list_to_displaystring(on_change_list)),
+                         'log_change': self.disp_str(item._log_change),
+                         'cycle': str(cycle),
+                         'crontab': str(crontab),
+                         'autotimer': self.disp_str(item._autotimer),
+                         'threshold': self.disp_str(item._threshold),
+#                         'config': json.dumps(item_conf_sorted),
+#                         'logics': json.dumps(logics),
+#                         'triggers': json.dumps(triggers),
+                         'config': dict(item_conf_sorted),
+                         'logics': logics,
+                         'triggers': triggers,
+                         'filename': str(item._filename),
+                         }
+
+            # cast raw data to a string
+            if item.type() in ['foo', 'list', 'dict']:
+                data_dict['value'] = str(item._value)
+                data_dict['previous_value'] = str(prev_value)
+
+            item_data.append(data_dict)
+            self.logger.warning("details: item_data = {}".format(item_data))
+            return json.dumps(item_data)
+        else:
+            self.logger.error("Requested item '{}' is None, check if item really exists.".format(item_path))
+            return
+
+    # -----------------------------------------------------------------------------------
+
+    @cherrypy.expose
+    def item_change_value_html(self, item_path, value):
+        """
+        Is called by items.html when an item value has been changed
+        """
+        self.logger.warning("item_change_value_html: item '{}' set to value '{}'".format(item_path, value))
+        item_data = []
+        item = self.items.return_item(item_path)
+        if 'num' in item.type():
+            if "." in value or "," in value:
+                value = float(value)
+            else:
+                value = int(value)
+        item(value, caller='admin')
+
+        return
+
+
+
+    def disp_str(self, val):
+        s = str(val)
+        if s == 'False':
+            s = '-'
+        elif s == 'None':
+            s = '-'
+        return s
+
+    def list_to_displaystring(self, l):
+        """
+        """
+        if type(l) is str:
+            return l
+
+        edit_string = ''
+        for entry in l:
+            if edit_string != '':
+                edit_string += ' | '
+            edit_string += str(entry)
+        if edit_string == '':
+            edit_string = '-'
+        #        self.logger.info("list_to_displaystring: >{}<  -->  >{}<".format(l, edit_string))
+        return edit_string
+
+    def build_on_list(self, on_dest_list, on_eval_list):
+        """
+        build on_xxx data
+        """
+        on_list = []
+        if on_dest_list is not None:
+            if isinstance(on_dest_list, list):
+                for on_dest, on_eval in zip(on_dest_list, on_eval_list):
+                    if on_dest != '':
+                        on_list.append(on_dest + ' = ' + on_eval)
+                    else:
+                        on_list.append(on_eval)
+            else:
+                if on_dest_list != '':
+                    on_list.append(on_dest_list + ' = ' + on_eval_list)
+                else:
+                    on_list.append(on_eval_list)
+        return on_list
+
+
+    # -----------------------------------------------------------------------------------
     #    SCHEDULERS
     # -----------------------------------------------------------------------------------
 
@@ -1009,4 +1268,47 @@ class WebInterface():
 
         return json.dumps(plugins_sorted)
 
+    # -----------------------------------------------------------------------------------
+    #    SCENES
+    # -----------------------------------------------------------------------------------
+
+    @cherrypy.expose
+    def scenes_json(self):
+
+        from lib.scene import Scenes
+        get_param_func = getattr(Scenes, "get_instance", None)
+        if callable(get_param_func):
+            supported = True
+            self.scenes = Scenes.get_instance()
+            scene_list = self.scenes.get_loaded_scenes()
+
+            disp_scene_list = []
+            for scene in scene_list:
+                scene_dict = {}
+                scene_dict['path'] = scene
+                scene_dict['name'] = str(self._sh.return_item(scene))
+
+                action_list = self.scenes.get_scene_actions(scene)
+                scene_dict['value_list'] = action_list
+#                scene_dict[scene] = action_list
+
+                disp_action_list = []
+                for value in action_list:
+                    action_dict = {}
+                    action_dict['action'] = value
+                    action_dict['action_name'] = self.scenes.get_scene_action_name(scene, value)
+                    action_list = self.scenes.return_scene_value_actions(scene, value)
+                    for action in action_list:
+                        if not isinstance(action[0], str):
+                            action[0] = action[0].id()
+                    action_dict['action_list'] = action_list
+
+                    disp_action_list.append(action_dict)
+                scene_dict['values'] = disp_action_list
+                self.logger.info("scenes_html: disp_action_list for scene {} = {}".format(scene, disp_action_list))
+
+                disp_scene_list.append(scene_dict)
+        else:
+            supported = False
+        return json.dumps(disp_scene_list)
 

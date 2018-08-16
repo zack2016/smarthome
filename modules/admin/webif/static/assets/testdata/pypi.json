@@ -114,5 +114,24 @@
     "pypi_version_not_available_msg": "",
     "pypi_doc_url": "https://pypi.org/pypi/pip",
     "sort": "4pip"
+  },
+
+  {
+    "name": "babel",
+    "vers_installed": "2.5.3",
+    "is_required": false,
+    "is_required_for_testsuite": false,
+    "is_required_for_docbuild": false,
+    "vers_req_min": "",
+    "vers_req_max": "",
+    "vers_req_msg": "",
+    "vers_req_source": "",
+    "vers_ok": false,
+    "vers_recent": false,
+    "pypi_version": "2.6.0",
+    "pypi_version_ok": true,
+    "pypi_version_not_available_msg": "",
+    "pypi_doc_url": "https://pypi.org/pypi/babel",
+    "sort": "4pip"
   }
 ]
