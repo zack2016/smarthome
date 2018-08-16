@@ -21,6 +21,7 @@
 
 
 import os
+import threading
 import logging
 import json
 import cherrypy
@@ -1311,4 +1312,67 @@ class WebInterface():
         else:
             supported = False
         return json.dumps(disp_scene_list)
+
+
+    # -----------------------------------------------------------------------------------
+    #    THREADS
+    # -----------------------------------------------------------------------------------
+
+    def thread_sum(self, name, count):
+        thread = dict()
+        if count > 0:
+            thread['name'] = name
+            thread['sort'] = str(thread['name']).lower()
+            thread['id'] = "(" + str(count) + " threads" + ")"
+            thread['alive'] = 'True'
+        return thread
+
+    @cherrypy.expose
+    def threads_json(self):
+        """
+        display a list of all threads
+        """
+        threads_count = 0
+        cp_threads = 0
+        http_threads = 0
+        idle_threads = 0
+        for thread in threading.enumerate():
+            if thread.name.find("CP Server") == 0:
+                cp_threads += 1
+            if thread.name.find("HTTPServer") == 0:
+                http_threads += 1
+            if thread.name.find("idle") == 0:
+                idle_threads += 1
+
+        threads = []
+        for t in threading.enumerate():
+            if t.name.find("CP Server") != 0 and t.name.find("HTTPServer") != 0 and t.name.find("idle") != 0:
+                thread = dict()
+                thread['name'] = t.name
+                thread['sort'] = str(t.name).lower()
+                thread['id'] = t.ident
+                try:
+                    if t.is_alive():
+                        thread['alive'] = 'True'
+                    else:
+                        thread['alive'] = 'False'
+                except AssertionError:
+                    thread['alive'] = 'AssertionError'
+
+                threads.append(thread)
+                threads_count += 1
+
+        if cp_threads > 0:
+            threads.append(self.thread_sum("CP Server", cp_threads))
+            threads_count += cp_threads
+        if http_threads > 0:
+            threads.append(self.thread_sum("HTTPServer", http_threads))
+            threads_count += http_threads
+        if idle_threads > 0:
+            threads.append(self.thread_sum("idle", idle_threads))
+            threads_count += idle_threads
+
+        threads_sorted = sorted(threads, key=lambda k: k['sort'])
+        return json.dumps([threads_count, threads_sorted])
+
 

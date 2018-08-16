@@ -38,37 +38,6 @@
     "PACKAGES_REQ_TESTSUITE": "Pakete für die Testsuite",
     "PACKAGES_WO_REQ": "Pakete ohne Requirements"
   },
-  "SCHEDULERS": {
-    "ITEM SCHEDULERS": "Item Scheduler",
-    "LOGIC SCHEDULERS": "Logik Scheduler",
-    "PLUGIN SCHEDULERS": "Plugin Scheduler",
-    "OTHER SCHEDULERS": "sonstige Scheduler",
-    "SCHEDULER": "Scheduler",
-    "NEXT EXECUTION": "nächste Ausführung",
-    "CYCLE": "Cycle",
-    "CRONTAB": "Crontab"
-  },
-  "PLUGIN": {
-    "TYPE": "Typ",
-    "CONFIGNAME": "Konfig Name",
-    "PLUGINNAME": "Plugin",
-    "INSTANCE": "Instanz",
-    "VERSION": "Version",
-    "MULTI INSTANCE": "Multi-Instance",
-    "WEBIF": "Web Interface",
-
-    "DETAILS OF CONFIGURATION": "Details des Plugin Konfigurations-Abschnitts '{{configname}}' --- (für Plugin '{{pluginname}}')",
-    "PARAMETERS": "Parameter",
-    "ITEM ATTRIBUTES": "Item Attribute",
-    "UPDATES TRIGGERED BY": "Plugin Updates werden durch {{count}} Items getriggered",
-    "PLUGIN METADATA": "Plugin Metadata",
-    "DESCRIPTION": "Beschreibung",
-    "KEYWORDS": "Keywords",
-    "MAINTAINER": "Wartung",
-    "TESTER": "Tester",
-    "SUPPORT": "Support",
-    "DOCUMENTATION": "Dokumentation"
-  },
   "SERVICES": {
     "SERVICES": "Dienste",
     "EVAL CHECKER": "eval Syntax Prüfer",
@@ -118,6 +87,54 @@
       "INVALID SCENE NUMBER": "FEHLER: Szenen Nummern müssen zwischen 0 und 63 liegen!"
     }
   },
+  "LOGICS": {
+    "USERLOGICS": "Nutzerlogiken",
+    "SYSTEMLOGICS": "Systemlogiken"
+  },
+  "SCHEDULERS": {
+    "ITEM SCHEDULERS": "Item Scheduler",
+    "LOGIC SCHEDULERS": "Logik Scheduler",
+    "PLUGIN SCHEDULERS": "Plugin Scheduler",
+    "OTHER SCHEDULERS": "sonstige Scheduler",
+    "SCHEDULER": "Scheduler",
+    "NEXT EXECUTION": "nächste Ausführung",
+    "CYCLE": "Cycle",
+    "CRONTAB": "Crontab"
+  },
+  "PLUGIN": {
+    "TYPE": "Typ",
+    "CONFIGNAME": "Konfig Name",
+    "PLUGINNAME": "Plugin",
+    "INSTANCE": "Instanz",
+    "VERSION": "Version",
+    "MULTI INSTANCE": "Multi-Instance",
+    "WEBIF": "Web Interface",
+
+    "DETAILS OF CONFIGURATION": "Details des Plugin Konfigurations-Abschnitts '{{configname}}' --- (für Plugin '{{pluginname}}')",
+    "PARAMETERS": "Parameter",
+    "ITEM ATTRIBUTES": "Item Attribute",
+    "UPDATES TRIGGERED BY": "Plugin Updates werden durch {{count}} Items getriggered",
+    "PLUGIN METADATA": "Plugin Metadata",
+    "DESCRIPTION": "Beschreibung",
+    "KEYWORDS": "Keywords",
+    "MAINTAINER": "Wartung",
+    "TESTER": "Tester",
+    "SUPPORT": "Support",
+    "DOCUMENTATION": "Dokumentation"
+  },
+  "SCENES": {
+    "SCENE": "Szene",
+    "LEARN": "Lernen",
+    "ITEM": "Item",
+    "VALUE": "Wert"
+  },
+  "THREADS": {
+    "THREAD": "Thread",
+    "TOTAL": "gesamt",
+    "THREAD-ID": "Thread-Id",
+    "ACTIVE": "Activ"
+  },
+
   "CLOSE": "Schließen",
 
   "YES": "Ja",
@@ -129,5 +146,8 @@
   "MINUTE": "Minute",
   "MINUTES": "Minuten",
   "SECOND": "Sekunde",
-  "SECONDS": "Sekunden"
+  "SECONDS": "Sekunden",
+
+  "True": "Ja",
+  "False": "Nein"
 }
