@@ -925,7 +925,14 @@ class WebInterface():
             tags = []
             tags.append(len(nodes))
             lpath = item._path.split('.')
-            item_data.append({'path': item._path, 'nodename': lpath[len(lpath)-1], 'name': item._name, 'tags': tags, 'nodes': nodes})
+            if self.module.itemtree_fullpath:
+                tree_label = item._path
+            else:
+                tree_label = lpath[len(lpath)-1]
+            item_data.append({'label': tree_label, 'children': nodes,
+                              'path': item._path,  'name': item._name, 'tags': tags,
+#                              'nodename': lpath[len(lpath)-1], 'nodes': nodes
+                              })
 
         return item_data, len(item_data)+count_sum
 
