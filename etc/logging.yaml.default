@@ -78,6 +78,8 @@ loggers:
 
     __main__:
         # WARNING LEVEL to add restart log messages to further logfiles
+        # Take care, that the level here is not lower than the level of your handler
+        # E.g. a handler with ERROR and a __main__ level with WARNING will result in lots of error messages
         handlers: [shng_details_file]
         level: WARNING
 
