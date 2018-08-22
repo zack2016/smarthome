@@ -128,9 +128,12 @@ class _LogHandler(logging.StreamHandler):
         self._shtime = shtime
 
     def emit(self, record):
-        timestamp = datetime.datetime.fromtimestamp(record.created, self._shtime.tzinfo())
-        self._log.add([timestamp, record.threadName, record.levelname, record.message])
-
+        try:
+            self.format(record)
+            timestamp = datetime.datetime.fromtimestamp(record.created, self._shtime.tzinfo())
+            self._log.add([timestamp, record.threadName, record.levelname, record.message])
+        except Exception:
+            self.handleError(record)
 
 class SmartHome():
     """
