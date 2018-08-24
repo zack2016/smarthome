@@ -3,6 +3,7 @@
 #########################################################################
 # Copyright 2016-       Martin Sinn                         m.sinn@gmx.de
 # Copyright 2016-       Christian Strassburg 
+# Copyright 2018        Stefan Widmer (smailee)
 # Copyright 2011-2013   Marcus Popp                        marcus@popp.mx
 #########################################################################
 #  This file is part of SmartHomeNG
@@ -531,6 +532,10 @@ class PluginWrapper(threading.Thread):
             if instance != '':
                 logger.debug("set plugin {0} instance to {1}".format(name, instance ))
                 self.get_implementation()._set_instance_name(instance)
+#           addition von smai
+            # Customized logger instance for plugin to append name of plugin instance to log text
+            self.get_implementation().logger = PluginLoggingAdapter(logging.getLogger(classpath), {'plugininstance': self.get_implementation().get_loginstance()})
+#           end addition von smai
             self.get_implementation()._set_sh(smarthome)
             self.get_implementation()._set_plugin_dir( os.path.join( os.path.dirname( os.path.dirname(os.path.abspath(__file__)) ), classpath.replace('.',os.sep) ) )
             self.get_implementation()._plgtype = self.meta.get_string('type')
@@ -653,3 +658,13 @@ class PluginWrapper(threading.Thread):
         """
         return self.plugin
     
+
+# addition von smai:
+class PluginLoggingAdapter(logging.LoggerAdapter):
+    """
+    Class to append name of plugin instance to log text
+    """
+    def process(self, msg, kwargs):
+        kwargs['extra'] = self.extra
+        return '{}{}'.format(self.extra['plugininstance'], msg), kwargs
+# end addition von smai
