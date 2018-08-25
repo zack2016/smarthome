@@ -97,8 +97,11 @@ class Metadata():
 
             # test validity of parameter definition section
             if self.parameters is not None:
-                self._paramlist = list(self.parameters.keys())
-                logger.info(self._log_premsg+"Metadata paramlist = '{}'".format( str(self._paramlist) ) )
+                if self.parameters == 'NONE':
+                    self.parameters = None
+                else:
+                    self._paramlist = list(self.parameters.keys())
+                    logger.info(self._log_premsg+"Metadata paramlist = '{}'".format( str(self._paramlist) ) )
             if  self.parameters is not None:
                 self._test_definitions(self._paramlist, self.parameters)
             else:
@@ -106,8 +109,11 @@ class Metadata():
 
             # test validity of item definition section
             if self.itemdefinitions != None:
-                self._itemdeflist = list(self.itemdefinitions.keys())
-                logger.info(self._log_premsg+"Metadata itemdeflist = '{}'".format( str(self._itemdeflist) ) )
+                if self.itemdefinitions == 'NONE':
+                    self.itemdefinitions = None
+                else:
+                    self._itemdeflist = list(self.itemdefinitions.keys())
+                    logger.info(self._log_premsg+"Metadata itemdeflist = '{}'".format( str(self._itemdeflist) ) )
             if  self.itemdefinitions is not None:
                 self._test_definitions(self._itemdeflist, self.itemdefinitions)
             else:
