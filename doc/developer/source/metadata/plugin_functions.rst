@@ -3,8 +3,6 @@ Metadata section `plugin_functions:`
 
 This sections describes the public functions that are defined by the plugin.
 
-Metadata is supported in SmartHomeNG v1.4 and up.
-
 The ``plugin_functions:`` section has a section for each function that is implemented. The name of that section
 is the name of the function. Each function has a section ``parameters:`` which describes each parameter in detail.
 

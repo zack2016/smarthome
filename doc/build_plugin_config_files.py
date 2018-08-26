@@ -203,7 +203,7 @@ def build_pluginlist( plugin_type='all' ):
         plg_dict = {}
         if metaplugin in plugins_git:    #pluginsyaml_git
             if os.path.isfile(metafile):
-                plugin_yaml = shyaml.yaml_load(metafile)
+                plugin_yaml = shyaml.yaml_load(metafile, ordered=True)
             else:
                 plugin_yaml = ''
             if plugin_yaml != '':
@@ -344,18 +344,31 @@ def write_configfile(plg, configfile_dir, language='de'):
     # ---------------------------------
     metafile = plgname + '/plugin.yaml' 
     if os.path.isfile(metafile):
-        meta_yaml = shyaml.yaml_load(metafile)
+        meta_yaml = shyaml.yaml_load(metafile, ordered=True)
         plugin_yaml = meta_yaml.get('plugin', {})
         parameter_yaml = meta_yaml.get('parameters', {})
         iattributes_yaml = meta_yaml.get('item_attributes', {})
-        if parameter_yaml is None:
+        functions_yaml = meta_yaml.get('plugin_functions', {})
+
+        no_parameters = (parameter_yaml == 'NONE')
+        if no_parameters or parameter_yaml is None:
             parameter_yaml = {}
-        if iattributes_yaml is None:
+
+        no_attributes = (iattributes_yaml == 'NONE')
+        if no_attributes or iattributes_yaml is None:
             iattributes_yaml = {}
+
+        no_functions = (functions_yaml == 'NONE')
+        if no_functions or functions_yaml is None:
+            functions_yaml = {}
     else:
         plugin_yaml = {}
+        no_parameters = False
         parameter_yaml = {}
+        no_attributes = False
         iattributes_yaml = {}
+        no_functions = False
+        functions_yaml = {}
 
 
     # ---------------------------------
@@ -422,21 +435,25 @@ def write_configfile(plg, configfile_dir, language='de'):
     fh.write('Im folgenden ist beschrieben, wie das Plugin **'+plgname+'** konfiguriert wird. Außerdem ist im folgenden beschrieben, wie das Plugin in den Item Definitionen genutzt werden kann.\n')
     fh.write('\n')
 
+
     # ---------------------------------
     # write Parameter section
     # ---------------------------------
-    write_heading(fh, 'Parameter', 2)
+    write_heading(fh, 'Parameter', 1)
     fh.write('\n')
     fh.write('Das Plugin verfügt über folgende Parameter, die in der Datei **../etc/plugin.yaml** konfiguriert werden:\n')
     fh.write('\n')
 
     if len(parameter_yaml) == 0:
-        fh.write('**Keine** - zur Sicherheit in der README nachsehen (siehe Fußnote)\n')
+        if no_parameters:
+            fh.write('**Keine**\n')
+        else:
+            fh.write('Keine Parameter in den Metadaten beschrieben - **Bitte in der README nachsehen** (siehe Fußnote)\n')
     for p in sorted(parameter_yaml):
         # ---------------------------------
         # write info for one parameter
         # ---------------------------------
-        write_heading(fh, p, 3)
+        write_heading(fh, p, 2)
         fh.write('\n')
 #        desc = get_description(parameter_yaml[p], 768, language)
 #        fh.write(desc[0]+'\n')
@@ -445,10 +462,16 @@ def write_configfile(plg, configfile_dir, language='de'):
         datatype = parameter_yaml[p].get('type', '').lower()
         default = str(parameter_yaml[p].get('default', ''))
         validlist = parameter_yaml[p].get('valid_list', [])
+        validmin = parameter_yaml[p].get('valid_min', '')
+        validmax = parameter_yaml[p].get('valid_max', '')
         fh.write(' - Datentyp: **'+datatype+'**\n')
         if default != '':
             fh.write(' - Standardwert: **'+default+'**\n')
         fh.write('\n')
+        if validmin != '':
+            fh.write(' - Minimalwert: **' + str(validmin) + '**\n')
+        if validmax != '':
+            fh.write(' - Maximalwert: **' + str(validmax) + '**\n')
         if len(validlist) > 0:
             fh.write(' - Mögliche Werte:\n')
             fh.write('\n')
@@ -456,21 +479,25 @@ def write_configfile(plg, configfile_dir, language='de'):
                 fh.write('   - **'+str(v)+'**\n')
             fh.write('\n')
             
+
     # ---------------------------------
     # write item_attribute section
     # ---------------------------------
-    write_heading(fh, 'Item Attribute', 2)
+    write_heading(fh, 'Item Attribute', 1)
     fh.write('\n')
     fh.write('Das Plugin unterstützt folgende Item Attribute, die in den Dateien im Verzeichnis  **../items** verwendet werden:\n')
     fh.write('\n')
 
     if len(iattributes_yaml) == 0:
-        fh.write('**Keine** - zur Sicherheit in der README nachsehen (siehe Fußnote)\n')
+        if no_attributes:
+            fh.write('**Keine**\n')
+        else:
+            fh.write('Keine Item Attribute in den Metadaten beschrieben - **Bitte in der README nachsehen** (siehe Fußnote)\n')
     for a in sorted(iattributes_yaml):
         # ---------------------------------
         # write info for one attribute
         # ---------------------------------
-        write_heading(fh, a, 3)
+        write_heading(fh, a, 2)
         fh.write('\n')
 #        desc = get_description(iattributes_yaml[a], 768, language)
 #        fh.write(desc[0]+'\n')
@@ -479,16 +506,109 @@ def write_configfile(plg, configfile_dir, language='de'):
         datatype = iattributes_yaml[a].get('type', '').lower()
         default = str(iattributes_yaml[a].get('default', ''))
         validlist = iattributes_yaml[a].get('valid_list', [])
+        validmin = iattributes_yaml[a].get('valid_min', '')
+        validmax = iattributes_yaml[a].get('valid_max', '')
         fh.write(' - Datentyp: **'+datatype+'**\n')
         if default != '':
             fh.write(' - Standardwert: **'+default+'**\n')
         fh.write('\n')
+        if validmin != '':
+            fh.write(' - Minimalwert: **' + str(validmin) + '**\n')
+        if validmax != '':
+            fh.write(' - Maximalwert: **' + str(validmax) + '**\n')
         if len(validlist) > 0:
             fh.write(' - Mögliche Werte:\n')
             fh.write('\n')
             for v in validlist:
                 fh.write('   - **'+str(v)+'**\n')
             fh.write('\n')
+
+
+    # ---------------------------------
+    # write plugin-function section
+    # ---------------------------------
+    write_heading(fh, 'Plugin Functions', 1)
+    fh.write('\n')
+    fh.write(
+        'Das Plugin verfügt über folgende öffentliche Funktionen, die z.B. in Logiken aufgerufen werden können.\n')
+    fh.write('\n')
+
+    if len(functions_yaml) == 0:
+        if no_functions:
+            fh.write('**Keine**\n')
+        else:
+            fh.write(
+                'Keine Funktionen in den Metadaten beschrieben - **Bitte in der README nachsehen** (siehe Fußnote)\n')
+    for f in sorted(functions_yaml):
+        # ---------------------------------
+        # write info for one function
+        # ---------------------------------
+        fp = ''
+        func_param_yaml = functions_yaml[f].get('parameters', None)
+        if func_param_yaml != None:
+            for par in func_param_yaml:
+                if fp != '':
+                    fp += ', '
+                fp += par
+                if func_param_yaml[par].get('default', None) != None:
+                    default = str(func_param_yaml[par].get('default', None))
+                    if func_param_yaml[par].get('default', 'foo') == 'str':
+                        default = "'" + default + "'"
+                    fp += '=' + default
+
+        write_heading(fh, f + '('+fp+')', 2)
+        fh.write('\n')
+        #        desc = get_description(parameter_yaml[f], 768, language)
+        #        fh.write(desc[0]+'\n')
+        #       fh.write('\n')
+        write_formatted(fh, get_doc_description(functions_yaml[f], language))
+        datatype = functions_yaml[f].get('type', '').lower()
+        default = str(functions_yaml[f].get('default', ''))
+        validlist = functions_yaml[f].get('valid_list', [])
+        validmin = functions_yaml[f].get('valid_min', '')
+        validmax = functions_yaml[f].get('valid_max', '')
+        if datatype == 'void':
+            fh.write(' - Die Funktion liefert kein Ergebnis\n')
+        else:
+            fh.write(' - Ergebnistyp der Funktion: **' + datatype + '**\n')
+        if default != '':
+            fh.write(' - Standardwert: **' + default + '**\n')
+        fh.write('\n')
+        if validmin != '':
+            fh.write(' - Minimalwert: **' + str(validmin) + '**\n')
+        if validmax != '':
+            fh.write(' - Maximalwert: **' + str(validmax) + '**\n')
+        if len(validlist) > 0:
+            fh.write(' - Mögliche Werte:\n')
+            fh.write('\n')
+            for v in validlist:
+                fh.write('   - **' + str(v) + '**\n')
+            fh.write('\n')
+
+#        func_param_yaml = functions_yaml[f].get('parameters', None)
+        if func_param_yaml != None:
+            for par in func_param_yaml:
+                write_heading(fh, par, 3)
+                write_formatted(fh, get_doc_description(func_param_yaml[par], language))
+                datatype = func_param_yaml[par].get('type', '').lower()
+                default = str(func_param_yaml[par].get('default', ''))
+                validlist = func_param_yaml[par].get('valid_list', [])
+                validmin = func_param_yaml[par].get('valid_min', '')
+                validmax = func_param_yaml[par].get('valid_max', '')
+                fh.write(' - Datentyp: **' + datatype + '**\n')
+                if default != '':
+                    fh.write(' - Standardwert: **' + default + '**\n')
+                fh.write('\n')
+                if validmin != '':
+                    fh.write(' - Minimalwert: **' + str(validmin) + '**\n')
+                if validmax != '':
+                    fh.write(' - Maximalwert: **' + str(validmax) + '**\n')
+                if len(validlist) > 0:
+                    fh.write(' - Mögliche Werte:\n')
+                    fh.write('\n')
+                    for v in validlist:
+                        fh.write('   - **' + str(v) + '**\n')
+                    fh.write('\n')
 
 
     fh.write('\n')

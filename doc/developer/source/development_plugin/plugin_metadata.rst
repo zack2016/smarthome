@@ -38,13 +38,15 @@ The **metadata** file is named ``/plugins/<name of the plugin>/plugin.yaml``. It
 
   - for generating documentation pages (that way the parameter descriptions will not be needed in the README.md file)
   - for guiding users in a graphical configuration utility
-  
+
+
 - ``item_attributes:`` - Definition of the additional attributes for items, defined by this plugin
   The data defined in this section is used to check if configured item attributes are valid.
   The data is going to be used:
 
   - for generating documentation pages (that way the item attribute descriptions will not be needed in the README.md file)
   - for guiding users in a graphical configuration utility
+
 
 - ``plugin_functions:`` - Definition of public functions, defined by this plugin
   The data defined in this section is used to check if configured item attributes are valid.

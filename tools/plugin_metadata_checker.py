@@ -99,6 +99,10 @@ def readMetadata(metaplugin, plugins_local):
     if metaplugin in plugins_local:  # pluginsyaml_local
         if os.path.isfile(metafile):
             plugin_yaml = shyaml.yaml_load(metafile, ordered=True)
+    else:
+        print("There is no plugin named '" + metaplugin + "'")
+        print()
+        return None
     return plugin_yaml
 
 
@@ -120,10 +124,6 @@ def list_plugins(option):
 
     option = option.strip().lower()
 
-#    plugin_types = []
-#    for pl in plugin_sections:
-#        plugin_types.append(pl[0])
-
     plugins_local = get_local_pluginlist()
 
     header_displayed = False;
@@ -137,6 +137,8 @@ def list_plugins(option):
         sectionFunc = '-'
         comment = ''
         metadata = readMetadata(plg, plugins_local)
+        if metadata == None:
+            return
         if metadata.get('plugin', None) == None:
             sectionPlg = 'No'
         else:
@@ -255,10 +257,12 @@ def display_def_description(name, dict):
 def display_metadata(plg, with_description):
 
     plg_type = get_plugintype(plg)
-    print("Display metadata for {} plugin '{}'".format(plg_type, plg))
-    print()
     plugins_local = get_local_pluginlist()
     metadata = readMetadata(plg, plugins_local)
+    if metadata == None:
+        return
+    print("Display metadata for {} plugin '{}'".format(plg_type, plg))
+    print()
 
     if metadata.get('plugin', None) == None:
         print("ERROR: Section 'plugin' not defined in metadata")
@@ -370,6 +374,7 @@ def display_metadata(plg, with_description):
 errors = 0
 warnings = 0
 hints = 0
+quiet = False
 
 def disp_error_formatted(level, msg):
     if level != '':
@@ -392,37 +397,52 @@ def disp_hints_formatted(hint, hint2):
 
 
 def disp_error(msg, hint='', hint2=''):
-    global errors
+    global errors, quiet
     errors += 1
-    disp_error_formatted('ERROR', msg)
-    disp_hints_formatted(hint, hint2)
+    if not quiet:
+        disp_error_formatted('ERROR', msg)
+        disp_hints_formatted(hint, hint2)
     return
 
 
 def disp_warning(msg, hint='', hint2=''):
-    global warnings
+    global warnings, quiet
     warnings += 1
-    disp_error_formatted('WARNING', msg)
-    disp_hints_formatted(hint, hint2)
+    if not quiet:
+        disp_error_formatted('WARNING', msg)
+        disp_hints_formatted(hint, hint2)
     return
 
 
 def disp_hint(msg, hint='', hint2=''):
-    global hints
+    global hints, quiet
     hints += 1
-    disp_error_formatted('HINT', msg)
-    disp_hints_formatted(hint, hint2)
+    if not quiet:
+        disp_error_formatted('HINT', msg)
+        disp_hints_formatted(hint, hint2)
     return
 
 
+errors = 0
+warnings = 0
+hints = 0
 
-def check_metadata(plg, with_description):
+def check_metadata(plg, with_description, check_quiet=False):
+
+    global errors, warnings, hints, quiet
+    quiet = check_quiet
+    errors = 0
+    warnings = 0
+    hints = 0
 
     plg_type = get_plugintype(plg)
-    print("Check metadata of {} plugin '{}'".format(plg_type, plg))
-    print()
     plugins_local = get_local_pluginlist()
     metadata = readMetadata(plg, plugins_local)
+    if metadata == None:
+        return
+    if not check_quiet:
+        print("Check metadata of {} plugin '{}'".format(plg_type, plg))
+        print()
 
     # Checking global metadata
     if metadata.get('plugin', None) == None:
@@ -566,13 +586,88 @@ def check_metadata(plg, with_description):
                                 disp_warning("No english description of the parameter '" + par + "' of the function '"+func+"' is given",
                                            "Add 'en:' to the description section of the plugin function's parameter")
 
-    global errors, warnings, hints
+#    global errors, warnings, hints
     if errors == 0 and warnings == 0 and hints == 0:
-        print("Metadata is complete ({} errors, {} warnings and {} hints)".format(errors, warnings, hints))
+        summary = "OK       {} errors  {} warn   {} hints".format(errors, warnings, hints)
     else:
-        print("{} errors, {} warnings and {} hints".format(errors, warnings, hints))
-    print()
+        summary = "TO DOs   {} errors  {} warn   {} hints".format(errors, warnings, hints)
+    if check_quiet:
+        print('{plugin:<15.15} {summary:<60.60}'.format(plugin=plg, summary=summary))
+    else:
+        if errors == 0 and warnings == 0 and hints == 0:
+            print("Metadata is complete ({} errors, {} warnings and {} hints)".format(errors, warnings, hints))
+        else:
+            print("{} errors, {} warnings and {} hints".format(errors, warnings, hints))
+        print()
     return
+
+
+def check_plglist(option):
+    option = option.strip().lower()
+    header_displayed = False;
+
+    plugins_local = get_local_pluginlist()
+    for plg in sorted(plugins_local):
+        version = '-'
+#        sectionPlg = '-'
+        sectionParam = '-'
+        sectionIAttr = '-'
+        sectionFunc = '-'
+        comment = ''
+        metadata = readMetadata(plg, plugins_local)
+        if metadata == None:
+            return
+        if metadata.get('plugin', None) == None:
+            sectionPlg = 'No'
+        else:
+            sectionPlg = 'Ok'
+            version = metadata['plugin'].get('version', '-')
+            plgstate = metadata['plugin'].get('state', '-')
+            if not plgstate in ['qa-passed', 'ready', 'develop', '-']:
+                plgstate = 'INVALID'
+        plgtype = get_plugintype(plg)
+        if plgtype == 'Smart':
+            if version == '-':
+                version = '?'
+
+            if metadata.get('parameters', None) == None:
+                sectionParam = 'No'
+            elif metadata.get('parameters', None) == 'NONE':
+                sectionParam = 'Ok'
+            else:
+                sectionParam = 'Ok'
+                sectionParam += ' (' + str(len(metadata['parameters'])) + ')'
+
+            if metadata.get('item_attributes', None) == None:
+                sectionIAttr = 'No'
+            elif metadata.get('item_attributes', None) == 'NONE':
+                sectionIAttr = 'Ok'
+            else:
+                sectionIAttr = 'Ok'
+                sectionIAttr += ' (' + str(len(metadata['item_attributes'])) + ')'
+
+            if metadata.get('plugin_functions', None) == None:
+                sectionFunc = 'No'
+            elif metadata.get('plugin_functions', None) == 'NONE':
+                sectionFunc = 'Ok'
+            else:
+                sectionFunc = 'Ok'
+                sectionFunc += ' (' + str(len(metadata['plugin_functions'])) + ')'
+
+        if (option == 'all') or \
+           (option == plgtype.lower()) or \
+           (option == 'inc' and (sectionPlg == 'No' or sectionParam == 'No' or sectionIAttr == 'No' or sectionFunc == 'No')) or \
+           (option == 'compl' and (plgtype.lower() != 'classic' and sectionPlg != 'No' and sectionParam != 'No' and sectionIAttr != 'No' and sectionFunc != 'No')) or \
+           (option == 'inc_para' and sectionParam == 'No') or (option == 'inc_attr' and sectionIAttr == 'No'):
+            if not header_displayed:
+                ul = '-------------------------------'
+                list_formatted('', '', '', 'Plugin', '', '', '', '')
+                list_formatted('Plugin', 'State', 'Errors', 'Warnings', 'Hints', '', '', '')
+                list_formatted(ul, ul, ul, ul, ul, '', '', '')
+                header_displayed = True
+
+            check_metadata(plg, False, check_quiet=True)
+    print()
 
 
 # ==================================================================================
@@ -601,6 +696,9 @@ if __name__ == '__main__':
     group.add_argument('-d', dest='disp_plugin', help='display the metadata of a plugin')
     group.add_argument('-dd', dest='dispd_plugin', help='display the metadata of a plugin with description')
     group.add_argument('-c', dest='check_plugin', help='check the metadata of a plugin')
+    # group.add_argument('-cq', dest='check_quiet', help='check the metadata of a plugin (quiet)')
+    group.add_argument('-cl', '--check_list', action="store_true", default=False, help='check the metadata of all plugins')
+    group.add_argument('-clc', '--check_clist', action="store_true", default=False, help='check the metadata of plugins with all metadata sections')
     args = parser.parse_args()
 
     try:
@@ -618,12 +716,20 @@ if __name__ == '__main__':
             list_plugins('inc_para')
         elif args.lia:
             list_plugins('inc_attr')
+
         elif args.disp_plugin:
             display_metadata(args.disp_plugin, False)
         elif args.dispd_plugin:
             display_metadata(args.dispd_plugin, True)
+
         elif args.check_plugin:
             check_metadata(args.check_plugin, False)
+#        elif args.check_quiet:
+#            check_metadata(args.check_quiet, False, check_quiet=True)
+        elif args.check_list:
+            check_plglist('all')
+        elif args.check_clist:
+            check_plglist('compl')
         else:
             parser.print_help()
             print()
