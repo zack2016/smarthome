@@ -52,6 +52,7 @@ They can be used the following way: To call eg. **get_toplevel_items()**, use th
 """
 import datetime
 import dateutil.parser
+import time     # for calls to time in eval
 import logging
 import os
 import re
@@ -1150,6 +1151,13 @@ class Item():
     def _run_on_xxx(self, path, value, on_dest, on_eval, attr='?'):
         """
         common method for __run_on_update and __run_on_change
+
+        :param path: path to this item
+
+        :param attr: Descriptive text for origin of update of item
+        :type: path: str
+
+        :type attr: str
         """
         if self._path == 'wohnung.flur.szenen_helper':
             logger.info("_run_on_xxx: item = {}, value = {}".format(self._path, value))
