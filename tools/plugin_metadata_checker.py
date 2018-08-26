@@ -273,6 +273,7 @@ def display_metadata(plg, with_description):
         disp_formatted('State', metadata['plugin'].get('state', '-'))
         disp_formatted('Type', metadata['plugin'].get('type', '-'))
         disp_formatted('Multi Instance', str(metadata['plugin'].get('multi_instance', '-')))
+        disp_formatted('Restartable', str(metadata['plugin'].get('restartable', '-')))
         disp_formatted('shNG min. Version', str(metadata['plugin'].get('sh_minversion', '-')))
         disp_formatted('shNG max. Version', str(metadata['plugin'].get('sh_maxversion', '-')))
         disp_formatted('Classname', metadata['plugin'].get('classname', '-'))
@@ -440,6 +441,14 @@ def check_metadata(plg, with_description):
             disp_warning('The maintainer of the plugin is not documented', "Add 'maintainer:' to the plugin section")
         if metadata['plugin'].get('multi_instance', None) == None:
             disp_warning('It is not documented if wether the plugin is multi-instance capable or not', "Add 'multi_instance:' to the plugin section")
+        else:
+            if not(metadata['plugin'].get('multi_instance', None) in [True, False]):
+                disp_error('multi_instance has to be True or False')
+        if metadata['plugin'].get('restartable', None) == None:
+            disp_hint('It is not documented if wether the plugin is restartable or not [stop() and run()]', "Add 'restartable:' to the plugin section")
+        else:
+            if not(metadata['plugin'].get('restartable', None) in [True, False, 'True', 'False', 'unknown']):
+                disp_error('restartable has to be True, False or unknown')
         if metadata['plugin'].get('sh_minversion', None) == None:
             disp_warning('No minimum version of the SmartHomeNG core given that is needed to run the plugin', "Add 'sh_minversion:' to the plugin section")
 
@@ -478,81 +487,84 @@ def check_metadata(plg, with_description):
                 disp_warning('No english description of the plugin is given', "Add 'en:' to the description section of the plugin section")
 
     if metadata.get('parameters', None) != None:
-        for par in metadata.get('parameters', None):
-            par_dict = metadata['parameters'][par]
-            if par_dict.get('description', None) == None:
-                de = ''
-                en = ''
-            else:
-                de = par_dict['description'].get('de', '')
-                en = par_dict['description'].get('en', '')
-            if de == '' and en == '':
-                disp_error("No description of the parameter '"+par+"' is given", "Add the section 'description:' to the parameter's section and fill the needed values")
-            else:
-                if de == '':
-                    disp_warning("No german description of the parameter '" + par + "' is given",
-                               "Add 'de:' to the description section of the parameter")
-                if en == '':
-                    disp_warning("No english description of the parameter '" + par + "' is given",
-                               "Add 'en:' to the description section of the parameter")
+        if metadata.get('parameters', None) != 'NONE':
+            for par in metadata.get('parameters', None):
+                par_dict = metadata['parameters'][par]
+                if par_dict.get('description', None) == None:
+                    de = ''
+                    en = ''
+                else:
+                    de = par_dict['description'].get('de', '')
+                    en = par_dict['description'].get('en', '')
+                if de == '' and en == '':
+                    disp_error("No description of the parameter '"+par+"' is given", "Add the section 'description:' to the parameter's section and fill the needed values")
+                else:
+                    if de == '':
+                        disp_warning("No german description of the parameter '" + par + "' is given",
+                                   "Add 'de:' to the description section of the parameter")
+                    if en == '':
+                        disp_warning("No english description of the parameter '" + par + "' is given",
+                                   "Add 'en:' to the description section of the parameter")
 
     if metadata.get('item_attributes', None) != None:
-        for par in metadata.get('item_attributes', None):
-            par_dict = metadata['item_attributes'][par]
-            if par_dict.get('description', None) == None:
-                de = ''
-                en = ''
-            else:
-                de = par_dict['description'].get('de', '')
-                en = par_dict['description'].get('en', '')
-            if de == '' and en == '':
-                disp_error("No description of the item attribute '"+par+"' is given", "Add the section 'description:' to the item attributes's section and fill the needed values")
-            else:
-                if de == '':
-                    disp_warning("No german description of the item attribute '" + par + "' is given",
-                               "Add 'de:' to the description section of the item attribute")
-                if en == '':
-                    disp_warning("No english description of the item attribute '" + par + "' is given",
-                               "Add 'en:' to the description section of the item attribute")
+        if metadata.get('item_attributes', None) != 'NONE':
+            for par in metadata.get('item_attributes', None):
+                par_dict = metadata['item_attributes'][par]
+                if par_dict.get('description', None) == None:
+                    de = ''
+                    en = ''
+                else:
+                    de = par_dict['description'].get('de', '')
+                    en = par_dict['description'].get('en', '')
+                if de == '' and en == '':
+                    disp_error("No description of the item attribute '"+par+"' is given", "Add the section 'description:' to the item attributes's section and fill the needed values")
+                else:
+                    if de == '':
+                        disp_warning("No german description of the item attribute '" + par + "' is given",
+                                   "Add 'de:' to the description section of the item attribute")
+                    if en == '':
+                        disp_warning("No english description of the item attribute '" + par + "' is given",
+                                   "Add 'en:' to the description section of the item attribute")
 
     if metadata.get('plugin_functions', None) != None:
-        for func in metadata.get('plugin_functions', None):
-            func_dict = metadata['plugin_functions'][func]
-            if func_dict.get('description', None) == None:
-                de = ''
-                en = ''
-            else:
-                de = func_dict['description'].get('de', '')
-                en = func_dict['description'].get('en', '')
-            if de == '' and en == '':
-                disp_error("No description of the plugin function '"+func+"' is given", "Add the section 'description:' to the plugin function's section and fill the needed values")
-            else:
-                if de == '':
-                    disp_warning("No german description of the plugin function '" + func + "' is given",
-                               "Add 'de:' to the description section of the plugin function")
-                if en == '':
-                    disp_warning("No english description of the plugin function '" + func + "' is given",
-                               "Add 'en:' to the description section of the plugin function")
+        if metadata.get('plugin_functions', None) != 'NONE':
+            for func in metadata.get('plugin_functions', None):
+                func_dict = metadata['plugin_functions'][func]
+                if func_dict.get('description', None) == None:
+                    de = ''
+                    en = ''
+                else:
+                    de = func_dict['description'].get('de', '')
+                    en = func_dict['description'].get('en', '')
+                if de == '' and en == '':
+                    disp_error("No description of the plugin function '"+func+"' is given", "Add the section 'description:' to the plugin function's section and fill the needed values")
+                else:
+                    if de == '':
+                        disp_warning("No german description of the plugin function '" + func + "' is given",
+                                   "Add 'de:' to the description section of the plugin function")
+                    if en == '':
+                        disp_warning("No english description of the plugin function '" + func + "' is given",
+                                   "Add 'en:' to the description section of the plugin function")
 
-            # Check function parameters
-            if func_dict.get('parameters', None) != None:
-                for par in func_dict.get('parameters', None):
-                    par_dict = func_dict['parameters'][par]
-                    if par_dict.get('description', None) == None:
-                        de = ''
-                        en = ''
-                    else:
-                        de = par_dict['description'].get('de', '')
-                        en = par_dict['description'].get('en', '')
-                    if de == '' and en == '':
-                        disp_warning("No description of the parameter '"+par+"' of plugin function '"+func+"' is given", "Add the section 'description:' to the plugin function's parameter section and fill the needed values")
-                    else:
-                        if de == '':
-                            disp_warning("No german description of the parameter '" + par + "' of the function '"+func+"' is given",
-                                       "Add 'de:' to the description section of the plugin function's parameter")
-                        if en == '':
-                            disp_warning("No english description of the parameter '" + par + "' of the function '"+func+"' is given",
-                                       "Add 'en:' to the description section of the plugin function's parameter")
+                # Check function parameters
+                if func_dict.get('parameters', None) != None:
+                    for par in func_dict.get('parameters', None):
+                        par_dict = func_dict['parameters'][par]
+                        if par_dict.get('description', None) == None:
+                            de = ''
+                            en = ''
+                        else:
+                            de = par_dict['description'].get('de', '')
+                            en = par_dict['description'].get('en', '')
+                        if de == '' and en == '':
+                            disp_warning("No description of the parameter '"+par+"' of plugin function '"+func+"' is given", "Add the section 'description:' to the plugin function's parameter section and fill the needed values")
+                        else:
+                            if de == '':
+                                disp_warning("No german description of the parameter '" + par + "' of the function '"+func+"' is given",
+                                           "Add 'de:' to the description section of the plugin function's parameter")
+                            if en == '':
+                                disp_warning("No english description of the parameter '" + par + "' of the function '"+func+"' is given",
+                                           "Add 'en:' to the description section of the plugin function's parameter")
 
     global errors, warnings, hints
     if errors == 0 and warnings == 0 and hints == 0:
