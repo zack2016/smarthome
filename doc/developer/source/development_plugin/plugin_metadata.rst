@@ -25,24 +25,31 @@ the name of the plugin.
 The **metadata** file is named ``/plugins/<name of the plugin>/plugin.yaml``. It has three main sections:
 
 - ``plugin:`` - Global metadata of the plugin
-  The data defined in this section is used to check if the plugin works with the running version of SmartHomeNG, and defines how the plugin is loaded.
-  The ``description:`` data is used to generate the plugin documentation pages within this documentation. Since this documentation is in english, the english description is read. If no english description is found, the german description is used.
+  The data defined in this section is used to check if the plugin works with the running version of SmartHomeNG, and defines
+  how the plugin is loaded.
+
+  The ``description:`` data is used to generate the plugin documentation pages within this documentation. Since this
+  documentation is in english, the english description is read. If no english description is found, the german description
+  is used.
 
 - ``parameters:`` - Definition of the parameters that can bei used in ``/etc/plugin.yaml`` to configure the plugin
   The data defined in this section is used to check if configured parameters are valid.
   The data is going to be used:
+
   - for generating documentation pages (that way the parameter descriptions will not be needed in the README.md file)
-  - **in the future** for guiding users in a graphical configuration utility
+  - for guiding users in a graphical configuration utility
   
 - ``item_attributes:`` - Definition of the additional attributes for items, defined by this plugin
   The data defined in this section is used to check if configured item attributes are valid.
   The data is going to be used:
+
   - for generating documentation pages (that way the item attribute descriptions will not be needed in the README.md file)
-  - **in the future** for guiding users in a graphical configuration utility
+  - for guiding users in a graphical configuration utility
 
 - ``plugin_functions:`` - Definition of public functions, defined by this plugin
   The data defined in this section is used to check if configured item attributes are valid.
   The data is going to be used:
+
   - for generating documentation pages (that way the function descriptions will not be needed in the README.md file)
   - **in the future** for guiding users in a graphical configuration utility (e.g. code completion in the logic editor)
 
