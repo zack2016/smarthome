@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # vim: set encoding=utf-8 tabstop=4 softtabstop=4 shiftwidth=4 expandtab
 #########################################################################
-# Copyright 2017-       Martin Sinn                         m.sinn@gmx.de
+# Copyright 2018-       Martin Sinn                         m.sinn@gmx.de
 #########################################################################
 #  This file is part of SmartHomeNG
 #  https://github.com/smarthomeNG/smarthome
@@ -61,11 +61,6 @@ plugin_sections = [ ['gateway', 'Gateway', 'Gateway'],
 #   Functions of the tool
 #
 
-def html_escape(str):
-    html = str.rstrip().replace("ä", '&auml;').replace("ö", '&ouml;').replace("ü", '&uuml;')
-    return html
-
-
 def get_local_pluginlist():
     plglist = os.listdir('.')
 
@@ -79,74 +74,6 @@ def get_local_pluginlist():
         if entry[0] in ['.' ,'_']:
             plglist.remove(entry)
     return plglist
-
-
-def get_description(section_dict, maxlen=70, lang='en', textkey='description'):
-    desc = ''
-    if lang == 'en':
-        lang2 = 'de'
-    else:
-        lang2 = 'en'
-    try:
-        desc = section_dict[textkey].get(lang, '')
-    except:
-        pass
-    if desc == '':
-        try:
-            desc = section_dict[textkey].get(lang2, '')
-        except:
-            pass
-
-    import textwrap
-    lines = textwrap.wrap(desc, maxlen, break_long_words=False)
-    if lines == []:
-        lines.append('')
-    return lines
-
-
-def get_maintainer(section_dict, maxlen=20):
-    maint = section_dict.get('maintainer', '')
-
-    import textwrap
-    lines = textwrap.wrap(maint, maxlen, break_long_words=False)
-    if lines == []:
-        lines.append('')
-    return lines
-
-
-def get_tester(section_dict, maxlen=20):
-    maint = section_dict.get('tester', '')
-
-    import textwrap
-    try:
-        lines = textwrap.wrap(str(maint), maxlen, break_long_words=False)
-    except:
-        print()
-        print("section_dict: {}, maint: {}".format(section_dict, maint))
-        print()
-    if lines == []:
-        lines.append('')
-    return lines
-
-
-def get_docurl(section_dict, maxlen=70):
-    maint = section_dict.get('documentation', '')
-
-    import textwrap
-    lines = textwrap.wrap(maint, maxlen, break_long_words=True)
-    if lines == []:
-        lines.append('')
-    return lines
-
-
-def get_supurl(section_dict, maxlen=70):
-    maint = section_dict.get('support', '')
-
-    import textwrap
-    lines = textwrap.wrap(maint, maxlen, break_long_words=True)
-    if lines == []:
-        lines.append('')
-    return lines
 
 
 def get_plugintype(plgName):
@@ -200,6 +127,8 @@ def list_plugins(option):
     plugins_local = get_local_pluginlist()
 
     header_displayed = False;
+    plgcount = 0
+    allplgcount = 0
     for plg in sorted(plugins_local):
         version = '-'
 #        sectionPlg = '-'
@@ -211,7 +140,7 @@ def list_plugins(option):
         if metadata.get('plugin', None) == None:
             sectionPlg = 'No'
         else:
-            sectionPlg = 'Yes'
+            sectionPlg = 'Ok'
             version = metadata['plugin'].get('version', '-')
             plgstate = metadata['plugin'].get('state', '-')
             if not plgstate in ['qa-passed', 'ready', 'develop', '-']:
@@ -224,29 +153,32 @@ def list_plugins(option):
             if metadata.get('parameters', None) == None:
                 sectionParam = 'No'
             elif metadata.get('parameters', None) == 'NONE':
-                sectionParam = 'Yes (0)'
+                sectionParam = 'Ok'
             else:
-                sectionParam = 'Yes'
+                sectionParam = 'Ok'
                 sectionParam += ' (' + str(len(metadata['parameters'])) + ')'
 
             if metadata.get('item_attributes', None) == None:
                 sectionIAttr = 'No'
+            elif metadata.get('item_attributes', None) == 'NONE':
+                sectionIAttr = 'Ok'
             else:
-                sectionIAttr = 'Yes'
+                sectionIAttr = 'Ok'
                 sectionIAttr += ' (' + str(len(metadata['item_attributes'])) + ')'
 
             if metadata.get('plugin_functions', None) == None:
                 sectionFunc = 'No'
             elif metadata.get('plugin_functions', None) == 'NONE':
-                sectionFunc = 'Yes (0)'
+                sectionFunc = 'Ok'
             else:
-                sectionFunc = 'Yes'
+                sectionFunc = 'Ok'
                 sectionFunc += ' (' + str(len(metadata['plugin_functions'])) + ')'
 
         if (option == 'all') or \
            (option == plgtype.lower()) or \
-           (option == 'inc' and (sectionPlg == 'no' or sectionParam == 'No' or sectionIAttr == 'No')) or \
-           (option == 'inc_para' and sectionParam == 'No'):
+           (option == 'inc' and (sectionPlg == 'No' or sectionParam == 'No' or sectionIAttr == 'No' or sectionFunc == 'No')) or \
+           (option == 'compl' and (plgtype.lower() != 'classic' and sectionPlg != 'No' and sectionParam != 'No' and sectionIAttr != 'No' and sectionFunc != 'No')) or \
+           (option == 'inc_para' and sectionParam == 'No') or (option == 'inc_attr' and sectionIAttr == 'No'):
             if not header_displayed:
                 ul = '-------------------------------'
                 list_formatted('', '', '', 'Plugin', '', 'Plugin', 'Item', 'Plugin')
@@ -254,8 +186,15 @@ def list_plugins(option):
                 list_formatted(ul, ul, ul, ul, ul, ul, ul, ul)
                 header_displayed = True
             list_formatted(plg, version, plgstate, plgtype, sectionPlg, sectionParam, sectionIAttr, sectionFunc)
+            plgcount += 1
+        allplgcount += 1
     print()
-
+    if (option == 'all'):
+        print("{} plugins".format(plgcount))
+    else:
+        print("{} plugins of {} plugins total".format(plgcount, allplgcount))
+    print()
+    return
 
 
 # ==================================================================================
@@ -522,84 +461,102 @@ def check_metadata(plg, with_description):
 
     # Checking if the descriptions are complete
     if metadata.get('plugin', None) != None:
-        if metadata['plugin'].get('description', None) != None:
+        if metadata['plugin'].get('description', None) == None:
+            de = ''
+            en = ''
+        else:
             de = metadata['plugin']['description'].get('de', None)
             en = metadata['plugin']['description'].get('en', None)
-            if de == None and en == None:
-                disp_error('No description of the plugin is given', "Add the section 'description:' to the plugin section and fill the needed values")
-            else:
-                if de == None:
-                    disp_warning('No german description of the plugin is given', "Add 'de:' to the description section of the plugin section")
-                if en == None:
-                    disp_warning('No english description of the plugin is given', "Add 'en:' to the description section of the plugin section")
+        if de == None and en == None:
+            disp_error('No description of the plugin is given', "Add the section 'description:' to the plugin section and fill the needed values")
+        else:
+            if de == None:
+                disp_warning('No german description of the plugin is given', "Add 'de:' to the description section of the plugin section")
+            if en == None:
+                disp_warning('No english description of the plugin is given', "Add 'en:' to the description section of the plugin section")
 
     if metadata.get('parameters', None) != None:
         for par in metadata.get('parameters', None):
             par_dict = metadata['parameters'][par]
-            if par_dict.get('description', None) != None:
+            if par_dict.get('description', None) == None:
+                de = ''
+                en = ''
+            else:
                 de = par_dict['description'].get('de', '')
                 en = par_dict['description'].get('en', '')
-                if de == '' and en == '':
-                    disp_error("No description of the parameter '"+par+"' is given", "Add the section 'description:' to the parameter's section and fill the needed values")
-                else:
-                    if de == '':
-                        disp_warning("No german description of the parameter '" + par + "' is given",
-                                   "Add 'de:' to the description section of the parameter")
-                    if en == '':
-                        disp_warning("No english description of the parameter '" + par + "' is given",
-                                   "Add 'en:' to the description section of the parameter")
+            if de == '' and en == '':
+                disp_error("No description of the parameter '"+par+"' is given", "Add the section 'description:' to the parameter's section and fill the needed values")
+            else:
+                if de == '':
+                    disp_warning("No german description of the parameter '" + par + "' is given",
+                               "Add 'de:' to the description section of the parameter")
+                if en == '':
+                    disp_warning("No english description of the parameter '" + par + "' is given",
+                               "Add 'en:' to the description section of the parameter")
 
     if metadata.get('item_attributes', None) != None:
         for par in metadata.get('item_attributes', None):
             par_dict = metadata['item_attributes'][par]
-            if par_dict.get('description', None) != None:
+            if par_dict.get('description', None) == None:
+                de = ''
+                en = ''
+            else:
                 de = par_dict['description'].get('de', '')
                 en = par_dict['description'].get('en', '')
-                if de == '' and en == '':
-                    disp_error("No description of the item attribute '"+par+"' is given", "Add the section 'description:' to the item attributes's section and fill the needed values")
-                else:
-                    if de == '':
-                        disp_warning("No german description of the item attribute '" + par + "' is given",
-                                   "Add 'de:' to the description section of the item attribute")
-                    if en == '':
-                        disp_warning("No english description of the item attribute '" + par + "' is given",
-                                   "Add 'en:' to the description section of the item attribute")
+            if de == '' and en == '':
+                disp_error("No description of the item attribute '"+par+"' is given", "Add the section 'description:' to the item attributes's section and fill the needed values")
+            else:
+                if de == '':
+                    disp_warning("No german description of the item attribute '" + par + "' is given",
+                               "Add 'de:' to the description section of the item attribute")
+                if en == '':
+                    disp_warning("No english description of the item attribute '" + par + "' is given",
+                               "Add 'en:' to the description section of the item attribute")
 
     if metadata.get('plugin_functions', None) != None:
         for func in metadata.get('plugin_functions', None):
             func_dict = metadata['plugin_functions'][func]
-            if func_dict.get('description', None) != None:
+            if func_dict.get('description', None) == None:
+                de = ''
+                en = ''
+            else:
                 de = func_dict['description'].get('de', '')
                 en = func_dict['description'].get('en', '')
-                if de == '' and en == '':
-                    disp_error("No description of the plugin function '"+func+"' is given", "Add the section 'description:' to the plugin function's section and fill the needed values")
-                else:
-                    if de == '':
-                        disp_warning("No german description of the plugin function '" + func + "' is given",
-                                   "Add 'de:' to the description section of the plugin function")
-                    if en == '':
-                        disp_warning("No english description of the plugin function '" + func + "' is given",
-                                   "Add 'en:' to the description section of the plugin function")
+            if de == '' and en == '':
+                disp_error("No description of the plugin function '"+func+"' is given", "Add the section 'description:' to the plugin function's section and fill the needed values")
+            else:
+                if de == '':
+                    disp_warning("No german description of the plugin function '" + func + "' is given",
+                               "Add 'de:' to the description section of the plugin function")
+                if en == '':
+                    disp_warning("No english description of the plugin function '" + func + "' is given",
+                               "Add 'en:' to the description section of the plugin function")
 
             # Check function parameters
             if func_dict.get('parameters', None) != None:
                 for par in func_dict.get('parameters', None):
                     par_dict = func_dict['parameters'][par]
-                    if par_dict.get('description', None) != None:
+                    if par_dict.get('description', None) == None:
+                        de = ''
+                        en = ''
+                    else:
                         de = par_dict['description'].get('de', '')
                         en = par_dict['description'].get('en', '')
-                        if de == '' and en == '':
-                            disp_warning("No description of the parameter '"+par+"' of plugin function '"+func+"' is given", "Add the section 'description:' to the plugin function's parameter section and fill the needed values")
-                        else:
-                            if de == '':
-                                disp_warning("No german description of the parameter '" + par + "' of the function '"+func+"' is given",
-                                           "Add 'de:' to the description section of the plugin function's parameter")
-                            if en == '':
-                                disp_warning("No english description of the parameter '" + par + "' of the function '"+func+"' is given",
-                                           "Add 'en:' to the description section of the plugin function's parameter")
+                    if de == '' and en == '':
+                        disp_warning("No description of the parameter '"+par+"' of plugin function '"+func+"' is given", "Add the section 'description:' to the plugin function's parameter section and fill the needed values")
+                    else:
+                        if de == '':
+                            disp_warning("No german description of the parameter '" + par + "' of the function '"+func+"' is given",
+                                       "Add 'de:' to the description section of the plugin function's parameter")
+                        if en == '':
+                            disp_warning("No english description of the parameter '" + par + "' of the function '"+func+"' is given",
+                                       "Add 'en:' to the description section of the plugin function's parameter")
 
     global errors, warnings, hints
-    print("{} errors, {} warnings and {} hints".format(errors, warnings, hints))
+    if errors == 0 and warnings == 0 and hints == 0:
+        print("Metadata is complete ({} errors, {} warnings and {} hints)".format(errors, warnings, hints))
+    else:
+        print("{} errors, {} warnings and {} hints".format(errors, warnings, hints))
     print()
     return
 
@@ -609,9 +566,6 @@ def check_metadata(plg, with_description):
 #
 
 if __name__ == '__main__':
-
-    #    print ('Number of arguments:', len(sys.argv), 'arguments.')
-    #    print ('Argument List:', str(sys.argv))
 
     # change the working diractory to the directory from which the converter is loaded (../tools)
     os.chdir(os.path.dirname(os.path.abspath(os.path.basename(__file__))))
@@ -624,18 +578,16 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(add_help=False)
     group = parser.add_mutually_exclusive_group()
     group.add_argument('-la', '--list_all', action="store_true", default=False, help='list plugin information of all plugins')
-    group.add_argument('-lc', '--list_classic', action="store_true", default=False, help='list plugin information of classic plugins')
-    group.add_argument('-ls', '--list_smart', action="store_true", default=False, help='list plugin information of smart plugins')
+    group.add_argument('-lcl', '--list_classic', action="store_true", default=False, help='list plugin information of classic plugins')
+    group.add_argument('-lsm', '--list_smart', action="store_true", default=False, help='list plugin information of smart plugins')
     group.add_argument('-li', '--list_inc', action="store_true", default=False, help='list information of plugins with incomplete metadata')
+    group.add_argument('-lc', '--list_compl', action="store_true", default=False, help='list information of plugins with complete metadata')
     group.add_argument('-lip', action="store_true", default=False, help='list info of plugins with incomplete parameter data')
-#    group.add_argument('-c', dest='check', help='check the metadata of a plugin')
+    group.add_argument('-lia', action="store_true", default=False, help='list info of plugins with incomplete item attribute data')
     group.add_argument('-d', dest='disp_plugin', help='display the metadata of a plugin')
     group.add_argument('-dd', dest='dispd_plugin', help='display the metadata of a plugin with description')
     group.add_argument('-c', dest='check_plugin', help='check the metadata of a plugin')
     args = parser.parse_args()
-
-#    print('args: {}'.format(args))
-#    print
 
     try:
         if args.list_all:
@@ -646,8 +598,12 @@ if __name__ == '__main__':
             list_plugins('smart')
         elif args.list_inc:
             list_plugins('inc')
+        elif args.list_compl:
+            list_plugins('compl')
         elif args.lip:
             list_plugins('inc_para')
+        elif args.lia:
+            list_plugins('inc_attr')
         elif args.disp_plugin:
             display_metadata(args.disp_plugin, False)
         elif args.dispd_plugin:
