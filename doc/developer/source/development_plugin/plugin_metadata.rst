@@ -66,6 +66,12 @@ The **metadata** file is named ``/plugins/<name of the plugin>/plugin.yaml``. It
     The variable PLUGIN_VERSION should be set (even if it is not needed). If it is set, the version numbers defined in __init__.py and plugin.yaml are compared to ensure they match. If they don't match, an error is logged and the plugin is not loaded.
 
 
+.. hint::
+
+    To test the metadata in plugin.yaml use the tool ../tools/plugin_metadata_checker.py. This tool can check if the
+    metadata is complete and free of errors.
+
+
 .. include:: /metadata/plugin_global.rst
 
 .. include:: /metadata/parameters.rst

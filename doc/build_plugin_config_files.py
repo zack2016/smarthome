@@ -131,11 +131,32 @@ def get_description(section_dict, maxlen=70, lang='en',textkey='description'):
         except:
             pass
             
+    if type(desc) is list:
+        return desc
+
     import textwrap
     lines = textwrap.wrap(desc, maxlen, break_long_words=False)
     if lines == []:
         lines.append('')
     return lines
+
+
+def get_doc_description(yml, language, key='description', index=None):
+    if index == None:
+        # return description
+        desc = get_description(yml, 1024, language, key + '_long')
+        if desc[0] == '':
+            desc = get_description(yml, 1024, language, key)
+        return desc[0]
+    else:
+        # return entry of valid_description list
+        desc = get_description(yml, 1024, language, key)
+        if desc == ['']:
+            return ''
+        if len(desc)< index+1:
+            print('Zu kurze Liste {} für index {}'.format(desc, index))
+            return ''
+        return desc[index]
 
 
 def get_maintainer(section_dict, maxlen=20):
@@ -306,14 +327,6 @@ def write_heading(fh, heading, level):
     return
     
         
-def get_doc_description(yml, language, key='description'):
-
-    desc = get_description(yml, 1024, language, key+'_long')
-    if desc[0] == '':
-        desc = get_description(yml, 1024, language, key)
-    return desc[0]
-    
-
 def write_formatted(fh, str):
 
     sl = str.split('\\n')
@@ -376,6 +389,9 @@ def write_configfile(plg, configfile_dir, language='de'):
     # ---------------------------------
     outf_name = os.path.join(configfile_dir, plgname+'.rst')
     fh = open(outf_name, "w")
+    fh.write('.. |_| unicode:: 0xA0\n')
+    fh.write('\n')
+
     write_heading(fh, 'Plugin ' + plgname, 1)
 
     # --------------------------------------------
@@ -475,8 +491,11 @@ def write_configfile(plg, configfile_dir, language='de'):
         if len(validlist) > 0:
             fh.write(' - Mögliche Werte:\n')
             fh.write('\n')
-            for v in validlist:
-                fh.write('   - **'+str(v)+'**\n')
+            for index, v in enumerate(validlist):
+                desc = get_doc_description(parameter_yaml[p], language, key='valid_list_description', index=index)
+                if desc != '':
+                    desc = ' |_| - |_| ' + desc
+                fh.write('   - **' + str(v) + '**' + desc + '\n')
             fh.write('\n')
             
 
@@ -519,8 +538,11 @@ def write_configfile(plg, configfile_dir, language='de'):
         if len(validlist) > 0:
             fh.write(' - Mögliche Werte:\n')
             fh.write('\n')
-            for v in validlist:
-                fh.write('   - **'+str(v)+'**\n')
+            for index, v in enumerate(validlist):
+                desc = get_doc_description(iattributes_yaml[a], language, key='valid_list_description', index=index)
+                if desc != '':
+                    desc = ' |_| - |_| ' + desc
+                fh.write('   - **' + str(v) + '**' + desc + '\n')
             fh.write('\n')
 
 
@@ -581,8 +603,11 @@ def write_configfile(plg, configfile_dir, language='de'):
         if len(validlist) > 0:
             fh.write(' - Mögliche Werte:\n')
             fh.write('\n')
-            for v in validlist:
-                fh.write('   - **' + str(v) + '**\n')
+            for index, v in enumerate(validlist):
+                desc = get_doc_description(functions_yaml[f], language, key='valid_list_description', index=index)
+                if desc != '':
+                    desc = ' |_| - |_| ' + desc
+                fh.write('   - **' + str(v) + '**' + desc + '\n')
             fh.write('\n')
 
 #        func_param_yaml = functions_yaml[f].get('parameters', None)
@@ -606,8 +631,11 @@ def write_configfile(plg, configfile_dir, language='de'):
                 if len(validlist) > 0:
                     fh.write(' - Mögliche Werte:\n')
                     fh.write('\n')
-                    for v in validlist:
-                        fh.write('   - **' + str(v) + '**\n')
+                    for index, v in enumerate(validlist):
+                        desc = get_doc_description(func_param_yaml[par], language, key='valid_list_description', index=index)
+                        if desc != '':
+                            desc = ' |_| - |_| ' + desc
+                        fh.write('   - **' + str(v) + '**' + desc + '\n')
                     fh.write('\n')
 
 
