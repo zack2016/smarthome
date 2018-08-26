@@ -36,3 +36,13 @@ In the future the definitions will be used for a configuration tool for SmartHom
         
 .. include:: /metadata/parameter_keys.rst
 
+if a plugin has no parameters, this is signaled by the following entry in the plugiin.yaml file:
+
+.. code:: yaml
+
+    parameters: NONE
+
+.. hint::
+
+    Please note, that NONE has to be written in Uppercase.
+

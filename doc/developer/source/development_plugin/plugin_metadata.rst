@@ -2,6 +2,7 @@
 .. index:: Metadata
 .. index:: Plugin Metadata
 
+.. role:: redsup
 .. role:: bluesup
 
 Plugin Metadata :bluesup:`update`
@@ -29,15 +30,21 @@ The **metadata** file is named ``/plugins/<name of the plugin>/plugin.yaml``. It
 
 - ``parameters:`` - Definition of the parameters that can bei used in ``/etc/plugin.yaml`` to configure the plugin
   The data defined in this section is used to check if configured parameters are valid.
-  The `description:`` data is going to be used **in the future**: 
+  The data is going to be used:
   - for generating documentation pages (that way the parameter descriptions will not be needed in the README.md file)
-  - for guiding users in a graphical configuration utility
+  - **in the future** for guiding users in a graphical configuration utility
   
-- ``item_attributes:`` - **In the future**: Definition of the additional attributes for items, defined by this plugin
+- ``item_attributes:`` - Definition of the additional attributes for items, defined by this plugin
   The data defined in this section is used to check if configured item attributes are valid.
-  The `description:`` data is going to be used **in the future**: 
+  The data is going to be used:
   - for generating documentation pages (that way the item attribute descriptions will not be needed in the README.md file)
-  - for guiding users in a graphical configuration utility
+  - **in the future** for guiding users in a graphical configuration utility
+
+- ``plugin_functions:`` - Definition of public functions, defined by this plugin
+  The data defined in this section is used to check if configured item attributes are valid.
+  The data is going to be used:
+  - for generating documentation pages (that way the function descriptions will not be needed in the README.md file)
+  - **in the future** for guiding users in a graphical configuration utility (e.g. code completion in the logic editor)
 
 
 
@@ -55,4 +62,6 @@ The **metadata** file is named ``/plugins/<name of the plugin>/plugin.yaml``. It
 .. include:: /metadata/parameters.rst
 
 .. include:: /metadata/item_attributes.rst
+
+.. include:: /metadata/plugin_functions.rst
 

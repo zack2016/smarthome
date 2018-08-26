@@ -28,3 +28,13 @@ The definitions in the ``item_attributes:`` section are used in the future for a
         
 .. include:: /metadata/parameter_keys.rst
 
+if a plugin has no item attributes, this is signaled by the following entry in the plugiin.yaml file:
+
+.. code:: yaml
+
+    item_attributes: NONE
+
+.. hint::
+
+    Please note, that NONE has to be written in Uppercase.
+
