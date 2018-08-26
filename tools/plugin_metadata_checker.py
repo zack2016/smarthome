@@ -342,18 +342,20 @@ def display_metadata(plg, with_description):
     else:
         print("Plugin Functions")
         print("----------------")
-        for attr in metadata.get('plugin_functions', None):
-            attr_dict = metadata['plugin_functions'][attr]
-            display_definition(attr, attr_dict)
-            display_def_description('', attr_dict)
-            print("Parameters:")
-            for param in attr_dict.get('parameters', None):
-                param_dict = attr_dict['parameters'][param]
-                display_definition(param, param_dict)
-                if with_description:
-                    if param_dict.get('description', None) != None:
-                        disp_formatted('- Description (DE)', param_dict['description'].get('de', '-'))
-                        disp_formatted('- Description (EN)', param_dict['description'].get('en', '-'))
+        for func in metadata.get('plugin_functions', None):
+            func_dict = metadata['plugin_functions'][func]
+            display_definition(func, func_dict)
+            if with_description:
+                display_def_description('', func_dict)
+            if func_dict.get('parameters', None) != None:
+                print("Parameters:")
+                for param in func_dict.get('parameters', None):
+                    param_dict = func_dict['parameters'][param]
+                    display_definition(param, param_dict)
+                    if with_description:
+                        if param_dict.get('description', None) != None:
+                            disp_formatted('- Description (DE)', param_dict['description'].get('de', '-'))
+                            disp_formatted('- Description (EN)', param_dict['description'].get('en', '-'))
             print()
         print()
 
