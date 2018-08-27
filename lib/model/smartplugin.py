@@ -556,6 +556,10 @@ class SmartPlugin(SmartObject, Utils):
     def scheduler_change(self, name, **kwargs):
         """
         This methods changes a scheduler entry of a plugin-scheduler
+
+        A plugin identification is added to the scheduler name
+
+        The parameters are identical to the scheduler.change method from lib.scheduler
         """
         if name != '':
             name = '.'+name
