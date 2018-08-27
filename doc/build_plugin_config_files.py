@@ -562,7 +562,7 @@ def write_configfile(plg, configfile_dir, language='de'):
         # ---------------------------------
         # write info for one attribute
         # ---------------------------------
-        write_heading(fh, a, 2)
+        write_heading(fh, l, 2)
         fh.write('\n')
         write_formatted(fh, get_doc_description(lparameter_yaml[l], language))
         datatype = lparameter_yaml[l].get('type', '').lower()
