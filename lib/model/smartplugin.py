@@ -522,7 +522,7 @@ class SmartPlugin(SmartObject, Utils):
         """
         return self.shtime.now()
         
-    def scheduler_trigger(self, name, obj=None, by='Plugin', source=None, value=None, dest=None, prio=3, dt=None):
+    def scheduler_trigger(self, name, obj=None, by=None, source=None, value=None, dest=None, prio=3, dt=None):
         """
         This methods triggers the scheduler entry for a plugin-scheduler
 
@@ -533,6 +533,8 @@ class SmartPlugin(SmartObject, Utils):
         if name != '':
             name = '.' + name
         name = self._pluginname_prefix + self.get_fullname() + name
+        if by is None:
+            by = 'Plugin {}'.format(name)
         self.logger.debug("scheduler_add: name = {}".format(name))
         self._sh.scheduler.trigger(name, obj, by, source, value, dest, prio, dt, from_smartplugin=True)
 
