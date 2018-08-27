@@ -375,8 +375,8 @@ class Scheduler(threading.Thread):
         else:
             return None
 
-    def change(self, name, **kwargs):
-        name = self.check_caller(name)
+    def change(self, name, from_smartplugin=False, **kwargs):
+        name = self.check_caller(name, from_smartplugin)
         if name in self._scheduler:
             for key in kwargs:
                 if key in self._scheduler[name]:
