@@ -558,8 +558,9 @@ class SmartPlugin(SmartObject, Utils):
         if name != '':
             name = '.'+name
         name = self._pluginname_prefix+self.get_fullname()+name
+        kwargs['from_smartplugin']=True
         self.logger.debug("scheduler_change: name = {}".format(name))
-        self._sh.scheduler.change(name, True, kwargs)
+        self._sh.scheduler.change(name, **kwargs)
         
         
     def scheduler_remove(self, name):
