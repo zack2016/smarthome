@@ -62,7 +62,7 @@
 <!--
 	Content block for the first tab of the Webinterface
 -->
-{ % set tab1title = "<strong>" ~ p.get_shortname() ~ " Items</strong> (" ~ item_count ~ ")" % }
+{% set tab1title = "<strong>" ~ p.get_shortname() ~ " Items</strong> (" ~ item_count ~ ")" %}
 {% block bodytab1 %}
 <div class="container-fluid m-2">
 	{{ _('Hier kommt der Inhalt des Webinterfaces hin.') }}
@@ -73,7 +73,7 @@
 <!--
 	Content block for the second tab of the Webinterface
 -->
-{ % set tab2title = "<strong>" ~ p.get_shortname() ~ " Geräte</strong> (" ~ device_count ~ ")" % }
+{% set tab2title = "<strong>" ~ p.get_shortname() ~ " Geräte</strong> (" ~ device_count ~ ")" %}
 {% block bodytab2 %}
 {% endblock bodytab2 %}
 
@@ -81,7 +81,7 @@
 <!--
 	Content block for the third tab of the Webinterface
 	If wanted, a title for the tab can be defined as:
-		{  % set tab3title = "<strong>" ~ p.get_shortname() ~ " Geräte</strong>" % }
+		{% set tab3title = "<strong>" ~ p.get_shortname() ~ " Geräte</strong>" %}
 
 	It has to be defined before (and outside) the block bodytab3
 -->
@@ -92,7 +92,7 @@
 <!--
 	Content block for the fourth tab of the Webinterface
 	If wanted, a title for the tab can be defined as:
-		{  % set tab4title = "<strong>" ~ p.get_shortname() ~ " Geräte</strong>" % }
+		{% set tab4title = "<strong>" ~ p.get_shortname() ~ " Geräte</strong>" %}
 
 	It has to be defined before (and outside) the block bodytab4
 -->
