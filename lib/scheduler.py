@@ -204,7 +204,7 @@ class Scheduler(threading.Thread):
     def stop(self):
         self.alive = False
 
-    def trigger(self, name, obj=None, by='Logic', source=None, value=None, dest=None, prio=3, dt=None):
+    def trigger(self, name, obj=None, by='Logic', source=None, value=None, dest=None, prio=3, dt=None, from_smartplugin=False):
         """
         triggers the execution of a logic optional at a certain datetime given with dt
         
@@ -218,7 +218,7 @@ class Scheduler(threading.Thread):
         :param dt: a certain datetime
         :return: always None
         """
-        name = self.check_caller(name)
+        name = self.check_caller(name, from_smartplugin)
         if obj is None:
             if name in self._scheduler:
                 obj = self._scheduler[name]['obj']
