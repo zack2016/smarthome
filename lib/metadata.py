@@ -30,6 +30,9 @@ from lib.constants import (YAML_FILE, FOO, META_DATA_TYPES, META_DATA_DEFAULTS)
 META_MODULE_PARAMETER_SECTION = 'parameters'
 META_PLUGIN_PARAMETER_SECTION = 'parameters'
 META_PLUGIN_ITEMATTRIBUTE_SECTION = 'item_attributes'
+META_PLUGIN_LOGIC_PARAMETER_SECTION = 'logic_parameters'
+META_PLUGIN_FUNCTION_SECTION = 'plugin_functions'
+
 META_STRUCT_SECTION = 'structs'
 #META_DATA_TYPES=['bool', 'int', 'float','num', 'scene', 'str', ['list','list(subtype)'], 'dict', 'ip', 'ipv4', 'ipv6', 'mac', 'knx_ga', 'foo']
 #META_DATA_DEFAULTS={'bool': False, 'int': 0, 'float': 0.0, 'scene': 0, 'str': '', 'list': [], 'dict': {}, 'OrderedDict': {}, 'num': 0, 'scene': 0, 'ip': '0.0.0.0', 'ipv4': '0.0.0.0', 'mac': '00:00:00:00:00:00', 'knx_ga': '', 'foo': None}
@@ -84,6 +87,10 @@ class Metadata():
         self._itemdeflist = []
         self.itemstructs = None
         self._itemstructlist = []
+        self.logic_parameters = None
+        self._logic_paramlist = []
+        self.plugin_functions = None
+        self._plugin_functionlist = []
 
         if self.meta != None:
             # read paramter and item definition sections
@@ -94,6 +101,8 @@ class Metadata():
                 self.parameters = self.meta.get(META_PLUGIN_PARAMETER_SECTION)
                 self.itemdefinitions = self.meta.get(META_PLUGIN_ITEMATTRIBUTE_SECTION)
                 self.itemstructs = self.meta.get(META_STRUCT_SECTION)
+                self.logic_parameters = self.meta.get(META_PLUGIN_LOGIC_PARAMETER_SECTION)
+                self.plugin_functions = self.meta.get(META_PLUGIN_FUNCTION_SECTION)
 
             # test validity of parameter definition section
             if self.parameters is not None:
@@ -105,7 +114,7 @@ class Metadata():
             if  self.parameters is not None:
                 self._test_definitions(self._paramlist, self.parameters)
             else:
-                logger.info(self._log_premsg+"has no parameter definitions in metadata")
+                logger.debug(self._log_premsg+"has no parameter definitions in metadata")
 
             # test validity of item definition section
             if self.itemdefinitions != None:
@@ -117,7 +126,38 @@ class Metadata():
             if  self.itemdefinitions is not None:
                 self._test_definitions(self._itemdeflist, self.itemdefinitions)
             else:
-                logger.info(self._log_premsg+"has no item definitions in metadata")
+                logger.debug(self._log_premsg+"has no item definitions in metadata")
+
+            # test validity of logic-parameter definition section
+            if self.logic_parameters is not None:
+                if self.logic_parameters == 'NONE':
+                    self.logic_parameters = None
+                else:
+                    logger.warning(self._log_premsg + "Metadata logic_parameters = '{}'".format(str(self.logic_parameters)))
+                    self._logic_paramlist = list(self.logic_parameters.keys())
+                    logger.info(self._log_premsg+"Metadata logic_paramlist = '{}'".format( str(self._logic_paramlist) ) )
+            if  self.logic_parameters is not None:
+                self._test_definitions(self._logic_paramlist, self.logic_parameters)
+            else:
+                logger.debug(self._log_premsg+"has no logic-parameter definitions in metadata")
+
+            # test validity of plugin-function definition section
+            if self.plugin_functions is not None:
+                if self.plugin_functions == 'NONE':
+                    self.plugin_functions = None
+                else:
+                    self._plugin_functionlist = list(self.plugin_functions.keys())
+                    logger.info(self._log_premsg+"Metadata plugin_functionlist = '{}'".format( str(self._plugin_functionlist) ) )
+            if  self.plugin_functions is not None:
+                # self._test_definitions(self._plugin_functionlist, self.plugin_functions)
+                pass
+                dummy = self.get_plugin_function_defstrings(with_type=False, with_default=False)
+                dummy = self.get_plugin_function_defstrings(with_type=True, with_default=False)
+                dummy = self.get_plugin_function_defstrings(with_type=False, with_default=True)
+                dummy = self.get_plugin_function_defstrings(with_type=True, with_default=True)
+            else:
+                logger.debug(self._log_premsg+"has no plugin-function definitions in metadata")
+
 
             # test validity of structs definition section
             if self.itemstructs != None:
@@ -136,7 +176,7 @@ class Metadata():
             else:
                 logger.info(self._log_premsg + "has no item-struct definitions in metadata")
 
-        # Read global metadata for addon
+        # Read global metadata for addon (either 'plugin' or 'module'
         if self.meta != None:
             self.addon_metadata = self.meta.get(addon_type)
         else:
@@ -145,6 +185,38 @@ class Metadata():
         return
         
     
+    def get_plugin_function_defstrings(self, with_type=False, with_default=True):
+        """
+        Build the documentation strings of the plugins functions
+
+        used e.g. for code completion in logic editor
+        """
+
+        docstr_list = []
+        for f in sorted(self.plugin_functions):
+            fp = ''
+            func_param_yaml = self.plugin_functions[f].get('parameters', None)
+            if func_param_yaml != None:
+                for par in func_param_yaml:
+                    if fp != '':
+                        fp += ', '
+                    fp += par
+                    if with_type:
+                        if func_param_yaml[par].get('type', None) != None:
+                            type = str(func_param_yaml[par].get('type', None))
+                            fp += ':' + type
+                    if with_default:
+                        if func_param_yaml[par].get('default', None) != None:
+                            default = str(func_param_yaml[par].get('default', None))
+                            if func_param_yaml[par].get('type', 'foo') == 'str':
+                                default = " '" + default + "'"
+                            fp += '=' + default
+
+            docstr_list.append(f + '(' + fp + ')')
+        logger.info(self._log_premsg + "Metadata get_plugin_function_defstrings -> '{}'".format(docstr_list))
+        return docstr_list
+
+
     def _test_definitions(self, definition_list, definition_dict):
         """
         Test parameter or item-attribute definitions for validity
