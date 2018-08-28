@@ -427,7 +427,7 @@ errors = 0
 warnings = 0
 hints = 0
 
-def check_metadata(plg, with_description, check_quiet=False):
+def check_metadata(plg, with_description, check_quiet=False, only_inc=False):
 
     global errors, warnings, hints, quiet
     quiet = check_quiet
@@ -586,13 +586,20 @@ def check_metadata(plg, with_description, check_quiet=False):
                                 disp_warning("No english description of the parameter '" + par + "' of the function '"+func+"' is given",
                                            "Add 'en:' to the description section of the plugin function's parameter")
 
+    state = ''
+    if metadata.get('plugin', None) != None:
+        state = metadata['plugin'].get('state', '-')
 #    global errors, warnings, hints
     if errors == 0 and warnings == 0 and hints == 0:
-        summary = "OK       {} errors  {} warn   {} hints".format(errors, warnings, hints)
+        res = 'OK'
+    elif errors == 0 and warnings == 0:
+        res = 'HINTS'
     else:
-        summary = "TO DOs   {} errors  {} warn   {} hints".format(errors, warnings, hints)
+        res = 'TO DOs'
     if check_quiet:
-        print('{plugin:<15.15} {summary:<60.60}'.format(plugin=plg, summary=summary))
+        if not(only_inc) or (only_inc and (errors!=0 or warnings!=0 or hints!=0 or state == '-')):
+            summary = "{:<8.8} {:<10.10} {:<8.8} {:<7.7} {}".format(res, state, str(errors), str(warnings), str(hints))
+            print('{plugin:<15.15} {summary:<60.60}'.format(plugin=plg, summary=summary))
     else:
         if errors == 0 and warnings == 0 and hints == 0:
             print("Metadata is complete ({} errors, {} warnings and {} hints)".format(errors, warnings, hints))
@@ -654,19 +661,19 @@ def check_plglist(option):
                 sectionFunc = 'Ok'
                 sectionFunc += ' (' + str(len(metadata['plugin_functions'])) + ')'
 
-        if (option == 'all') or \
+        if (option == 'all') or (option == 'inc') or \
            (option == plgtype.lower()) or \
-           (option == 'inc' and (sectionPlg == 'No' or sectionParam == 'No' or sectionIAttr == 'No' or sectionFunc == 'No')) or \
+           (option == 'incX' and (sectionPlg == 'No' or sectionParam == 'No' or sectionIAttr == 'No' or sectionFunc == 'No')) or \
            (option == 'compl' and (plgtype.lower() != 'classic' and sectionPlg != 'No' and sectionParam != 'No' and sectionIAttr != 'No' and sectionFunc != 'No')) or \
            (option == 'inc_para' and sectionParam == 'No') or (option == 'inc_attr' and sectionIAttr == 'No'):
             if not header_displayed:
                 ul = '-------------------------------'
-                list_formatted('', '', '', 'Plugin', '', '', '', '')
-                list_formatted('Plugin', 'State', 'Errors', 'Warnings', 'Hints', '', '', '')
-                list_formatted(ul, ul, ul, ul, ul, '', '', '')
+                list_formatted('', '', '', '', '', '', '', '')
+                list_formatted('Plugin', 'Summary', 'State', 'Errors', 'Warnings', 'Hints', '', '')
+                list_formatted(ul, ul, ul, ul, ul, ul, '', '')
                 header_displayed = True
 
-            check_metadata(plg, False, check_quiet=True)
+            check_metadata(plg, False, check_quiet=True, only_inc=(option == 'inc'))
     print()
 
 
@@ -699,6 +706,7 @@ if __name__ == '__main__':
     # group.add_argument('-cq', dest='check_quiet', help='check the metadata of a plugin (quiet)')
     group.add_argument('-cl', '--check_list', action="store_true", default=False, help='check the metadata of all plugins')
     group.add_argument('-clc', '--check_clist', action="store_true", default=False, help='check the metadata of plugins with all metadata sections')
+    group.add_argument('-cli', '--check_ilist', action="store_true", default=False, help='check the metadata of all plugins, list only incomplete plugins')
     args = parser.parse_args()
 
     try:
@@ -730,6 +738,8 @@ if __name__ == '__main__':
             check_plglist('all')
         elif args.check_clist:
             check_plglist('compl')
+        elif args.check_ilist:
+            check_plglist('inc')
         else:
             parser.print_help()
             print()

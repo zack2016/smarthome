@@ -361,6 +361,7 @@ def write_configfile(plg, configfile_dir, language='de'):
         plugin_yaml = meta_yaml.get('plugin', {})
         parameter_yaml = meta_yaml.get('parameters', {})
         iattributes_yaml = meta_yaml.get('item_attributes', {})
+        lparameter_yaml = meta_yaml.get('logic_parameter', {})
         functions_yaml = meta_yaml.get('plugin_functions', {})
 
         no_parameters = (parameter_yaml == 'NONE')
@@ -370,6 +371,10 @@ def write_configfile(plg, configfile_dir, language='de'):
         no_attributes = (iattributes_yaml == 'NONE')
         if no_attributes or iattributes_yaml is None:
             iattributes_yaml = {}
+
+        no_lparameters = (lparameter_yaml == 'NONE')
+        if no_lparameters or lparameter_yaml is None:
+            lparameter_yaml = {}
 
         no_functions = (functions_yaml == 'NONE')
         if no_functions or functions_yaml is None:
@@ -471,9 +476,6 @@ def write_configfile(plg, configfile_dir, language='de'):
         # ---------------------------------
         write_heading(fh, p, 2)
         fh.write('\n')
-#        desc = get_description(parameter_yaml[p], 768, language)
-#        fh.write(desc[0]+'\n')
-#       fh.write('\n')
         write_formatted(fh, get_doc_description(parameter_yaml[p], language))
         datatype = parameter_yaml[p].get('type', '').lower()
         default = str(parameter_yaml[p].get('default', ''))
@@ -518,9 +520,6 @@ def write_configfile(plg, configfile_dir, language='de'):
         # ---------------------------------
         write_heading(fh, a, 2)
         fh.write('\n')
-#        desc = get_description(iattributes_yaml[a], 768, language)
-#        fh.write(desc[0]+'\n')
-#        fh.write('\n')
         write_formatted(fh, get_doc_description(iattributes_yaml[a], language))
         datatype = iattributes_yaml[a].get('type', '').lower()
         default = str(iattributes_yaml[a].get('default', ''))
@@ -540,6 +539,50 @@ def write_configfile(plg, configfile_dir, language='de'):
             fh.write('\n')
             for index, v in enumerate(validlist):
                 desc = get_doc_description(iattributes_yaml[a], language, key='valid_list_description', index=index)
+                if desc != '':
+                    desc = ' |_| - |_| ' + desc
+                fh.write('   - **' + str(v) + '**' + desc + '\n')
+            fh.write('\n')
+
+
+    # ---------------------------------
+    # write logic_parameter section
+    # ---------------------------------
+    write_heading(fh, 'Logik Parameter', 1)
+    fh.write('\n')
+    fh.write('Das Plugin verfügt über folgende Parameter, die in der Datei **../etc/logic.yaml** konfiguriert werden:\n')
+    fh.write('\n')
+
+    if len(lparameter_yaml) == 0:
+        if no_lparameters:
+            fh.write('**Keine**\n')
+        else:
+            fh.write('Keine Logik Parameter in den Metadaten beschrieben - **Bitte in der README nachsehen** (siehe Fußnote)\n')
+    for l in sorted(lparameter_yaml):
+        # ---------------------------------
+        # write info for one attribute
+        # ---------------------------------
+        write_heading(fh, l, 2)
+        fh.write('\n')
+        write_formatted(fh, get_doc_description(lparameter_yaml[l], language))
+        datatype = lparameter_yaml[l].get('type', '').lower()
+        default = str(lparameter_yaml[l].get('default', ''))
+        validlist = lparameter_yaml[l].get('valid_list', [])
+        validmin = lparameter_yaml[l].get('valid_min', '')
+        validmax = lparameter_yaml[l].get('valid_max', '')
+        fh.write(' - Datentyp: **'+datatype+'**\n')
+        if default != '':
+            fh.write(' - Standardwert: **'+default+'**\n')
+        fh.write('\n')
+        if validmin != '':
+            fh.write(' - Minimalwert: **' + str(validmin) + '**\n')
+        if validmax != '':
+            fh.write(' - Maximalwert: **' + str(validmax) + '**\n')
+        if len(validlist) > 0:
+            fh.write(' - Mögliche Werte:\n')
+            fh.write('\n')
+            for index, v in enumerate(validlist):
+                desc = get_doc_description(lparameter_yaml[l], language, key='valid_list_description', index=index)
                 if desc != '':
                     desc = ' |_| - |_| ' + desc
                 fh.write('   - **' + str(v) + '**' + desc + '\n')
@@ -574,8 +617,8 @@ def write_configfile(plg, configfile_dir, language='de'):
                 fp += par
                 if func_param_yaml[par].get('default', None) != None:
                     default = str(func_param_yaml[par].get('default', None))
-                    if func_param_yaml[par].get('default', 'foo') == 'str':
-                        default = "'" + default + "'"
+                    if func_param_yaml[par].get('type', 'foo') == 'str':
+                        default = " '" + default + "'"
                     fp += '=' + default
 
         write_heading(fh, f + '('+fp+')', 2)
