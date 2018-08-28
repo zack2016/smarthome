@@ -39,7 +39,7 @@ class SmartPlugin(SmartObject, Utils):
 
     In adition the methods implemented in lib.utils.Utils are inhereted.
     """
-    
+
     ALLOW_MULTIINSTANCE = None
 
     __instance = ''     #: Name of this instance of the plugin
@@ -55,18 +55,18 @@ class SmartPlugin(SmartObject, Utils):
 
 
     _parameters = {}    # Dict for storing the configuration parameters read from /etc/plugin.yaml
-    
+
     logger = logging.getLogger(__name__)
-    
-    
+
+
     def _append_to_itemlist(self, item):
         self._itemlist.append(item)
-        
-        
+
+
     def _get_itemlist(self):
         return self._itemlist
-                
-        
+
+
     def deinit(self):
         """
         If the Plugin needs special code to be executed before it is unloaded, this method
@@ -85,8 +85,8 @@ class SmartPlugin(SmartObject, Utils):
         :rtype: str
         """
         return self._configname
-                
-        
+
+
     def _set_configname(self, configname):
         """
         set the name of the plugin instance as defined in plugin.yaml (section name)
@@ -99,7 +99,7 @@ class SmartPlugin(SmartObject, Utils):
         :type configname: str
         """
         self._configname = configname
-        
+
 
     def get_shortname(self):
         """
@@ -111,8 +111,8 @@ class SmartPlugin(SmartObject, Utils):
         :rtype: str
         """
         return self._shortname
-                
-        
+
+
     def _set_shortname(self, shortname):
         """
         ...
@@ -125,7 +125,7 @@ class SmartPlugin(SmartObject, Utils):
         :type shortname: str
         """
         self._shortname = shortname
-        
+
 
     def get_instance_name(self):
         """
@@ -166,8 +166,8 @@ class SmartPlugin(SmartObject, Utils):
         else:
 #            return self.get_instance_name() + '@' + self.get_shortname()
             return  self.get_shortname() + '_' + self.get_instance_name()
-                
-        
+
+
     def get_classname(self):
         """
         return the classname of the plugin
@@ -178,8 +178,8 @@ class SmartPlugin(SmartObject, Utils):
         :rtype: str
         """
         return self._classname
-                
-        
+
+
     def _set_classname(self, classname):
         """
         ...
@@ -192,8 +192,8 @@ class SmartPlugin(SmartObject, Utils):
         :type classname: str
         """
         self._classname = classname
-        
-        
+
+
     def get_version(self, extended=False):
         """
         Return plugin version
@@ -208,7 +208,7 @@ class SmartPlugin(SmartObject, Utils):
             return self.PLUGIN_VERSION + ' (pv)'
         else:
             return self.PLUGIN_VERSION
-    
+
 
     def _set_multi_instance_capable(self, mi):
         """
@@ -225,7 +225,7 @@ class SmartPlugin(SmartObject, Utils):
         else:
             self.ALLOW_MULTIINSTANCE = mi
         return True
-        
+
 
     def is_multi_instance_capable(self):
         """
@@ -238,8 +238,8 @@ class SmartPlugin(SmartObject, Utils):
             return True
         else:
             return False
-  
-  
+
+
     def get_plugin_dir(self):
         """
         return the directory where the pluing files are stored in
@@ -249,9 +249,9 @@ class SmartPlugin(SmartObject, Utils):
         :return: name of the directory
         :rtype: str
         """
-        return self._plugin_dir 
-                
-        
+        return self._plugin_dir
+
+
     def _set_plugin_dir(self, dir):
         """
         Set the object's local variable `_plugin_dir` to root directory of the plugins.
@@ -265,8 +265,8 @@ class SmartPlugin(SmartObject, Utils):
         :type dir: str
         """
         self._plugin_dir = dir
-        
-        
+
+
     def get_info(self):
         """ 
         Returns a small plugin info like: class, version and instance name
@@ -290,8 +290,8 @@ class SmartPlugin(SmartObject, Utils):
         :rtype: depends on the type of the parameter definition
         """
         return self._parameters.get(parameter_name, None)
-        
-    
+
+
     def get_parameter_value_for_display(self, parameter_name):
         """
         Returns the configured value for the given parameter name
@@ -317,15 +317,15 @@ class SmartPlugin(SmartObject, Utils):
 #    def has_parameter_value(self, key):
 #        """
 #        Returns True, if a value is configured for the given parameter name
-#        
+#
 #        :param parameter_name: Name of the parameter for which the value should be retrieved
 #        :type parameter_name: str
-#        
+#
 #        :return: True, if a value is configured for the given parameter name
 #        :rtype: bool
 #        """
 #        return (self.get_parameter_value(key) is not None)
-        
+
 
     def get_loginstance(self):
         """
@@ -400,8 +400,8 @@ class SmartPlugin(SmartObject, Utils):
         """
         __attr = self.__get_iattr_conf(conf, attr)
         return __attr is not None
-    
-    
+
+
     def get_iattr_value(self, conf, attr):
         """
         Returns value for an attribute from item config
@@ -469,7 +469,7 @@ class SmartPlugin(SmartObject, Utils):
         :type smarthome: object
         """
         self._sh = smarthome
-        
+
         if self.shtime is None:
             self.shtime = Shtime.get_instance()
 
@@ -487,7 +487,7 @@ class SmartPlugin(SmartObject, Utils):
         else:
             self.logger.info("Using module '{}'".format(str( mymod._shortname ) ) )
         return mymod
-        
+
 
     def path_join(self, path, dir):
         """
@@ -521,7 +521,7 @@ class SmartPlugin(SmartObject, Utils):
         Returns SmartHomeNGs current time (timezone aware)
         """
         return self.shtime.now()
-        
+
     def scheduler_trigger(self, name, obj=None, by=None, source=None, value=None, dest=None, prio=3, dt=None):
         """
         This methods triggers the scheduler entry for a plugin-scheduler
@@ -565,10 +565,11 @@ class SmartPlugin(SmartObject, Utils):
             name = '.'+name
         name = self._pluginname_prefix+self.get_fullname()+name
         kwargs['from_smartplugin']=True
-        self.logger.debug("scheduler_change: name = {}".format(name))
+        parameters = ', '.join('%s=%r' % x for x in kwargs.iteritems())
+        self.logger.debug("scheduler_change: name = {}, parameters: {}".format(name, parameters))
         self._sh.scheduler.change(name, **kwargs)
-        
-        
+
+
     def scheduler_remove(self, name):
         """
         This methods removes a scheduler entry of a plugin-scheduler
@@ -615,7 +616,7 @@ class SmartPlugin(SmartObject, Utils):
         :note: This method needs to be overwritten by the plugin implementation. Otherwise an error will be raised
         """
         raise NotImplementedError("'Plugin' subclasses should have a 'stop()' method")
-        
+
 
     def _get_translation(self, translation_lang, txt):
         """
@@ -625,14 +626,14 @@ class SmartPlugin(SmartObject, Utils):
         if translations == {}:
             translations = self._gtranslations.get(txt, {})
         return translations.get(translation_lang, '')
-        
+
 
     def translate(self, txt):
         """
         Returns translated text
-        """        
+        """
         txt = str(txt)
-        
+
         translation_lang = self.get_sh().get_defaultlanguage()
         translated_txt = self._get_translation(translation_lang, txt)
         if translated_txt == '=':
@@ -675,8 +676,8 @@ class SmartPluginWebIf():
         tplenv.globals['isfile'] = self.is_staticfile
         tplenv.globals['_'] = self.translate
         return tplenv
-        
-        
+
+
     def is_staticfile(self, path):
         """
         Method tests, if the given pathname points to an existing file in the webif's static
