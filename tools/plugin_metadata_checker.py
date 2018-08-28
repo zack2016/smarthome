@@ -129,6 +129,8 @@ def list_plugins(option):
     header_displayed = False;
     plgcount = 0
     allplgcount = 0
+    priv_plgcount = 0
+    priv_allplgcount = 0
     for plg in sorted(plugins_local):
         version = '-'
 #        sectionPlg = '-'
@@ -189,12 +191,22 @@ def list_plugins(option):
                 header_displayed = True
             list_formatted(plg, version, plgstate, plgtype, sectionPlg, sectionParam, sectionIAttr, sectionFunc)
             plgcount += 1
+            if plg.startswith('priv_'):
+                priv_plgcount += 1
         allplgcount += 1
+        if plg.startswith('priv_'):
+            priv_allplgcount += 1
     print()
-    if (option == 'all'):
-        print("{} plugins".format(plgcount))
+    if (option != 'all'):
+        if priv_plgcount > 0:
+            print("{} ({}) plugins of ".format(plgcount, plgcount+priv_plgcount), end='')
+        else:
+            print("{} plugins of ".format(plgcount), end='')
+    if priv_allplgcount > 0:
+        print("{} ({}) plugins total".format(allplgcount, allplgcount+priv_allplgcount))
     else:
-        print("{} plugins of {} plugins total".format(plgcount, allplgcount))
+        print("{} plugins total".format(allplgcount))
+
     print()
     return
 
