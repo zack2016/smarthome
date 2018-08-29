@@ -192,26 +192,27 @@ class Metadata():
         """
 
         docstr_list = []
-        for f in sorted(self.plugin_functions):
-            fp = ''
-            func_param_yaml = self.plugin_functions[f].get('parameters', None)
-            if func_param_yaml != None:
-                for par in func_param_yaml:
-                    if fp != '':
-                        fp += ', '
-                    fp += par
-                    if with_type:
-                        if func_param_yaml[par].get('type', None) != None:
-                            type = str(func_param_yaml[par].get('type', None))
-                            fp += ':' + type
-                    if with_default:
-                        if func_param_yaml[par].get('default', None) != None:
-                            default = str(func_param_yaml[par].get('default', None))
-                            if func_param_yaml[par].get('type', 'foo') == 'str':
-                                default = " '" + default + "'"
-                            fp += '=' + default
+        if self.plugin_functions is not None:
+            for f in sorted(self.plugin_functions):
+                fp = ''
+                func_param_yaml = self.plugin_functions[f].get('parameters', None)
+                if func_param_yaml != None:
+                    for par in func_param_yaml:
+                        if fp != '':
+                            fp += ', '
+                        fp += par
+                        if with_type:
+                            if func_param_yaml[par].get('type', None) != None:
+                                type = str(func_param_yaml[par].get('type', None))
+                                fp += ':' + type
+                        if with_default:
+                            if func_param_yaml[par].get('default', None) != None:
+                                default = str(func_param_yaml[par].get('default', None))
+                                if func_param_yaml[par].get('type', 'foo') == 'str':
+                                    default = " '" + default + "'"
+                                fp += '=' + default
 
-            docstr_list.append(f + '(' + fp + ')')
+                docstr_list.append(f + '(' + fp + ')')
         logger.info(self._log_premsg + "Metadata get_plugin_function_defstrings -> '{}'".format(docstr_list))
         return docstr_list
 
