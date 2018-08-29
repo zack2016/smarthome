@@ -565,7 +565,7 @@ class SmartPlugin(SmartObject, Utils):
             name = '.'+name
         name = self._pluginname_prefix+self.get_fullname()+name
         kwargs['from_smartplugin']=True
-        parameters = ', '.join('%s=%r' % x for x in kwargs.iteritems())
+        parameters = ', '.join(['{}={!r}'.format(k, v) for k, v in kwargs.items()])
         self.logger.debug("scheduler_change: name = {}, parameters: {}".format(name, parameters))
         self._sh.scheduler.change(name, **kwargs)
 
