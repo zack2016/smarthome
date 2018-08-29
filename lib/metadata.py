@@ -133,7 +133,6 @@ class Metadata():
                 if self.logic_parameters == 'NONE':
                     self.logic_parameters = None
                 else:
-                    logger.warning(self._log_premsg + "Metadata logic_parameters = '{}'".format(str(self.logic_parameters)))
                     self._logic_paramlist = list(self.logic_parameters.keys())
                     logger.info(self._log_premsg+"Metadata logic_paramlist = '{}'".format( str(self._logic_paramlist) ) )
             if  self.logic_parameters is not None:
@@ -187,7 +186,7 @@ class Metadata():
     
     def get_plugin_function_defstrings(self, with_type=False, with_default=True):
         """
-        Build the documentation strings of the plugins functions
+        Build the documentation strings of the plugin's functions
 
         used e.g. for code completion in logic editor
         """

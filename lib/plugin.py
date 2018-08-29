@@ -539,6 +539,7 @@ class PluginWrapper(threading.Thread):
             self.get_implementation()._set_sh(smarthome)
             self.get_implementation()._set_plugin_dir( os.path.join( os.path.dirname( os.path.dirname(os.path.abspath(__file__)) ), classpath.replace('.',os.sep) ) )
             self.get_implementation()._plgtype = self.meta.get_string('type')
+            self.get_implementation().metadata = self.meta
         else:
             # classic plugin
 #            self.get_implementation()._config_section = name
