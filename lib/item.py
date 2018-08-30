@@ -50,6 +50,7 @@ They can be used the following way: To call eg. **get_toplevel_items()**, use th
 :Note: This library is part of the core of SmartHomeNG. Regular plugins should not need to use this API.  It is manily implemented for plugins near to the core like **backend** and the core itself!
 
 """
+import copy
 import datetime
 import dateutil.parser
 import time     # for calls to time in eval
@@ -1055,7 +1056,7 @@ class Item():
         vars(self)[item] = value
 
     def __getitem__(self, item):
-        return vars(self)[item]
+        return copy.deepcopy(vars(self)[item])
 
     def __bool__(self):
         return bool(self._value)

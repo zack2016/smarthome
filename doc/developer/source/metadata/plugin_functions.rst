@@ -36,7 +36,7 @@ In the future the definitions will be used for a configuration tool for SmartHom
         
 .. include:: /metadata/parameter_keys.rst
 
-if a plugin has no public functions, this is signaled by the following entry in the plugiin.yaml file:
+if a plugin has no public functions, this is signaled by the following entry in the plugin.yaml file:
 
 .. code:: yaml
 
