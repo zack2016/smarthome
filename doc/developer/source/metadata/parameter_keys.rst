@@ -37,11 +37,16 @@ Description of the keys in the section of a parameter/attribute:
 
 - **description:** is a multilanguage text. - The texts in the different languages are specified 
   in sub-entries in the form <language>: <text>. Use the standard two letter codes for specifying 
-  the language (de, en, fr, pl, ..)
+  the language (de, en, fr, pl, ..). **de** and **en** are required. Other languages are optional
 
 - **valid_list:** Optional: List of allowed values for the parameter
 
-- **valid_min:** Optional: For datatypes *int*, *pint*, *float*, *pfloat*, *num* and *scene*: 
+- **valid_list_description:** Optional: Descriptions of the allowed values defined in **valid_list:**
+  if defined, it has to have sub-keys for the different languages (de, en, fr, pl, ..). **de** and **en**
+  are required. Other languages are optional. Each languag sub-key has to be a list with each entry describing
+  the corresponding entry in **valid_list:**.
+
+- **valid_min:** Optional: For datatypes *int*, *pint*, *float*, *pfloat*, *num* and *scene*:
   minimum allowed value for the parameter
 
 - **valid_max:** Optional: For datatypes *int*, *pint*, *float*, *pfloat*, *num* and *scene*: 

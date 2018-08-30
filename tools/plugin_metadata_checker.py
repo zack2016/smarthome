@@ -624,6 +624,10 @@ def check_metadata(plg, with_description, check_quiet=False, only_inc=False):
 def check_plglist(option):
     option = option.strip().lower()
     header_displayed = False;
+    plgcount = 0
+    allplgcount = 0
+    priv_plgcount = 0
+    priv_allplgcount = 0
 
     plugins_local = get_local_pluginlist()
     for plg in sorted(plugins_local):
@@ -686,6 +690,23 @@ def check_plglist(option):
                 header_displayed = True
 
             check_metadata(plg, False, check_quiet=True, only_inc=(option == 'inc'))
+            plgcount += 1
+            if plg.startswith('priv_'):
+                priv_plgcount += 1
+        allplgcount += 1
+        if plg.startswith('priv_'):
+            priv_allplgcount += 1
+    print()
+
+    if (option != 'all'):
+        if priv_plgcount > 0:
+            print("{} ({}) plugins of ".format(plgcount, plgcount+priv_plgcount), end='')
+        else:
+            print("{} plugins of ".format(plgcount), end='')
+    if priv_allplgcount > 0:
+        print("{} ({}) plugins total".format(allplgcount, allplgcount+priv_allplgcount))
+    else:
+        print("{} plugins total".format(allplgcount))
     print()
 
 
