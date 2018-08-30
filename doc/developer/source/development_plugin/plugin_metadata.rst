@@ -32,6 +32,7 @@ The **metadata** file is named ``/plugins/<name of the plugin>/plugin.yaml``. It
   documentation is in english, the english description is read. If no english description is found, the german description
   is used.
 
+
 - ``parameters:`` - Definition of the parameters that can bei used in ``/etc/plugin.yaml`` to configure the plugin
   The data defined in this section is used to check if configured parameters are valid.
   The data is going to be used:
@@ -45,6 +46,12 @@ The **metadata** file is named ``/plugins/<name of the plugin>/plugin.yaml``. It
   The data is going to be used:
 
   - for generating documentation pages (that way the item attribute descriptions will not be needed in the README.md file)
+  - for guiding users in a graphical configuration utility
+
+
+- ``logic_parameters:`` - Definition of logic parameters that can bei used in ``/etc/logic.yaml`` to configure a logic.
+
+  - for generating documentation pages (that way the parameter descriptions will not be needed in the README.md file)
   - for guiding users in a graphical configuration utility
 
 
@@ -77,6 +84,8 @@ The **metadata** file is named ``/plugins/<name of the plugin>/plugin.yaml``. It
 .. include:: /metadata/parameters.rst
 
 .. include:: /metadata/item_attributes.rst
+
+.. include:: /metadata/logic_parameters.rst
 
 .. include:: /metadata/plugin_functions.rst
 
