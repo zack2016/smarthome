@@ -74,6 +74,7 @@ class MockSmartHome():
     items = None
     logics = None
     scheduler = None
+    modules = None
 
     _SmartHome__items = []
 
@@ -87,26 +88,22 @@ class MockSmartHome():
 #        self.__items = []
         self.children = []
         self._use_modules = 'True'
-        self._modules = []
         self._moduledict = {}
-        self._plugins = []
-        self.shtime = Shtime(self)
-#        self._tzinfo = dateutil.tz.tzutc()
-
-#        self.shtime.set_tzinfo(dateutil.tz.tzutc())
-#        TZ = dateutil.tz.gettz('UTC')
-        TZ = dateutil.tz.gettz('Europe/Berlin')
-        self.shtime.set_tzinfo(TZ)
+        if self.shtime is None:
+            self.shtime = Shtime.get_instance()
 
         self.scheduler = MockScheduler()
         self.connections = lib.connection.Connections()
         
-        self.shtime = Shtime(self)
+        self.shtime = Shtime.get_instance()
         # Start()
 #        self.scheduler = lib.scheduler.Scheduler(self)
-        self.modules = lib.module.Modules(self, configfile=self._module_conf_basename)
-        self.items = lib.item.Items(self)
-        self.plugins = lib.plugin.Plugins(self, configfile=self._plugin_conf_basename)
+        if self.modules is None:
+            self.with_modules_from(self._module_conf_basename)
+        if self.items is None:
+            self.items = lib.item.Items(self)
+        if self.plugins is None:
+            self.with_plugins_from(self._plugin_conf_basename)
         
 
     def get_defaultlanguage(self):
@@ -126,13 +123,16 @@ class MockSmartHome():
         logger.warning('MockSmartHome (trigger): {}'.format(str(obj)))
 
     def with_plugins_from(self, conf):
+        lib.plugin._plugins_instance = None
         lib.plugin.Plugins._plugins = []
         lib.plugin.Plugins._threads = []
         self._plugins = lib.plugin.Plugins(self, conf)
         return self._plugins
 
     def with_modules_from(self, conf):
+        lib.module._modules_instance = None
         lib.module.Modules._modules = []
+        lib.module.Modules._moduledict = {}
         self._modules = lib.module.Modules(self, conf)
         return self._modules
 
