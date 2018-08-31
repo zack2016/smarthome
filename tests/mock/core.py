@@ -95,7 +95,8 @@ class MockSmartHome():
         self.scheduler = MockScheduler()
         self.connections = lib.connection.Connections()
         
-        self.shtime = Shtime.get_instance()
+        if self.shtime is None:
+            lib.shtime._shtime_instance = self.shtime = Shtime(self)
         # Start()
 #        self.scheduler = lib.scheduler.Scheduler(self)
         if self.modules is None:
