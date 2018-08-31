@@ -126,15 +126,15 @@ class MockSmartHome():
         lib.plugin._plugins_instance = None
         lib.plugin.Plugins._plugins = []
         lib.plugin.Plugins._threads = []
-        self._plugins = lib.plugin.Plugins(self, conf)
-        return self._plugins
+        self.plugins = lib.plugin.Plugins(self, conf)
+        return self.plugins
 
     def with_modules_from(self, conf):
         lib.module._modules_instance = None
         lib.module.Modules._modules = []
         lib.module.Modules._moduledict = {}
-        self._modules = lib.module.Modules(self, conf)
-        return self._modules
+        self.modules = lib.module.Modules(self, conf)
+        return self.modules
 
     def with_items_from(self, conf):
         item_conf = lib.config.parse(conf, None)
@@ -159,43 +159,27 @@ class MockSmartHome():
     # ------------------------------------------------------------
     
     def now(self):
-#        return datetime.datetime.now()
         return self.shtime.now()
 
     def tzinfo(self):
-#        return self._tzinfo
         return self.shtime.tzinfo()
 
     def add_item(self, path, item):
-#        if path not in self.__items:
-#            self.__items.append(path)
-#        self.__item_dict[path] = item
         return self.items.add_item(path, item)
 
     def return_item(self, string):
-#        if string in self.__items:
-#            return self.__item_dict[string]
         return self.items.return_item(string)
 
     def return_items(self):
-#        for item in self.__items:
-#            yield self.__item_dict[item]
         return self.items.return_items()
 
     def return_plugins(self):
-#        for plugin in self._plugins:
-#            yield plugin
         return self.plugins.get_module(name)
 
     def return_modules(self):
-#        l = []
-#        for module_key in self._moduledict.keys():
-#            l.append(module_key)
-#        return l
         return self.modules.return_modules()
 
     def get_module(self, name):
-#        return self._moduledict.get(name)
         return self.modules.get_module(name)
 
 
