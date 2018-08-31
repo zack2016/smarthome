@@ -134,7 +134,7 @@ class MockSmartHome():
     def with_modules_from(self, conf):
         lib.module.Modules._modules = []
         self._modules = lib.module.Modules(self, conf)
-        return self._plugins
+        return self._modules
 
     def with_items_from(self, conf):
         item_conf = lib.config.parse(conf, None)
