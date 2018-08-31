@@ -1041,7 +1041,7 @@ class Item():
 
     def __call__(self, value=None, caller='Logic', source=None, dest=None):
         if value is None or self._type is None:
-            return self._value
+            return copy.deepcopy(self._value)
         if self._eval:
             args = {'value': value, 'caller': caller, 'source': source, 'dest': dest}
             self._sh.trigger(name=self._path + '-eval', obj=self.__run_eval, value=args, by=caller, source=source, dest=dest)
@@ -1056,7 +1056,7 @@ class Item():
         vars(self)[item] = value
 
     def __getitem__(self, item):
-        return copy.deepcopy(vars(self)[item])
+        return vars(self)[item]
 
     def __bool__(self):
         return bool(self._value)
