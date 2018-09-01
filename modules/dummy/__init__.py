@@ -22,7 +22,7 @@
 
 import logging
 
-class dummy():
+class Dummy():
 
     version = '1.x.y'
     longname = 'Dummy module for SmartHomeNG'
