@@ -61,6 +61,7 @@ import pickle
 import threading
 import math
 import json
+from ast import literal_eval
 
 from lib.plugin import Plugins
 from lib.shtime import Shtime
@@ -1428,7 +1429,6 @@ def _cast_str(value):
 
 def _cast_list(value):
     if isinstance(value, str):
-        from ast import literal_eval
         try:
             value = literal_eval(value)
         except:
@@ -1441,7 +1441,6 @@ def _cast_list(value):
 
 def _cast_dict(value):
     if isinstance(value, str):
-        from ast import literal_eval
         try:
             value = literal_eval(value)
         except:
