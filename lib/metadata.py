@@ -897,31 +897,32 @@ class Metadata():
             return (addon_params, True, hide_params)
             
         allparams_ok = True
-        for param in self._paramlist:
-            value = Utils.strip_quotes(args.get(param))
-            if value == None:
-                if (self.parameters[param] is not None) and self.parameters[param].get('mandatory'):
-                    logger.error(self._log_premsg+"'{}' is mandatory, but was not found in /etc/{}".format(param, self._addon_type+YAML_FILE))
-                    allparams_ok = False
-                else:
-                    addon_params[param] = self.get_parameter_defaultvalue(param)
-                    hide_params[param] = Utils.to_bool(self.parameters[param].get('hide'), default=False)
-                    logger.info(self._log_premsg+"value not found in plugin configuration file for parameter '{}' -> using default value '{}' instead".format(param, addon_params[param] ) )
-#                    logger.warning(self._log_premsg+"'{}' not found in /etc/{}, using default value '{}'".format(param, self._addon_type+YAML_FILE, addon_params[param]))
-            else:
-                value = self._expand_listvalues(param, value)
-                if self._test_value(param, value):
-                    addon_params[param] = self._convert_value(param, value)
-                    hide_params[param] = Utils.to_bool(self.parameters[param].get('hide'), default=False)
-                    logger.debug(self._log_premsg+"Found '{}' with value '{}' in /etc/{}".format(param, value, self._addon_type+YAML_FILE))
-                else:
-                    if self.parameters[param].get('mandatory') == True:
-                        logger.error(self._log_premsg+"'{}' is mandatory, but no valid value was found in /etc/{}".format(param, self._addon_type+YAML_FILE))
+        if self._paramlist != []:
+            for param in self._paramlist:
+                value = Utils.strip_quotes(args.get(param))
+                if value == None:
+                    if (self.parameters[param] is not None) and self.parameters[param].get('mandatory'):
+                        logger.error(self._log_premsg+"'{}' is mandatory, but was not found in /etc/{}".format(param, self._addon_type+YAML_FILE))
                         allparams_ok = False
                     else:
                         addon_params[param] = self.get_parameter_defaultvalue(param)
                         hide_params[param] = Utils.to_bool(self.parameters[param].get('hide'), default=False)
-                        logger.error(self._log_premsg+"Found invalid value '{}' for parameter '{}' (type {}) in /etc/{}, using default value '{}' instead".format(value, param, self.parameters[param]['type'], self._addon_type+YAML_FILE, str(addon_params[param])))
+                        logger.info(self._log_premsg+"value not found in plugin configuration file for parameter '{}' -> using default value '{}' instead".format(param, addon_params[param] ) )
+    #                    logger.warning(self._log_premsg+"'{}' not found in /etc/{}, using default value '{}'".format(param, self._addon_type+YAML_FILE, addon_params[param]))
+                else:
+                    value = self._expand_listvalues(param, value)
+                    if self._test_value(param, value):
+                        addon_params[param] = self._convert_value(param, value)
+                        hide_params[param] = Utils.to_bool(self.parameters[param].get('hide'), default=False)
+                        logger.debug(self._log_premsg+"Found '{}' with value '{}' in /etc/{}".format(param, value, self._addon_type+YAML_FILE))
+                    else:
+                        if self.parameters[param].get('mandatory') == True:
+                            logger.error(self._log_premsg+"'{}' is mandatory, but no valid value was found in /etc/{}".format(param, self._addon_type+YAML_FILE))
+                            allparams_ok = False
+                        else:
+                            addon_params[param] = self.get_parameter_defaultvalue(param)
+                            hide_params[param] = Utils.to_bool(self.parameters[param].get('hide'), default=False)
+                            logger.error(self._log_premsg+"Found invalid value '{}' for parameter '{}' (type {}) in /etc/{}, using default value '{}' instead".format(value, param, self.parameters[param]['type'], self._addon_type+YAML_FILE, str(addon_params[param])))
 
         return (addon_params, allparams_ok, hide_params)
         
