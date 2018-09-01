@@ -55,7 +55,7 @@ class LibMetadataTest(unittest.TestCase):
         (processed_args, allparams_ok, hide_params) = self.meta.check_parameters(args)
 
         # Test default values for datatypes
-        self.assertIsNone(processed_args['notype_nodefault'])
+        self.assertIsNone(processed_args.get('notype_nodefault'))
         self.assertEqual(False, processed_args['bool_nodefault'])
         self.assertEqual(0, processed_args['int_nodefault'])
         self.assertEqual(2, processed_args['int_validmin_nodefault'])

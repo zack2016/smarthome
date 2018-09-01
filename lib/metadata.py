@@ -914,7 +914,14 @@ class Metadata():
                     value = self._expand_listvalues(param, value)
                     if self._test_value(param, value):
                         addon_params[param] = self._convert_value(param, value)
-                        hide_params[param] = Utils.to_bool(self.parameters[param].get('hide'), default=False)
+                        logger.warning('self.parameters = {}'.format(self.parameters))
+                        logger.warning('param = {}'.format(param))
+                        logger.warning('self.parameters.get(param, <>) = {}'.format(self.parameters.get(param, {})))
+
+                        if self.parameters[param] == None:
+                            hide_params[param] = None
+                        else:
+                            hide_params[param] = Utils.to_bool(self.parameters[param].get('hide'), default=False)
                         logger.debug(self._log_premsg+"Found '{}' with value '{}' in /etc/{}".format(param, value, self._addon_type+YAML_FILE))
                     else:
                         if self.parameters[param].get('mandatory') == True:
