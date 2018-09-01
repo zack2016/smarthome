@@ -46,6 +46,10 @@ class LibMetadataTest(unittest.TestCase):
         
         self.sh = MockSmartHome()
         self.meta = Metadata(self.sh, 'test_resources', 'module', 'tests.resources.test_metadata')
+        print()
+        print('self.meta: {}'.format(self.meta))
+        print()
+
         args = {}
         # (processed_args, allparams_ok) = self.meta.check_parameters(args)
         (processed_args, allparams_ok, hide_params) = self.meta.check_parameters(args)
