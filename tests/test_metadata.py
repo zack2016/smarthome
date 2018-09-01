@@ -47,8 +47,9 @@ class LibMetadataTest(unittest.TestCase):
         self.sh = MockSmartHome()
         self.meta = Metadata(self.sh, 'test_resources', 'module', 'tests.resources.test_metadata')
         args = {}
-        (processed_args, allparams_ok) = self.meta.check_parameters(args)
-        
+        # (processed_args, allparams_ok) = self.meta.check_parameters(args)
+        (processed_args, allparams_ok, hide_params) = self.meta.check_parameters(args)
+
         # Test default values for datatypes
         self.assertIsNone(processed_args['notype_nodefault'])
         self.assertEqual(False, processed_args['bool_nodefault'])
@@ -96,8 +97,9 @@ class LibMetadataTest(unittest.TestCase):
             'ip_default': '1.2.3.256', 'mac_default': 'aa:ab:ac:ad:ae:ag',
             'foo_default': ['4', 2, [4, '2']] 
         }
-        (processed_args, allparams_ok) = self.meta.check_parameters(args)
-        
+        # (processed_args, allparams_ok) = self.meta.check_parameters(args)
+        (processed_args, allparams_ok, hide_params) = self.meta.check_parameters(args)
+
         # Test valid parameter configurations
         self.assertEqual(True, processed_args['notype_nodefault'])
         self.assertEqual(False, processed_args['bool_nodefault'])
