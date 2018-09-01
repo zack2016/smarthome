@@ -25,9 +25,7 @@ class TestPlugin(unittest.TestCase):
 
 	def test_plugin_implementation(self):
 		wolplug = self.plugins.get_pluginthread("wol_ww")
-		print('wolplug = {}'.format(wolplug))
-		print('wolplug.get_implementation() = {}'.format(wolplug.get_implementation()))
-		self.assertEqual(wolplug, wolplug.get_implementation())
+		self.assertEqual(wolplug.plugin, wolplug.get_implementation())
 
 	def test_plugin_ident(self):
 		wolplug = self.plugins.get_pluginthread("wol_ww")
