@@ -557,7 +557,7 @@ def check_metadata(plg, with_description, check_quiet=False, only_inc=False):
         if metadata.get('plugin_functions', None) != 'NONE':
             for func in metadata.get('plugin_functions', None):
                 func_dict = metadata['plugin_functions'][func]
-                test_description('plugin function', func, par_dict.get('description', None))
+                test_description('plugin function', func, func_dict.get('description', None))
 
                 # Check function parameters
                 if func_dict.get('parameters', None) != None:
