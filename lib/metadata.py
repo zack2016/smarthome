@@ -901,14 +901,15 @@ class Metadata():
             for param in self._paramlist:
                 value = Utils.strip_quotes(args.get(param))
                 if value == None:
-                    if (self.parameters[param] is not None) and self.parameters[param].get('mandatory'):
-                        logger.error(self._log_premsg+"'{}' is mandatory, but was not found in /etc/{}".format(param, self._addon_type+YAML_FILE))
-                        allparams_ok = False
-                    else:
-                        addon_params[param] = self.get_parameter_defaultvalue(param)
-                        hide_params[param] = Utils.to_bool(self.parameters[param].get('hide'), default=False)
-                        logger.info(self._log_premsg+"value not found in plugin configuration file for parameter '{}' -> using default value '{}' instead".format(param, addon_params[param] ) )
-    #                    logger.warning(self._log_premsg+"'{}' not found in /etc/{}, using default value '{}'".format(param, self._addon_type+YAML_FILE, addon_params[param]))
+                    if self.parameters[param] is not None:
+                        if self.parameters[param].get('mandatory'):
+                            logger.error(self._log_premsg+"'{}' is mandatory, but was not found in /etc/{}".format(param, self._addon_type+YAML_FILE))
+                            allparams_ok = False
+                        else:
+                            addon_params[param] = self.get_parameter_defaultvalue(param)
+                            hide_params[param] = Utils.to_bool(self.parameters[param].get('hide'), default=False)
+                            logger.info(self._log_premsg+"value not found in plugin configuration file for parameter '{}' -> using default value '{}' instead".format(param, addon_params[param] ) )
+        #                    logger.warning(self._log_premsg+"'{}' not found in /etc/{}, using default value '{}'".format(param, self._addon_type+YAML_FILE, addon_params[param]))
                 else:
                     value = self._expand_listvalues(param, value)
                     if self._test_value(param, value):
