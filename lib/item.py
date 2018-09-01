@@ -1217,7 +1217,7 @@ class Item():
             value = self.cast(value)
         except:
             try:
-                logger.warning("Item {}: value {} does not match type {}. Via {} {}".format(self._path, value, self._type, caller, source))
+                logger.warning('Item {}: value "{}" does not match type {}. Via {} {}'.format(self._path, value, self._type, caller, source))
             except:
                 pass
             return
@@ -1428,11 +1428,11 @@ def _cast_str(value):
 
 def _cast_list(value):
     if isinstance(value, str):
+        from ast import literal_eval
         try:
-            value = json.loads(value)
-        except Exception as e:
-            value = value.replace("'",'"')
-            value = json.loads(value)
+            value = literal_eval(value)
+        except:
+            pass
     if isinstance(value, list):
         return value
     else:
@@ -1441,11 +1441,11 @@ def _cast_list(value):
 
 def _cast_dict(value):
     if isinstance(value, str):
+        from ast import literal_eval
         try:
-            value = json.loads(value)
-        except Exception as e:
-            value = value.replace("'",'"')
-            value = json.loads(value)
+            value = literal_eval(value)
+        except:
+            pass
     if isinstance(value, dict):
         return value
     else:
