@@ -2,7 +2,7 @@
 # !!!            DON'T EDIT THIS FILE            !!!
 # !!!           THIS FILE IS GENERATED           !!!
 # !!!       BY tools/build_requirements.py       !!!
-# !!!            ON 02.09.2018 11:06             !!!
+# !!!            ON 02.09.2018 11:14             !!!
 # !!!               INSTALL WITH:                !!!
 # !!! sudo pip3 install -r requirements/base.txt !!!
 
@@ -94,7 +94,10 @@ requests==2.5.1;python_version=='3.2'
 requests>=2.9.1;python_version>'3.2'
 
 # SmartHomeNG Core
-ruamel.yaml>=0.13.7,<0.16.0
+ruamel.yaml>=0.13.7,<=0.15;python_version<'3.7'
+
+# SmartHomeNG Core
+ruamel.yaml>0.15.0,<0.16.0;python_version>='3.7'
 
 # dashbutton
 scapy-python3>=0.18
