@@ -914,9 +914,6 @@ class Metadata():
                     value = self._expand_listvalues(param, value)
                     if self._test_value(param, value):
                         addon_params[param] = self._convert_value(param, value)
-                        logger.warning('self.parameters = {}'.format(self.parameters))
-                        logger.warning('param = {}'.format(param))
-                        logger.warning('self.parameters.get(param, <>) = {}'.format(self.parameters.get(param, {})))
 
                         if self.parameters[param] == None:
                             hide_params[param] = None

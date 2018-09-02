@@ -102,6 +102,7 @@ class MockSmartHome():
         if self.modules is None:
             self.with_modules_from(self._module_conf_basename)
         if self.items is None:
+            lib.item._items_instance = None
             self.items = lib.item.Items(self)
         if self.plugins is None:
             self.with_plugins_from(self._plugin_conf_basename)

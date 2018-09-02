@@ -120,6 +120,14 @@ class TestLogics(unittest.TestCase):
         fnb = readback[0]
         ctb = readback[1]
         wib = readback[2]
+        print()
+        print('fn:  {}'.format(fn))
+        print('fnb: {}'.format(fnb))
+        print('ct:  {}'.format(ct))
+        print('ctb: {}'.format(ctb))
+        print('wi:  {}'.format(wi))
+        print('wib: {}'.format(wib))
+        print()
         self.assertEqual(fn,fnb)
         self.assertEqual(ct,ctb)
         self.assertEqual(wi,wib)
