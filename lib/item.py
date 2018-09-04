@@ -515,11 +515,22 @@ class Item():
                     # name of file, which defines this item
                     setattr(self, attr, value)
                 else:
-                    # plugin specific attribute
-                    if value == '..':
-                        self.conf[attr] = self._get_attr_from_parent(attr)
-                    elif value == '...':
-                        self.conf[attr] = self._get_attr_from_grandparent(attr)
+                    # the following code is executed for plugin specific attributes:
+                    #
+                    # get value from attribute of other (relative addressed) item
+                    # at te moment only parent and grandparent item are supported
+                    if (type(value) is str) and (value.startswith('..:') or value.startswith('...:')):
+                        fromitem = value.split(':')[0]
+                        fromattr = value.split(':')[1]
+                        if fromattr in ['', '.']:
+                            fromattr = attr
+                        if fromitem == '..':
+                            self.conf[attr] = self._get_attr_from_parent(fromattr)
+                        elif fromitem == '...':
+                            self.conf[attr] = self._get_attr_from_grandparent(fromattr)
+                        else:
+                            self.conf[attr] = value
+                        # logger.warning("Item rel. from (grand)parent: fromitem = {}, fromattr = {}, self.conf[attr] = {}".format(fromitem, fromattr, self.conf[attr]))
                     else:
                         self.conf[attr] = value
         #############################################################
@@ -972,7 +983,7 @@ class Item():
         :return: value from attribute of parent item
         """
         pitem = self.return_parent()
-        pattr_value = pitem.conf[attr]
+        pattr_value = pitem.conf.get(attr, '')
         #        logger.warning("_get_attr_from_parent Item {}: for attr '{}'".format(self._path, attr))
         #        logger.warning("_get_attr_from_parent Item {}: for parent '{}', pattr_value '{}'".format(self._path, pitem._path, pattr_value))
         return pattr_value
@@ -987,9 +998,9 @@ class Item():
         """
         pitem = self.return_parent()
         gpitem = pitem.return_parent()
-        gpattr_value = pitem.conf[attr]
-#        logger.warning("_get_attr_from_parent Item {}: for attr '{}'".format(self._path, attr))
-#        logger.warning("_get_attr_from_parent Item {}: for grandparent '{}', gpattr_value '{}'".format(self._path, gpitem._path, gpattr_value))
+        gpattr_value = pitem.get(attr, '')
+#        logger.warning("_get_attr_from_grandparent Item {}: for attr '{}'".format(self._path, attr))
+#        logger.warning("_get_attr_from_grandparent Item {}: for grandparent '{}', gpattr_value '{}'".format(self._path, gpitem._path, gpattr_value))
         return gpattr_value
 
 
