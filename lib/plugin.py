@@ -324,7 +324,7 @@ class Plugins():
 
     def return_plugin(self, configname):
         """
-        Returns (the object of) one loaded plugin with given configname
+        Returns (the object of) one loaded smartplugin with given configname
 
         :param name: name of the plugin to get
         :type name: str
@@ -333,8 +333,11 @@ class Plugins():
         :rtype: object
         """
         for plugin in self._plugins:
-            if plugin.get_configname() == configname:
-                return plugin
+            try:
+                if plugin.get_configname() == configname:
+                    return plugin
+            except:
+                pass
         return None
 #        return self._plugins[name]
 
@@ -353,7 +356,7 @@ class Plugins():
 
     def _get_plugin_conf_filename(self):
         """
-        Returns the basename of the logic configuration file 
+        Returns the name of the logic configuration file
         """
         return self._plugin_conf_filename
         

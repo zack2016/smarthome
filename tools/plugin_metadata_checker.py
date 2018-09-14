@@ -56,6 +56,7 @@ plugin_sections = [ ['gateway', 'Gateway', 'Gateway'],
                     ['web', 'Web/Cloud', 'Web/Cloud']
                   ]
 
+MISSING_TEXT = 'Missing'
 
 # ==================================================================================
 #   Functions of the tool
@@ -142,7 +143,7 @@ def list_plugins(option):
         if metadata == None:
             return
         if metadata.get('plugin', None) == None:
-            sectionPlg = 'No'
+            sectionPlg = MISSING_TEXT
         else:
             sectionPlg = 'Ok'
             version = metadata['plugin'].get('version', '-')
@@ -155,7 +156,7 @@ def list_plugins(option):
                 version = '?'
 
             if metadata.get('parameters', None) == None:
-                sectionParam = 'No'
+                sectionParam = MISSING_TEXT
             elif metadata.get('parameters', None) == 'NONE':
                 sectionParam = 'Ok'
             else:
@@ -163,7 +164,7 @@ def list_plugins(option):
                 sectionParam += ' (' + str(len(metadata['parameters'])) + ')'
 
             if metadata.get('item_attributes', None) == None:
-                sectionIAttr = 'No'
+                sectionIAttr = MISSING_TEXT
             elif metadata.get('item_attributes', None) == 'NONE':
                 sectionIAttr = 'Ok'
             else:
@@ -171,7 +172,7 @@ def list_plugins(option):
                 sectionIAttr += ' (' + str(len(metadata['item_attributes'])) + ')'
 
             if metadata.get('plugin_functions', None) == None:
-                sectionFunc = 'No'
+                sectionFunc = MISSING_TEXT
             elif metadata.get('plugin_functions', None) == 'NONE':
                 sectionFunc = 'Ok'
             else:
@@ -180,9 +181,9 @@ def list_plugins(option):
 
         if (option == 'all') or \
            (option == plgtype.lower()) or \
-           (option == 'inc' and (sectionPlg == 'No' or sectionParam == 'No' or sectionIAttr == 'No' or sectionFunc == 'No')) or \
-           (option == 'compl' and (plgtype.lower() != 'classic' and sectionPlg != 'No' and sectionParam != 'No' and sectionIAttr != 'No' and sectionFunc != 'No')) or \
-           (option == 'inc_para' and sectionParam == 'No') or (option == 'inc_attr' and sectionIAttr == 'No'):
+           (option == 'inc' and (sectionPlg == MISSING_TEXT or sectionParam == MISSING_TEXT or sectionIAttr == MISSING_TEXT or sectionFunc == MISSING_TEXT)) or \
+           (option == 'compl' and (plgtype.lower() != 'classic' and sectionPlg != MISSING_TEXT and sectionParam != MISSING_TEXT and sectionIAttr != MISSING_TEXT and sectionFunc != MISSING_TEXT)) or \
+           (option == 'inc_para' and sectionParam == MISSING_TEXT) or (option == 'inc_attr' and sectionIAttr == MISSING_TEXT):
             if not header_displayed:
                 ul = '-------------------------------'
                 list_formatted('', '', '', 'Plugin', '', 'Plugin', 'Item', 'Plugin')
@@ -608,7 +609,7 @@ def check_plglist(option):
         if metadata == None:
             return
         if metadata.get('plugin', None) == None:
-            sectionPlg = 'No'
+            sectionPlg = MISSING_TEXT
         else:
             sectionPlg = 'Ok'
             version = metadata['plugin'].get('version', '-')
@@ -621,7 +622,7 @@ def check_plglist(option):
                 version = '?'
 
             if metadata.get('parameters', None) == None:
-                sectionParam = 'No'
+                sectionParam = MISSING_TEXT
             elif metadata.get('parameters', None) == 'NONE':
                 sectionParam = 'Ok'
             else:
@@ -629,7 +630,7 @@ def check_plglist(option):
                 sectionParam += ' (' + str(len(metadata['parameters'])) + ')'
 
             if metadata.get('item_attributes', None) == None:
-                sectionIAttr = 'No'
+                sectionIAttr = MISSING_TEXT
             elif metadata.get('item_attributes', None) == 'NONE':
                 sectionIAttr = 'Ok'
             else:
@@ -637,7 +638,7 @@ def check_plglist(option):
                 sectionIAttr += ' (' + str(len(metadata['item_attributes'])) + ')'
 
             if metadata.get('plugin_functions', None) == None:
-                sectionFunc = 'No'
+                sectionFunc = MISSING_TEXT
             elif metadata.get('plugin_functions', None) == 'NONE':
                 sectionFunc = 'Ok'
             else:
@@ -646,9 +647,9 @@ def check_plglist(option):
 
         if (option == 'all') or (option == 'inc') or \
            (option == plgtype.lower()) or \
-           (option == 'incX' and (sectionPlg == 'No' or sectionParam == 'No' or sectionIAttr == 'No' or sectionFunc == 'No')) or \
-           (option == 'compl' and (plgtype.lower() != 'classic' and sectionPlg != 'No' and sectionParam != 'No' and sectionIAttr != 'No' and sectionFunc != 'No')) or \
-           (option == 'inc_para' and sectionParam == 'No') or (option == 'inc_attr' and sectionIAttr == 'No'):
+           (option == 'incX' and (sectionPlg == MISSING_TEXT or sectionParam == MISSING_TEXT or sectionIAttr == MISSING_TEXT or sectionFunc == MISSING_TEXT)) or \
+           (option == 'compl' and (plgtype.lower() != 'classic' and sectionPlg != MISSING_TEXT and sectionParam != MISSING_TEXT and sectionIAttr != MISSING_TEXT and sectionFunc != MISSING_TEXT)) or \
+           (option == 'inc_para' and sectionParam == MISSING_TEXT) or (option == 'inc_attr' and sectionIAttr == MISSING_TEXT):
             if not header_displayed:
                 ul = '-------------------------------'
                 list_formatted('', '', '', '', '', '', '', '')

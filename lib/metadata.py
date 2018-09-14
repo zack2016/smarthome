@@ -209,7 +209,10 @@ class Metadata():
                             if func_param_yaml[par].get('default', None) != None:
                                 default = str(func_param_yaml[par].get('default', None))
                                 if func_param_yaml[par].get('type', 'foo') == 'str':
-                                    default = " '" + default + "'"
+                                    if default == 'None*':
+                                        default = 'None'
+                                    else:
+                                        default = " '" + default + "'"
                                 fp += '=' + default
 
                 docstr_list.append(f + '(' + fp + ')')
@@ -805,24 +808,26 @@ class Metadata():
                 else:
                     value = definitions[definition].get('default')
                 typ = self._get_definition_type(definition, definitions)
-                if value == None:
-                    value = self._get_default_if_none(typ)
-                    
-                value = self._expand_listvalues(definition, value)
-                if not self._test_value(definition, value):
-                    # Für non-default Prüfung nur Warning
-                    logger.error(self._log_premsg+"Invalid data for type '{}' in metadata file '{}': default '{}' for parameter '{}' -> using '{}' instead".format( definitions[definition].get('type'), self.relative_filename, value, definition, self._get_default_if_none(typ) ) )
+                if value == 'None*':
+                    logger.warning("_get_definition_defaultvalue: default value is 'None*' -> None")
                     value = None
-                if value == None:
-                    value = self._get_default_if_none(typ)
+                else:
+                    if value == None:
+                        value = self._get_default_if_none(typ)
+                    value = self._expand_listvalues(definition, value)
+                    if not self._test_value(definition, value):
+                        # Für non-default Prüfung nur Warning
+                        logger.error(self._log_premsg+"Invalid data for type '{}' in metadata file '{}': default '{}' for parameter '{}' -> using '{}' instead".format( definitions[definition].get('type'), self.relative_filename, value, definition, self._get_default_if_none(typ) ) )
+                        value = None
+                    if value == None:
+                        value = self._get_default_if_none(typ)
+                    value = self._convert_value(definition, value, is_default=True)
 
-                value = self._convert_value(definition, value, is_default=True)
-
-                orig_value = value
-                value = self._test_validity(definition, value, is_default=True)
-                if value != orig_value:
-                    # Für non-default Prüfung nur Warning
-                    logger.error(self._log_premsg+"Invalid default '{}' in metadata file '{}' for parameter '{}' -> using '{}' instead".format( orig_value, self.relative_filename, definition, value ) )
+                    orig_value = value
+                    value = self._test_validity(definition, value, is_default=True)
+                    if value != orig_value:
+                        # Für non-default Prüfung nur Warning
+                        logger.error(self._log_premsg+"Invalid default '{}' in metadata file '{}' for parameter '{}' -> using '{}' instead".format( orig_value, self.relative_filename, definition, value ) )
 
         return value
 
