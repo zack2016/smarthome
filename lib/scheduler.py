@@ -292,15 +292,15 @@ class Scheduler(threading.Thread):
         """
         Adds an entry to the scheduler.
         
-        :param name:
-        :param obj:
+        :param name: Name of the scheduler
+        :param obj: Method to call by the scheduler
         :param prio: a priority with default of 3 having 1 as most important and higher numbes less important
         :param cron: a crontab entry of type string or a list of entries
         :param cycle: a time given as integer in seconds or a string with a time given in seconds and a value after an equal sign
         :param value:
         :param offset: an optional offset for cycle. If not given, cycle start point will be varied between 10..15 seconds to prevent too many scheduler entries with the same starting times
         :param next:
-        :param from_smartplugin:
+        :param from_smartplugin: Only to set to True, if called from the internal method in SmartPlugin class
         """
         if self.shtime == None:
             self.shtime = Shtime.get_instance()
