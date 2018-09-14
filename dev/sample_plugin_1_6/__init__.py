@@ -5,7 +5,7 @@
 #########################################################################
 #  This file is part of SmartHomeNG.   
 #
-#  Sample plugin for new plugins to run with SmartHomeNG version 1.6 and
+#  Sample plugin for new plugins to run with SmartHomeNG version 1.4 and
 #  upwards.
 #
 #  SmartHomeNG is free software: you can redistribute it and/or modify
@@ -62,9 +62,6 @@ class SamplePlugin(SmartPlugin):
         the configured (and checked) value for a parameter by calling self.get_parameter_value(parameter_name). It
         returns the value in the datatype that is defined in the metadata.
         """
-
-        # The following 3 lines for defining the logger are only needed, if the plugin should
-        # run in SmartHomeNG installations v1.5 and before
         from bin.smarthome import VERSION
         if '.'.join(VERSION.split('.', 2)[:2]) <= '1.5':
             self.logger = logging.getLogger(__name__)
@@ -73,12 +70,17 @@ class SamplePlugin(SmartPlugin):
 
         # Exit if the required package(s) could not be imported
         # if not REQUIRED_PACKAGE_IMPORTED:
-        #     self.logger.error("{}: Unable to import Python package '<exotic package>'".format(self.get_fullname()))
+        #     self.logger.error("Unable to import Python package '<exotic package>'")
         #     self._init_complete = False
         #     return
 
         # get the parameters for the plugin (as defined in metadata plugin.yaml):
         #   self.param1 = self.get_parameter_value('param1')
+
+        # cycle time in seconds, only needed, if hardware/interface needs to be
+        # polled for value changes by adding a scheduler entry in the run method of this plugin
+        # (maybe you want to make it a plugin parameter?)
+        self._cycle = 60
 
         # Initialization code goes here
 
@@ -91,7 +93,7 @@ class SamplePlugin(SmartPlugin):
         # if plugin should start even without web interface
         self.init_webinterface()
 
-        # if plugin should not start without an initialized web interface, use the following lines instead:
+        # if plugin should not start without web interface
         # if not self.init_webinterface():
         #     self._init_complete = False
 
@@ -101,8 +103,9 @@ class SamplePlugin(SmartPlugin):
         """
         Run method for the plugin
         """
-        self.logger.debug("Plugin '{}': run method called".format(self.get_fullname()))
+        self.logger.debug("Run method called")
         # setup scheduler for device poll loop
+        # disable the following line, if you don't need to poll the device. Rember to comment the self_cycle statement in __init__ as well
         self.scheduler_add(__name__, self.poll_device, cycle=self._cycle)
         # self.sh.scheduler.add(__name__, self.poll_device, cycle=self._cycle)   # for shNG before v1.4
 
@@ -114,7 +117,7 @@ class SamplePlugin(SmartPlugin):
         """
         Stop method for the plugin
         """
-        self.logger.debug("Plugin '{}': stop method called".format(self.get_fullname()))
+        self.logger.debug("Stop method called")
         self.alive = False
 
     def parse_item(self, item):
@@ -131,7 +134,7 @@ class SamplePlugin(SmartPlugin):
                         can be sent to the knx with a knx write function within the knx plugin.
         """
         if self.has_iattr(item.conf, 'foo_itemtag'):
-            self.logger.debug("Plugin '{}': parse item: {}".format(self.get_fullname(), item))
+            self.logger.debug("parse item: {}".format(item))
 
         # todo
         # if interesting item for sending values:
@@ -164,8 +167,10 @@ class SamplePlugin(SmartPlugin):
 
             if self.has_iattr(item.conf, 'foo_itemtag'):
                 self.logger.debug(
-                    "Plugin '{}': update_item was called with item '{}' from caller '{}', source '{}' and dest '{}'".format(
-                        self.get_fullname(), item, caller, source, dest))
+                    "update_item was called with item '{}' from caller '{}', source '{}' and dest '{}'".format(item,
+                                                                                                               caller,
+                                                                                                               source,
+                                                                                                               dest))
             pass
 
     def poll_device(self):
@@ -198,14 +203,12 @@ class SamplePlugin(SmartPlugin):
         except:
             self.mod_http = None
         if self.mod_http == None:
-            self.logger.error("Plugin '{}': Not initializing the web interface".format(self.get_shortname()))
+            self.logger.error("Not initializing the web interface")
             return False
 
         import sys
         if not "SmartPluginWebIf" in list(sys.modules['lib.model.smartplugin'].__dict__):
-            self.logger.warning(
-                "Plugin '{}': Web interface needs SmartHomeNG v1.5 and up. Not initializing the web interface".format(
-                    self.get_shortname()))
+            self.logger.warning("Web interface needs SmartHomeNG v1.5 and up. Not initializing the web interface")
             return False
 
         # set application configuration for cherrypy
