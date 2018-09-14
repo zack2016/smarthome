@@ -103,7 +103,7 @@ The plugin code is a class based on the class SmartPlugin. The methods of SmartP
    development_plugin/plugin_documentation_files
    development_plugin/webinterface
    development_plugin/multilanguage
-   development_plugin/sampleplugins
+   development_plugin/sampleplugin
    modules_doc/modules_plugins
    modules_doc/modules_readmes
    development_plugin/libraries_plugins
