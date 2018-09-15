@@ -7,6 +7,7 @@ plugin:
         en: 'Sample plugin for SmartHomeNG v1.5 and up'
     maintainer: msinn
 #    tester:                        # Who tests this plugin?
+    state: develop                  # change to ready when done with development
 #    keywords: iot xyz
 #    documentation: https://github.com/smarthomeNG/smarthome/wiki/CLI-Plugin        # url of documentation (wiki) page
 #    support: https://knx-user-forum.de/forum/supportforen/smarthome-py
@@ -15,6 +16,7 @@ plugin:
     sh_minversion: 1.4              # minimum shNG version to use this plugin
 #    sh_maxversion:                 # maximum shNG version to use this plugin (leave empty if latest)
     multi_instance: False           # plugin supports multi instance
+    restartable: unknown
     classname: SamplePlugin         # class containing the plugin
 
 #parameters:
