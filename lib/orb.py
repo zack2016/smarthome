@@ -54,12 +54,59 @@ class Orb():
             self.phase = self._phase
             self.light = self._light
 
-    def rise(self, doff=0, moff=0, center=True, dt=None):
-        # workaround if rise is 0.001 seconds in the past
+    def _avoid_neverup(self, dt, date_utc, doff):
+        # avoid NeverUp Error if degree offset is too high
+        # Get times for noon and midnight
+        originaldoff = doff
+        midnight = self.midnight(0, 0, dt=dt)
+        noon = self.noon(0, 0, dt=dt)
+        # If the altitudes are calculated from previous or next day, set the correct day for the obeserver query
+        noon = noon if noon >= date_utc else \
+            self.noon(0, 0, dt=date_utc + dateutil.relativedelta.relativedelta(days=1))
+        midnight = midnight if midnight >= date_utc else \
+            self.midnight(0, 0, dt=date_utc - dateutil.relativedelta.relativedelta(days=1))
+        # Get lowest and highest altitudes of the relevant day/night
+        max_altitude = self.pos(offset=None, degree=True, dt=midnight)[1] if doff <= 0 else \
+                                self.pos(offset=None, degree=True, dt=noon)[1]
+        # Set observation date back to original queried date
+        self._obs.date = date_utc
+        # Limit degree offset to the highest or lowest possible for the given date
+        doff = max(doff, max_altitude + 0.00001) if doff < 0 else min(doff, max_altitude - 0.00001) if doff > 0 else doff
+        if not originaldoff == doff:
+            logger.warning("Had to truncate the degree offset to {} as the sun never goes "
+                           "below/above the given value {}.".format(doff, originaldoff))
+        return doff
+
+    def noon(self, doff=0, moff=0, dt=None):
         if dt is not None:
             self._obs.date = dt - dt.utcoffset()
         else:
             self._obs.date = datetime.datetime.utcnow() - dateutil.relativedelta.relativedelta(minutes=moff) + dateutil.relativedelta.relativedelta(seconds=2)
+        self._obs.horizon = str(doff)
+        next_transit = self._obs.next_transit(self._orb).datetime()
+        next_transit = next_transit + dateutil.relativedelta.relativedelta(minutes=moff)
+        return next_transit.replace(tzinfo=tzutc())
+
+    def midnight(self, doff=0, moff=0, dt=None):
+        if dt is not None:
+            self._obs.date = dt - dt.utcoffset()
+        else:
+            self._obs.date = datetime.datetime.utcnow() - dateutil.relativedelta.relativedelta(minutes=moff) + dateutil.relativedelta.relativedelta(seconds=2)
+        self._obs.horizon = str(doff)
+        next_antitransit = self._obs.next_antitransit(self._orb).datetime()
+        next_antitransit = next_antitransit + dateutil.relativedelta.relativedelta(minutes=moff)
+        return next_antitransit.replace(tzinfo=tzutc())
+
+    def rise(self, doff=0, moff=0, center=True, dt=None):
+        # workaround if rise is 0.001 seconds in the past
+        if dt is not None:
+            self._obs.date = dt - dt.utcoffset()
+            date_utc = (self._obs.date.datetime()).replace(tzinfo=tzutc())
+        else:
+            self._obs.date = datetime.datetime.utcnow() - dateutil.relativedelta.relativedelta(minutes=moff) + dateutil.relativedelta.relativedelta(seconds=2)
+            date_utc = (self._obs.date.datetime()).replace(tzinfo=tzutc())
+        if not doff == 0:
+            doff = self._avoid_neverup(dt, date_utc, doff)
         self._obs.horizon = str(doff)
         if doff != 0:
             next_rising = self._obs.next_rising(self._orb, use_center=center).datetime()
@@ -72,8 +119,13 @@ class Orb():
         # workaround if set is 0.001 seconds in the past
         if dt is not None:
             self._obs.date = dt - dt.utcoffset()
+            date_utc = (self._obs.date.datetime()).replace(tzinfo=tzutc())
         else:
             self._obs.date = datetime.datetime.utcnow() - dateutil.relativedelta.relativedelta(minutes=moff) + dateutil.relativedelta.relativedelta(seconds=2)
+            date_utc = (self._obs.date.datetime()).replace(tzinfo=tzutc())
+        # avoid NeverUp error
+        if not doff == 0:
+            doff = self._avoid_neverup(dt, date_utc, doff)
         self._obs.horizon = str(doff)
         if doff != 0:
             next_setting = self._obs.next_setting(self._orb, use_center=center).datetime()
@@ -84,8 +136,8 @@ class Orb():
 
     def pos(self, offset=None, degree=False, dt=None):  # offset in minutesA
         if dt is None:
-            date = datetime.datetime.utcnow()
-        else: 
+            date = dt = datetime.datetime.utcnow()
+        else:
             date = dt.replace(tzinfo=tzutc())
         if offset:
             date += dateutil.relativedelta.relativedelta(minutes=offset)
