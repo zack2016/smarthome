@@ -104,10 +104,8 @@ class SamplePlugin(SmartPlugin):
         Run method for the plugin
         """
         self.logger.debug("Run method called")
-        # setup scheduler for device poll loop
-        # disable the following line, if you don't need to poll the device. Rember to comment the self_cycle statement in __init__ as well
-        self.scheduler_add(__name__, self.poll_device, cycle=self._cycle)
-        # self.sh.scheduler.add(__name__, self.poll_device, cycle=self._cycle)   # for shNG before v1.4
+        # setup scheduler for device poll loop   (disable the following line, if you don't need to poll the device. Rember to comment the self_cycle statement in __init__ as well
+        self.scheduler_add('poll_device', self.poll_device, cycle=self._cycle)
 
         self.alive = True
         # if you need to create child threads, do not make them daemon = True!
