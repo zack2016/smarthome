@@ -1,5 +1,12 @@
-Sample Plugin
-=============
+
+.. index:: Sample Plugin
+.. index:: Plugin; Sample Plugin
+
+.. role:: redsup
+.. role:: bluesup
+
+Sample Plugin :bluesup:`update`
+===============================
 
 
 This section shows a sample plugin. This plugin can be implemented with or without a web interface.
@@ -15,14 +22,7 @@ On this page you find files for writing a new plugin. The plugin consists of a f
 code (__init__.py), a metadata file (plugin.yaml) and a documentation file (README.md).
 A skeleton of the three files is shown below.
 
-A formatted version of the sample README.md can be found here:
-
-.. toctree::
-   :maxdepth: 0
-   :glob:
-   :titlesonly:
-
-   /dev/sample_plugin/README.md
+A formatted version of the sample README.md can be found here: :doc:`README.md <../dev/sample_plugin/README>`
 
 A raw version of the README.md for copy and paste can be found below the Python source code.
 
