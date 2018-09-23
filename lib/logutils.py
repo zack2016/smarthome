@@ -38,7 +38,7 @@ class Filter(logging.Filter):
             self.name = name
         elif len(name) == 0:
             self.name = []
-        else
+        else:
             self.name = [name]
 
     def filter(self, record):
