@@ -323,7 +323,7 @@ class Http(object):
         """
         return requests.auth.HTTPDigestAuth(user, password)
 
-    def post_json(self, url=None, params=None, verify=True, auth=None, json=None):
+    def post_json(self, url=None, params=None, verify=True, auth=None, json=None, files={}):
         """
         Launches a POST request and returns JSON answer as a dict or None on error.
 
@@ -340,8 +340,14 @@ class Http(object):
         :return: JSON answer decoded into a dict or None on whatever error occured
         :rtype: dict | None
         """
-        result = self.__post(url=url, params=params, verify=verify, auth=auth, json=json)
-        return result
+        if self.__post(url=url, params=params, verify=verify, auth=auth, json=json, files=files):
+            json = None
+            try:
+                json = self._response.json()
+            except:
+                self.logger.warning("Invalid JSON received from {} !".format(url if url else self.baseurl))
+            return json
+        return None
 
     def get_json(self, url=None, params=None, verify=True, auth=None):
         """
@@ -483,12 +489,13 @@ class Http(object):
         """
         return self._response
 
-    def __post(self, url=None, params=None, timeout=None, verify=True, auth=None, json=None):
+    def __post(self, url=None, params=None, timeout=None, verify=True, auth=None, json=None, data=None, files={}):
         url = self.baseurl + url if url else self.baseurl
         timeout = timeout if timeout else self.timeout
+        data = json if json else data
         self.logger.info("Sending POST request {} to {}".format(json, url))
         try:
-            self._response = self._session.post(url, params=params, timeout=timeout, verify=verify, auth=auth, json=json)
+            self._response = self._session.post(url, params=params, timeout=timeout, verify=verify, auth=auth, data=data, files=files)
             self.logger.debug("{} Posted to URL {}".format(self.response_status(), self._response.url))
         except Exception as e:
             self.logger.warning("Error sending POST request to {}: {}".format(url, e))
