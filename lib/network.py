@@ -421,7 +421,7 @@ class Http(object):
         """
         if self.__get(url=url, params=params, verify=verify, auth=auth, stream=True):
             self.logger.debug("Download of {} successfully completed, saving to {}".format(url, local))
-            with open(local, 'wb') as f:
+            with open(str(local), 'wb') as f:
                 for chunk in self._response:
                     f.write(chunk)  
             return True
