@@ -13,6 +13,7 @@
   },
   "SYSTEM": {
     "SYSTEMINFO": "Systeminfo",
+    "CHARTS": "Resource Charts",
     "PYPI CHECK": "PyPI Check",
     "DISCLOSURES": "Disclosures",
     "SHNG_VERSION": "SmartHomeNG Version",
@@ -114,6 +115,8 @@
 
     "DETAILS OF CONFIGURATION": "Details of plugin configuration section '{{configname}}' --- (for plugin '{{pluginname}}')",
     "PARAMETERS": "Parameters",
+    "PARAMETER": "Parameter",
+    "VALUE": "Value",
     "ITEM ATTRIBUTES": "Item Attributes",
     "UPDATES TRIGGERED BY": "Plugin updates are triggered by {{count}} items",
     "PLUGIN METADATA": "Plugin Metadata",
@@ -122,7 +125,18 @@
     "MAINTAINER": "Maintainer",
     "TESTER": "Tester",
     "SUPPORT": "Support",
-    "DOCUMENTATION": "Documentation"
+    "DOCUMENTATION": "Documentation",
+    "PLUGIN_CONFIGURATION": "Plugin Configuration",
+    "PLUGIN_DISABLED": "Plugin will not be loaded at restart!",
+
+    "CONFIGURATION_ERRORS": "Configuration error(s)",
+    "DEFINED_MIN": "Defined minimum is",
+    "DEFINED_MAX": "Defined maximum is",
+    "ACTUAL_VALUE": "the actual value is",
+    "MANDATORY_VALUE": "This parameter is mandatory and may not be left empty",
+    "INVALID_KNX_ADDRESS": "is not a valid KNX group address",
+    "INVALID_MAC_ADDRESS": "is not a valid MAC address",
+    "INVALID_IP_ADDRESS": "is not a valid IP address"
   },
   "SCENES": {
     "SCENE": "Scene",
@@ -137,7 +151,13 @@
     "ACTIVE": "Active"
   },
 
-  "CLOSE": "Close",
+  "BUTTON": {
+    "CLOSE": "Close",
+    "SAVE": "Save",
+    "ABORT": "Abort",
+    "LOGOUT": "Logout",
+    "ADD_PLUGIN": "Add Plugin"
+  },
 
   "YES": "Yes",
   "NO": "No",
@@ -151,5 +171,8 @@
   "SECONDS": "seconds",
 
   "True": "True",
-  "False": "False"
+  "False": "False",
+
+  "CONFIGURATION": "Configuration",
+  "RESTART FOR CHANGES": "Restart SmartHomeNG for changes to take effect"
 }

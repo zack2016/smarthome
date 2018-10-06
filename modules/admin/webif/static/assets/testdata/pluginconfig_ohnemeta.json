@@ -1,0 +1,290 @@
+
+{
+  "readonly": false,
+  "plugin_config": {
+    "backend": {
+      "plugin_name": "backend",
+      "language": "de",
+      "pypi_timeout": "4",
+      "_description": {
+        "de": "Web Interface zur Anzeige von Informationen zum System und SmartHomeNG Backend-Daten",
+        "en": "webinterface for displaying system information and SmartHomeNG backend data"
+      }
+    },
+    "blockly": {
+      "plugin_name": "blockly",
+      "_description": {
+        "de": "Blockly - graphischer Editor für Logiken - Noch in der Entwicklung, nicht für die Nutzung gedacht",
+        "en": "Blockly - graphical editor for logics - Still in development, not for use"
+      }
+    },
+    "cli": {
+      "class_path": "plugins.cli",
+      "ip": "0.0.0.0",
+      "port": "2323",
+      "update": "True",
+      "hashed_password": "none",
+      "_description": {
+        "de": "Command Line Interface für SmartHomeNG - Funktioniert mit SmartHomeNG v1.4 und höher",
+        "en": "Commandline interface for SmartHomeNG - Works with SmartHomeNG v1.4 and up"
+      }
+    },
+    "develop": {
+      "plugin_name": "priv_develop",
+      "_description": {
+        "de": "Development Plugin für SmartHomeNG v1.5 und höher - zur Anzeige interner Daten von SmartHomeNG",
+        "en": "Develop Plugin for for SmartHomeNG v1.5 and up - For display of internal data of SmartHomeNG"
+      }
+    },
+    "logconf": {
+      "plugin_name": "priv_logconf",
+      "_description": {
+        "de": "Proof of concept für eine online Konfiguration des Logging für SmartHomeNG v1.5 und höher",
+        "en": "Proof of concept for online logging configuration for for SmartHomeNG v1.5 and up"
+      }
+    },
+    "homematic1": {
+      "plugin_name": "homematic",
+      "instance": "hm1",
+      "host": "10.0.0.185",
+      "learnmode_length": "60",
+      "_description": {
+        "de": "Ansteuerung von HomeMatic Komponenten über eine HomeMatic CCU2 Zentrale. Es werden HomeMatic und HomeMaticIP Geräte unterstützt.",
+        "en": "Control HomeMatic devices through a HomeMatic CCU2 (used as gateway). HomeMatic and HomeMaticIP devices are supported."
+      }
+    },
+    "knx": {
+      "plugin_name": "knx",
+      "_description": {
+        "de": "Anbindung von KNX Bussystemen via EIBD/KNXD Daemon",
+        "en": "Establishes connections to KNX bus systems via EIBD/KNXD daemon",
+        "fr": "Connexion de systèmes KNX via EIBD/KNXD"
+      }
+    },
+    "mqtt": {
+      "plugin_name": "mqtt",
+      "host": "smarthomeng.local",
+      "broker_monitoring": "True",
+      "last_will_topic": "devices/shng/$online",
+      "last_will_payload": "False",
+      "birth_topic": "devices/shng/$online",
+      "birth_payload": "True",
+      "user": "shng",
+      "password": "shng",
+      "_description": {
+        "de": "Implementierung eines MQTT Clients. Umfassendere Implementierung des MQTT Protokolls v3.1.1",
+        "en": "Implementation of a MQTT client. Feature enriched implementation of the MQTT protocol v3.1.1"
+      }
+    },
+    "simulation": {
+      "plugin_name": "simulation",
+      "data_file": "/usr/smarthome/var/db/simulation.txt",
+      "_description": {
+        "de": "Aufnahme und Abspielen von Aktionsreihenfolgen.",
+        "en": "Recording And Replay of Actions on Items."
+      }
+    },
+    "smartvisu_pages": {
+      "plugin_name": "visu_smartvisu",
+      "smartvisu_dir": "/var/www/html/smartvisu",
+      "generate_pages": "True",
+      "handle_widgets": "True",
+      "overwrite_templates": "Yes",
+      "visu_style": "blk",
+      "_description": {
+        "de": "smartVISU Unterstützung: Autogenerierung von Seiten; Widget Handling",
+        "en": "Support for smartVISU: Automatic generation of pages; widget handling"
+      }
+    },
+    "tankerkoenig": {
+      "class_name": "TankerKoenig",
+      "class_path": "plugins.tankerkoenig",
+      "apikey": "3f16971f-da07-7d31-4c51-294c2d07cf06",
+      "_description": {
+        "de": "Benzinpreise über die API von Tankerkönig. Bitte sicherstellen, die API nicht zu oft aufzurufen. Bitte Hinweise unter https://creativecommons.tankerkoenig.de/#techInfo beachten!",
+        "en": "Petrol station prices by the API of TankerKönig. Take care not to request the interface too often or for too many petrol stations. Please follow instructions given on https://creativecommons.tankerkoenig.de/#techInfo."
+      }
+    },
+    "websocket": {
+      "plugin_name": "visu_websocket",
+      "port": "2424",
+      "wsproto": "4",
+      "acl": "rw",
+      "querydef": "True",
+      "_description": {
+        "de": "Websocket Protokoll für Visus (smartVISU, etc.)",
+        "en": "Support for a websocket protocol (for smartVISU, etc.)"
+      }
+    },
+    "wetter_hamburg": {
+      "plugin_name": "wunderground",
+      "apikey": "4e829758f4c09362",
+      "location": "Germany/Barmbek-Nord",
+      "item_subtree": "wetter.ham",
+      "instance": "Hamburg",
+      "_description": {
+        "de": "Abfrage der Daten des Wetterdienstes Wunderground.com",
+        "en": "Get weather data from wunderground.com"
+      }
+    },
+    "wetter_boston": {
+      "plugin_name": "wunderground",
+      "apikey": "4e829758f4c09362",
+      "location": "MA/Boston",
+      "item_subtree": "wetter.bos",
+      "log_start": "True",
+      "instance": "boston",
+      "_description": {
+        "de": "Abfrage der Daten des Wetterdienstes Wunderground.com",
+        "en": "Get weather data from wunderground.com"
+      }
+    },
+    "widgets": {
+      "plugin_name": "priv_widgets",
+      "_description": {
+        "de": "Einige Widgets für die smartVISU v2.8",
+        "en": "A couple of widgets for smartVISU v2.8"
+      }
+    },
+    "willy_tel": {
+      "plugin_name": "avm",
+      "password": "417592",
+      "host": "10.0.0.4",
+      "port": "49443",
+      "cycle": "300",
+      "ssl": "True",
+      "verify": "False",
+      "call_monitor": "True",
+      "instance": "willy_tel",
+      "_description": {
+        "de": "Ansteuerung von AVM FRITZ!Boxen, WLAN-Repeatern, DECT Steckdosen, etc.",
+        "en": "Get and send data from/to AVM devices such as the FRITZ!Box, Wifi Repeaters or DECT sockets."
+      }
+    },
+    "Fritzbox_wz": {
+      "plugin_name": "avm",
+      "password": "417592",
+      "host": "10.0.0.6",
+      "port": "49443",
+      "cycle": "300",
+      "ssl": "True",
+      "verify": "False",
+      "call_monitor": "True",
+      "instance": "fritz_wz",
+      "_description": {
+        "de": "Ansteuerung von AVM FRITZ!Boxen, WLAN-Repeatern, DECT Steckdosen, etc.",
+        "en": "Get and send data from/to AVM devices such as the FRITZ!Box, Wifi Repeaters or DECT sockets."
+      }
+    },
+    "dreambox_wz": {
+      "class_name": "Enigma2",
+      "class_path": "plugins.enigma2",
+      "host": "10.0.0.91",
+      "port": "80",
+      "cycle": "120",
+      "fast_cycle": "60",
+      "ssl": "False",
+      "verify": "False",
+      "instance": "db_wz",
+      "_description": {
+        "de": "Plugin zur Einbindung von Enigma2 kompatiblen Sat-Receivern mit openwebif",
+        "en": "Plugin to include Enigma2 sat receivers compatible to openwebif"
+      }
+    },
+    "dreambox_sz": {
+      "class_name": "Enigma2",
+      "class_path": "plugins.enigma2",
+      "host": "10.0.0.92",
+      "port": "80",
+      "cycle": "90",
+      "fast_cycle": "30",
+      "ssl": "False",
+      "verify": "False",
+      "instance": "db_sz",
+      "_description": {
+        "de": "Plugin zur Einbindung von Enigma2 kompatiblen Sat-Receivern mit openwebif",
+        "en": "Plugin to include Enigma2 sat receivers compatible to openwebif"
+      }
+    },
+    "dreambox_az": {
+      "class_name": "Enigma2",
+      "class_path": "plugins.enigma2",
+      "host": "10.0.0.93",
+      "port": "80",
+      "cycle": "60",
+      "fast_cycle": "20",
+      "ssl": "False",
+      "verify": "False",
+      "instance": "db_az",
+      "_description": {
+        "de": "Plugin zur Einbindung von Enigma2 kompatiblen Sat-Receivern mit openwebif",
+        "en": "Plugin to include Enigma2 sat receivers compatible to openwebif"
+      }
+    },
+    "beschattung": {
+      "plugin_name": "operationlog",
+      "name": "beschattungslog",
+      "_description": {
+        "de": "Implementierung seperater Logs",
+        "en": "Implementation of seperate logs"
+      }
+    },
+    "HUE": {
+      "class_name": "HUE",
+      "class_path": "plugins.hue",
+      "hue_ip": [
+        "PhilipsHueBridge.fritz.box",
+        "10.0.0.236"
+      ],
+      "hue_port": [
+        80,
+        80
+      ],
+      "hue_user": [
+        "knxbususer",
+        "user2"
+      ],
+      "_description": {
+        "de": "Anbindung einer oder mehrerer Philips HUE Bridges",
+        "en": "Gateway for connection to one or more Philips HUE bridges"
+      }
+    },
+    "sampleclassic": {
+      "plugin_name": "priv_sample_classicplugin"
+    },
+    "database": {
+      "plugin_name": "database",
+      "driver": "sqlite3",
+      "connect": [
+        "database:/usr/local/shng_dev/var/db/smarthomeng.db",
+        "check_same_thread:0"
+      ],
+      "_description": {
+        "de": "Database plugin, **seit SmartHomeNG v1.3**",
+        "en": "Database plugin, **since SmartHomeNG v1.3**"
+      }
+    },
+    "WebServices": {
+      "class_name": "WebServices",
+      "class_path": "plugins.webservices",
+      "_description": {
+        "de": "Implementierung eines Webservice interfaces",
+        "en": "Implementation of a webservice interface"
+      }
+    },
+    "wol": {
+      "plugin_name": "wol",
+      "_description": {
+        "de": "Wake on LAN",
+        "en": "Wake on LAN"
+      }
+    },
+    "sample_plugin": {
+      "plugin_name": "priv_sample_plugin_1_5",
+      "_description": {
+        "de": "Beispiel Plugin für SmartHomeNG v1.5 und höher",
+        "en": "Sample plugin for SmartHomeNG v1.5 and up"
+      }
+    }
+  }
+}
