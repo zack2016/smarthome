@@ -109,11 +109,16 @@ class Plugins():
         self._load_translations()
         
         logger.info('Load plugins')
-        
+
+        # for every section (plugin) in the plugin.yaml file
         for plugin in _conf:
             logger.debug("Plugins, section: {}".format(plugin))
             plugin_name, self.meta = self._get_pluginname_and_metadata(plugin, _conf[plugin])
-            if self.meta.test_shngcompatibility():
+
+            # Test if plugin is disabled
+            if str(_conf[plugin].get('plugin_enabled', None)).lower() == 'false':
+                logger.warning("Section {} (plugin_name {}) is disabled - Plugin not loaded".format(plugin, _conf[plugin].get('plugin_name', None)))
+            elif self.meta.test_shngcompatibility():
                 classname, classpath = self._get_classname_and_classpath(_conf[plugin], plugin_name)
                 if (classname == '') and (classpath == ''):
                     logger.error("Plugins, section {}: plugin_name is not defined".format(plugin))
