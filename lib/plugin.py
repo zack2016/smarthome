@@ -117,7 +117,7 @@ class Plugins():
 
             # Test if plugin is disabled
             if str(_conf[plugin].get('plugin_enabled', None)).lower() == 'false':
-                logger.warning("Section {} (plugin_name {}) is disabled - Plugin not loaded".format(plugin, _conf[plugin].get('plugin_name', None)))
+                logger.info("Section {} (plugin_name {}) is disabled - Plugin not loaded".format(plugin, _conf[plugin].get('plugin_name', None)))
             elif self.meta.test_shngcompatibility():
                 classname, classpath = self._get_classname_and_classpath(_conf[plugin], plugin_name)
                 if (classname == '') and (classpath == ''):
