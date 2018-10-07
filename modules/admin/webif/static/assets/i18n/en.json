@@ -63,6 +63,7 @@
 
     "ATTRIBUTE": "Attribute",
     "VALUE": "Value",
+    "ACTIONS": "Actions",
 
     "PATH": "Item Path",
     "NAME": "Item Name",

@@ -221,9 +221,9 @@ class PluginData:
                     self.logger.warning('confplg {}: Passed for plginstance = {}'.format(confplg, plginstance))
             else:
                 # nicht geladene Plugins
-                self.logger.warning("confplg {}: type(plginstance) = None".format(confplg))
+                # self.logger.warning("confplg {}: type(plginstance) = None".format(confplg))
                 plugin_name, metadata = self._get_pluginname_and_metadata(confplg, _conf[confplg])
-                self.logger.warning("plugin_name = {}, meta = {}".format(plugin_name, metadata.meta))
+                # self.logger.warning("plugin_name = {}, meta = {}".format(plugin_name, metadata.meta))
 
                 typ = metadata.get_string('type')
                 _conf[confplg]['_meta'] = metadata.meta
@@ -234,11 +234,6 @@ class PluginData:
                     _conf[confplg]['_description']['de'] = ''
                     _conf[confplg]['_description']['en'] = ''
 
-#            try:
-#                obj = plginstance.metadata.meta['plugin']['description']
-#            except:
-#                obj = None
-            # self.logger.warning("Conf-Plugin: {} -> Plugin {} (type {}) - in obj {}".format(confplg, plg, typ, obj))
 
         info['plugin_config'] = _conf
 
