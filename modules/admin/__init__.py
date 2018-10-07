@@ -42,7 +42,7 @@ suburl = 'admin'
 
 class Admin():
 
-    version = '0.2.0'
+    version = '0.2.1'
     longname = 'Admin module for SmartHomeNG'
     port = 0
 
@@ -75,6 +75,8 @@ class Admin():
             self.pypi_timeout = self._parameters['pypi_timeout']
             self.itemtree_fullpath = self._parameters['itemtree_fullpath']
             self.itemtree_searchstart = self._parameters['itemtree_searchstart']
+            self.websocket_host = self._parameters['websocket_host']
+            self.websocket_port = self._parameters['websocket_port']
         except:
             self.logger.critical("Module '{}': Inconsistent module (invalid metadata definition)".format(self.shortname))
             self._init_complete = False
@@ -222,6 +224,8 @@ class WebInterface(SystemData, ItemData, SchedulerData, PluginData, SceneData, T
         response['itemtree_searchstart'] = self.module.itemtree_searchstart
         response['tz'] = self.module.shtime.tz
         response['tzname'] = str(self.module.shtime.tzname())
+        response['websocket_host'] = self.module.websocket_host
+        response['websocket_port'] = self.module.websocket_port
         return json.dumps(response)
 
 

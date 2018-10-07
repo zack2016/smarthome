@@ -211,8 +211,8 @@ class PluginData:
             plginstance = self.plugins.return_plugin(confplg)
             typ = '?'
             if plginstance != None:
-                self.logger.warning("confplg {}: type(plginstance) = {}".format(confplg, type(plginstance)))
-                self.logger.warning("confplg {}: type(plginstance.metadata) = {}".format(confplg, type(plginstance.metadata)))
+                # self.logger.warning("confplg {}: type(plginstance) = {}".format(confplg, type(plginstance)))
+                # self.logger.warning("confplg {}: type(plginstance.metadata) = {}".format(confplg, type(plginstance.metadata)))
                 try:
                     typ = plginstance.metadata.get_string('type')
                     _conf[confplg]['_meta'] = plginstance.metadata.meta
@@ -227,7 +227,12 @@ class PluginData:
 
                 typ = metadata.get_string('type')
                 _conf[confplg]['_meta'] = metadata.meta
-                _conf[confplg]['_description'] = metadata.meta['plugin']['description']
+                try:
+                    _conf[confplg]['_description'] = metadata.meta['plugin']['description']
+                except:
+                    _conf[confplg]['_description'] = {}
+                    _conf[confplg]['_description']['de'] = ''
+                    _conf[confplg]['_description']['en'] = ''
 
 #            try:
 #                obj = plginstance.metadata.meta['plugin']['description']
