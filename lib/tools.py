@@ -120,7 +120,6 @@ class Tools():
         :return: val = relative humidity (in percent)
         :rtype: dict
         """
-        //returns relative humidity if the absolute humidity and the temperature are given
         T=t+273.15
         ah=ah/1000
         sat_p=math.exp(77.3450 + 0.0057* T - 7235 / T) / math.pow(T,8.2   )
