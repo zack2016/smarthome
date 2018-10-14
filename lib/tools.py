@@ -109,6 +109,17 @@ class Tools():
         return mix * rhov * 1000
     
     def abs2rel(self,t,ah):
+        """
+        Return the relative humidity from the absolute humidity (g/cm3) and temperature (Celsius)
+        
+        :param t: temperature in celsius
+        :type t: float
+        :param ah: absolute humidity (g/cm3)
+        :type t: float
+        
+        :return: val = relative humidity (in percent)
+        :rtype: dict
+        """
         //returns relative humidity if the absolute humidity and the temperature are given
         T=t+273.15
         ah=ah/1000
