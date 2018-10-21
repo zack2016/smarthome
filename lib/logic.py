@@ -719,7 +719,8 @@ class Logics():
         
         logger.info("set_config_section_key: section={}, key={}, value={}".format(section, key, str(value)))
         if value == None:
-            del conf[section][key]
+            if conf[section].get(key, None) != None:
+                del conf[section][key]
         else:
             conf[section][key] = value
 
@@ -769,10 +770,14 @@ class Logics():
         # empty section
         if conf.get(section, None) == None:
             conf[section] = shyaml.get_emptynode()
-        del conf[section]['filename']
-        del conf[section]['cycle']
-        del conf[section]['crontab']
-        del conf[section]['watch_item']
+        if conf[section].get('filename', None) != None:
+            del conf[section]['filename']
+        if conf[section].get('cycle', None) != None:
+            del conf[section]['cycle']
+        if conf[section].get('crontab', None) != None:
+            del conf[section]['crontab']
+        if conf[section].get('watch_item', None) != None:
+            del conf[section]['watch_item']
 
         # add entries to section
         logger.info("update_config_section: section {}".format(section))
@@ -886,7 +891,8 @@ class Logics():
             else:
                 logger.warning("delete_logic: Skipped deletion of logic file '{}' because it is used by {} other logic(s)".format(filename, count-1))
         
-        del conf[name]
+        if conf.get('name', None) != None:
+            del conf[name]
         logger.warning("delete_logic: Section '{}' from configuration deleted".format(name))
         
         # save /etc/logic.yaml
