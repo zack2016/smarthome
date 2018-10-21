@@ -136,7 +136,7 @@ class Orb():
 
     def pos(self, offset=None, degree=False, dt=None):  # offset in minutesA
         if dt is None:
-            date = dt = datetime.datetime.utcnow()
+            date = datetime.datetime.utcnow()
         else:
             date = dt.replace(tzinfo=tzutc())
         if offset:
