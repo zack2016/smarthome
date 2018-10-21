@@ -1,10 +1,16 @@
 ephem>=3.7
 python-dateutil>=2.5.3
 psutil
-ruamel.yaml>=0.13.7,<=0.15;python_version<'3.7'
-ruamel.yaml>0.15.0,<0.16.0;python_version>='3.7'
+#ruamel.yaml>=0.13.7,<=0.15;python_version<'3.7'
+ruamel.yaml>=0.13.7,<=0.15.74;python_version<'3.7'
+ruamel.yaml>0.15.0,<=0.15.74;python_version>='3.7'
 requests>=2.9.1;python_version>'3.2'
 #requests>=2.9.1
-# modules:
+# -------------
+# modules: http
 cherrypy>=8.1.2
 jinja2>=2.8
+# modules: admin
+pyjwt>=1.6.4
+#pyjwt2>=1.6.4
+#lunardate>=0.2.0
