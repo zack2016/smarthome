@@ -36,8 +36,9 @@ import subprocess
 # Update auf 1.5  wg. Release"
 # Update auf 1.5.1 wg. Hotfix Release
 # Update auf 1.5a wg. Changes in lib.shtime
+# Update auf 1.5b wg. Introduction of lib.shpypi
 
-shNG_version = '1.5a'
+shNG_version = '1.5b'
 
 # ---------------------------------------------------------------------------------
 FileBASE = None

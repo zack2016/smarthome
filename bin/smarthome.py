@@ -100,6 +100,7 @@ import lib.tools
 import lib.utils
 import lib.orb
 from lib.shtime import Shtime
+from lib.shpypi import Shpypi
 import lib.shyaml
 
 from lib.constants import (YAML_FILE, CONF_FILE, DEFAULT_FILE)
@@ -239,10 +240,24 @@ class SmartHome():
             self.shtime.set_tz(self._tz)
             del(self._tz)
 
+        # test if needed Python packages are installed
+        self.shpypi = Shpypi(self)
+        if not self.shpypi.test_base_requirements(logging=False):
+            print()
+            exit(1)
+
+        #############################################################
         # setup logging
         self.init_logging(self._log_conf_basename, MODE)
+
+        #############################################################
+        # Fork process and write pidfile
+        if MODE == 'default':
+            lib.daemon.daemonize(PIDFILE)
+
+        pid = lib.daemon.read_pidfile(PIDFILE)
         self._logger.warning("--------------------   Init SmartHomeNG {}   --------------------".format(VERSION))
-        self._logger.warning("Running in Python interpreter 'v{}' on {} platform".format(PYTHON_VERSION, sys.platform))
+        self._logger.warning("Running in Python interpreter 'v{}' (pid={}) on {} platform".format(PYTHON_VERSION, pid, sys.platform))
 
         if self._extern_conf_dir != BASE:
             self._logger.warning("Using config dir {}".format(self._extern_conf_dir))
@@ -260,11 +275,6 @@ class SmartHome():
             self._logger.critical("Aborting")
             exit(1)
 
-
-        #############################################################
-        # Fork process and write pidfile
-        if MODE == 'default':
-            lib.daemon.daemonize(PIDFILE)
 
         # Add Signal Handling
 #        signal.signal(signal.SIGHUP, self.reload_logics)

@@ -59,9 +59,9 @@ class Shtime:
         self.set_tzinfo(dateutil.tz.gettz('UTC'))
 
 
-    # -------------------------------------------------------------------------------------------
-    #   Following (static) method of the class Scheduler implement the API for schedulers in shNG
-    # -------------------------------------------------------------------------------------------
+    # -----------------------------------------------------------------------------------------------------
+    #   Following (static) method of the class Shtime implement the API for date and time handling in shNG
+    # -----------------------------------------------------------------------------------------------------
 
     @staticmethod
     def get_instance():

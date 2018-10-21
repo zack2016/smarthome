@@ -136,7 +136,7 @@ def read_pidfile(pidfile):
     :return: PID of SmartHomeNG or 0 if it is not running
     :rtype: int
     """
-    
+
     if os.path.isfile(pidfile):
         fd = open(pidfile,'r')
         line = fd.readline()
