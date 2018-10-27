@@ -76,7 +76,11 @@ def convert_linenumber(s, occ=1):
     else:
         return '*' + s
     lineold = s2[:s2.find(')')]
-    linenew = str(int((int(lineold)+1)/2))
+    try:
+        linenew = str(int((int(lineold)+1)/2))
+    except:
+        logger.warning('Unable to correct line number for yaml-file error. Wrong line number is {}'.format(lineold))
+        linenew = str(lineold)
     lo = 'line '+lineold
     ln = 'line '+linenew
     lo2 = '(line: '+lineold+')'

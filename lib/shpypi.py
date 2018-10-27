@@ -95,6 +95,12 @@ class Shpypi:
 
 
     def get_installed_packages(self):
+        """
+        Returns a dict with the versions of the installed packages
+
+        :return: dict of package and version
+        :rtype: dict
+        """
 
         installed_packages = pkg_resources.working_set
 
@@ -108,7 +114,7 @@ class Shpypi:
 
     def test_requirements(self, filepath, logging=True):
         if logging:
-            self.logger.warning("test_requirements: filepath '{}' is checked".format(filepath))
+            self.logger.info("test_requirements: filepath '{}' is checked".format(filepath))
 
         req_dict = self.parse_requirementsfile(filepath)
         inst_dict = self.get_installed_packages()
@@ -234,6 +240,264 @@ class Shpypi:
         return result_dict
 
 
+
+
+    package_list = []  # list of packages - gets filled by get_packagelist()
+
+
+    def set_packagedata(self, name, add=False):
+        """
+        Add a package dict to the list (if the package name does not jet exist) and return the index to that list entry
+
+        :param name: name of the Python packahe
+        :type name: str
+
+        :return: index of the packages' dict within the list
+        :rtype: int
+        """
+        list_index = next((index for (index, d) in enumerate(self.package_list) if d["name"] == name), None)
+        if list_index == None and add:
+            package = {}
+            package['name'] = name
+            package['vers_installed'] = '-'
+            package['is_required'] = False
+#            package['is_required_for_modules'] = False
+            package['is_required_for_plugins'] = False
+            package['is_required_for_testsuite'] = False
+            package['is_required_for_docbuild'] = False
+            package['required_group'] = '6';
+            package['sort'] = self._build_sortstring(package)
+
+            package['vers_req_min'] = ''
+            package['vers_req_max'] = ''
+            package['vers_req_msg'] = ''
+            package['vers_req_source'] = ''
+
+            package['vers_ok'] = False
+            package['vers_recent'] = False
+            package['pypi_version'] = ''
+            package['pypi_version_ok'] = True
+            package['pypi_version_not_available_msg'] = ''
+            package['pypi_doc_url'] = ''
+
+
+            self.package_list.append(package)
+            list_index = len(self.package_list) - 1
+
+        return list_index
+
+
+    def get_packagelist(self):
+        """
+        Get the combined list of installed and required packages
+
+        :return: Complete list of package date
+        :rtype: list
+        """
+
+        self.package_list = []
+
+        # process required base packages
+        required_packages = self.parse_requirementsfile(os.path.join(self._sh_dir, 'requirements', 'base.txt'))
+        self.logger.warning("get_packagelist: required_packages = {}".format(required_packages))
+
+        for pkg_name in required_packages:
+            if required_packages[pkg_name] != {}:   # ignore empty requirements (e.g. requirement exists only for other Python version
+                index = self.set_packagedata(pkg_name, add=True)
+                if index != None:
+                    package = self.package_list[index]
+
+                    package['is_required'] = True
+                    package['sort'] = self._build_sortstring(package)
+
+                    package['vers_req_min'] = required_packages[pkg_name].get('min', '*')
+                    package['vers_req_max'] = required_packages[pkg_name].get('max', '*')
+                    package['vers_req_msg'] = ''
+                    package['vers_req_source'] = ''
+                    package['sort'] = self._build_sortstring(package)
+
+
+        # process installed packages
+        installed_packages = self.get_installed_packages()
+        self.logger.warning("get_packagelist: installed_packages = {}".format(installed_packages))
+        for pkg_name in installed_packages:
+            index = self.set_packagedata(pkg_name, add=True)
+            if index != None:
+                package = self.package_list[index]
+
+                package['vers_installed'] = installed_packages[pkg_name]
+
+        self.logger.warning("get_packagelist: package_list = {}".format(self.package_list))
+
+
+        # process required (all) packages
+        required_packages = self.parse_requirementsfile(os.path.join(self._sh_dir, 'requirements', 'all.txt'))
+        self.logger.warning("get_packagelist: required_packages = {}".format(required_packages))
+
+        for pkg_name in required_packages:
+            if required_packages[pkg_name] != {}:   # ignore empty requirements (e.g. requirement exists only for other Python version
+                index = self.set_packagedata(pkg_name, add=False)
+                if index != None:
+                    package = self.package_list[index]
+
+                    if package['is_required'] == False:
+                        package['is_required_for_plugins'] = True
+                        package['sort'] = self._build_sortstring(package)
+
+                    package['vers_req_min'] = required_packages[pkg_name].get('min', '*')
+                    package['vers_req_max'] = required_packages[pkg_name].get('max', '*')
+                    package['vers_req_msg'] = ''
+                    package['vers_req_source'] = ''
+
+
+        # process required doc-packages
+        required_packages = self.parse_requirementsfile(os.path.join(self._sh_dir, 'doc', 'requirements.txt'))
+        self.logger.warning("get_packagelist: required_doc_packages = {}".format(required_packages))
+
+        for pkg_name in required_packages:
+            if required_packages[pkg_name] != {}:   # ignore empty requirements (e.g. requirement exists only for other Python version
+                index = self.set_packagedata(pkg_name, add=True)
+                if index != None:
+                    package = self.package_list[index]
+
+                    if package['is_required'] == False:
+                        package['is_required_for_docbuild'] = True
+                        package['sort'] = self._build_sortstring(package)
+
+                    if package['vers_req_min'] == '' and package['vers_req_max'] == '':
+                        package['vers_req_min'] = required_packages[pkg_name].get('min', '*')
+                        package['vers_req_max'] = required_packages[pkg_name].get('max', '*')
+                    package['vers_req_msg'] = ''
+                    package['vers_req_source'] = ''
+
+
+        # process required test-packages
+        required_packages = self.parse_requirementsfile(os.path.join(self._sh_dir, 'requirements', 'test.txt'))
+        self.logger.warning("get_packagelist: required_test_packages = {}".format(required_packages))
+
+        for pkg_name in required_packages:
+            if required_packages[pkg_name] != {}:   # ignore empty requirements (e.g. requirement exists only for other Python version
+                index = self.set_packagedata(pkg_name, add=True)
+                package = self.package_list[index]
+
+                if package['is_required'] == False:
+                    package['is_required_for_testsuite'] = True
+                    package['sort'] = self._build_sortstring(package)
+
+                if package['vers_req_min'] == '' and package['vers_req_max'] == '':
+                    package['vers_req_min'] = required_packages[pkg_name].get('min', '*')
+                    package['vers_req_max'] = required_packages[pkg_name].get('max', '*')
+                package['vers_req_msg'] = ''
+                package['vers_req_source'] = ''
+
+        self.pypi_timeout = 4
+        # check if pypi service is reachable
+        if self.pypi_timeout <= 0:
+            pypi_available = False
+            #            pypi_unavailable_message = translate('PyPI Prüfung deaktiviert')
+            pypi_unavailable_message = 'PyPI Prüfung deaktiviert'
+        else:
+            pypi_available = True
+            try:
+                import socket
+                sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+                sock.settimeout(self.pypi_timeout)
+                #                sock.connect(('pypi.python.org', 443))
+                sock.connect(('pypi.org', 443))
+                sock.close()
+            except:
+                pypi_available = False
+                #                pypi_unavailable_message = translate('PyPI nicht erreichbar')
+                pypi_unavailable_message = 'PyPI nicht erreichbar'
+
+        # look for PyPI data of the packages
+        import xmlrpc
+        pypi = xmlrpc.client.ServerProxy('https://pypi.org/pypi')
+        for package in self.package_list:
+
+            ###
+            if pypi_available:
+                try:
+                    available = pypi.package_releases(package['name'])  # (dist.project_name)
+                    self.logger.debug(
+                        "pypi_json: pypi package: project_name {}, availabe = {}".format(package['name'], available))
+                    try:
+                        package['pypi_version'] = available[0]
+                        package['pypi_version_not_available_msg'] = ""
+                        package['pypi_version_ok'] = True
+                        package['pypi_doc_url'] = 'https://pypi.org/pypi/' + package['name']
+
+                    except:
+                        package['pypi_version_not_available_msg'] = '?'
+                        package['pypi_version_ok'] = False
+                        package['pypi_doc_url'] = ''
+
+                except:
+                    package['pypi_version'] = '--'
+                    #                        pkg['pypi_version_not_available_msg'] = [translate('Keine Antwort von PyPI')]
+                    package['pypi_version_not_available_msg'] = ['Keine Antwort von PyPI']
+            else:
+                package['pypi_version_not_available_msg'] = pypi_unavailable_message
+            ###
+
+            # check if installed version is ok and recent
+            if package['vers_installed'] != '-':
+                min = package['vers_req_min']
+                max = package['vers_req_max']
+                recent = package['pypi_version']
+                inst_vers = package['vers_installed']
+                if min == '*':
+                    min_met = True
+                else:
+                    min_met = self._compare_versions(min, inst_vers, '<=')
+                if max == '*':
+                    max_met = True
+                else:
+                    max_met = self._compare_versions(inst_vers, max, '<=')
+                if min_met and max_met:
+                    package['vers_ok'] = True
+                recent_met = self._compare_versions(inst_vers, recent, '==')
+                if recent_met:
+                    package['vers_recent'] = True
+                if max != '*':
+                    pypi_ok = self._compare_versions(recent, max, '<=')
+                    if not pypi_ok:
+                        package['pypi_version_ok'] = False
+
+        sorted_package_list = sorted(self.package_list, key=lambda k: k['sort'], reverse=False)
+        return sorted_package_list
+
+
+
+    def _build_sortstring(self, package):
+        """
+        Build and return the sort string, based on on the is_required_* elements of the requirements dict
+
+        :param package: package requirements
+        :type package: dict
+
+        :return: sortstring
+        :rtype: str
+        """
+        result = ''
+        if package['is_required']:
+            result = '1'
+#        elif package['is_required_for_modules']:
+#            result = '2'
+        elif package['is_required_for_plugins']:
+            result = '3'
+        elif package['is_required_for_testsuite']:
+            result = '4'
+        elif package['is_required_for_docbuild']:
+            result = '5'
+        else:
+            result = '6'
+
+        package['required_group'] = result
+        result += package['name']
+        return result
+
+
     def _remove_comments(self, rline):
         """
         :param rline: line from which comments are to be removed
@@ -286,6 +550,9 @@ class Shpypi:
             # Hier sollten die Einträge noch konsolidiert werden
             # Vorübergehend: Eine Liste von dicts zurückliefern
             return result_list
+
+        if len(result_list) == 0:
+            return {}
 
         return result_list[0]
 
