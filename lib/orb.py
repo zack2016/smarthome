@@ -80,8 +80,12 @@ class Orb():
     def noon(self, doff=0, moff=0, dt=None):
         if dt is not None:
             self._obs.date = dt - dt.utcoffset()
+            date_utc = (self._obs.date.datetime()).replace(tzinfo=tzutc())
         else:
             self._obs.date = datetime.datetime.utcnow() - dateutil.relativedelta.relativedelta(minutes=moff) + dateutil.relativedelta.relativedelta(seconds=2)
+            date_utc = (self._obs.date.datetime()).replace(tzinfo=tzutc())
+        if not doff == 0:
+            doff = self._avoid_neverup(dt, date_utc, doff)
         self._obs.horizon = str(doff)
         next_transit = self._obs.next_transit(self._orb).datetime()
         next_transit = next_transit + dateutil.relativedelta.relativedelta(minutes=moff)
@@ -90,8 +94,12 @@ class Orb():
     def midnight(self, doff=0, moff=0, dt=None):
         if dt is not None:
             self._obs.date = dt - dt.utcoffset()
+            date_utc = (self._obs.date.datetime()).replace(tzinfo=tzutc())
         else:
             self._obs.date = datetime.datetime.utcnow() - dateutil.relativedelta.relativedelta(minutes=moff) + dateutil.relativedelta.relativedelta(seconds=2)
+            date_utc = (self._obs.date.datetime()).replace(tzinfo=tzutc())
+        if not doff == 0:
+            doff = self._avoid_neverup(dt, date_utc, doff)
         self._obs.horizon = str(doff)
         next_antitransit = self._obs.next_antitransit(self._orb).datetime()
         next_antitransit = next_antitransit + dateutil.relativedelta.relativedelta(minutes=moff)
