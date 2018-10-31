@@ -856,7 +856,7 @@ class Logics():
         :return: True, if deletion fas successful
         :rtype: bool
         """
-        logger.warning("delete_logic: This routineimplements the deletion of logic '{}' (still in testing)".format(name))
+        logger.warning("delete_logic: This routine implements the deletion of logic '{}' (still in testing)".format(name))
         
         # Logik entladen
         if self.is_logic_loaded(name):
