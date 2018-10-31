@@ -374,8 +374,8 @@ class Http():
         :return:
         """
         pwd_hash = Utils.create_hash(password)
-        self.logger.warning("realm: {}, username: {}, password: {}, self._password: {}, self._hashed_password: {}".format(realm, username, password, self._password, self._hashed_password))
-        self.logger.warning("pwd_hash: {}, self._user_dict: {}".format(pwd_hash, self._user_dict))
+        # self.logger.warning("realm: {}, username: {}, password: {}, self._password: {}, self._hashed_password: {}".format(realm, username, password, self._password, self._hashed_password))
+        # self.logger.warning("pwd_hash: {}, self._user_dict: {}".format(pwd_hash, self._user_dict))
 
         user = self._user_dict.get(username, None)
         if user is None:
