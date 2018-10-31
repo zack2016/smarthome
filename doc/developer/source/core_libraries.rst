@@ -1,8 +1,11 @@
 Libraries
 =========
 
-Aside from the main program which resides in ``bin/smarthome.py`` there are libraries supporting SmartHomeNG.
-The description of their functions is shown here:
+Aside from the main program which resides in ``bin/smarthome.py`` there are libraries supporting SmartHomeNG. If a library
+has requirements for a Python package that is not met by the standard Python installation, it has to be added to the
+**requirements.txt** file in the ../lib directory.
+
+The description of the librarie's functions is shown here:
 
 
 .. toctree::

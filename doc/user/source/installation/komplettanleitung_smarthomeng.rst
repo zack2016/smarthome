@@ -59,6 +59,7 @@ Bitte auf den Punkt am Ende der **git clone** Kommandos achten!
 
 Das letzte Kommando sorgt dafür, dass die Python Requirements (../requirements/all.txt) aktuell generiert werden.
 
+
 Erstmalige Konfiguration erstellen
 ----------------------------------
 
@@ -118,12 +119,25 @@ gestalten.
 Zusätzliche Python Module installieren
 --------------------------------------
 
-Für den ersten Start müssen noch einige Module nachgeladen werden, dazu wird für den Core die mitgelieferte **requirements/base.txt** genutzt:
+Für den ersten Start müssen noch einige Python Packages nachgeladen werden, dazu muss für den Core eine Requirements-Datei
+erstellt werden und anschliend müssen die in dieser Datei (**requirements/base.txt**) angegebenen Module installiert werden.
+
+Zum erstellen der Datei folgende Befehle eingeben:
+
+.. code-block:: bash
+
+   cd /usr/local/smarthome
+   python3 tools/build_requirements.py
+
+
+Anschließend die Packages mit folgenden Befehlen installieren:
 
 .. code-block:: bash
 
    cd /usr/local/smarthome
    sudo pip3 install -r requirements/base.txt
+
+Mit diesen Befehlen werden die benötigten Python Packages für den Core und die Module von SmartHomeNG installiert.
 
 
 Jedes Plugin kann weitere Abhängigkeiten mit sich bringen. Diese sind einzeln zu installieren mit
@@ -133,7 +147,7 @@ Jedes Plugin kann weitere Abhängigkeiten mit sich bringen. Diese sind einzeln z
    sudo pip3 install -r plugins/<plugin-name-hier-einsetzen>/requirements.txt
 
 
-oder aber alternativ kann man auch sämtliche von allen Plugins benötigten Module nachladen über
+oder aber alternativ kann man auch sämtliche von allen Plugins benötigten Python Packages nachladen über
 
 .. code-block:: bash
 
@@ -141,6 +155,18 @@ oder aber alternativ kann man auch sämtliche von allen Plugins benötigten Modu
    python3 tools/build_requirements.py
 
    sudo pip3 install -r requirements/all.txt
+
+Die Datei **requirements/all.txt** installiert auch die vom Core benötigten Packages mit. Diese Datei wird mit dem oben
+beschriebenen Befehl zum Erstellen der Requirements-Datei mit erstellt.
+
+.. Note::
+
+   Falls der Befehl zum Erstellen der Requirements Dateien (base.txt und all.txt) nicht vorab ausgeführt wird, werden die
+   Dateien spätestens beim Start von SmartHomeNG erstellt.
+
+   Es kann allerdings dann zu einem Abbruch des Starts von SmartHomeNG kommen, da beim Start automatisch nur die beiden
+   Requirements-Dateien erstellt werden. Die benötigten Python Packages werden dabei nicht automatisch installiert, da
+   hierzu erweiterte Rechte (sudo) benötigt werden.
 
 
 SmartHomeNG starten
