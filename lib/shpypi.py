@@ -903,7 +903,8 @@ class Requirements_files():
         # pprint.pprint(requirements)
 
         filename = 'requirements' + os.sep + selection + '.txt'
-        with open(self.sh_basedir + os.sep + filename, 'w') as outfile:
+        complete_filename = self.sh_basedir + os.sep + filename
+        with open(complete_filename, 'w') as outfile:
             self._write_header(outfile, filename)
 
             for pkg in packagelist_consolidated:
@@ -911,7 +912,7 @@ class Requirements_files():
                     outfile.write('# {}\n'.format(req))
                 outfile.write('{}\n\n'.format(pkg['requests']))
 
-        return
+        return complete_filename
 
 
     def create_requirementsfile(self, selection):
@@ -942,6 +943,5 @@ class Requirements_files():
         # consolidate requirements
         packagelist_consolidated = self._consolidate_requirements(packagelist)
 
-        self._write_resultfile(selection, packagelist_consolidated, requirements)
-        return
+        return self._write_resultfile(selection, packagelist_consolidated, requirements)
 
