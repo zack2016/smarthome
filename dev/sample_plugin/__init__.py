@@ -27,14 +27,8 @@ from lib.module import Modules
 from lib.model.smartplugin import *
 
 
-# If a package is needed, which might be not installed in the Python environment,
-# import it like this:
-#
-# try:
-#     import <exotic package>
-#     REQUIRED_PACKAGE_IMPORTED = True
-# except:
-#     REQUIRED_PACKAGE_IMPORTED = False
+# If a needed package is imported, which might be not installed in the Python environment,
+# add it to a requirements.txt file within the plugin's directory
 
 
 class SamplePlugin(SmartPlugin):

@@ -69,19 +69,6 @@ python-openzwave>=0.4.0.35
 # telegram
 python-telegram-bot>=9.0.0
 
-# traffic
-# pushover
-# tankerkoenig
-# sonos
-# avm
-# intercom_2n
-# pushbullet
-# odlinfo
-# enigma2
-# nuki
-# join
-requests==2.5.1;python_version=='3.2'
-
 # SmartHomeNG Core
 # traffic
 # pushover
@@ -94,7 +81,8 @@ requests==2.5.1;python_version=='3.2'
 # enigma2
 # nuki
 # join
-requests>=2.9.1;python_version>'3.2'
+#requests: Requirements update to >=2.20.0 due to CVE-2018-18074
+requests>=2.20.0
 
 # SmartHomeNG Core
 #ruamel.yaml>=0.13.7,<=0.15;python_version<'3.7'

@@ -4,8 +4,8 @@ psutil
 #ruamel.yaml>=0.13.7,<=0.15;python_version<'3.7'
 ruamel.yaml>=0.13.7,<=0.15.74;python_version<'3.7'
 ruamel.yaml>0.15.0,<=0.15.74;python_version>='3.7'
-requests>=2.9.1;python_version>'3.2'
-#requests>=2.9.1
+#requests: Requirements update to >=2.20.0 due to CVE-2018-18074
+requests>=2.20.0
 # -------------
 # modules: http
 cherrypy>=8.1.2
