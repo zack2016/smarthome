@@ -32,7 +32,7 @@ Ausser diesem Muster wird noch ein weiteres Muster in Bezug auf den Sonnenauf- s
 * den Wert (z.B. "sunrise") und Limitierung vorher, z.B. `crontab = 06:00<sunrise` (zum Sonnenaufgang, frühestens um 6 Uhr)
 * den Wert (z.B. "sunrise") und Limitierung nachher, z.B. `crontab = sunrise<06:00` (zum Sonnenaufgang, spätestens um 6 Uhr)
 * den Werte (z.B. "sunset") und Limitierung vorher, z.B. `crontab = 18:00<sunset` (zum Sonnenuntergang, frühestens um 18 Uhr)
-* den Werte (z.B. "sunset") und Limitierung nachher, z.B. `crontab = sunset<20:00` (zum Sonnenaufgang, spätestens um 21 Uhr)
+* den Werte (z.B. "sunset") und Limitierung nachher, z.B. `crontab = sunset<20:00` (zum Sonnenaufgang, spätestens um 20 Uhr)
 * den Wert (z.B. "sunset") und beider Limitierungen, z.B. `crontab = 17:00<sunset<20:00` (zum Sonnenuntergang, frühestens um 17:00 und spätestens um 20:00 Uhr)
 * den Wert (z.B. "sunrise") und Minuten-Offset, z.B. `crontab = sunrise+10m` (10 Minuten nach Sonnenaufgang)
 * den Wert (z.B. "sunset") und Minuten-Offset, z.B. `crontab = sunset-10m` (10 Minuten vor Sonnenuntergang)
