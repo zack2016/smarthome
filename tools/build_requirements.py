@@ -69,5 +69,5 @@ print("File {} created.".format(fn))
 
 # req_files.create_requirementsfile('plugins')
 # print("File 'requirements" + os.sep + "plugins.txt' created.")
-req_files.create_requirementsfile('all')
+fn = req_files.create_requirementsfile('all')
 print("File {} created.".format(fn))
