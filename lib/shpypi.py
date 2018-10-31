@@ -33,6 +33,9 @@ except:
 import logging
 import os
 import sys
+import fnmatch
+import datetime
+import re
 
 from lib.utils import Utils
 
@@ -43,7 +46,7 @@ _shpypi_instance = None    # Pointer to the initialized instance of the Shpypi c
 class Shpypi:
 
 
-    def __init__(self, smarthome):
+    def __init__(self, sh=None):
         """
 
         :param smarthome:
@@ -61,8 +64,11 @@ class Shpypi:
 
         _shpypi_instance = self
 
-        self._sh = smarthome
-        self._sh_dir = self._sh.get_basedir()
+
+        if sh is None:
+            pass
+        else:
+            self._sh_dir = sh.get_basedir()    # anders bestimmen für tools/build_requirements.py
 
         return
 
@@ -155,12 +161,19 @@ class Shpypi:
 
     def test_base_requirements(self, logging=True):
 
+        # build an actual requirements file for core+modules
+        req_files = Requirements_files()
+        req_files.create_requirementsfile('base')
+        req_files.create_requirementsfile('all')
+
+        # test if the requirements of the base.txt file are met
         requirements_met = self.test_requirements(os.path.join(self._sh_dir, 'requirements', 'base.txt'), logging)
 
         if not requirements_met:
             if logging:
                 self.logger.error("test_base_requirements: Python package requirements not met - Should terminate")
             else:
+                # no logging, if called before logging is configured
                 print()
                 print("Python package requirements not met - SmartHomeNG is terminating")
 
@@ -652,3 +665,283 @@ class Shpypi:
             vlist.append(vi)
 
         return vlist
+
+
+
+# ===================================================================================================
+#
+# The following class can create requirements-files for one of the following selections:
+#
+#  - core
+#  - modules
+#  - base (core + modules)
+#  - plugins (all plugins in directory ../plugins
+#  - all (core + modules + plugins)
+#
+
+class Requirements_files():
+
+    _module_files = []
+    _plugin_files = []
+    _core_files = []  # to be a list in the future
+
+    def __init__(self):
+
+        self.sh_basedir = os.sep.join(os.path.realpath(__file__).split(os.sep)[:-2])
+        return
+
+
+    def _seperate_operator_version(self, op_vers):
+        """
+        Seperate operator and version number into a list of two seperate strings
+
+        :param op_vers:
+
+        :return: list containing 2 elements (operator, version)
+        :rtype: list
+        """
+        op_vers = op_vers.strip()
+        if op_vers.startswith('>='):
+            op = '>='
+            vers = op_vers[2:]
+        elif op_vers.startswith('=='):
+            op = '=='
+            vers = op_vers[2:]
+        elif op_vers.startswith('<='):
+            op = '<='
+            vers = op_vers[2:]
+        else:
+            op = ''
+            vers = op_vers
+        vers = vers.strip()
+
+        return [op,vers]
+
+
+    def _build_packagelist(self, requirements):
+        """
+        Build a list of dicts with package information
+
+        :return: list of package-dicts
+        :rtype: list
+        """
+
+        # build list of package requirement dicts
+        packagelist = []
+        for key in requirements:
+            packaged = {}
+            wrk = re.split('<|>|=', key)
+            packaged['pkg'] = wrk[0].strip()
+            if packaged['pkg'].startswith('#'):
+                continue
+
+            pkg = key[len(packaged['pkg']):]
+            if pkg.find(';') == -1:
+                # keine python_version angegeben
+                packaged['py_vers'] = ''
+                wrk = re.split(',', pkg)
+                wrk2 = []
+                for r in wrk:
+                    r2 = self._seperate_operator_version(r)
+                    wrk2.append(r2)
+                packaged['req'] = wrk2
+            else:
+                # python_version angegeben
+                wrk = re.split(';', pkg)
+                if wrk[1].startswith('python_version'):
+                    wrk[1] = wrk[1][len('python_version'):]
+                packaged['py_vers'] = wrk[1]
+                wrk = re.split(',', wrk[0])
+                wrk2 = []
+                for r in wrk:
+                    r2 = self._seperate_operator_version(r)
+                    wrk2.append(r2)
+                packaged['req'] = wrk2
+
+            plglist = requirements[key]
+            packaged['used_by'] = requirements[key]
+            packaged['key'] = packaged['pkg'] + '+' + packaged['py_vers']
+            packagelist.append(packaged)
+
+        # reassemble pip reqirements entries
+        for p in packagelist:
+            wrk = p['pkg']
+            wrk += p['req'][0][0] + p['req'][0][1]
+            if len(p['req']) > 1:
+                wrk += ','+p['req'][1][0] + p['req'][1][1]
+            if p['py_vers'] != '':
+                wrk += ';' + 'python_version' + p['py_vers']
+            p['requests'] = wrk
+
+        return packagelist
+
+
+    def _get_filelist(self, selection):
+
+        file_list = []
+        for root, dirnames, filenames in os.walk(self.sh_basedir + os.sep + selection):
+            level = root.count(os.sep)
+            if level < 6:  # don't search for requirements in _pv (previous versions)
+                for filename in fnmatch.filter(filenames, 'requirements.txt'):
+                    # print("level = {}: root = {}".format(level, root))
+                    file_list.append(os.path.join(root, filename))
+        return file_list
+
+
+    def _build_filelists(self, selection):
+
+        # global _module_files, _plugin_files, _core_files
+        self._module_files = []
+        self._plugin_files = []
+        self._core_files = []         # to be a list in the future
+
+        if selection in ['modules', 'base', 'all']:
+            # build list of all modules with requirements
+            self._module_files = self._get_filelist('modules')
+
+        if selection in ['plugins','all']:
+            # build list of all plugins with requirements
+            self._plugin_files = self._get_filelist('plugins')
+
+        if selection in ['core', 'base', 'all']:
+            # Read core requirements
+            self._core_files = self._get_filelist('lib')
+        return
+
+
+    def _read_requirementfile(self, fname, requirements, add_info):
+
+        package = ''.join((fname.split(os.sep))[-2:-1])
+
+        with open(fname) as ifile:
+            for line in ifile:
+                if len(line.rstrip()) != 0:
+                    #                self.setdefault(line.rstrip(), []).append('SmartHomeNG ' + package)
+                    requirements.setdefault(line.rstrip(), []).append(add_info + package)
+        return
+
+
+    def __read_requirementfiles(self):
+
+        requirements = {}
+
+        # Read requirements for core
+        for fname in self._core_files:
+            self._read_requirementfile(fname, requirements, 'SmartHomeNG-')
+
+        # Read requirements for modules
+        for fname in self._module_files:
+            self._read_requirementfile(fname, requirements, 'SmartHomeNG-module ')
+
+        # Read requirements for plugins
+        for fname in self._plugin_files:
+            self._read_requirementfile(fname, requirements, 'plugin ')
+
+        return requirements
+
+
+    def _consolidate_requirements(self, packagelist):
+
+        # key = <package>+<python-version req (if specified)>
+        packagelist_sorted = sorted(packagelist, key=lambda k: k['key'])
+
+        packagelist_consolidated = []
+        for p in packagelist_sorted:
+            for idx, package_consolidated in enumerate(packagelist_consolidated):
+                if p['key'] == package_consolidated['key']:
+                    if p['req'][0][0] == package_consolidated['req'][0][0]:
+                        # if operators are equal
+                        if p['req'][0][0] == '>=' and (p['req'][0][1]) >= package_consolidated['req'][0][1]:
+                            # if operator is == and version of p >= version of package_consolidated
+                            if package_consolidated['used_by'] != p['used_by']:
+                                # join list of plugins that use the package
+                                pl = package_consolidated['used_by']
+                                pl.extend(p['used_by'])
+                                p['used_by'] = pl
+                                packagelist_consolidated[idx] = p
+                            break
+                        else:
+                            print('gleiche Version ' + package_consolidated['req'][0][1] + ' / ' + p['req'][0][1])
+                            break
+                    elif package_consolidated['req'][0][0] == '==':
+                        # if operator is ==
+                        if p['req'][0][0] == '>=' and (not (package_consolidated['req'][0][1] >= p['req'][0][1])):
+                            print('ERROR: Requirements cannot be reconciled')
+                            print(package_consolidated['pkg'] + ': ' + package_consolidated['req'][0][0] +
+                                  package_consolidated['req'][0][1] + ' is incompatible to ' + p['req'][0][0] + p['req'][0][
+                                      1])
+                            packagelist_consolidated.append(p)
+
+                    elif p['req'][0][0] == '==':
+                        print('p Gleichheit ' + po['req'][0][1] + ' / ' + p['req'][0][1])
+            else:
+                packagelist_consolidated.append(p)
+        return packagelist_consolidated
+
+
+    def _write_header(self, ofile, filename):
+        filename = filename.ljust(25)
+        ofile.write('\n')
+        ofile.write('#   +-----------------------------------------------+\n')
+        ofile.write('#   |                 SmartHomeNG                   |\n')
+        ofile.write('#   |            DON\'T EDIT THIS FILE               |\n')
+        ofile.write('#   |           THIS FILE IS GENERATED              |\n')
+        ofile.write('#   |       BY tools/build_requirements.py          |\n')
+        ofile.write('#   |            ON '+datetime.datetime.now().strftime('%d.%m.%Y %H:%M')+'                |\n')
+        ofile.write('#   |                                               |\n')
+        ofile.write('#   |               INSTALL WITH:                   |\n')
+        ofile.write('#   | sudo pip3 install -r '+filename+'|\n')
+        ofile.write('#   +-----------------------------------------------+\n')
+        ofile.write('\n')
+
+
+    def _write_resultfile(self, selection, packagelist_consolidated, requirements):
+
+        for key in requirements:
+            requirements[key] = sorted(requirements[key], key=lambda name: (len(name.split('.')), name))
+
+        # pprint.pprint(requirements)
+
+        filename = 'requirements' + os.sep + selection + '.txt'
+        with open(self.sh_basedir + os.sep + filename, 'w') as outfile:
+            self._write_header(outfile, filename)
+
+            for pkg in packagelist_consolidated:
+                for req in pkg['used_by']:
+                    outfile.write('# {}\n'.format(req))
+                outfile.write('{}\n\n'.format(pkg['requests']))
+
+        return
+
+
+    def create_requirementsfile(self, selection):
+        """
+        Ths method creates a requirements-file for one of the following selections:
+
+          - core
+          - modules
+          - base (core + modules)
+          - plugins (all plugins in directory ../plugins
+          - all (core + modules + plugins)
+
+        :param selection: 'core' | 'modules' | 'base' | 'plugins' | 'all'
+        :type selection: str
+
+        :return: None
+        """
+
+        # build list of all packages
+        selection = selection.lower()
+        self._build_filelists(selection)
+
+        requirements = self.__read_requirementfiles()
+
+        # build list of package requirement dicts
+        packagelist = self._build_packagelist(requirements)
+
+        # consolidate requirements
+        packagelist_consolidated = self._consolidate_requirements(packagelist)
+
+        self._write_resultfile(selection, packagelist_consolidated, requirements)
+        return
+
