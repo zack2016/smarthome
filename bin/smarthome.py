@@ -496,7 +496,7 @@ class SmartHome():
         # Init Logics
         #############################################################
         self.logics = lib.logic.Logics(self, self._logic_conf_basename, self._env_logic_conf_basename)
-        signal.signal(signal.SIGHUP, self.logics.reload_logics)
+        # signal.signal(signal.SIGHUP, self.logics.reload_logics)
 
         #############################################################
         # Init Scenes
