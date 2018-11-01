@@ -196,3 +196,23 @@ class Shtime:
         return datetime.datetime.now() - self._starttime
 
 
+    def runtime_as_dict(self):
+        """
+        Returns the uptime of SmartHomeNG as a dict of integers
+
+        :return: {days, hours, minutes, seconds}
+        :rtype: dict
+        """
+
+        # return SmarthomeNG runtime
+        rt = str(self.runtime())
+        daytest = rt.split(' ')
+        if len(daytest) == 3:
+            days = int(daytest[0])
+            hours, minutes, seconds = [float(val) for val in str(daytest[2]).split(':')]
+        else:
+            days = 0
+            hours, minutes, seconds = [float(val) for val in str(daytest[0]).split(':')]
+        total_seconds = days * 24 * 3600 + hours * 3600 + minutes * 60 + seconds
+
+        return {'days': days, 'hours': hours, 'minutes': minutes, 'seconds': seconds, 'total_sceonds': total_seconds}
