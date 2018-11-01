@@ -721,6 +721,32 @@ class Item():
 
 
     """
+    Properties of the item, that can be accessed from outside of the item class
+    """
+
+    @property
+    def enforce_updates(self):
+        """
+        Property enforce_updates
+        :return:
+        """
+        return self._enforce_updates
+
+    @enforce_updates.setter
+    def enforce_updates(self, value):
+        """
+        Property.setter enforce_updates
+
+        :param value:
+        """
+        if isinstance(value, bool):
+            self._enforce_updates = value
+        else:
+            self.logger.error("Cannot set property 'enforce_updates' of item {} to a non-boolean value".format(self.path()))
+        return
+
+
+    """
     Following are methods to get attributes of the item
     """
 
