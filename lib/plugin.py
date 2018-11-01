@@ -672,6 +672,8 @@ class PluginWrapper(threading.Thread):
 class PluginLoggingAdapter(logging.LoggerAdapter):
     """
     Class to append name of plugin instance to log text
+
+    This class is used by PluginWrapper to set up a logger for the SmartPlugin class
     """
     def process(self, msg, kwargs):
         kwargs['extra'] = self.extra

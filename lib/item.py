@@ -727,22 +727,85 @@ class Item():
     @property
     def enforce_updates(self):
         """
-        Property enforce_updates
-        :return:
+        Property: enforce_updates
+
+        :param value: enforce_update state of the item
+        :type value: bool
+
+        :return: enforce_update state of the item
+        :rtype: bool
         """
         return self._enforce_updates
 
     @enforce_updates.setter
     def enforce_updates(self, value):
-        """
-        Property.setter enforce_updates
 
-        :param value:
-        """
         if isinstance(value, bool):
             self._enforce_updates = value
         else:
             self.logger.error("Cannot set property 'enforce_updates' of item {} to a non-boolean value".format(self.path()))
+        return
+
+
+    @property
+    def trigger(self):
+        """
+        Property: Triggers of the item
+
+        :param value: list of triggers
+        :type value: list
+
+        :return: [] if not defined or a list of triggers
+        :rtype: list of str
+        """
+        if self._trigger:
+            return self._trigger
+        return []
+
+    def _checkstrtype(obj):
+        return bool(obj) and all(isinstance(elem, str) for elem in obj)
+
+    @trigger.setter
+    def trigger(self, value):
+
+        if isinstance(value, list):
+            if value == []:
+                self._trigger = False
+            else:
+                if self.checkstrtype(value):
+                    self._trigger = value
+                else:
+                    self.logger.error("Cannot set property 'trigger' of item {} to a list containing non-string value(s)".format(self.path()))
+        else:
+            self.logger.error("Cannot set property 'trigger' of item {} to a non-list value".format(self.path()))
+        return
+
+
+    @property
+    def eval(self):
+        """
+        Property: eval expression of the item
+
+        :param value: eval expression of the item
+        :type value: str
+
+        :return: eval expression of the item
+        :rtype: str
+        """
+        if self._eval:
+            return self._eval
+        return ''
+
+    @eval.setter
+    def eval(self, value):
+
+        if isinstance(value, str):
+            if value == '':
+                self._eval = None
+            else:
+                self._eval = value
+        else:
+            self.logger.error("Cannot set property 'eval' of item {} to a non-string value".format(self.path()))
         return
 
 
