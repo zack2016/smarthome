@@ -37,6 +37,8 @@ import fnmatch
 import datetime
 import re
 
+import pprint
+
 from lib.utils import Utils
 
 
@@ -845,6 +847,8 @@ class Requirements_files():
         # key = <package>+<python-version req (if specified)>
         packagelist_sorted = sorted(packagelist, key=lambda k: k['key'])
 
+#        pprint.pprint(packagelist_sorted)
+
         packagelist_consolidated = []
         for p in packagelist_sorted:
             for idx, package_consolidated in enumerate(packagelist_consolidated):
@@ -861,7 +865,7 @@ class Requirements_files():
                                 packagelist_consolidated[idx] = p
                             break
                         else:
-                            print('gleiche Version ' + package_consolidated['req'][0][1] + ' / ' + p['req'][0][1])
+                            print("?gleiche? Version von {}: consolidated = {}, further = {}, used by {}".format(package_consolidated['pkg'], package_consolidated['req'][0][1], p['req'][0][1], p['used_by']))
                             break
                     elif package_consolidated['req'][0][0] == '==':
                         # if operator is ==
@@ -883,14 +887,14 @@ class Requirements_files():
         filename = filename.ljust(25)
         ofile.write('\n')
         ofile.write('#   +-----------------------------------------------+\n')
-        ofile.write('#   !                 SmartHomeNG                   !\n')
-        ofile.write('#   !            DON\'T EDIT THIS FILE               !\n')
-        ofile.write('#   !           THIS FILE IS GENERATED              !\n')
-        ofile.write('#   !       BY tools/build_requirements.py          !\n')
-        ofile.write('#   !            ON '+datetime.datetime.now().strftime('%d.%m.%Y %H:%M')+'                !\n')
-        ofile.write('#   !                                               !\n')
-        ofile.write('#   !               INSTALL WITH:                   !\n')
-        ofile.write('#   ! sudo pip3 install -r '+filename+'!\n')
+        ofile.write('#   |                 SmartHomeNG                   |\n')
+        ofile.write('#   |            DON\'T EDIT THIS FILE               |\n')
+        ofile.write('#   |           THIS FILE IS GENERATED              |\n')
+        ofile.write('#   |       BY tools/build_requirements.py          |\n')
+        ofile.write('#   |            ON '+datetime.datetime.now().strftime('%d.%m.%Y %H:%M')+'                |\n')
+        ofile.write('#   |                                               |\n')
+        ofile.write('#   |               INSTALL WITH:                   |\n')
+        ofile.write('#   | sudo pip3 install -r '+filename+'|\n')
         ofile.write('#   +-----------------------------------------------+\n')
         ofile.write('\n')
 
