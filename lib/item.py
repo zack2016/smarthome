@@ -743,7 +743,7 @@ class Item():
         if isinstance(value, bool):
             self._enforce_updates = value
         else:
-            self.logger.error("Cannot set property 'enforce_updates' of item {} to a non-boolean value".format(self.path()))
+            logger.error("Cannot set property 'enforce_updates' of item {} to a non-boolean value".format(self.path()))
         return
 
 
@@ -762,7 +762,7 @@ class Item():
             return self._trigger
         return []
 
-    def _checkstrtype(obj):
+    def _checkstrtype(self, obj):
         return bool(obj) and all(isinstance(elem, str) for elem in obj)
 
     @trigger.setter
@@ -772,12 +772,12 @@ class Item():
             if value == []:
                 self._trigger = False
             else:
-                if self.checkstrtype(value):
+                if self._checkstrtype(value):
                     self._trigger = value
                 else:
-                    self.logger.error("Cannot set property 'trigger' of item {} to a list containing non-string value(s)".format(self.path()))
+                    logger.error("Cannot set property 'trigger' of item {} to a list containing non-string value(s)".format(self.path()))
         else:
-            self.logger.error("Cannot set property 'trigger' of item {} to a non-list value".format(self.path()))
+            logger.error("Cannot set property 'trigger' of item {} to a non-list value".format(self.path()))
         return
 
 
@@ -805,7 +805,7 @@ class Item():
             else:
                 self._eval = value
         else:
-            self.logger.error("Cannot set property 'eval' of item {} to a non-string value".format(self.path()))
+            logger.error("Cannot set property 'eval' of item {} to a non-string value".format(self.path()))
         return
 
 
