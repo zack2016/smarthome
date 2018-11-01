@@ -36,6 +36,7 @@ import sys
 import fnmatch
 import datetime
 import re
+import operator
 
 import pprint
 
@@ -844,19 +845,23 @@ class Requirements_files():
 
     def _consolidate_requirements(self, packagelist):
 
-        # key = <package>+<python-version req (if specified)>
-        packagelist_sorted = sorted(packagelist, key=lambda k: k['key'])
+        for package in packagelist:
+            package['sort'] = package['key'] + '+' + package['req'][0][0] + package['req'][0][1]
 
-#        pprint.pprint(packagelist_sorted)
+        # sort = <package>+<python-version req (if specified)+reqversion>
+        packagelist_sorted = sorted(packagelist, key=lambda k: k['sort'])
 
         packagelist_consolidated = []
         for p in packagelist_sorted:
+            # check each package requirement entry against the consolidated list
             for idx, package_consolidated in enumerate(packagelist_consolidated):
+                # test if a package already has an entry in the consolidated requirements list
                 if p['key'] == package_consolidated['key']:
+                    # check if the requirement operators are equal
                     if p['req'][0][0] == package_consolidated['req'][0][0]:
-                        # if operators are equal
+                        # if the requirement operators are equal: check if => and version is met
                         if p['req'][0][0] == '>=' and (p['req'][0][1]) >= package_consolidated['req'][0][1]:
-                            # if operator is == and version of p >= version of package_consolidated
+                            # if operator is >= and version of p >= version of package_consolidated
                             if package_consolidated['used_by'] != p['used_by']:
                                 # join list of plugins that use the package
                                 pl = package_consolidated['used_by']
@@ -864,12 +869,26 @@ class Requirements_files():
                                 p['used_by'] = pl
                                 packagelist_consolidated[idx] = p
                             break
+                        elif p['req'][0][0] == '==' and  (p['req'][0][1]) >= package_consolidated['req'][0][1]:
+                            # if operator is == and version of p >= version of package_consolidated
+                            # join list of plugins that use the package and set this package requirement in consolidated
+                            pl = package_consolidated['used_by']
+                            pl.extend(p['used_by'])
+                            p['used_by'] = pl
+                            packagelist_consolidated[idx] = p
                         else:
                             print("?gleiche? Version von {}: consolidated = {}, further = {}, used by {}".format(package_consolidated['pkg'], package_consolidated['req'][0][1], p['req'][0][1], p['used_by']))
                             break
                     elif package_consolidated['req'][0][0] == '==':
+                        # if the requirements are not equal
                         # if operator is ==
-                        if p['req'][0][0] == '>=' and (not (package_consolidated['req'][0][1] >= p['req'][0][1])):
+                        if p['req'][0][0] == '>=' and (package_consolidated['req'][0][1] >= p['req'][0][1]):
+                            # if package req is >= and consolidated req is ==, add only packege to used by
+                            pl = package_consolidated['used_by']
+                            pl.extend(p['used_by'])
+                            packagelist_consolidated[idx]['used_by'] = pl
+                            break
+                        else:
                             print('ERROR: Requirements cannot be reconciled')
                             print(package_consolidated['pkg'] + ': ' + package_consolidated['req'][0][0] +
                                   package_consolidated['req'][0][1] + ' is incompatible to ' + p['req'][0][0] + p['req'][0][
@@ -877,9 +896,11 @@ class Requirements_files():
                             packagelist_consolidated.append(p)
 
                     elif p['req'][0][0] == '==':
-                        print('p Gleichheit ' + po['req'][0][1] + ' / ' + p['req'][0][1])
+                        print('p Gleichheit ' + package_consolidated['req'][0][1] + ' / ' + p['req'][0][1])
             else:
                 packagelist_consolidated.append(p)
+
+
         return packagelist_consolidated
 
 
