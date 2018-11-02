@@ -39,7 +39,7 @@ logger = logging.getLogger(__name__)
 valid_item_chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_'
 valid_attr_chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_@*'
 digits = '0123456789'
-reserved = ['set', 'get']
+reserved = ['set', 'get', 'trigger', 'enforce_updates']
 
 REMOVE_ATTR = 'attr'
 REMOVE_PATH = 'path'
