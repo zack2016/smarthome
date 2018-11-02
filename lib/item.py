@@ -725,9 +725,11 @@ class Item():
     """
 
     @property
-    def enforce_updates(self):
+    def xx_enforce_updates(self):
         """
         Property: enforce_updates
+
+        Available in SmartHomeNG v1.6 and above
 
         :param value: enforce_update state of the item
         :type value: bool
@@ -737,8 +739,8 @@ class Item():
         """
         return self._enforce_updates
 
-    @enforce_updates.setter
-    def enforce_updates(self, value):
+    @xx_enforce_updates.setter
+    def xx_enforce_updates(self, value):
 
         if isinstance(value, bool):
             self._enforce_updates = value
@@ -748,9 +750,11 @@ class Item():
 
 
     @property
-    def trigger(self):
+    def xx_trigger(self):
         """
         Property: Triggers of the item
+
+        Available in SmartHomeNG v1.6 and above
 
         :param value: list of triggers
         :type value: list
@@ -765,8 +769,8 @@ class Item():
     def _checkstrtype(self, obj):
         return bool(obj) and all(isinstance(elem, str) for elem in obj)
 
-    @trigger.setter
-    def trigger(self, value):
+    @xx_trigger.setter
+    def xx_trigger(self, value):
 
         if isinstance(value, list):
             if value == []:
@@ -782,9 +786,11 @@ class Item():
 
 
     @property
-    def eval(self):
+    def xx_eval(self):
         """
         Property: eval expression of the item
+
+        Available in SmartHomeNG v1.6 and above
 
         :param value: eval expression of the item
         :type value: str
@@ -796,8 +802,8 @@ class Item():
             return self._eval
         return ''
 
-    @eval.setter
-    def eval(self, value):
+    @xx_eval.setter
+    def xx_eval(self, value):
 
         if isinstance(value, str):
             if value == '':
@@ -809,20 +815,83 @@ class Item():
         return
 
 
+    @property
+    def ipath(self):
+        """
+        Read-Only Property: path
+
+        Available in SmartHomeNG v1.6 and above
+
+        :return: path of the item
+        :rtype: str
+        """
+        return self._path
+
+
+    @property
+    def iname(self):
+        """
+        Property: name
+
+        Available in SmartHomeNG v1.6 and above
+
+        :param value: name of the item
+        :type value: str
+
+        :return: name of the item
+        :rtype: str
+        """
+        return self._name
+
+    @iname.setter
+    def iname(self, value):
+
+        if isinstance(value, str):
+            if value == '':
+                self._name = self._path
+            else:
+                self._name = value
+        else:
+            logger.error("Cannot set property 'name' of item {} to a non-string value".format(self.path()))
+        return
+
+
+    @property
+    def ivalue(self):
+        """
+        Property: value
+
+        Available in SmartHomeNG v1.6 and above
+
+        :param value: value of the item
+        :type value: <type of the item>
+
+        :return: value of the item
+        :rtype: <type of the item>
+        """
+        return copy.deepcopy(self._value)
+
+    @ivalue.setter
+    def ivalue(self, value):
+
+        self.set(value, 'assign')
+        return
+
+
     """
     Following are methods to get attributes of the item
     """
 
-    def path(self):
-        """
-        Path of the item
-
-        ab SmartHomeNG v1.6
-
-        :return: String with the path of the item
-        :rtype: str
-        """
-        return self._path
+    # def path(self):
+    #     """
+    #     Path of the item
+    #
+    #     Starting with SmartHomeNG v1.6
+    #
+    #     :return: String with the path of the item
+    #     :rtype: str
+    #     """
+    #     return self._path
 
     def id(self):
         """
@@ -830,16 +899,15 @@ class Item():
         """
         return self._path
 
-    def name(self):
-        """
-        Name of the item
-
-        ab SmartHomeNG v1.6
-
-        :return: String with the name of the item
-        :rtype: str
-        """
-        return self._path
+    # def name(self):
+    #     """
+    #     Name of the item
+    #
+    #     Starting with SmartHomeNG v1.6
+    #     :return: String with the name of the item
+    #     :rtype: str
+    #     """
+    #     return self._name
 
     def type(self):
         """
