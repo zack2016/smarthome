@@ -510,9 +510,12 @@ class PluginWrapper(threading.Thread):
             logger.error("Plugins: Plugin '{}' initialization failed, plugin not loaded".format(name))
             return
         except Exception as e:
-            logger.exception("Plugin '{0}' exception during import of __init__.py: {1}".format(name, e))
+            logger.exception("Plugin '{}' exception during import of __init__.py: {}".format(name, e))
             return
-        exec("self.plugin = {0}.{1}.__new__({0}.{1})".format(classpath, classname))
+        try:
+            exec("self.plugin = {0}.{1}.__new__({0}.{1})".format(classpath, classname))
+        except Exception as e:
+            logger.exception("Plugin '{}' exception during execution of plugin: {}".format(name, e))
 
         relative_filename = os.path.join( classpath.replace('.', '/'), 'locale'+YAML_FILE ) 
         filename = os.path.join( smarthome.get_basedir(), relative_filename )
@@ -628,15 +631,20 @@ class PluginWrapper(threading.Thread):
         """
         Starts this plugin instance
         """
-        self.plugin.run()
-
+        try:
+            self.plugin.run()
+        except Exception as e:
+            logger.exception("Plugin '{}' exception in run() method: {}".format(self.plugin.get_shortname(), e))
 
     def stop(self):
         """
         Stops this plugin instance
         """
-        self.plugin.stop()
-    
+        try:
+            self.plugin.stop()
+        except Exception as e:
+            logger.exception("Plugin '{}' exception in stop() method: {}".format(self.plugin.get_shortname(), e))
+
 
     def get_name(self):
         """
