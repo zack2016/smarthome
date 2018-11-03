@@ -315,7 +315,7 @@ class Shpypi:
 
         # process required base packages
         required_packages = self.parse_requirementsfile(os.path.join(self._sh_dir, 'requirements', 'base.txt'))
-        self.logger.warning("get_packagelist: required_packages = {}".format(required_packages))
+        # self.logger.warning("get_packagelist: required_packages = {}".format(required_packages))
 
         for pkg_name in required_packages:
             if required_packages[pkg_name] != {}:   # ignore empty requirements (e.g. requirement exists only for other Python version
@@ -335,7 +335,7 @@ class Shpypi:
 
         # process installed packages
         installed_packages = self.get_installed_packages()
-        self.logger.warning("get_packagelist: installed_packages = {}".format(installed_packages))
+        # self.logger.warning("get_packagelist: installed_packages = {}".format(installed_packages))
         for pkg_name in installed_packages:
             index = self.set_packagedata(pkg_name, add=True)
             if index != None:
@@ -343,12 +343,12 @@ class Shpypi:
 
                 package['vers_installed'] = installed_packages[pkg_name]
 
-        self.logger.warning("get_packagelist: package_list = {}".format(self.package_list))
+        # self.logger.warning("get_packagelist: package_list = {}".format(self.package_list))
 
 
         # process required (all) packages
         required_packages = self.parse_requirementsfile(os.path.join(self._sh_dir, 'requirements', 'all.txt'))
-        self.logger.warning("get_packagelist: required_packages = {}".format(required_packages))
+        # self.logger.warning("get_packagelist: required_packages = {}".format(required_packages))
 
         for pkg_name in required_packages:
             if required_packages[pkg_name] != {}:   # ignore empty requirements (e.g. requirement exists only for other Python version
@@ -368,7 +368,7 @@ class Shpypi:
 
         # process required doc-packages
         required_packages = self.parse_requirementsfile(os.path.join(self._sh_dir, 'doc', 'requirements.txt'))
-        self.logger.warning("get_packagelist: required_doc_packages = {}".format(required_packages))
+        # self.logger.warning("get_packagelist: required_doc_packages = {}".format(required_packages))
 
         for pkg_name in required_packages:
             if required_packages[pkg_name] != {}:   # ignore empty requirements (e.g. requirement exists only for other Python version
@@ -389,7 +389,7 @@ class Shpypi:
 
         # process required test-packages
         required_packages = self.parse_requirementsfile(os.path.join(self._sh_dir, 'requirements', 'test.txt'))
-        self.logger.warning("get_packagelist: required_test_packages = {}".format(required_packages))
+        # self.logger.warning("get_packagelist: required_test_packages = {}".format(required_packages))
 
         for pkg_name in required_packages:
             if required_packages[pkg_name] != {}:   # ignore empty requirements (e.g. requirement exists only for other Python version

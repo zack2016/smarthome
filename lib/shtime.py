@@ -215,4 +215,4 @@ class Shtime:
             hours, minutes, seconds = [float(val) for val in str(daytest[0]).split(':')]
         total_seconds = days * 24 * 3600 + hours * 3600 + minutes * 60 + seconds
 
-        return {'days': days, 'hours': hours, 'minutes': minutes, 'seconds': seconds, 'total_sceonds': total_seconds}
+        return {'days': days, 'hours': hours, 'minutes': minutes, 'seconds': seconds, 'total_seconds': total_seconds}
