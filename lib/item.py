@@ -739,7 +739,6 @@ class Item():
 
         An instance of this class is created in the __init__ method of the item class
         """
-        _item: None
 
         def __init__(self, parent):
             self._item = parent
@@ -780,9 +779,10 @@ class Item():
 
             if isinstance(value, bool):
                 self._item._item._enforce_updates = value
+                return True
             else:
                 self._type_error('non-boolean')
-            return
+                return False
 
 
         @property
@@ -810,9 +810,10 @@ class Item():
                     self._item._eval = None
                 else:
                     self._item._eval = value
+                return True
             else:
                 self._type_error('non-non-string')
-            return
+                return False
 
 
         @property
@@ -840,7 +841,7 @@ class Item():
                 self._item._name = self._item._path
             else:
                 self._item._name = value
-            return
+            return True
 
 
         @property
@@ -858,7 +859,7 @@ class Item():
         @path.setter
         def path(self, value):
             self._ro_error()
-            return
+            return False
 
 
         @property
@@ -892,9 +893,11 @@ class Item():
                         self._item._trigger = value
                     else:
                         self._type_error('list containing non-string')
+                        return False
+                return True
             else:
                 self._type_error('non-list')
-            return
+                return False
 
 
         @property
@@ -912,7 +915,7 @@ class Item():
         @type.setter
         def type(self, value):
             self._ro_error()
-            return
+            return False
 
 
         @property
@@ -934,7 +937,7 @@ class Item():
         def value(self, value):
 
             self._item.set(value, 'assign property')
-            return
+            return False
 
 
     """
