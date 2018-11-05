@@ -151,6 +151,7 @@ class SmartHome():
     _etc_dir = os.path.join(_base_dir, 'etc')
     _var_dir = os.path.join(_base_dir, 'var')
     _lib_dir = os.path.join(_base_dir,'lib')
+    _plugins_dir = os.path.join(base_dir, 'plugins')
     _env_dir = os.path.join(_lib_dir, 'env' + os.path.sep)
 
     _module_conf_basename = os.path.join(_etc_dir,'module')
@@ -240,9 +241,11 @@ class SmartHome():
             self.shtime.set_tz(self._tz)
             del(self._tz)
 
+        #############################################################
         # test if needed Python packages are installed
+        # - core requirements = libs
         self.shpypi = Shpypi(self)
-        if not self.shpypi.test_base_requirements(logging=False):
+        if not self.shpypi.test_core_requirements(logging=False):
             print()
             exit(1)
 
@@ -255,6 +258,8 @@ class SmartHome():
         if MODE == 'default':
             lib.daemon.daemonize(PIDFILE)
 
+        #############################################################
+        # Write startup maeeage to log(s)
         pid = lib.daemon.read_pidfile(PIDFILE)
         self._logger.warning("--------------------   Init SmartHomeNG {}   --------------------".format(VERSION))
         self._logger.warning("Running in Python interpreter 'v{}' (pid={}) on {} platform".format(PYTHON_VERSION, pid, sys.platform))
@@ -265,16 +270,28 @@ class SmartHome():
         
         #############################################################
         # Test if plugins are installed
-        if not os.path.isdir(os.path.join(self._base_dir, 'plugins')):
+        if not os.path.isdir(self._plugins_dir):
             self._logger.critical("Plugin folder does not exist!")
-            self._logger.critical("Please create folder '{}' and install plugins.".format(os.path.join(self._base_dir, 'plugins')))
+            self._logger.critical("Please create folder '{}' and install plugins.".format(self._plugins_dir))
             self._logger.critical("Aborting")
             exit(1)
-        if not os.path.isdir(os.path.join(self._base_dir, 'plugins', 'backend')):
-            self._logger.critical("No plugins found. Please install plugins.".format(os.path.join(self._base_dir, 'plugins')))
+        if not os.path.isdir(os.path.join(self._plugins_dir, 'backend')):
+            self._logger.critical("No plugins found in folder '{}'. Please install plugins.".format(self._plugins_dir))
             self._logger.critical("Aborting")
             exit(1)
 
+        #############################################################
+        # test if needed Python packages for configured plugins
+        # are installed
+        if not self.shpypi.test_base_requirements():
+            self._logger.critical("Python package requirements for modules are not met.")
+            self._logger.critical("Aborting")
+            exit(1)
+
+        if not self.shpypi.test_conf_plugins_requirements(self._plugin_conf_basename, self._plugins_dir):
+            self._logger.critical("Python package requirements for configured plugins are not met.")
+            self._logger.critical("Aborting")
+            exit(1)
 
         # Add Signal Handling
 #        signal.signal(signal.SIGHUP, self.reload_logics)

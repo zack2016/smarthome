@@ -35,6 +35,8 @@ import cherrypy
 
 import bin.shngversion as shngversion
 
+from lib.shpypi import Shpypi
+from lib.shtime import Shtime
 from lib.utils import Utils
 import lib.config
 
@@ -45,6 +47,7 @@ class SystemData:
 
         self.pypi_sorted_package_list = []
 
+        self.shpypi = Shpypi.get_instance()
         return
 
 
@@ -76,15 +79,18 @@ class SystemData:
         space = os.statvfs(self._sh.base_dir)
         freespace = space.f_frsize * space.f_bavail / 1024 / 1024
 
-        rt = str(self.module.shtime.runtime())
-        daytest = rt.split(' ')
-        if len(daytest) == 3:
-            days = int(daytest[0])
-            hours, minutes, seconds = [float(val) for val in str(daytest[2]).split(':')]
-        else:
-            days = 0
-            hours, minutes, seconds = [float(val) for val in str(daytest[0]).split(':')]
-        sh_runtime_seconds = days * 24 * 3600 + hours * 3600 + minutes * 60 + seconds
+        # rt = str(self.module.shtime.runtime())
+        # daytest = rt.split(' ')
+        # if len(daytest) == 3:
+        #     days = int(daytest[0])
+        #     hours, minutes, seconds = [float(val) for val in str(daytest[2]).split(':')]
+        # else:
+        #     days = 0
+        #     hours, minutes, seconds = [float(val) for val in str(daytest[0]).split(':')]
+        # sh_runtime_seconds = days * 24 * 3600 + hours * 3600 + minutes * 60 + seconds
+
+        rt = Shtime.get_instance().runtime_as_dict()
+        sh_runtime_seconds = rt['total_seconds']
 
         pyversion = "{0}.{1}.{2} {3}".format(sys.version_info[0], sys.version_info[1], sys.version_info[2],
                                              sys.version_info[3])
@@ -154,12 +160,22 @@ class SystemData:
             self.logger.info("Returning a previously prepared PpyPI package list")
             return json.dumps(self.pypi_sorted_package_list)
 
+####
+        package_list = self.shpypi.get_packagelist()
 
+        # sorted_package_list = sorted([(i['name'], i['version_installed'], i['version_available']) for i in package_list])
+        self.pypi_sorted_package_list = sorted(package_list, key=lambda k: k['sort'], reverse=False)
+        self.logger.info("pypi_json: sorted_package_list = {}".format(self.pypi_sorted_package_list))
+        self.logger.info("pypi_json: json.dumps(sorted_package_list) = {}".format(json.dumps(self.pypi_sorted_package_list)))
+
+        return json.dumps(self.pypi_sorted_package_list)
+####
 
         # check if pypi service is reachable
         if self.pypi_timeout <= 0:
             pypi_available = False
-            pypi_unavailable_message = translate('PyPI Prüfung deaktiviert')
+#            pypi_unavailable_message = translate('PyPI Prüfung deaktiviert')
+            pypi_unavailable_message = 'PyPI Prüfung deaktiviert'
         else:
             pypi_available = True
             try:
@@ -171,7 +187,8 @@ class SystemData:
                 sock.close()
             except:
                 pypi_available = False
-                pypi_unavailable_message = translate('PyPI nicht erreichbar')
+#                pypi_unavailable_message = translate('PyPI nicht erreichbar')
+                pypi_unavailable_message = 'PyPI nicht erreichbar'
 
         import pip
         import xmlrpc
@@ -220,7 +237,8 @@ class SystemData:
                         package['pypi_version_not_available_msg'] = '?'
                 except:
                     package['pypi_version'] = '--'
-                    package['pypi_version_not_available_msg'] = [translate('Keine Antwort von PyPI')]
+#                    package['pypi_version_not_available_msg'] = [translate('Keine Antwort von PyPI')]
+                    package['pypi_version_not_available_msg'] = ['Keine Antwort von PyPI']
             else:
                 package['pypi_version_not_available_msg'] = pypi_unavailable_message
             #            package['pypi_doc_url'] = 'https://pypi.python.org/pypi/' + dist.project_name
@@ -302,6 +320,59 @@ class SystemData:
                         package['pypi_version_ok'] = False
 
             package_list.append(package)
+
+        # self.logger.warning('installed_packages: {}'.format(installed_packages))
+        self.logger.warning('req_dict: {}'.format(req_dict))
+        inst_pkgname_list = []
+        for pkg in package_list:
+            inst_pkgname_list.append(pkg['name'])
+        self.logger.warning('pkgname_list: {}'.format(inst_pkgname_list))
+        for req in req_dict:
+            if not (req in inst_pkgname_list):
+                pkg = {}
+                pkg['name'] = req
+                pkg['vers_installed'] = '-'
+                pkg['is_required'] = True
+                pkg['is_required_for_testsuite'] = False
+                pkg['is_required_for_docbuild'] = False
+                # tests for min, max versions
+                rmin, rmax, rtxt = self.check_requirement(pkg['name'], req_dict.get(pkg['name'], ''))
+                pkg['vers_req_min'] = rmin
+                pkg['vers_req_max'] = rmax
+                pkg['vers_req_msg'] = rtxt
+
+                pkg['vers_ok'] = False
+                pkg['vers_recent'] = False
+
+                pkg['sort'] = '1' + pkg['name']
+                package_list.append(pkg)
+        ###
+                if pypi_available:
+                    try:
+                        available = pypi.package_releases(pkg['name'])  # (dist.project_name)
+                        self.logger.debug(
+                            "pypi_json: pypi package: project_name {}, availabe = {}".format(pkg['name'], available))
+                        try:
+                            pkg['pypi_version'] = available[0]
+                            pkg['pypi_version_not_available_msg'] = ""
+                            pkg['pypi_version_ok'] = True
+                            pkg['pypi_doc_url'] = 'https://pypi.org/pypi/' + pkg['name']
+
+                        except:
+                            pkg['pypi_version_not_available_msg'] = '?'
+                            pkg['pypi_version_ok'] = False
+                            pkg['pypi_doc_url'] = ''
+
+                    except:
+                        pkg['pypi_version'] = '--'
+#                        pkg['pypi_version_not_available_msg'] = [translate('Keine Antwort von PyPI')]
+                        pkg['pypi_version_not_available_msg'] = ['Keine Antwort von PyPI']
+                else:
+                    pkg['pypi_version_not_available_msg'] = pypi_unavailable_message
+        ###
+
+        self.logger.warning('package_list: {}'.format(package_list))
+
 
         # sorted_package_list = sorted([(i['name'], i['version_installed'], i['version_available']) for i in package_list])
         self.pypi_sorted_package_list = sorted(package_list, key=lambda k: k['sort'], reverse=False)
@@ -633,7 +704,8 @@ class SystemData:
         # check if pypi service is reachable
         if self.pypi_timeout <= 0:
             pypi_available = False
-            pypi_unavailable_message = translate('PyPI Prüfung deaktiviert')
+#            pypi_unavailable_message = translate('PyPI Prüfung deaktiviert')
+            pypi_unavailable_message = 'PyPI Prüfung deaktiviert'
         else:
             pypi_available = True
             try:
@@ -645,7 +717,8 @@ class SystemData:
                 sock.close()
             except:
                 pypi_available = False
-                pypi_unavailable_message = translate('PyPI nicht erreichbar')
+#                pypi_unavailable_message = translate('PyPI nicht erreichbar')
+                pypi_unavailable_message = 'PyPI nicht erreichbar'
 
         import pip
         import xmlrpc
@@ -665,7 +738,8 @@ class SystemData:
                     except:
                         package['version_available'] = '-'
                 except:
-                    package['version_available'] = [translate('Keine Antwort von PyPI')]
+#                    package['version_available'] = [translate('Keine Antwort von PyPI')]
+                    package['version_available'] = ['Keine Antwort von PyPI']
             else:
                 package['version_available'] = pypi_unavailable_message
             packages.append(package)

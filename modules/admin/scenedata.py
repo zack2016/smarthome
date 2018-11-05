@@ -43,6 +43,9 @@ class SceneData:
     @cherrypy.expose
     def scenes_json(self):
 
+        if self.items == None:
+            self.items = Items.get_instance()
+
         from lib.scene import Scenes
         get_param_func = getattr(Scenes, "get_instance", None)
         if callable(get_param_func):

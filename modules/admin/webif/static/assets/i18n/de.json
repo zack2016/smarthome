@@ -9,7 +9,9 @@
     "SCENES": "Szenen",
     "THREADS": "Threads",
     "LOGS": "Logs",
-    "CONFIGURATION": "Konfiguration"
+    "LOGGER_LIST": "Liste der Logger",
+    "CONFIGURATION": "Konfiguration",
+    "LOGIN": "Login"
   },
   "SYSTEM": {
     "SYSTEMINFO": "Systemeigenschaften",
@@ -33,11 +35,16 @@
 
     "PACKAGE": "Paket",
     "INSTALLED VERSION": "Installierte Version",
+    "MINIMUM VERSION": "Minimale Version",
+    "MAXIMUM VERSION": "Maximale Version",
     "REQUIREMENTS": "Anforderungen",
     "NEWEST VERSION": "Neueste Version",
+    "PACKAGES_REQ_PLUGINS": "Pakete die von Plugins benötigt werden",
     "PACKAGES_REQ_DOCUMENTATION": "Pakete für den Bau der Dokumentation",
     "PACKAGES_REQ_TESTSUITE": "Pakete für die Testsuite",
-    "PACKAGES_WO_REQ": "Pakete ohne Requirements"
+    "PACKAGES_WO_REQ": "Pakete ohne Requirements",
+    "MISSING": "fehlt",
+    "UNKNOWN": "unbekannt"
   },
   "SERVICES": {
     "SERVICES": "Dienste",
@@ -153,12 +160,37 @@
     "ACTIVE": "Aktiv"
   },
 
+  "LOGS": {
+    "LOGFILE": "Log-Datei",
+    "FILTER": "Filter",
+
+    "LOGGER_NAME": "Logger Name",
+    "DISABLED": "Disabled",
+    "LEVEL": "Level",
+    "FILTERS": "Filter(s)",
+    "HANDLERS": "Handler(s)",
+    "LOGFILES": "Logile(s)"
+  },
+
   "BUTTON": {
     "CLOSE": "Schließen",
     "SAVE": "Sichern",
     "ABORT": "Abbrechen",
     "LOGOUT": "Abmelden",
     "ADD_PLUGIN": "Plugin hinzufügen"
+  },
+
+  "ERROR": {
+    "ERROR": "Fehler",
+    "PAGE_NOT_FOUND": "Seite nicht gefunden"
+  },
+
+  "LOGIN": {
+    "PLEASE_SIGN_IN": "Bitte anmelden",
+    "USERNAME": "Benutzername",
+    "PASSWORD": "Passwort",
+    "INVALID_SIGNIN": "Ungültiger Benutzername und/oder Passwort",
+    "SIGN_IN": "Anmelden"
   },
 
   "YES": "Ja",

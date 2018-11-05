@@ -4,7 +4,7 @@
 #   |            DON'T EDIT THIS FILE               |
 #   |           THIS FILE IS GENERATED              |
 #   |       BY tools/build_requirements.py          |
-#   |            ON 31.10.2018 23:24                |
+#   |            ON 05.11.2018 01:44                |
 #   |                                               |
 #   |               INSTALL WITH:                   |
 #   | sudo pip3 install -r requirements/all.txt     |
@@ -14,15 +14,12 @@
 PyMVGLive>=1.1.4
 
 # SmartHomeNG-module http
-# plugin blockly
 cherrypy>=8.1.2
 
 # SmartHomeNG-lib
 ephem>=3.7
 
 # SmartHomeNG-module http
-# plugin blockly
-# plugin backend
 jinja2>=2.9
 
 # plugin dashbutton
@@ -78,7 +75,7 @@ pyusb>=1.0.2
 requests>=2.20.0
 
 # SmartHomeNG-lib
-ruamel.yaml>=0.13.7;python_version<'3.7'
+ruamel.yaml>=0.13.7,<=0.15.74;python_version<'3.7'
 
 # SmartHomeNG-lib
 ruamel.yaml>0.15.0,<=0.15.74;python_version>='3.7'

@@ -41,13 +41,13 @@ import operator
 import pprint
 
 from lib.utils import Utils
+from lib.constants import (YAML_FILE)
 
 
 _shpypi_instance = None    # Pointer to the initialized instance of the Shpypi class (for use by static methods)
 
 
 class Shpypi:
-
 
     def __init__(self, sh=None):
         """
@@ -66,6 +66,7 @@ class Shpypi:
             self.logger.critical("A second 'shpypi' object has been created. There should only be ONE instance of class 'Shpypi'!!! Called from: {} ({})".format(calframe[1][1], calframe[1][3]))
 
         _shpypi_instance = self
+        self.req_files = Requirements_files()
 
 
         if sh is None:
@@ -73,6 +74,7 @@ class Shpypi:
         else:
             self._sh_dir = sh.get_basedir()    # anders bestimmen für tools/build_requirements.py
 
+            self._error = False
         return
 
 
@@ -152,6 +154,9 @@ class Shpypi:
                     else:
                         self.logger.error("test_requirements: package '{}' v{} is too new. Maximum v{} is needed".format(req_pkg, inst_vers, max))
                 else:
+                    if not self._error:
+                        print()
+                        self._error = True
                     if inst_vers == '-':
                         print("test_requirements: package '{}' is not installed".format(req_pkg))
                     elif not min_met:
@@ -162,23 +167,91 @@ class Shpypi:
         return requirements_met
 
 
-    def test_base_requirements(self, logging=True):
+    def test_core_requirements(self, logging=True):
 
         # build an actual requirements file for core+modules
-        req_files = Requirements_files()
-        req_files.create_requirementsfile('base')
-        req_files.create_requirementsfile('all')
+        # req_files = Requirements_files()
+        self.req_files.create_requirementsfile('base')
+        self.req_files.create_requirementsfile('all')
+        self.req_files.create_requirementsfile('core')
+
+        # test if the requirements of the core.txt file are met
+        complete_filename = os.path.join(self._sh_dir, 'requirements', 'core.txt')
+        requirements_met = self.test_requirements(os.path.join(complete_filename), logging)
+
+        if not requirements_met:
+            if logging:
+                self.logger.error("test_core_requirements: Python package requirements not met - Should terminate")
+            else:
+                # no logging, if called before logging is configured
+                print()
+                print("Python package requirements not met - SmartHomeNG is terminating")
+
+        os.remove(complete_filename)
+        return requirements_met
+
+
+    _conf_plugin_filelist = []
+
+
+    def test_base_requirements(self):
+
+        # build an actual requirements file for core+modules
+        # req_files = Requirements_files()
+        self.req_files.create_requirementsfile('base')
 
         # test if the requirements of the base.txt file are met
         requirements_met = self.test_requirements(os.path.join(self._sh_dir, 'requirements', 'base.txt'), logging)
 
         if not requirements_met:
-            if logging:
-                self.logger.error("test_base_requirements: Python package requirements not met - Should terminate")
+            self.logger.info("test_base_requirements: Python package requirements not met")
+
+        return requirements_met
+
+
+    _conf_plugin_filelist = []
+
+    def test_conf_plugins_requirements(self, plugin_conf_basename, plugins_dir):
+        # import lib.shyaml here, so test_base_requirements() can be run even if ruamel.yaml package is not installed
+        import lib.shyaml as shyaml
+
+        if not os.path.isfile(plugin_conf_basename+ YAML_FILE):
+            self.logger.warning("Requirments for configured plugins were not checked because the plugin configuration is not in YAML format")
+            return True
+
+        plugin_conf = shyaml.yaml_load(plugin_conf_basename + YAML_FILE, ordered=False)
+
+        req_dict = {}
+        for plugin_instance in plugin_conf:
+            plugin_name = plugin_conf[plugin_instance].get('plugin_name', None)
+            class_path = plugin_conf[plugin_instance].get('class_path', None)
+            plugin = ''
+            if class_path:
+                if class_path.startswith('plugins.'):
+                    sp = class_path.split('.')
+                    if len(sp) == 2:
+                        plugin = sp[1]
+            if plugin == '' and plugin_name:
+                plugin = plugin_name
+
+            filename = os.path.join(plugins_dir, plugin, 'requirements.txt')
+            if not os.path.isfile(filename):
+                filename = ''
             else:
-                # no logging, if called before logging is configured
-                print()
-                print("Python package requirements not met - SmartHomeNG is terminating")
+                if plugin != '':
+                    req_dict[plugin] = filename
+
+        self._conf_plugin_filelist = []
+        for plugin in req_dict:
+            self._conf_plugin_filelist.append(req_dict[plugin])
+
+        #req_files = Requirements_files()
+        self.req_files.set_conf_plugin_files(self._conf_plugin_filelist)
+        self.req_files.create_requirementsfile('conf_all')
+
+        requirements_met = self.test_requirements(os.path.join(self._sh_dir, 'requirements', 'conf_all.txt'), True)
+        if not requirements_met:
+            self.logger.info("test_conf_plugins_requirements: Python package requirements for configured plugins not met")
 
         return requirements_met
 
@@ -690,6 +763,7 @@ class Requirements_files():
 
     def __init__(self):
 
+        self._conf_plugin_files = []
         self.sh_basedir = os.sep.join(os.path.realpath(__file__).split(os.sep)[:-2])
         return
 
@@ -798,7 +872,7 @@ class Requirements_files():
         self._plugin_files = []
         self._core_files = []         # to be a list in the future
 
-        if selection in ['modules', 'base', 'all']:
+        if selection in ['modules', 'base', 'all', 'conf_all']:
             # build list of all modules with requirements
             self._module_files = self._get_filelist('modules')
 
@@ -806,7 +880,12 @@ class Requirements_files():
             # build list of all plugins with requirements
             self._plugin_files = self._get_filelist('plugins')
 
-        if selection in ['core', 'base', 'all']:
+        if selection in ['conf_plugins', 'conf_all']:
+            # List of requirements for configured packages is prebuilt
+            # self._conf_plugin_files = self._conf_plugin_files
+            pass
+
+        if selection in ['core', 'base', 'all', 'conf_all']:
             # Read core requirements
             self._core_files = self._get_filelist('lib')
         return
@@ -839,6 +918,10 @@ class Requirements_files():
         # Read requirements for plugins
         for fname in self._plugin_files:
             self._read_requirementfile(fname, requirements, 'plugin ')
+
+        # Read requirements for configured plugins
+        for fname in self._conf_plugin_files:
+            self._read_requirementfile(fname, requirements, 'configured plugin ')
 
         return requirements
 
@@ -939,6 +1022,8 @@ class Requirements_files():
 
         return complete_filename
 
+    def set_conf_plugin_files(self, conf_plugin_filelist):
+        self._conf_plugin_files = conf_plugin_filelist
 
     def create_requirementsfile(self, selection):
         """
@@ -950,7 +1035,7 @@ class Requirements_files():
           - plugins (all plugins in directory ../plugins
           - all (core + modules + plugins)
 
-        :param selection: 'core' | 'modules' | 'base' | 'plugins' | 'all'
+        :param selection: 'core' | 'modules' | 'base' | 'plugins' | 'all' | 'conf_plugins' | 'conf_all'
         :type selection: str
 
         :return: None

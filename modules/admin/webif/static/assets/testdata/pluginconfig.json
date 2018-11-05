@@ -4640,6 +4640,7 @@
     },
     "sample_plugin": {
       "plugin_name": "priv_sample_plugin_1_5",
+      "plugin_enabled": "False",
       "_meta": {
         "plugin": {
           "description": {
