@@ -13,7 +13,8 @@ Items
    items_plugin_attribute.rst
    items_attributes_relative_referenzen.rst
    items_attributes_eval_ausdruecke.rst
-   items_funktionen.rst
+   items_properties
+   items_funktionen
    items_systemitems
    items_tipps_und_tricks
 

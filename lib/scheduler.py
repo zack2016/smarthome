@@ -482,7 +482,11 @@ class Scheduler(threading.Thread):
         threading.current_thread().name = name
         logger = logging.getLogger(name)
         if obj.__class__.__name__ == 'Logic':
-            trigger = {'by': by, 'source': source, 'dest': dest, 'value': value}  # noqa
+            source_details = None
+            if isinstance(source, dict):
+                source_details = source.get('details', '')
+                source = source.get('item', '')
+            trigger = {'by': by, 'source': source, 'source_details': source_details, 'dest': dest, 'value': value}  # noqa
             logic = obj  # noqa
             logics = obj._logics
             sh = self._sh  # noqa

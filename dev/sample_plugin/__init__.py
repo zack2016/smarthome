@@ -179,8 +179,14 @@ class SamplePlugin(SmartPlugin):
         # # find the item(s) to update:
         # for item in self.sh.find_items('...'):
         #
-        #     # update the item
+        #     # update the item by calling item(value, caller, source=None, dest=None)
+        #     # - value and caller must be specified, source and dest are optional
+        #     #
+        #     # The simple case:
         #     item(device_value, self.get_shortname())
+        #     # if the plugin is a gateway plugin which may receive updates from several external sources,
+        #     # the source should be included when updating the the value:
+        #     item(device_value, self.get_shortname(), source=device_source_id)
         pass
 
     def init_webinterface(self):
