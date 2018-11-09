@@ -25,7 +25,7 @@ Properties werden in Logiken und eval-Ausdrücken folgendermaßen abgerufen:
     var = sh.wohnung.testitem.property.name
 
 
-Werte für Properties, die auch geschrieben werden können, werden folgendermaßen gesetzt:
+Werte für Properties, die auch geschrieben werden können (z.B. in Logiken), werden folgendermaßen gesetzt:
 
 .. code::
 
@@ -73,14 +73,14 @@ Werte für Properties, die auch geschrieben werden können, werden folgendermaß
 | on_change_unexpanded | r/w        | list     | Liefert die Liste der **on_change** Ausdrücke des Items zurück, in der       |
 |                      |            |          | relative Item Referenzen nicht expandiert sind. Beim Beschreiben des         |
 |                      |            |          | Properties werden evtl. enthaltene relative Item Referenzen zur Nutzung      |
-|                      |            |          | expandiert.                                                                  |
+|                      |            |          | expandiert (analog zum Laden aus Item Konfigurationsdateien).                |
 +----------------------+------------+----------+------------------------------------------------------------------------------+
 | on_update            | r/o        | list     | Liefert die Liste der **on_update** Ausdrücke des Items zurück               |
 +----------------------+------------+----------+------------------------------------------------------------------------------+
 | on_update_unexpanded | r/w        | list     | Liefert die Liste der **on_update** Ausdrücke des Items zurück, in der       |
 |                      |            |          | relative Item Referenzen nicht expandiert sind. Beim Beschreiben des         |
 |                      |            |          | Properties werden evtl. enthaltene relative Item Referenzen zur Nutzung      |
-|                      |            |          | expandiert.                                                                  |
+|                      |            |          | expandiert (analog zum Laden aus Item Konfigurationsdateien).                |
 +----------------------+------------+----------+------------------------------------------------------------------------------+
 | path                 | r/o        | str      | Liefert den Pfad des Items zurück                                            |
 +----------------------+------------+----------+------------------------------------------------------------------------------+
@@ -109,30 +109,6 @@ Werte für Properties, die auch geschrieben werden können, werden folgendermaß
 | type                 | r/o        | str      | Liefert den Typ des Items zurück                                             |
 +----------------------+------------+----------+------------------------------------------------------------------------------+
 | value                | r/w        | str      | Das Property value stellt eine Alternative zur Abfrage/Zuweisung durch       |
-|                      |            |          | var=**item()** / **item(**value**)** dar.                                    |
+|                      |            |          | var= **item()** / **item(** value **)** dar.                                 |
 +----------------------+------------+----------+------------------------------------------------------------------------------+
-
-
-+------------------------+------------------------------------------------------------------------------+
-| return_parent()        | Liefert den Item-Pfad des übergeordneten Items zurück.                       |
-|                        | Aufruf: sh.item.return_parent()                                              |
-+------------------------+------------------------------------------------------------------------------+
-| return_children()      | Liefert die Item-Pfade der direkt untergeordneten Items zurück. Aufruf:      |
-|                        | for child in sh.item.return_children(): ...                                  |
-+------------------------+------------------------------------------------------------------------------+
-| autotimer(time, value) | Setzt einen Timer bei jedem Werte-Wechsel der Items. Angegeben wird die      |
-|                        | Zeit (**time**) die vergehen soll, bis das Item auf den Wert (**value**)     |
-|                        | gesetzt wird. Die Zeitangabe erfolgt in Sekunden. Eine Angabe der Dauer in   |
-|                        | Minuten ist wie in '10m' möglich.                                            |
-+------------------------+------------------------------------------------------------------------------+
-| timer(time, value)     | Funktioniert wir **autotimer()**, ausser dass die Aktion nur einmal          |
-|                        | ausgeführt wird.                                                             |
-+------------------------+------------------------------------------------------------------------------+
-| fade(end, step, delta) | Blendet das Item mit der definierten Schrittweite (int oder float) und       |
-|                        | timedelta (int oder float in Sekunden) auf einen angegebenen Wert auf oder   |
-|                        | ab. So wird z.B.: **sh.living.light.fade(100, 1, 2.5)** das Licht im         |
-|                        | Wohnzimmer mit einer Schrittweite von **1** und einem Zeitdelta von **2,5**  |
-|                        | Sekunden auf **100** herunterregeln.                                         |
-+------------------------+------------------------------------------------------------------------------+
-
 

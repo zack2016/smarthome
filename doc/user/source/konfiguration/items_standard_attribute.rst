@@ -16,39 +16,14 @@ plugin-spezifischen Attribute ist in der Dokumentation des jeweiligen Plugins na
 
 +-----------------+------------------------------------------------------------------------------+
 | **Attribut**    | **Beschreibung**                                                             |
-+-----------------+------------------------------------------------------------------------------+
-| type            | Um Werte zu speichern, muss ein Typ vorgegeben werden. Unterstützte Typen    |
-|                 | sind bool, num, str, list, dict, foo, scene (siehe Tabelle unten)            |
-+-----------------+------------------------------------------------------------------------------+
-| name            | ein optionaler Name für das Item                                             |
-+-----------------+------------------------------------------------------------------------------+
-| remark          | ein optionaler Kommentar für das Item. Es ist sinnvoll Kommentare zu einem   |
-|                 | Item als **remark** Attribut zu erfassen und nicht als Kommentar ( **#** )   |
-|                 | in die Konfigurationsdatei zu schreiben. Dadurch können Kommentare in einer  |
-|                 | später kommenden graphischen Konfigurationsoberfläche angezeigt und gepflegt |
-|                 | werden.                                                                      |
-+-----------------+------------------------------------------------------------------------------+
-| initial_value,  | Ein optionaler Startwert für dieses Item. Es wird empfohlen **initial_value**|
-| value           | anstelle des bisherigen Attributnamens **value** zu verwenden.               |
++=================+==============================================================================+
+| autotimer       | setzt den Wert des Items nach einer Zeitspanne auf einen bestimmten Wert.    |
+|                 | **Ab SmartHomeNG v1.3** werden die Konfigurationsmöglichkeiten erweitert     |
+|                 | (siehe [Beschreibung unten](#attribut-autotimer)).                           |
 +-----------------+------------------------------------------------------------------------------+
 | cache           | Wenn 'Yes', dann wird der Wert des Items zwischengespeichert und beim        |
 |                 | erneuten Start von SmartHomeNG wird der alte Wert aus dem Zwischenspeicher   |
 |                 | geladen (vergleichbar mit dem Permanentspeicher vom HS)                      |
-+-----------------+------------------------------------------------------------------------------+
-| enforce_updates | Wenn das Attribut auf 'Yes' gesetzt wird, führt jede Wertzuweisung ans Item  |
-|                 | dazu, das abhängige Logiken und item Evaluationen getriggert werden, auch    |
-|                 | wenn sich der Wert des Items bei der Zuweisung nicht ändert.                 |
-+-----------------+------------------------------------------------------------------------------+
-| threshold       | legt einen Schwellwert oder einen Schwellwertbereich fest., z.B. 21.4|25.0   |
-|                 | der eine Logik triggert, wenn der Wert höher als 25.0 or niedriger als 21.4  |
-|                 | ist. Es kann auch ein einzelner Wert notiert werden                          |
-+-----------------+------------------------------------------------------------------------------+
-| eval            | eval legt einen Ausdruck fest, nach dem der Wert des Items berechnet wird.   |
-|                 | Mit eval_trigger wird festgelegt, wann eine (Neu)berechnung erfolgt (siehe   |
-|                 | Beschreibung unten)                                                          |
-+-----------------+------------------------------------------------------------------------------+
-| eval_trigger    | Liste von Items, bei deren Veränderung eine Neuberechnung der in eval        |
-|                 | definierten Formel erfolgen soll (siehe Beschreibung unten)                  |
 +-----------------+------------------------------------------------------------------------------+
 | crontab         | Die Evaluierung des Items findet zu angegebenen Zeitpunkten statt (siehe     |
 |                 | Beschreibung unten)                                                          |
@@ -57,9 +32,26 @@ plugin-spezifischen Attribute ist in der Dokumentation des jeweiligen Plugins na
 |                 | Logik oder Eval-Funktion). **Ab SmartHomeNG v1.3** werden die                |
 |                 | Konfigurationsmöglichkeiten erweitert (siehe Beschreibung unten).            |
 +-----------------+------------------------------------------------------------------------------+
-| autotimer       | setzt den Wert des Items nach einer Zeitspanne auf einen bestimmten Wert.    |
-|                 | **Ab SmartHomeNG v1.3** werden die Konfigurationsmöglichkeiten erweitert     |
-|                 | (siehe [Beschreibung unten](#attribut-autotimer)).                           |
+| enforce_updates | Wenn das Attribut auf 'Yes' gesetzt wird, führt jede Wertzuweisung ans Item  |
+|                 | dazu, das abhängige Logiken und item Evaluationen getriggert werden, auch    |
+|                 | wenn sich der Wert des Items bei der Zuweisung nicht ändert.                 |
++-----------------+------------------------------------------------------------------------------+
+| eval            | eval legt einen Ausdruck fest, nach dem der Wert des Items berechnet wird.   |
+|                 | Mit eval_trigger wird festgelegt, wann eine (Neu)berechnung erfolgt (siehe   |
+|                 | Beschreibung unten)                                                          |
++-----------------+------------------------------------------------------------------------------+
+| eval_trigger    | Liste von Items, bei deren Veränderung eine Neuberechnung der in eval        |
+|                 | definierten Formel erfolgen soll (siehe Beschreibung unten)                  |
++-----------------+------------------------------------------------------------------------------+
+| initial_value,  | Ein optionaler Startwert für dieses Item. Es wird empfohlen **initial_value**|
+| value           | anstelle des bisherigen Attributnamens **value** zu verwenden.               |
++-----------------+------------------------------------------------------------------------------+
+| log_change      | Ermöglicht das Loggen jeder Veränderung des Item-Wertes. **log_change** muss |
+|                 | dazu den Namen des zu verwendeten Loggers enthalten. In **logging.yaml**     |
+|                 | muss der Logger als **items.<Name>** konfiguriert sein. Wertänderungen des   |
+|                 | Items werden dann mit dem Level INFO geloggt. **Ab SmartHomeNG v1.5**        |
++-----------------+------------------------------------------------------------------------------+
+| name            | ein optionaler Name für das Item                                             |
 +-----------------+------------------------------------------------------------------------------+
 | on_update       | Ermöglicht das setzen des Wertes anderer Items, wenn das aktuelle Item ein   |
 |                 | Update erhält (auch wenn sich der Wert des aktuellen Items dabei nicht       |
@@ -68,10 +60,18 @@ plugin-spezifischen Attribute ist in der Dokumentation des jeweiligen Plugins na
 | on_change       | Ermöglicht das setzen des Wertes anderer Items, wenn der Wert des aktuellen  |
 |                 | Items verändert wird. **Ab SmartHomeNG v1.4**                                |
 +-----------------+------------------------------------------------------------------------------+
-| log_change      | Ermöglicht das Loggen jeder Veränderung des Item-Wertes. **log_change** muss |
-|                 | dazu den Namen des zu verwendeten Loggers enthalten. In **logging.yaml**     |
-|                 | muss der Logger als **items.<name>** konfiguriert sein.                      |
-|                 | **Ab SmartHomeNG v1.5**                                                      |
+| remark          | ein optionaler Kommentar für das Item. Es ist sinnvoll Kommentare zu einem   |
+|                 | Item als **remark** Attribut zu erfassen und nicht als Kommentar ( **#** )   |
+|                 | in die Konfigurationsdatei zu schreiben. Dadurch können Kommentare in einer  |
+|                 | später kommenden graphischen Konfigurationsoberfläche angezeigt und gepflegt |
+|                 | werden.                                                                      |
++-----------------+------------------------------------------------------------------------------+
+| threshold       | legt einen Schwellwert oder einen Schwellwertbereich fest., z.B. 21.4|25.0   |
+|                 | der eine Logik triggert, wenn der Wert höher als 25.0 or niedriger als 21.4  |
+|                 | ist. Es kann auch ein einzelner Wert notiert werden                          |
++-----------------+------------------------------------------------------------------------------+
+| type            | Um Werte zu speichern, muss ein Typ vorgegeben werden. Unterstützte Typen    |
+|                 | sind bool, num, str, list, dict, foo, scene (siehe Tabelle unten)            |
 +-----------------+------------------------------------------------------------------------------+
 
 

@@ -9,10 +9,10 @@ Items
    :hidden:
 
    initiale_itemkonfiguration
-   items_standard_attribute.rst
-   items_plugin_attribute.rst
-   items_attributes_relative_referenzen.rst
-   items_attributes_eval_ausdruecke.rst
+   items_standard_attribute
+   items_plugin_attribute
+   items_attributes_relative_referenzen
+   items_attributes_eval_ausdruecke
    items_properties
    items_funktionen
    items_systemitems
@@ -98,4 +98,15 @@ unterstützt.)
 
    Informationen zum :doc:`alten und neuen Dateiformat <./konfigurationsdateien_aufbau>`
    finden Sie :doc:`hier <./konfigurationsdateien_aufbau>`.
+
+
+Properties und Funktionen
+-------------------------
+
+Properties und Funktionen von Items dienen dazu auf Item Informationen während der Laufzeit von SmartHomeNG zuzugreifen.
+Sie werden in Plugins, Logiken oder eval-Ausdrücken genutzt.
+
+Viele Attribute stehen zur Laufzeit als Properties zur Verfügung und können gelesen (und zum Teil auch geschrieben) werden.
+Um herauszufinden, wie der Zugriff zur Laufzeit funktioniert, bitte auf der Seite :doc:`Properties eines Items <./items_properties>`
+nachsehen.
 

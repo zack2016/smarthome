@@ -4,8 +4,8 @@
 
 .. role:: bluesup
 
-enforce_updates :bluesup:`update`
-=================================
+enforce_updates
+===============
 
 Die Wirkungsweise von *enforce_updates* erschließt sich nicht sofort. Zum Verständnis was *enforce_updates* bewirkt, ist es
 wichtig erstmal "in **Items** zu denken" und Plugins oder Logiken für einen Moment zu vergessen.

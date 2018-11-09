@@ -16,7 +16,7 @@ There are two ways to access the API
        # to access a method (eg. return_plugins()):
        plugins.return_plugins()
 
-   This is the preffered method.
+   This is the preferred method.
 
 
 2. Through the main SmartHome object 
