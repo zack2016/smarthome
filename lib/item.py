@@ -373,8 +373,10 @@ class Item():
         self._cycle = None
         self._enforce_updates = False
         self._eval = None				    # -> KEY_EVAL
+        self._eval_unexpanded = ''
         self._eval_trigger = False
         self._trigger = False
+        self._trigger_unexpanded = []
         self._trigger_condition_raw = []
         self._trigger_condition = None
         self._on_update = None				# -> KEY_ON_UPDATE eval expression
@@ -447,8 +449,9 @@ class Item():
                         attr = KEY_VALUE
                     setattr(self, '_' + attr, value)
                 elif attr in [KEY_EVAL]:
-                    value = self.get_stringwithabsolutepathes(value, 'sh.', '(', KEY_EVAL)
-                    setattr(self, '_' + attr, value)
+#                     value = self.get_stringwithabsolutepathes(value, 'sh.', '(', KEY_EVAL)
+#                     setattr(self, '_' + attr, value)
+                    self._process_eval(value)
                 elif attr in [KEY_CACHE, KEY_ENFORCE_UPDATES]:  # cast to bool
                     try:
                         setattr(self, '_' + attr, _cast_bool(value))
@@ -460,12 +463,14 @@ class Item():
                         value = [value, ]
                     setattr(self, '_' + attr, value)
                 elif attr in [KEY_EVAL_TRIGGER] or (self._use_conditional_triggers and attr in [KEY_TRIGGER]):  # cast to list
-                    if isinstance(value, str):
-                        value = [value, ]
-                    expandedvalue = []
-                    for path in value:
-                        expandedvalue.append(self.get_absolutepath(path, attr))
-                    self._trigger = expandedvalue
+#                     if isinstance(value, str):
+#                         value = [value, ]
+#                     self._trigger_unexpanded = value
+#                     expandedvalue = []
+#                     for path in value:
+#                         expandedvalue.append(self.get_absolutepath(path, attr))
+#                     self._trigger = expandedvalue
+                    self._process_trigger_list(attr, value)
                 elif (attr in [KEY_CONDITION]) and self._use_conditional_triggers:  # cast to list
                     if isinstance(value, list):
                         cond_list = []
@@ -762,6 +767,28 @@ class Item():
         return on_list
 
 
+    def _process_eval(self, value):
+
+        if value == '':
+            self._eval_unexpanded = ''
+            self._eval = None
+        else:
+            self._eval_unexpanded = value
+            value = self.get_stringwithabsolutepathes(value, 'sh.', '(', KEY_EVAL)
+            self._eval = value
+
+
+    def _process_trigger_list(self, attr, value):
+
+        if isinstance(value, str):
+            value = [value, ]
+        self._trigger_unexpanded = value
+        expandedvalue = []
+        for path in value:
+            expandedvalue.append(self.get_absolutepath(path, attr))
+        self._trigger = expandedvalue
+
+
     def _process_on_xx_list(self, attr, value):
 
         if isinstance(value, str):
@@ -893,6 +920,36 @@ class Item():
                     self._item._eval = None
                 else:
                     self._item._eval = value
+                return
+            else:
+                self._type_error('non-non-string')
+                return
+
+
+        @property
+        def eval_unexpanded(self):
+            """
+            Property: eval expression
+
+            Available in SmartHomeNG v1.6 and above
+
+            :param value: eval expression of the item
+            :type value: str
+
+            :return: eval expression of the item
+            :rtype: str
+            """
+            if self._item._eval:
+                return self._item._eval
+            return ''
+
+        @eval_unexpanded.setter
+        def eval_unexpanded(self, value):
+
+            if isinstance(value, str):
+                self._item._lock.acquire()
+                self._item._process_eval(value)
+                self._item._lock.release()
                 return
             else:
                 self._type_error('non-non-string')
@@ -1089,7 +1146,9 @@ class Item():
                 value = [value]
             if isinstance(value, list):
                 if value == [] or self._checkstrtype(value):
+                    self._item._lock.acquire()
                     self._item._process_on_xx_list('on_change', value)
+                    self._item._lock.release()
                 else:
                     self._type_error('list containing non-string')
                     return
@@ -1136,7 +1195,9 @@ class Item():
                 value = [value]
             if isinstance(value, list):
                 if value == [] or self._checkstrtype(value):
+                    self._item._lock.acquire()
                     self._item._process_on_xx_list('on_update', value)
+                    self._item._lock.release()
                 else:
                     self._type_error('list containing non-string')
                     return
@@ -1316,12 +1377,49 @@ class Item():
             if isinstance(value, list):
                 if value == []:
                     self._item._trigger = False
+                    self._item._trigger_unexpanded = []
                 else:
                     if self._checkstrtype(value):
                         self._item._trigger = value
+                        self._item._trigger_unexpanded = value
                     else:
                         self._type_error('list containing non-string')
                         return
+                return
+            else:
+                self._type_error('non-list')
+                return
+
+
+        @property
+        def trigger_unexpanded(self):
+            """
+            Property: Triggers of the item
+
+            Available in SmartHomeNG v1.6 and above
+
+            :param value: list of triggers
+            :type value: list
+
+            :return: [] if not defined or a list of triggers
+            :rtype: list of str
+            """
+            if self._item._trigger:
+                return self._item._trigger_unexpanded
+            return []
+
+        @trigger_unexpanded.setter
+        def trigger_unexpanded(self, value):
+            if isinstance(value, str):
+                value = [value]
+            if isinstance(value, list):
+                if value == [] or self._checkstrtype(value):
+                    self._item._lock.acquire()
+                    self._item._process_trigger_list('trigger', value)
+                    self._item._lock.release()
+                else:
+                    self._type_error('list containing non-string')
+                    return
                 return
             else:
                 self._type_error('non-list')
@@ -1935,6 +2033,8 @@ class Item():
             return
         self._lock.acquire()
         _changed = False
+        self.__prev_update = self.__last_update
+        self.__last_update = self.shtime.now()
         self.__updated_by = "{0}:{1}".format(caller, source)
         trigger_source_details = self.__updated_by
         if value != self._value:
@@ -1943,7 +2043,7 @@ class Item():
             self.__last_value = self._value
             self._value = value
             self.__prev_change = self.__last_change
-            self.__last_change = self.shtime.now()
+            self.__last_change = self.__last_update
             self.__changed_by = "{0}:{1}".format(caller, source)
             trigger_source_details = self.__changed_by
             if caller != "fader":
@@ -1962,8 +2062,6 @@ class Item():
         # ms: call run_on_update() from here
         self.__run_on_update(value)
         if _changed or self._enforce_updates or self._type == 'scene':
-            self.__prev_update = self.__last_update
-            self.__last_update = self.shtime.now()
             # ms: call run_on_change() from here
             self.__run_on_change(value)
             for method in self.__methods_to_trigger:

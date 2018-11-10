@@ -20,7 +20,7 @@ genutzt werden können.
 |                                | gesetzt wird. Die Zeitangabe erfolgt in Sekunden. Eine Angabe der Dauer in   |
 |                                | Minuten ist wie in '10m' möglich. Die Bedeutung und Wirkungsweise von        |
 |                                | **compat** bitte auf der Seite                                               |
-|                                |:doc:`autotimer <./items_standard_attribute_autotimer>` nachlesen.            |
+|                                | :doc:`autotimer <./items_standard_attribute_autotimer>` nachlesen.            |
 +--------------------------------+------------------------------------------------------------------------------+
 | fade(end, step, delta)         | Blendet das Item mit der definierten Schrittweite (int oder float) und       |
 |                                | timedelta (int oder float in Sekunden) auf einen angegebenen Wert auf oder   |

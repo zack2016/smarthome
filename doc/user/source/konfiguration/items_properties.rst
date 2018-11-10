@@ -44,6 +44,10 @@ Werte für Properties, die auch geschrieben werden können (z.B. in Logiken), we
 +----------------------+------------+----------+------------------------------------------------------------------------------+
 | eval                 | r/w        | str      | Erlaubt das Abfragen oder Setzen der eval Expression                         |
 +----------------------+------------+----------+------------------------------------------------------------------------------+
+| eval_unexpanded      | r/w        | str      | Erlaubt das Abfragen oder Setzen der eval Expression. Beim Beschreiben des   |
+|                      |            |          | Properties werden evtl. enthaltene relative Item Referenzen zur Nutzung      |
+|                      |            |          | expandiert (analog zum Laden aus Item Konfigurationsdateien).                |
++----------------------+------------+----------+------------------------------------------------------------------------------+
 | last_change          | r/o        | datetime | Liefert ein *datetime* Objekt mit dem Zeitpunkt der letzten Änderung des     |
 |                      |            |          | Items zurück.                                                                |
 +----------------------+------------+----------+------------------------------------------------------------------------------+
@@ -103,8 +107,13 @@ Werte für Properties, die auch geschrieben werden können (z.B. in Logiken), we
 +----------------------+------------+----------+------------------------------------------------------------------------------+
 | prev_value           | r/o        | str      | Liefert den Wert des Items zurück, den es vor der vorletzten Änderung hatte. |
 +----------------------+------------+----------+------------------------------------------------------------------------------+
-| trigger              | r/w        | list     | Erlaubt das Abfragen oder Setzen der Listes der Trigger (eval_trigger) des   |
+| trigger              | r/w        | list     | Erlaubt das Abfragen oder Setzen der Liste der Trigger (eval_trigger) des    |
 |                      |            |          | Items.                                                                       |
++----------------------+------------+----------+------------------------------------------------------------------------------+
+| trigger_unexpanded   | r/w        | list     | Erlaubt das Abfragen oder Setzen der Liste der nicht expandierten Trigger    |
+|                      |            |          | (eval_trigger) des Items. Beim Beschreiben des Properties werden evtl.       |
+|                      |            |          | enthaltene relative Item Referenzen zur Nutzung expandiert (analog zum       |
+|                      |            |          | Laden aus Item Konfigurationsdateien).                                       |
 +----------------------+------------+----------+------------------------------------------------------------------------------+
 | type                 | r/o        | str      | Liefert den Typ des Items zurück                                             |
 +----------------------+------------+----------+------------------------------------------------------------------------------+

@@ -19,7 +19,7 @@ plugin-spezifischen Attribute ist in der Dokumentation des jeweiligen Plugins na
 +=================+==============================================================================+
 | autotimer       | setzt den Wert des Items nach einer Zeitspanne auf einen bestimmten Wert.    |
 |                 | **Ab SmartHomeNG v1.3** werden die Konfigurationsmöglichkeiten erweitert     |
-|                 | (siehe [Beschreibung unten](#attribut-autotimer)).                           |
+|                 | (siehe :doc:`autotimer <./items_standard_attribute_autotimer>`).             |
 +-----------------+------------------------------------------------------------------------------+
 | cache           | Wenn 'Yes', dann wird der Wert des Items zwischengespeichert und beim        |
 |                 | erneuten Start von SmartHomeNG wird der alte Wert aus dem Zwischenspeicher   |
@@ -71,7 +71,7 @@ plugin-spezifischen Attribute ist in der Dokumentation des jeweiligen Plugins na
 |                 | ist. Es kann auch ein einzelner Wert notiert werden                          |
 +-----------------+------------------------------------------------------------------------------+
 | type            | Um Werte zu speichern, muss ein Typ vorgegeben werden. Unterstützte Typen    |
-|                 | sind bool, num, str, list, dict, foo, scene (siehe Tabelle unten)            |
+|                 | sind bool, num, str, list, dict, foo, scene                                  |
 +-----------------+------------------------------------------------------------------------------+
 
 
@@ -79,11 +79,11 @@ plugin-spezifischen Attribute ist in der Dokumentation des jeweiligen Plugins na
    :maxdepth: 5
    :hidden:
 
-   items_standard_attribute_type
-   items_standard_attribute_enforce_updates
-   items_standard_attribute_eval
+   items_standard_attribute_autotimer
    items_standard_attribute_crontab
    items_standard_attribute_cycle
-   items_standard_attribute_autotimer
+   items_standard_attribute_enforce_updates
+   items_standard_attribute_eval
    items_standard_attribute_on_update
+   items_standard_attribute_type
 

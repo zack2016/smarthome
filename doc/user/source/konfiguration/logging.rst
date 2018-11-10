@@ -35,31 +35,32 @@ Kurzdoku der Einträge in der Konfigurationsdatei
 
 Die einzelnen Konfigurationseinträge haben die folgende Bedeutung:
 
-+-----------------+------------------------------------------------------------------------------------------------+
-| **Abschnitte**  | Bedeutung                                                                                      |
-+-----------------+------------------------------------------------------------------------------------------------+
-| **formatters:** | Definiert das Ausgabeformat der einzelnen Loggingeinträge. Mehrere unterschiedliche            |
-|                 | **formatter** können dazu verwendet werden um unterschiedlich aussehende Logdateien            |
-|                 | zu erzeugen. In der Konfigurationsdatei **etc/logging.yaml** sind die Formatter                |
-|                 | **`simple`** und **`detail`** vorkonfiguriert. Weitere Formatter können bei Bedarf             |
-|                 | hinzugefügt werden.                                                                            |
-+-----------------+------------------------------------------------------------------------------------------------+
-| **handlers:**   | Handler definieren die Log-Behandlungsroutinen/Ausgabekanäle die verwendet werden.             |
-|                 | In Python gibt es bereits mehrere vorimplementierte und mächtige Handler-Typen die             |
-|                 | `hier <https://docs.python.org/3.4/library/logging.handlers.html#module-logging.handlers>`_    |
-|                 | beschrieben sind. Als eigentliche Handler sind in der Konfigurationsdatei **etc/logging.yaml** |
-|                 | die Handler **`console`** und **`file`** vordefiniert. Wenn Log-Einträge z.B. in eine andere   |
-|                 | Datei geschrieben werden sollen, muss ein weiterer Handler definiert werden.                   |
-+-----------------+------------------------------------------------------------------------------------------------+
-| **loggers:**    | Hier werden die einzelnen Logger definiert und was mit diesen Einträgen passiert,              |
-|                 | welche Handler und formatter verwendet werden. Das Level konfiguriert dabei die                |
-|                 | Logtiefe für die einzelne Komponente. Bei den loggern ist es nun möglich einzelne              |
-|                 | Plugins oder Libs im Debug protokollieren zu lassen. Dazu sind in der Konfiguration            |
-|                 | bereits einige Beispiele.                                                                      |
-+-----------------+------------------------------------------------------------------------------------------------+
-| **root:**       | Hier ist die Konfiguration des Root-Loggers der für die ganze Anwendung gilt. Dieser           |
-|                 | Root-Logger wird für alle Komponente verwendet die nicht unter loggers: konfiguriert sind.     |
-+-----------------+------------------------------------------------------------------------------------------------+
++-----------------+----------------------------------------------------------------------------------------------------+
+| **Abschnitte**  | **Bedeutung**                                                                                      |
++=================+====================================================================================================+
+| **formatters:** | Definiert das Ausgabeformat der einzelnen Loggingeinträge. Mehrere unterschiedliche                |
+|                 | **formatter** können dazu verwendet werden um unterschiedlich aussehende Logdateien                |
+|                 | zu erzeugen. In der Konfigurationsdatei **etc/logging.yaml** sind die Formatter                    |
+|                 | **`simple`** und **`detail`** vorkonfiguriert. Weitere Formatter können bei Bedarf                 |
+|                 | hinzugefügt werden.                                                                                |
++-----------------+----------------------------------------------------------------------------------------------------+
+| **handlers:**   | Handler definieren die Log-Behandlungsroutinen/Ausgabekanäle die verwendet werden.                 |
+|                 | In Python gibt es bereits mehrere vorimplementierte und mächtige Handler-Typen die                 |
+|                 | `hier <https://docs.python.org/3.4/library/logging.handlers.html#module-logging.handlers>`_        |
+|                 | beschrieben sind. Als eigentliche Handler sind in der Konfigurationsdatei **etc/logging.yaml**     |
+|                 | die Handler **`console`** und **`file`** vordefiniert. Wenn Log-Einträge z.B. in eine andere       |
+|                 | Datei geschrieben werden sollen, muss ein weiterer Handler definiert werden.                       |
++-----------------+----------------------------------------------------------------------------------------------------+
+| **loggers:**    | Hier werden die einzelnen Logger definiert und was mit diesen Einträgen passiert,                  |
+|                 | welche Handler und formatter verwendet werden. Das Level konfiguriert dabei die                    |
+|                 | Logtiefe für die einzelne Komponente. Bei den loggern ist es nun möglich einzelne                  |
+|                 | Plugins oder Libs im Debug protokollieren zu lassen. Dazu sind in der Konfiguration                |
+|                 | bereits einige Beispiele.                                                                          |
++-----------------+----------------------------------------------------------------------------------------------------+
+| **root:**       | Hier ist die Konfiguration des Root-Loggers der für die ganze Anwendung gilt. Dieser               |
+|                 | Root-Logger wird für alle Komponenten verwendet, auch die die nicht unter loggers: konfiguriert    |
+|                 | sind. Da der root Logger ALLE Logeinträge empfängt sollte der level: unbedingt auf WARNING stehen. |
++-----------------+----------------------------------------------------------------------------------------------------+
 
 Wenn man **Logger** definiert, welche die Log-Einträge über zusätzliche **Handler** ausgeben ist 
 zu beachten, dass die Ausgabe zusätzlich IMMER durch den Standardhandler (**file:**) erfolgt. Dieses 
@@ -71,8 +72,8 @@ Eintrag im Handler **file:** erfolgen. Der Eintrag `level: WARNING` führt dazu,
 Handler **file:** nur Ausgaben für Fehler und Warnungen erfolgen. INFO und DEBUG Ausgaben erfolgen 
 dann nur noch über den zusätzlichen Handler.
 
-Pluginentwicklung
-=================
+Plugin Entwicklung
+==================
 
 Für die Entwickler von Plugins:
 Der Logger sollte nun nicht global mit logging.getLogger('') instanziert werden sondern innerhalb 
@@ -122,6 +123,36 @@ Beispiel:
        self.logger = logging.getLogger(__name__)
        # Logger verwenden:
        self.logger.debug("Debug Message")
+
+
+Logging der Veränderung von Items
+---------------------------------
+
+Die Veränderung von Item Werten kann am einfachsten geloggt werden, indem bei dem Item das Attribut **log_change** gesetzt
+wird und auf einen entsprechenden Item Logger verweist. Der Item Logger muss in der ../etc/logging.yaml mit Level INFO oder
+DEBUG definiert sein.
+
+.. code-block:: yaml
+   :caption: ../items/items.yaml
+
+    test:
+        item:
+            log_change: <Logger-Name>
+
+
+und
+
+.. code-block:: yaml
+   :caption: ../etc/logging.yaml
+
+    ...
+
+    logger:
+        items_<Logger-Name>:
+            level: INFO
+            handlers: [shng_details_file]
+
+    ...
 
 
 Best Practices

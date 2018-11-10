@@ -60,22 +60,6 @@ Die folgenden Beispiele beziehen sich auf diese Item Struktur:
                sister:
 
 
-.. code-block:: none
-   :caption: ../items/\*.conf (deprecated)
-
-   [item_tree]
-       [[grandparent]]
-
-           [[[parent]]]
-
-               [[[[my_item]]]]
-                   eval_trigger = ...
-
-                   [[[[[child]]]]]
-
-                       [[[[[[grandchild]]]]]]
-
-               [[[[sister]]]]
 
 
 Folgende Beispiele zeigen, wie ausgehend vom Attribut **eval_trigger** des Items **my_item** 
@@ -83,7 +67,7 @@ andere Items referenziert werden.
 
 +-------------------------------------------------------+-------------------+----------------+
 | **absolut**                                           | **relativ**       | **alternativ** |
-+-------------------------------------------------------+-------------------+----------------+
++=======================================================+===================+================+
 | item_tree.grandparent.parent.my_item                  | .                 | .self          |
 +-------------------------------------------------------+-------------------+----------------+
 | item_tree.grandparent.parent.my_item.child            | .child            |                |
@@ -113,13 +97,6 @@ Attribute folgendermaßen aussehen:
    my_item:
        eval: 3 * sh..child()
        eval_trigger: .child
-
-.. code-block:: none
-   :caption: ../items/\*.conf (deprecated)
-   
-   [[[[my_item]]]]
-       eval = 3 * sh..child()
-       eval_trigger = .child
 
 
 .. note::
@@ -161,7 +138,7 @@ Die Methode `expand_relativepathes()` hat die folgenden drei Parameter:
 
 +----------------+-------------------------------------------------------------------+
 | **Parameter**  | **Bedeutung**                                                     |
-+----------------+-------------------------------------------------------------------+
++================+===================================================================+
 | attribute_name | Name des Attibutes, in dem die Referenzen aufgelöst werden sollen |
 +----------------+-------------------------------------------------------------------+
 | begin_tag      | Zeichen(kette), die den Beginn einer Item-Referenz kennzeichnet   |
@@ -186,15 +163,8 @@ enthalten.
 .. code-block:: yaml
    :caption: ../items/\*.yaml
 
-   schreibtischleuchte:
-       sv_widget: {{ basic.switch('id_schreibtischleuchte', 'wohnung.buero.schreibtischleuchte.onoff') }}
-
-
-.. code-block:: none
-   :caption: ../items/\*.conf (deprecated)
-
-   [[[schreibtischleuchte]]]
-       sv_widget = {{ basic.switch('id_schreibtischleuchte', 'wohnung.buero.schreibtischleuchte.onoff') }}
+    schreibtischleuchte:
+        sv_widget: {{ basic.switch('id_schreibtischleuchte', 'wohnung.buero.schreibtischleuchte.onoff') }}
 
 
 Die Item Referenz wird dadurch erkannt, dass sie in **'** Zeichen eingeschlossen ist. Für das 
@@ -211,15 +181,8 @@ jedoch relativ wäre
 .. code-block:: yaml
    :caption: ../items/\*.yaml
 
-   schreibtischleuchte:
-       sv_widget: {{ basic.switch('id_schreibtischleuchte', '.onoff') }}
-
-
-.. code-block:: none
-   :caption: ../items/\*.conf (deprecated)
-
-   [[[schreibtischleuchte]]]
-       sv_widget = {{ basic.switch('id_schreibtischleuchte', '.onoff') }}
+    schreibtischleuchte:
+        sv_widget: {{ basic.switch('id_schreibtischleuchte', '.onoff') }}
 
 
 würde bei dem Aufruf von `item.expand_relativepathes('sv_widget', "'", "'")` eine Auflösung 
