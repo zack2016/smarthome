@@ -126,7 +126,7 @@ Referencing a plugin in the configuration
 -----------------------------------------
 
 Up to SmartHomeNG v1.3 a plugin had to be referenced by the parameters ``class_name`` and ``class_path``.
-Now it is possible to reference it alone by specifing the parameter ``plugin_name``, where
+**Now it is possible** to reference it alone by specifing the parameter ``plugin_name``, where
 the value would be the former class_path without the `plugins.` prefix. Since all plugins are
 located in the ``/plugins`` folder, the `plugins.` is redundant information.
 
@@ -135,7 +135,12 @@ the ``class_name`` parameter. This information is retrieved from the metadata.
 
 .. Note::
 
-    Should the need arise to configure a plugin that is located outside the ``/plugins`` folder, ``class_path`` can be used.
+    As standard the parameter **plugin_name** should be used when configuring plugins.
+    
+    Only is the need arises to configure a plugin that is located outside the ``../plugins`` folder, **class_path** should be used.
+
+    The parameter **class_name** shouldn't be used any more, since the name of the plugin's class is defined in the metadata file
+
 
 
 Using an older version of a plugin

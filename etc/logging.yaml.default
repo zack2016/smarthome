@@ -1,32 +1,41 @@
 %YAML 1.1
 ---
 version: 1
-shng_version: x
 disable_existing_loggers: false
 
 formatters:
 
-    shng_busmonitor:
-        format: '%(asctime)s;%(message)s;'
-        datefmt: '%Y-%m-%d;%H:%M:%S'
-
     shng_simple:
-        format: '%(asctime)s %(levelname)-8s %(name)-17s %(message)s'
+        format: '%(asctime)s %(levelname)-8s %(name)-19s %(message)s'
         datefmt: '%Y-%m-%d  %H:%M:%S'
 
     shng_detail:
         format: '%(asctime)s %(levelname)-8s %(module)-17s %(threadName)-12s %(message)s  --  (%(filename)s:%(funcName)s:%(lineno)d)'
         datefmt: '%Y-%m-%d %H:%M:%S %Z'
 
+    shng_detail2:
+        format: '%(asctime)s %(levelname)-8s %(name)-19s %(module)-19s %(funcName)-12s ln:%(lineno)-3d %(message)s  ----  %(threadName)-12s '
+        datefmt: '%Y-%m-%d %H:%M:%S %Z'
+
     shng_items:
         format: '%(asctime)s %(levelname)-8s %(module)-12s %(message)s'
         datefmt: '%Y-%m-%d %H:%M:%S'
 
-#filters:
-#
-#    loggerfilter:
-#        (): lib.logutils.Filter
-#        name: knx_busmonitor
+    #shng_busmonitor:
+    #    # This formatter must be enabled when busmonitor logging from the knx plugin should be used.
+    #    format: '%(asctime)s;%(message)s;'
+    #    datefmt: '%Y-%m-%d;%H:%M:%S'
+    #    datefmt: '%Y-%m-%d;%H:%M:%S'
+
+
+
+filters:
+
+    #loggerfilter:
+    #    # This filter must be enabled when busmonitor logging from the knx plugin should be used.
+    #    (): lib.logutils.Filter
+    #    name: knx_busmonitor
+
 
 handlers:
 
@@ -50,54 +59,52 @@ handlers:
         filename: ./var/log/smarthome-details.log
         encoding: utf8
 
-#    shng_busmonitor_file:
-#        class: logging.handlers.TimedRotatingFileHandler
-#        formatter: shng_busmonitor
-#        level: DEBUG
-#        when: midnight
-#        backupCount: 7
-#        encoding: utf8
-#        filename: ./var/log/knx_busmonitor.log
+    #develop_file:
+    #    class: logging.handlers.TimedRotatingFileHandler
+    #    formatter: shng_detail
+    #    level: DEBUG
+    #    utc: false
+    #    when: midnight
+    #    backupCount: 7
+    #    filename: ./var/log/smarthome-develop.log
+    #    encoding: utf8
 
-#    develop_file:
-#        class: logging.handlers.TimedRotatingFileHandler
-#        formatter: shng_detail
-#        level: DEBUG
-#        utc: false
-#        when: midnight
-#        backupCount: 7
-#        filename: ./var/log/smarthome-develop.log
-#        encoding: utf8
+    #shng_busmonitor_file:
+    #    # This handler must be enabled when busmonitor logging from the knx plugin should be used.
+    #    class: logging.handlers.TimedRotatingFileHandler
+    #    formatter: shng_busmonitor
+    #    level: DEBUG
+    #    when: midnight
+    #    backupCount: 7
+    #    encoding: utf8
+    #    filename: ./var/log/knx_busmonitor.log
 
     console:
         class: logging.StreamHandler
         formatter: shng_simple
         stream: ext://sys.stdout
 
+
 loggers:
 
-    __main__:
-        # WARNING LEVEL to add restart log messages to further logfiles
-        # Take care, that the level here is not lower than the level of your handler
-        # E.g. a handler with ERROR and a __main__ level with WARNING will result in lots of error messages
-        handlers: [shng_details_file]
-        level: WARNING
+    #knx_busmonitor:
+    #    # This logger must be enabled when busmonitor logging from the knx plugin should be used.
+    #    level: INFO
+    #    handlers: [shng_busmonitor_file]
 
-#    knx_busmonitor:
-#        level: INFO
-#        handlers: [shng_busmonitor_file]
 
     # ====================================
     # Loggers for Python modules/packages
     # ------------------------------------
 
-#    cherrypy.error:
-#        handlers: [shng_details_file]
-#        level: INFO
+    #cherrypy.error:
+    #    handlers: [shng_details_file]
+    #    level: INFO
 
-#    jinja2:
-#        handlers: [shng_details_file]
-#        level: INFO
+    #jinja2:
+    #    handlers: [shng_details_file]
+    #    level: INFO
+
 
     # ================================
     # Loggers for SmartHomeNG modules
@@ -106,57 +113,84 @@ loggers:
         handlers: [shng_details_file]
         level: WARNING
 
+
     # ================================
     # Loggers for SmartHomeNG plugins
     # --------------------------------
 
-    # If the logger is created with logging.getLogger(__name__)
-    # the logger name is plugins.<plugin-shortname>
+    # Hint: If the logger is created in the plugins's code with logging.getLogger(__name__)
+    # the logger name in the logging configuration is is plugins.<plugin-shortname>
 
-#    plugins.backend:
-#        handlers: [shng_details_file]
-#        level: INFO
+    #plugins.backend:
+    #    handlers: [shng_details_file]
+    #    level: INFO
 
-#    plugins.cli:
-#        handlers: [shng_details_file]
-#        level: WARNING
+    #plugins.cli:
+    #    handlers: [shng_details_file]
+    #    level: WARNING
 
-#    plugins.database:
-#        handlers: [shng_details_file]
-#       level: INFO
+    #plugins.database:
+    #    handlers: [shng_details_file]
+    #   level: INFO
 
 
     # ==================================
     # Loggers for SmartHomeNG libraries
     # ----------------------------------
 
+    #lib.connection:
+    #    handlers: [develop_file]
+    #    level: WARNING
 
-#    lib.connection:
-#        handlers: [develop_file]
-#        level: WARNING
+    #lib.item:
+    #    handlers: [develop_file]
+    #    level: WARNING
 
-#    lib.item:
-#        handlers: [develop_file]
-#        level: WARNING
+    #lib.logic:
+    #    handlers: [develop_file]
+    #    level: INFO
 
-#    lib.logic:
-#        handlers: [develop_file]
-#        level: INFO
+
+    # ===============================
+    # Loggers for SmartHomeNG logics
+    # -------------------------------
+
+    #logics.ex_logging:
+    #    handlers: [shng_details_file]
+    #    level: INFO
+
+    #logics.ex_persist:
+    #    handlers: [shng_details_file]
+    #    level: INFO
+
 
     # ==============================
-    # Loggers for SmartHomeNG logics
+    # Loggers for SmartHomeNG items
     # ------------------------------
 
-    logics.ex_logging:
-        handlers: [shng_details_file]
-        level: INFO
+    #items.temperatures:
+    #    handlers: [shng_details_file]
+    #    level: INFO
 
-    logics.ex_persist:
+    #items.new_device:
+    #    handlers: [shng_details_file]
+    #    level: DEBUG
+
+
+    # ================
+    # special loggers
+    # ----------------
+
+    __main__:
+        # Add all logging handlers that should receive the initial log lines after a startup
+        # but leave out the logging handlers that are defined in the root-logger
         handlers: [shng_details_file]
-        level: INFO
+        #handlers: [shng_details_file,shng_develop_file]
+
+        # set to WARNING LEVEL to add ONLY start and stop log-messages to further logfiles
+        level: WARNING
+
 
 root:
     level: WARNING
     handlers: [shng_warnings_file]
-#    level: INFO
-#    handlers: [shng_warnings_file_info, console]

@@ -1,51 +1,48 @@
-.. index:: Items; Funktionen
-.. index:: Funktionen; Items
+.. index:: items; functions
+.. index:: functions; items
 
 .. role:: bluesup
 .. role:: redesup
 
 
-Funktionen eines Items :bluesup:`update`
-========================================
+Functions of an item :redsup:`new`
+==================================
 
+Each defined item offers the following methods, which can be used in **eval** expressions or logics.
 
-Jedes definierte Item bietet die folgenden Methoden an, die unter anderem in **eval** Ausdrücken
-genutzt werden können.
 
 +--------------------------------+------------------------------------------------------------------------------+
-| **Funktion**                   | **Beschreibung**                                                             |
+| **Funktion**                   | **Description**                                                              |
 +================================+==============================================================================+
-| autotimer(time, value, compat) | Setzt einen Timer bei jedem Werte-Wechsel der Items. Angegeben wird die      |
-|                                | Zeit (**time**) die vergehen soll, bis das Item auf den Wert (**value**)     |
-|                                | gesetzt wird. Die Zeitangabe erfolgt in Sekunden. Eine Angabe der Dauer in   |
-|                                | Minuten ist wie in '10m' möglich. Die Bedeutung und Wirkungsweise von        |
-|                                | **compat** bitte auf der Seite                                               |
-|                                | :doc:`autotimer <./items_standard_attribute_autotimer>` nachlesen.           |
+| autotimer(time, value, compat) | Sets a timer for each value change of the item. Specified is the time        |
+|                                | (**time**) that should elapse until the item is set to the value (**value**).|
+|                                | The time is given in seconds. An indication of the duration in minutes is    |
+|                                | possible as in '10m'. For the meaning and effect of **compat** please read   |
+|                                | the used documentaion page **autotimer** under Configuration/Std.-Attributes |
 +--------------------------------+------------------------------------------------------------------------------+
-| fade(end, step, delta)         | Blendet das Item mit der definierten Schrittweite (int oder float) und       |
-|                                | timedelta (int oder float in Sekunden) auf einen angegebenen Wert auf oder   |
-|                                | ab. So wird z.B.: **sh.living.light.fade(100, 1, 2.5)** das Licht im         |
-|                                | Wohnzimmer mit einer Schrittweite von **1** und einem Zeitdelta von **2,5**  |
-|                                | Sekunden auf **100** herunterregeln.                                         |
+| fade(end, step, delta)         | Dimms the item with the defined increment (int or float) and timedelta       |
+|                                | (int or float in seconds) to a specified value. For example:                 |
+|                                | **sh.living.light.fade(100, 1, 2.5)** changes the light in the living room   |
+|                                | with a step size of **1** and a time delta of **2.5** seconds **100** down.  |
 +--------------------------------+------------------------------------------------------------------------------+
-| return_children()              | Liefert die Item-Pfade der direkt untergeordneten Items zurück. Aufruf:      |
-|                                | for child in sh.item.return_children(): ...                                  |
+| return_children()              | Returns the item paths of the directly subordinate items.                    |
+|                                | Called like this: for child in sh.item.return_children(): ...                |
 +--------------------------------+------------------------------------------------------------------------------+
-| return_parent()                | Liefert den Item-Pfad des übergeordneten Items zurück.                       |
-|                                | Aufruf: sh.item.return_parent()                                              |
+| return_parent()                | Returns the item path of the parent item.                                    |
+|                                | Called like this: sh.item.return_parent()                                    |
 +--------------------------------+------------------------------------------------------------------------------+
-| timer(time, value, compat)     | Funktioniert wir **autotimer()**, ausser dass die Aktion nur einmal          |
-|                                | ausgeführt wird. Die Bedeutung und Wirkungsweise von **compat** bitte auf    |
-|                                | der Seite :doc:`autotimer <./items_standard_attribute_autotimer>` nachlesen. |
+| timer(time, value, compat)     | Works like **autotimer()**, except that the action is executed only once.    |
+|                                | For the meaning and effect of **compat** please read the used documentaion   |
+|                                | page **autotimer** under Configuration/Std.-Attributes.                      |
 +--------------------------------+------------------------------------------------------------------------------+
 
 
 
-Weiterhin werden die folgenden Funktionen unterstützt, die jedoch **ab SmartHomeNG v1.6** nicht mehr genutzt werden sollen.
-Bitte stattdessen die entsprechenden in SmartHomeNG v1.6 eingeführten Properties benutzen.
+Furthermore, the following functions are supported, but **from SmartHomeNG v1.6** should not longer be used.
+Please use the corresponding properties introduced in SmartHomeNG v1.6 instead.
 
 +------------------------+------------------------------------------------------------------------------+
-| **Funktion**           | **Beschreibung**                                                             |
+| **Function**           | **Description**                                                              |
 +========================+==============================================================================+
 | id()                   | Liefert den item-Pfad des Items zurück. Aufruf: sh.item.id()                 |
 +------------------------+------------------------------------------------------------------------------+
