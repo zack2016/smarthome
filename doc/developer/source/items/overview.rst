@@ -77,7 +77,7 @@ Item Attributes
 ~~~~~~~~~~~~~~~
 
 Any item can have several attributes. In the above code there is defined the item ``living.light`` and it has the
-attributes ``type`` and ``name``. The following table shows the attributes that will be understood by the core
+attributes ``type`` and ``name``. The table shows the attributes that will be understood by the core
 of SmartHomeNG.
 
 However plugins may introduce many more attributes that will mostly be specific by the plugin itself.
@@ -235,61 +235,4 @@ Eval keywords to use with the ``eval_trigger``:
              - living.presence
              - kitchen.presence
 
-Item functions
-~~~~~~~~~~~~~~
 
-Every item provides the following methods:
-
-================================ ==================================================================================
-function                         description
-================================ ==================================================================================
-``id()``                         Returns the item id (path).
-``return_parent()``              Returns the parent item.
-``return_children()``            Returns the children of an item.
-``autotimer(time, value)``       Set a timer to run at every item change. Specify the time (in seconds),
-                                 or use m to specify minutes.
-
-``timer(time, value)``           Same as ``autotimer()``, except that it runs only once.
-``age()``                        Returns the age of the current item value as seconds.
-``prev_age()``                   Returns the previous age of the item value as seconds.
-``last_change()``                Returns a datetime object with the time of the last change.
-``prev_change()``                Returns a datetime object with the time of the next to last change.
-``prev_value()``                 Returns the value of the next to last change.
-``last_update()``                Returns a datetime object with the time of the last update.
-``changed_by()``                 Returns the caller of the latest update.
-``fade(tovalue,step,timedelta)`` Fades the item to a specified value with the defined stepping
-                                 (int or float) and timedelta (int or float in seconds).
-
-================================ ==================================================================================
-
-
-Example logic with uses of above functions
-------------------------------------------
-
-.. code-block:: python
-   :caption:  logics/sample.py
-
-   # getting the parent of item
-   sh.item.return_parent()
-
-   # get all children for item and log them
-   for child in sh.item.return_children():
-      logger.debug( ... )
-
-   # set the item after 10 minutes to 42
-   sh.item.autotimer('10m', 42)``
-
-   # disable autotimer for item
-   sh.item.autotimer()
-
-   # will in- or decrement the living room light to 100 by a stepping of ``1`` and a timedelta of ``2.5`` seconds.
-   sh.living.light.fade(100, 1, 2.5)``
-
-
-.. toctree::
-   :maxdepth: 6
-   :hidden:
-
-   config
-   items/functions
-   items/properties

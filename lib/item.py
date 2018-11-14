@@ -888,7 +888,7 @@ class Item():
         def enforce_updates(self, value):
 
             if isinstance(value, bool):
-                self._item._item._enforce_updates = value
+                self._item._enforce_updates = value
                 return
             else:
                 self._type_error('non-boolean')

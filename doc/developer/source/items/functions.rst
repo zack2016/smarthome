@@ -41,6 +41,8 @@ Each defined item offers the following methods, which can be used in **eval** ex
 Furthermore, the following functions are supported, but **from SmartHomeNG v1.6** should not longer be used.
 Please use the corresponding properties introduced in SmartHomeNG v1.6 instead.
 
+Since these functions are deprecated, the documentation hasn't been translated to english.
+
 +------------------------+------------------------------------------------------------------------------+
 | **Function**           | **Description**                                                              |
 +========================+==============================================================================+

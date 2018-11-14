@@ -14,7 +14,7 @@ All properties are at least readable (r/o). Some properties can also written to 
 Properties are available **in SmartHomeNG v1.6** and up.
 
 
-Properties are accessed in logic and eval expressions as follows:
+Properties are accessed in logics and eval expressions as follows:
 
 .. code::
 
