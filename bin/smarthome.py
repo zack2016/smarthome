@@ -465,7 +465,6 @@ class SmartHome():
         The main thread that is beeing started is called ``Main``
         """
 
-        print('sh.start()')
         threading.currentThread().name = 'Main'
 
         #############################################################

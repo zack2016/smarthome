@@ -123,7 +123,7 @@ class Shpypi:
         return installed_packages_dict
 
 
-    def test_requirements(self, filepath, logging=True):
+    def test_requirements(self, filepath, logging=True, hard_requirement=True):
         if logging:
             self.logger.info("test_requirements: filepath '{}' is checked".format(filepath))
 
@@ -147,12 +147,13 @@ class Shpypi:
             if inst_vers == '-' or (not min_met) or (not max_met):
                 requirements_met = False
                 if logging:
-                    if inst_vers == '-':
-                        self.logger.error("test_requirements: package '{}' is not installed".format(req_pkg))
-                    elif not min_met:
-                        self.logger.error("test_requirements: package '{}' v{} is too old. Minimum v{} is needed".format(req_pkg, inst_vers, min))
-                    else:
-                        self.logger.error("test_requirements: package '{}' v{} is too new. Maximum v{} is needed".format(req_pkg, inst_vers, max))
+                    if hard_requirement:
+                        if inst_vers == '-':
+                            self.logger.error("test_requirements: package '{}' is not installed".format(req_pkg))
+                        elif not min_met:
+                            self.logger.error("test_requirements: package '{}' v{} is too old. Minimum v{} is needed".format(req_pkg, inst_vers, min))
+                        else:
+                            self.logger.error("test_requirements: package '{}' v{} is too new. Maximum v{} is needed".format(req_pkg, inst_vers, max))
                 else:
                     if not self._error:
                         print()
