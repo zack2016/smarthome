@@ -608,7 +608,7 @@ class SmartHome():
     def __iter__(self):
 #        for child in self.__children:
 #            yield child
-        return items.get_toplevel_items()
+        return self.items.get_toplevel_items()
 
 
     #################################################################
