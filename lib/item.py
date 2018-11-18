@@ -196,23 +196,22 @@ class Items():
             self.__items.append(path)
         self.__item_dict[path] = item
 
-        # aus bin/smarthome.py
-        #    def __iter__(self):
-        #        for child in self.__children:
-        #            yield child
+    # aus bin/smarthome.py
+    #    def __iter__(self):
+    #        for child in self.__children:
+    #            yield child
 
-        def get_toplevel_items(self):
-            """
-            Returns a list with all items defined at the top level
+    def get_toplevel_items(self):
+        """
+        Returns a list with all items defined at the top level
 
-            :return: items defined at the top level
-            :rtype: list
-            """
-            for child in self._children:
-                yield child
+        :return: items defined at the top level
+        :rtype: list
+        """
+        for child in self._children:
+            yield child
 
-        # aus lib.logic.py
-
+    # aus lib.logic.py
     #    def __iter__(self):
     #        for logic in self._logics:
     #            yield logic

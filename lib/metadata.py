@@ -496,7 +496,7 @@ class Metadata():
 
     def _expand_listvalues(self, param, value):
         """
-        If a parameter is defined as a list, but the value is of a bsic datatype,
+        If a parameter is defined as a list, but the value is of a basic datatype,
         value is expanded to a list. In all other cases, the value is returned nuchanged
         """
         result = value
