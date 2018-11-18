@@ -24,11 +24,13 @@ import os
 import logging
 import json
 import cherrypy
+from datetime import datetime, timedelta
 
-# import jwt
+import jwt
 
 from lib.module import Modules
 from lib.shtime import Shtime
+from lib.utils import Utils
 
 from .systemdata import SystemData
 from .itemdata import ItemData
@@ -293,6 +295,13 @@ class WebApi():
         self.module = module
         self.url_root = url_root
 
+        self.send_hash = 'shNG0160$'
+        self.jwt_secret = 'SmartHomeNG$0815'
+
+        http_user_dict = self.module.mod_http.get_user_dict()
+        self._user_dict = {}
+        for user in http_user_dict:
+            self._user_dict[Utils.create_hash(user+self.send_hash)] = http_user_dict[user]
         return
 
 
@@ -302,14 +311,32 @@ class WebApi():
 
     @cherrypy.expose
     def authenticate(self):
-        cl = cherrypy.request.headers['Content-Length']
+        cl = cherrypy.request.headers.get('Content-Length', 0)
+        if cl == 0:
+            # cherrypy.reponse.headers["Status"] = "400"
+            return 'Bad request'
         rawbody = cherrypy.request.body.read(int(cl))
         self.logger.warning("api authenticate login: rawbody = {}".format(rawbody))
-        credentials = json.loads(rawbody)
-        self.logger.warning("api authenticate login: credentials username = {}, password = {}".format(credentials['username'], credentials['password']))
-
+        try:
+            credentials = json.loads(rawbody)
+        except:
+            return 'Bad, bad request'
 
         response = {}
+        user = self._user_dict.get(credentials['username'], None)
+        if user:
+            self.logger.warning("api authenticate login: user = {}".format(user))
+            if Utils.create_hash(user.get('password_hash', 'x')+self.send_hash) == credentials['password']:
+                url = cherrypy.url().split(':')[0] + ':' + cherrypy.url().split(':')[1]
+                payload = {'iss': url, 'iat': self.module.shtime.now(), 'jti': self.module.shtime.now().timestamp()}
+                payload['exp'] = self.module.shtime.now() + timedelta(days=7)
+                payload['name'] = user.get('name', '?')
+                payload['admin'] = ('admin' in user.get('groups', []))
+                response['token'] = jwt.encode(payload, self.jwt_secret, algorithm='HS256').decode('utf-8')
+                self.logger.warning("api authenticate login: payload = {}".format(payload))
+                self.logger.warning("api authenticate login: response = {}".format(response))
+                self.logger.warning("api authenticate login: cherrypy.url = {}".format(cherrypy.url()))
+                self.logger.warning("api authenticate login: remote.ip    = {}".format(cherrypy.request.remote.ip))
         return json.dumps(response)
 
 

@@ -158,7 +158,7 @@ class Http():
             self._password = None
 
         self._basic_auth = self._is_set(self._hashed_password)
-        self._user_dict[self._user] = {'password_hash': self._hashed_password, 'groups': ['admin']}
+        self._user_dict[self._user] = {'password_hash': self._hashed_password, 'name': 'Administrator', 'groups': ['admin']}
 
 
         # Check service-user information and fill _serviceuser_dict
