@@ -39,6 +39,11 @@ from .plugindata import PluginData
 from .scenedata import SceneData
 from .threaddata import ThreadData
 
+from .rest import RESTResource
+
+from .api_logs import *
+
+
 suburl = 'admin'
 
 
@@ -74,6 +79,8 @@ class Admin():
             self._init_complete = False
             return
 
+        self._showtraceback = self.mod_http._showtraceback
+
         try:
             self.pypi_timeout = self._parameters['pypi_timeout']
             self.itemtree_fullpath = self._parameters['itemtree_fullpath']
@@ -94,6 +101,7 @@ class Admin():
         # self.logger.warning('port = {}'.format(self.port))
         self.url_root = 'http://' + ip + ':' + str(self.port) + mysuburl
         self.api_url_root = 'http://' + ip + ':' + str(self.port) + 'api'
+        self.api2_url_root = 'http://' + ip + ':' + str(self.port) + 'api2'
 
     def start(self):
         """
@@ -106,6 +114,7 @@ class Admin():
         self.webif_dir = os.path.dirname(os.path.abspath(__file__)) + '/webif'
 
         self.logger.info("Module '{}': webif_dir = webif_dir = {}".format(self._shortname, self.webif_dir))
+        # config for Angular app (special: error page)
         config = {
             '/': {
                 'tools.staticdir.root': self.webif_dir,
@@ -118,14 +127,19 @@ class Admin():
                 #                   'tools.auth_basic.realm': 'shng_admin_webif',
             }
         }
-        config2 = {
+        # API config (special: request.dispatch)
+        config_api = {
             '/': {
-                'tools.staticdir.root': self.webif_dir,
-                'tools.staticdir.on': True,
-                'tools.staticdir.dir': 'static',
-                'tools.staticdir.index': 'index.html',
-                # 'error_page.404': self.webif_dir + '/static/index.html',
-                'error_page.404': self.error_page,
+                'request.dispatch': cherrypy.dispatch.MethodDispatcher(),
+#                'tools.staticdir.root': self.webif_dir,
+#                'tools.staticdir.on': True,
+#                'tools.staticdir.dir': 'static',
+#                'tools.staticdir.index': 'index.html',
+                'error_page.404': self._error_page,
+                'error_page.400': self._error_page,
+                'error_page.401': self._error_page,
+                'error_page.411': self._error_page,
+                'error_page.500': self._error_page,
                 # 'tools.auth_basic.on': False,
                 # 'tools.auth_basic.realm': 'shng_admin_webif',
             }
@@ -170,9 +184,18 @@ class Admin():
         # Register the web interface as a cherrypy app
         self.mod_http.register_webif(WebApi(self.webif_dir, self, self.api_url_root),
                                      'api',
-                                     config,
+                                     config_api,
                                      'api', '',
                                      description='API der Administrationsoberfläche für SmartHomeNG',
+                                     webifname='',
+                                     use_global_basic_auth=False)
+
+        # Register the web interface as a cherrypy app
+        self.mod_http.register_webif(WebApi2(self.webif_dir, self, self.api2_url_root),
+                                     'api2',
+                                     config_api,
+                                     'api2', '',
+                                     description='API2 der Administrationsoberfläche für SmartHomeNG',
                                      webifname='',
                                      use_global_basic_auth=False)
         return
@@ -187,6 +210,7 @@ class Admin():
         """
         #        self.logger.debug("Module '{}': Shutting down".format(self.shortname))
         pass
+
 
     def error_page(self, status, message, traceback, version):
         """
@@ -205,13 +229,59 @@ class Admin():
         if suburl != '':
             mysuburl = '/' + suburl
 
-        #        page = '<meta http-equiv="refresh" content="0; url=http://' + ip + ':' + str(self.port) + mysuburl + '/" />'
-        page = '<meta http-equiv="refresh" content="0; url=' + self.url_root + '/" />'
+        # page = '<meta http-equiv="refresh" content="0; url=http://' + ip + ':' + str(self.port) + mysuburl + '/" />'
+        # page = '<meta http-equiv="refresh" content="0; url=' + self.url_root + '/" />'
+        page = '404: Page not found!<br>'+message
         self.logger.warning(
-            "error_page: status = {}, message = {}, redirecting to = {}, version = {}".format(status, message,
-                                                                                              self.url_root, version))
+            "error_page: status = {}, message = {}".format(status, message))
         return page
 
+
+    def _error_page(self, status, message, traceback, version):
+        """
+        Generate html page for errors
+
+        :param status: error number and description
+        :param message: detailed error description
+        :param traceback: traceback that lead to the error
+        :param version: CherryPy version
+        :type status: str
+        :type message: str
+        :type traceback: str
+        :type version: str
+
+        :return: html error page
+        :rtype: str
+
+        """
+        show_traceback = True
+        errno = status.split()[0]
+        result = '<link rel="stylesheet" href="/gstatic/bootstrap/css/bootstrap.min.css" type="text/css"/>'
+        result += '<link rel="stylesheet" href="/gstatic/css/smarthomeng.css" type="text/css"/>'
+        result += '<div class="container mt-4 ml-0">' \
+                  '<h1 class="margin-base-vertical">' \
+                  '<img src="/gstatic/img/logo_small_120x120.png" width="40" height="40" style="vertical-align:top">'
+        result += ' Oops, Error ' + errno + ':'
+        result += '</h1><br/>'
+        result += '<h3>' + message + '</h3><br/>'
+
+        if (self._showtraceback == False) or (errno == '404'):
+            traceback = ''
+        else:
+            traceback = traceback.replace('\n', '<br>&nbsp;&nbsp;')
+            traceback = traceback.replace(' ', '&nbsp;&nbsp;')
+            traceback = '&nbsp;&nbsp;' + traceback
+
+            result += '<div class="card">' \
+                      '<div class="card-header"><strong>Traceback</strong></div>' \
+                      '<div class="card-body text-shng">'
+            result += traceback
+            result += '</div>' \
+                      '</div>'
+
+        result += '</div>'
+
+        return result
 
 def get_local_ipv4_address():
     """
@@ -287,7 +357,7 @@ class WebInterface(SystemData, ItemData, SchedulerData, PluginData, SceneData, T
         return json.dumps(response)
 
 
-class WebApi():
+class WebApi2():
 
     def __init__(self, webif_dir, module, url_root):
         self._sh = module._sh
@@ -301,7 +371,8 @@ class WebApi():
         http_user_dict = self.module.mod_http.get_user_dict()
         self._user_dict = {}
         for user in http_user_dict:
-            self._user_dict[Utils.create_hash(user+self.send_hash)] = http_user_dict[user]
+            if http_user_dict[user]['password_hash'] != '':
+                self._user_dict[Utils.create_hash(user+self.send_hash)] = http_user_dict[user]
         return
 
 
@@ -323,20 +394,31 @@ class WebApi():
             return 'Bad, bad request'
 
         response = {}
-        user = self._user_dict.get(credentials['username'], None)
-        if user:
-            self.logger.warning("api authenticate login: user = {}".format(user))
-            if Utils.create_hash(user.get('password_hash', 'x')+self.send_hash) == credentials['password']:
-                url = cherrypy.url().split(':')[0] + ':' + cherrypy.url().split(':')[1]
-                payload = {'iss': url, 'iat': self.module.shtime.now(), 'jti': self.module.shtime.now().timestamp()}
-                payload['exp'] = self.module.shtime.now() + timedelta(days=7)
-                payload['name'] = user.get('name', '?')
-                payload['admin'] = ('admin' in user.get('groups', []))
-                response['token'] = jwt.encode(payload, self.jwt_secret, algorithm='HS256').decode('utf-8')
-                self.logger.warning("api authenticate login: payload = {}".format(payload))
-                self.logger.warning("api authenticate login: response = {}".format(response))
-                self.logger.warning("api authenticate login: cherrypy.url = {}".format(cherrypy.url()))
-                self.logger.warning("api authenticate login: remote.ip    = {}".format(cherrypy.request.remote.ip))
+        if self._user_dict == {}:
+            # no password required
+            url = cherrypy.url().split(':')[0] + ':' + cherrypy.url().split(':')[1]
+            payload = {'iss': url, 'iat': self.module.shtime.now(), 'jti': self.module.shtime.now().timestamp()}
+            payload['exp'] = self.module.shtime.now() + timedelta(days=7)
+            payload['name'] = 'Autologin'
+            payload['admin'] = True
+            response['token'] = jwt.encode(payload, self.jwt_secret, algorithm='HS256').decode('utf-8')
+            self.logger.warning("api authenticate login: Autologin")
+            self.logger.warning("api authenticate login: payload = {}".format(payload))
+        else:
+            user = self._user_dict.get(credentials['username'], None)
+            if user:
+                self.logger.warning("api authenticate login: user = {}".format(user))
+                if Utils.create_hash(user.get('password_hash', 'x')+self.send_hash) == credentials['password']:
+                    url = cherrypy.url().split(':')[0] + ':' + cherrypy.url().split(':')[1]
+                    payload = {'iss': url, 'iat': self.module.shtime.now(), 'jti': self.module.shtime.now().timestamp()}
+                    payload['exp'] = self.module.shtime.now() + timedelta(days=7)
+                    payload['name'] = user.get('name', '?')
+                    payload['admin'] = ('admin' in user.get('groups', []))
+                    response['token'] = jwt.encode(payload, self.jwt_secret, algorithm='HS256').decode('utf-8')
+                    self.logger.warning("api authenticate login: payload = {}".format(payload))
+                    self.logger.warning("api authenticate login: response = {}".format(response))
+                    self.logger.warning("api authenticate login: cherrypy.url = {}".format(cherrypy.url()))
+                    self.logger.warning("api authenticate login: remote.ip    = {}".format(cherrypy.request.remote.ip))
         return json.dumps(response)
 
 
@@ -362,3 +444,145 @@ class WebApi():
         response['websocket_host'] = self.module.websocket_host
         response['websocket_port'] = self.module.websocket_port
         return json.dumps(response)
+
+
+
+
+
+
+
+
+
+class WebApi(object):
+
+    exposed = True
+
+    def __init__(self, webif_dir, module, url_root):
+        self._sh = module._sh
+        self.logger = logging.getLogger(__name__)
+        self.module = module
+        self.url_root = url_root
+
+        self.send_hash = 'shNG0160$'
+        self.jwt_secret = 'SmartHomeNG$0815'
+
+
+        http_user_dict = self.module.mod_http.get_user_dict()
+
+        self._user_dict = {}
+        for user in http_user_dict:
+            if http_user_dict[user]['password_hash'] != '':
+                self._user_dict[Utils.create_hash(user + self.send_hash)] = http_user_dict[user]
+
+        # Add REST controllers
+        self.logs = LogsController(self._sh, self.jwt_secret)
+        self.authenticate = AuthController(self.module, self._user_dict, self.send_hash, self.jwt_secret)
+        return
+
+
+    @cherrypy.expose(['home', ''])
+    def index(self):
+        return "REST example."
+
+
+class AuthController(RESTResource):
+
+    def __init__(self, module, user_dict, send_hash, jwt_secret):
+        self.module = module
+        self._user_dict = user_dict
+        self.send_hash = send_hash
+        self.jwt_secret = jwt_secret
+        self.logger = logging.getLogger('API_Auth')
+
+
+    @cherrypy.expose
+    def index(self, param=False):
+#        return "REST: Auth: index: param = '{}'".format(param)
+        self.add()
+
+    @cherrypy.expose
+    def add(self, param=False):
+        self.logger.warning("/api authenticate add: param = {}".format(param))
+        self.logger.warning("/api authenticate add: cherrypy.request.headers = {}".format(cherrypy.request.headers))
+
+        cl = cherrypy.request.headers.get('Content-Length', 0)
+        if cl == 0:
+            # cherrypy.reponse.headers["Status"] = "400"
+            # return 'Bad request'
+            raise cherrypy.HTTPError(status=411)
+        rawbody = cherrypy.request.body.read(int(cl))
+        self.logger.warning("api2 authenticate login: rawbody = {}".format(rawbody))
+        try:
+            credentials = json.loads(rawbody)
+        except:
+            return 'Bad, bad request'
+
+        response = {}
+        if self._user_dict == {}:
+            # no password required
+            url = cherrypy.url().split(':')[0] + ':' + cherrypy.url().split(':')[1]
+            payload = {'iss': url, 'iat': self.module.shtime.now(), 'jti': self.module.shtime.now().timestamp()}
+            payload['exp'] = self.module.shtime.now() + timedelta(days=7)
+            payload['name'] = 'Autologin'
+            payload['admin'] = True
+            response['token'] = jwt.encode(payload, self.jwt_secret, algorithm='HS256').decode('utf-8')
+            self.logger.warning("/api authenticate login: Autologin")
+            self.logger.warning("/api authenticate login: payload = {}".format(payload))
+        else:
+            user = self._user_dict.get(credentials['username'], None)
+            if user:
+                self.logger.warning("api2 authenticate login: user = {}".format(user))
+                if Utils.create_hash(user.get('password_hash', 'x')+self.send_hash) == credentials['password']:
+                    url = cherrypy.url().split(':')[0] + ':' + cherrypy.url().split(':')[1]
+                    payload = {'iss': url, 'iat': self.module.shtime.now(), 'jti': self.module.shtime.now().timestamp()}
+                    payload['exp'] = self.module.shtime.now() + timedelta(days=7)
+                    payload['name'] = user.get('name', '?')
+                    payload['admin'] = ('admin' in user.get('groups', []))
+                    response['token'] = jwt.encode(payload, self.jwt_secret, algorithm='HS256').decode('utf-8')
+                    self.logger.warning("/api authenticate login: payload = {}".format(payload))
+                    self.logger.warning("/api authenticate login: response = {}".format(response))
+                    self.logger.warning("/api authenticate login: cherrypy.url = {}".format(cherrypy.url()))
+                    self.logger.warning("/api authenticate login: remote.ip    = {}".format(cherrypy.request.remote.ip))
+        return json.dumps(response)
+
+    add.expose_resource = True
+
+    @cherrypy.expose
+    def update(self, param=False):
+        self.logger.warning("api2 authenticate update: param = {}".format(param))
+        return self.add(param)
+    update.expose_resource = True
+
+
+    def REST_instantiate(self, param):
+        """
+        instantiate a REST resource based on the id
+        """
+        self.logger.warning("api2 REST_instantiate login: param = {}".format(param))
+        return param
+
+
+    # -----------------------------------------------------------------------------------
+    #    SERVERINFO
+    # -----------------------------------------------------------------------------------
+
+    # @cherrypy.expose
+    # def shng_serverinfo2_json(self):
+    #     """
+    #
+    #     :return:
+    #     """
+    #     client_ip = cherrypy.request.wsgi_environ.get('REMOTE_ADDR')
+    #
+    #     response = {'api': 'api2'}
+    #     response['default_language'] = self._sh.get_defaultlanguage()
+    #     response['client_ip'] = client_ip
+    #     response['itemtree_fullpath'] = self.module.itemtree_fullpath
+    #     response['itemtree_searchstart'] = self.module.itemtree_searchstart
+    #     response['tz'] = self.module.shtime.tz
+    #     response['tzname'] = str(self.module.shtime.tzname())
+    #     response['websocket_host'] = self.module.websocket_host
+    #     response['websocket_port'] = self.module.websocket_port
+    #     return json.dumps(response)
+
+
