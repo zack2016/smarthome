@@ -191,13 +191,13 @@ class Admin():
                                      use_global_basic_auth=False)
 
         # Register the web interface as a cherrypy app
-        self.mod_http.register_webif(WebApi2(self.webif_dir, self, self.api2_url_root),
-                                     'api2',
-                                     config_api,
-                                     'api2', '',
-                                     description='API2 der Administrationsoberfläche für SmartHomeNG',
-                                     webifname='',
-                                     use_global_basic_auth=False)
+        # self.mod_http.register_webif(WebApi2(self.webif_dir, self, self.api2_url_root),
+        #                              'api2',
+        #                              config_api,
+        #                              'api2', '',
+        #                              description='API2 der Administrationsoberfläche für SmartHomeNG',
+        #                              webifname='',
+        #                              use_global_basic_auth=False)
         return
 
 
@@ -357,93 +357,93 @@ class WebInterface(SystemData, ItemData, SchedulerData, PluginData, SceneData, T
         return json.dumps(response)
 
 
-class WebApi2():
-
-    def __init__(self, webif_dir, module, url_root):
-        self._sh = module._sh
-        self.logger = logging.getLogger(__name__)
-        self.module = module
-        self.url_root = url_root
-
-        self.send_hash = 'shNG0160$'
-        self.jwt_secret = 'SmartHomeNG$0815'
-
-        http_user_dict = self.module.mod_http.get_user_dict()
-        self._user_dict = {}
-        for user in http_user_dict:
-            if http_user_dict[user]['password_hash'] != '':
-                self._user_dict[Utils.create_hash(user+self.send_hash)] = http_user_dict[user]
-        return
-
-
-    # -----------------------------------------------------------------------------------
-    #    LOGIN (Zukunft: /api/authenticate)
-    # -----------------------------------------------------------------------------------
-
-    @cherrypy.expose
-    def authenticate(self):
-        cl = cherrypy.request.headers.get('Content-Length', 0)
-        if cl == 0:
-            # cherrypy.reponse.headers["Status"] = "400"
-            return 'Bad request'
-        rawbody = cherrypy.request.body.read(int(cl))
-        self.logger.warning("api authenticate login: rawbody = {}".format(rawbody))
-        try:
-            credentials = json.loads(rawbody)
-        except:
-            return 'Bad, bad request'
-
-        response = {}
-        if self._user_dict == {}:
-            # no password required
-            url = cherrypy.url().split(':')[0] + ':' + cherrypy.url().split(':')[1]
-            payload = {'iss': url, 'iat': self.module.shtime.now(), 'jti': self.module.shtime.now().timestamp()}
-            payload['exp'] = self.module.shtime.now() + timedelta(days=7)
-            payload['name'] = 'Autologin'
-            payload['admin'] = True
-            response['token'] = jwt.encode(payload, self.jwt_secret, algorithm='HS256').decode('utf-8')
-            self.logger.warning("api authenticate login: Autologin")
-            self.logger.warning("api authenticate login: payload = {}".format(payload))
-        else:
-            user = self._user_dict.get(credentials['username'], None)
-            if user:
-                self.logger.warning("api authenticate login: user = {}".format(user))
-                if Utils.create_hash(user.get('password_hash', 'x')+self.send_hash) == credentials['password']:
-                    url = cherrypy.url().split(':')[0] + ':' + cherrypy.url().split(':')[1]
-                    payload = {'iss': url, 'iat': self.module.shtime.now(), 'jti': self.module.shtime.now().timestamp()}
-                    payload['exp'] = self.module.shtime.now() + timedelta(days=7)
-                    payload['name'] = user.get('name', '?')
-                    payload['admin'] = ('admin' in user.get('groups', []))
-                    response['token'] = jwt.encode(payload, self.jwt_secret, algorithm='HS256').decode('utf-8')
-                    self.logger.warning("api authenticate login: payload = {}".format(payload))
-                    self.logger.warning("api authenticate login: response = {}".format(response))
-                    self.logger.warning("api authenticate login: cherrypy.url = {}".format(cherrypy.url()))
-                    self.logger.warning("api authenticate login: remote.ip    = {}".format(cherrypy.request.remote.ip))
-        return json.dumps(response)
-
-
-    # -----------------------------------------------------------------------------------
-    #    SERVERINFO
-    # -----------------------------------------------------------------------------------
-
-    @cherrypy.expose
-    def shng_serverinfo2_json(self):
-        """
-
-        :return:
-        """
-        client_ip = cherrypy.request.wsgi_environ.get('REMOTE_ADDR')
-
-        response = {}
-        response['default_language'] = self._sh.get_defaultlanguage()
-        response['client_ip'] = client_ip
-        response['itemtree_fullpath'] = self.module.itemtree_fullpath
-        response['itemtree_searchstart'] = self.module.itemtree_searchstart
-        response['tz'] = self.module.shtime.tz
-        response['tzname'] = str(self.module.shtime.tzname())
-        response['websocket_host'] = self.module.websocket_host
-        response['websocket_port'] = self.module.websocket_port
-        return json.dumps(response)
+# class WebApi2():
+#
+#     def __init__(self, webif_dir, module, url_root):
+#         self._sh = module._sh
+#         self.logger = logging.getLogger(__name__)
+#         self.module = module
+#         self.url_root = url_root
+#
+#         self.send_hash = 'shNG0160$'
+#         self.jwt_secret = 'SmartHomeNG$0815'
+#
+#         http_user_dict = self.module.mod_http.get_user_dict()
+#         self._user_dict = {}
+#         for user in http_user_dict:
+#             if http_user_dict[user]['password_hash'] != '':
+#                 self._user_dict[Utils.create_hash(user+self.send_hash)] = http_user_dict[user]
+#         return
+#
+#
+#     # -----------------------------------------------------------------------------------
+#     #    LOGIN (Zukunft: /api/authenticate)
+#     # -----------------------------------------------------------------------------------
+#
+#     @cherrypy.expose
+#     def authenticate(self):
+#         cl = cherrypy.request.headers.get('Content-Length', 0)
+#         if cl == 0:
+#             # cherrypy.reponse.headers["Status"] = "400"
+#             return 'Bad request'
+#         rawbody = cherrypy.request.body.read(int(cl))
+#         self.logger.warning("api authenticate login: rawbody = {}".format(rawbody))
+#         try:
+#             credentials = json.loads(rawbody)
+#         except:
+#             return 'Bad, bad request'
+#
+#         response = {}
+#         if self._user_dict == {}:
+#             # no password required
+#             url = cherrypy.url().split(':')[0] + ':' + cherrypy.url().split(':')[1]
+#             payload = {'iss': url, 'iat': self.module.shtime.now(), 'jti': self.module.shtime.now().timestamp()}
+#             payload['exp'] = self.module.shtime.now() + timedelta(days=7)
+#             payload['name'] = 'Autologin'
+#             payload['admin'] = True
+#             response['token'] = jwt.encode(payload, self.jwt_secret, algorithm='HS256').decode('utf-8')
+#             self.logger.warning("api authenticate login: Autologin")
+#             self.logger.warning("api authenticate login: payload = {}".format(payload))
+#         else:
+#             user = self._user_dict.get(credentials['username'], None)
+#             if user:
+#                 self.logger.warning("api authenticate login: user = {}".format(user))
+#                 if Utils.create_hash(user.get('password_hash', 'x')+self.send_hash) == credentials['password']:
+#                     url = cherrypy.url().split(':')[0] + ':' + cherrypy.url().split(':')[1]
+#                     payload = {'iss': url, 'iat': self.module.shtime.now(), 'jti': self.module.shtime.now().timestamp()}
+#                     payload['exp'] = self.module.shtime.now() + timedelta(days=7)
+#                     payload['name'] = user.get('name', '?')
+#                     payload['admin'] = ('admin' in user.get('groups', []))
+#                     response['token'] = jwt.encode(payload, self.jwt_secret, algorithm='HS256').decode('utf-8')
+#                     self.logger.warning("api authenticate login: payload = {}".format(payload))
+#                     self.logger.warning("api authenticate login: response = {}".format(response))
+#                     self.logger.warning("api authenticate login: cherrypy.url = {}".format(cherrypy.url()))
+#                     self.logger.warning("api authenticate login: remote.ip    = {}".format(cherrypy.request.remote.ip))
+#         return json.dumps(response)
+#
+#
+#     # -----------------------------------------------------------------------------------
+#     #    SERVERINFO
+#     # -----------------------------------------------------------------------------------
+#
+#     @cherrypy.expose
+#     def shng_serverinfo2_json(self):
+#         """
+#
+#         :return:
+#         """
+#         client_ip = cherrypy.request.wsgi_environ.get('REMOTE_ADDR')
+#
+#         response = {}
+#         response['default_language'] = self._sh.get_defaultlanguage()
+#         response['client_ip'] = client_ip
+#         response['itemtree_fullpath'] = self.module.itemtree_fullpath
+#         response['itemtree_searchstart'] = self.module.itemtree_searchstart
+#         response['tz'] = self.module.shtime.tz
+#         response['tzname'] = str(self.module.shtime.tzname())
+#         response['websocket_host'] = self.module.websocket_host
+#         response['websocket_port'] = self.module.websocket_port
+#         return json.dumps(response)
 
 
 
@@ -482,7 +482,7 @@ class WebApi(object):
 
     @cherrypy.expose(['home', ''])
     def index(self):
-        return "REST example."
+        return "Give SmartHomeNG a REST."
 
 
 class AuthController(RESTResource):
@@ -511,7 +511,7 @@ class AuthController(RESTResource):
             # return 'Bad request'
             raise cherrypy.HTTPError(status=411)
         rawbody = cherrypy.request.body.read(int(cl))
-        self.logger.warning("api2 authenticate login: rawbody = {}".format(rawbody))
+        self.logger.warning("/api authenticate login: rawbody = {}".format(rawbody))
         try:
             credentials = json.loads(rawbody)
         except:
@@ -531,7 +531,7 @@ class AuthController(RESTResource):
         else:
             user = self._user_dict.get(credentials['username'], None)
             if user:
-                self.logger.warning("api2 authenticate login: user = {}".format(user))
+                self.logger.warning("/api authenticate login: user = {}".format(user))
                 if Utils.create_hash(user.get('password_hash', 'x')+self.send_hash) == credentials['password']:
                     url = cherrypy.url().split(':')[0] + ':' + cherrypy.url().split(':')[1]
                     payload = {'iss': url, 'iat': self.module.shtime.now(), 'jti': self.module.shtime.now().timestamp()}
@@ -543,13 +543,14 @@ class AuthController(RESTResource):
                     self.logger.warning("/api authenticate login: response = {}".format(response))
                     self.logger.warning("/api authenticate login: cherrypy.url = {}".format(cherrypy.url()))
                     self.logger.warning("/api authenticate login: remote.ip    = {}".format(cherrypy.request.remote.ip))
+        self.logger.warning("/api authenticate login: response = {}".format(response))
         return json.dumps(response)
 
     add.expose_resource = True
 
     @cherrypy.expose
     def update(self, param=False):
-        self.logger.warning("api2 authenticate update: param = {}".format(param))
+        self.logger.warning("api authenticate update: param = {}".format(param))
         return self.add(param)
     update.expose_resource = True
 
@@ -558,7 +559,7 @@ class AuthController(RESTResource):
         """
         instantiate a REST resource based on the id
         """
-        self.logger.warning("api2 REST_instantiate login: param = {}".format(param))
+        self.logger.warning("api REST_instantiate login: param = {}".format(param))
         return param
 
 
