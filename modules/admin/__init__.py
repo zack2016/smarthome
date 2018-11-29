@@ -513,7 +513,7 @@ class AuthController(RESTResource):
         rawbody = cherrypy.request.body.read(int(cl))
         self.logger.warning("/api authenticate login: rawbody = {}".format(rawbody))
         try:
-            credentials = json.loads(rawbody)
+            credentials = json.loads(rawbody.decode('utf-8'))
         except:
             return 'Bad, bad request'
 
