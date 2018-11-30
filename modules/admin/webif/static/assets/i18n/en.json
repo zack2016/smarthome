@@ -1,14 +1,17 @@
 {
   "MENU": {
     "SYSTEM": "System",
+    "SYSTEM_PROPERTIES": "System Properties",
     "SERVICES": "Services",
     "ITEMS": "Items",
     "LOGICS": "Logics",
     "SCHEDULERS": "Schedulers",
     "PLUGINS": "Plugins",
+    "PLUGINS_LIST": "List of Plugins",
     "SCENES": "Scenes",
     "THREADS": "Threads",
     "LOGS": "Logs",
+    "LOGS_DISPLAY": "Display Logs",
     "LOGGER_LIST": "Logger List",
     "CONFIGURATION": "Configuration",
     "LOGIN": "Login"
@@ -160,7 +163,7 @@
   },
 
   "LOGS": {
-    "LOGFILE": "Log-File",
+    "LOGFILE": "Log",
     "FILTER": "Filter",
 
     "LOGGER_NAME": "Logger Name",
@@ -168,7 +171,11 @@
     "LEVEL": "Level",
     "FILTERS": "Filters",
     "HANDLERS": "Handlers",
-    "LOGFILES": "Logfiles"
+    "LOGFILES": "Logfiles",
+    "SELECT_LOG": "Select a log",
+    "TIMEFRAME": "Timeframe",
+    "SELECT_FILE": "Select a file",
+    "ACTUAL": "actual"
   },
 
   "BUTTON": {
@@ -176,7 +183,8 @@
     "SAVE": "Save",
     "ABORT": "Abort",
     "LOGOUT": "Logout",
-    "ADD_PLUGIN": "Add Plugin"
+    "ADD_PLUGIN": "Add Plugin",
+    "RELOAD_LOG": "Reload Log"
   },
 
   "ERROR": {

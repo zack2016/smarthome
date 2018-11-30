@@ -25,6 +25,8 @@ import logging
 import json
 import cherrypy
 
+import lib.shyaml as shyaml
+
 import jwt
 from .rest import RESTResource
 
@@ -34,10 +36,20 @@ class LogsController(RESTResource):
     def __init__(self, sh, jwt_secret=False):
         self._sh = sh
         self.base_dir = self._sh.get_basedir()
+        self.etc_dir = self._sh._etc_dir
         self.log_dir = os.path.join(self.base_dir, 'var', 'log')
+
+        self.logging_conf = shyaml.yaml_load(os.path.join(self.etc_dir, 'logging.yaml'))
+
         self.logger = logging.getLogger('API_logs')
         self.jwt_secret = jwt_secret
 
+        try:
+            roothandler = self.logging_conf['root']['handlers'][0]
+            self.root_logname = os.path.splitext(os.path.basename(self.logging_conf['handlers'][roothandler]['filename']))[0]
+        except:
+            self.root_logname = ''
+        self.logger.warning("logging_conf: self.root_logname = {}".format(self.root_logname))
 
     def get_logs(self):
         """
@@ -133,7 +145,7 @@ class LogsController(RESTResource):
 
         logs = self.get_logs_with_files()
         self.logger.warning("/api LogController (GET): logfiles = {}".format(logs))
-        return json.dumps(logs)
+        return json.dumps({'logs':logs, 'default': self.root_logname})
     index.expose_resource = True
 
     def REST_instantiate(self, log_name):

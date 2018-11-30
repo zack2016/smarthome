@@ -1,47 +1,51 @@
 #!/usr/bin/env python3
-# -*- coding: utf8 -*-
+# vim: set encoding=utf-8 tabstop=4 softtabstop=4 shiftwidth=4 expandtab
 #########################################################################
 #  Copyright 2018-      Martin Sinn                         m.sinn@gmx.de
 #########################################################################
-#  Backend plugin for SmartHomeNG
+#  This file is part of SmartHomeNG.
 #
-#  This plugin is free software: you can redistribute it and/or modify
+#  SmartHomeNG is free software: you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
 #  the Free Software Foundation, either version 3 of the License, or
 #  (at your option) any later version.
 #
-#  This plugin is distributed in the hope that it will be useful,
+#  SmartHomeNG is distributed in the hope that it will be useful,
 #  but WITHOUT ANY WARRANTY; without even the implied warranty of
 #  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #  GNU General Public License for more details.
 #
 #  You should have received a copy of the GNU General Public License
-#  along with this plugin. If not, see <http://www.gnu.org/licenses/>.
+#  along with SmartHomeNG.  If not, see <http://www.gnu.org/licenses/>.
 #########################################################################
 
-import json
 
+import os
+import logging
+import json
 import cherrypy
 
-import lib.config
 from lib.item import Items
 
+from .rest import RESTResource
 
-class SceneData:
 
-    def __init__(self):
+class ScenesController(RESTResource):
+
+    def __init__(self, sh):
+        self._sh = sh
+        self.base_dir = self._sh.get_basedir()
+        self.logger = logging.getLogger('API_scenes')
 
         self.items = Items.get_instance()
 
         return
 
 
-    # -----------------------------------------------------------------------------------
-    #    SCENES  -  Old Interface methods (from backend)
-    # -----------------------------------------------------------------------------------
 
     @cherrypy.expose
-    def scenes_json(self):
+    def index(self, scene_name=False):
+        self.logger.warning("ScenesController: index")
 
         if self.items == None:
             self.items = Items.get_instance()
@@ -57,12 +61,12 @@ class SceneData:
             for scene in scene_list:
                 scene_dict = {}
                 scene_dict['path'] = scene
-#                scene_dict['name'] = str(self._sh.return_item(scene))
+                #                scene_dict['name'] = str(self._sh.return_item(scene))
                 scene_dict['name'] = str(self.items.return_item(scene))
 
                 action_list = self.scenes.get_scene_actions(scene)
                 scene_dict['value_list'] = action_list
-#                scene_dict[scene] = action_list
+                #                scene_dict[scene] = action_list
 
                 disp_action_list = []
                 for value in action_list:
@@ -83,5 +87,6 @@ class SceneData:
         else:
             supported = False
         return json.dumps(disp_scene_list)
+    index.expose_resource = True
 
 

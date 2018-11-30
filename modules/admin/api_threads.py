@@ -1,42 +1,41 @@
 #!/usr/bin/env python3
-# -*- coding: utf8 -*-
+# vim: set encoding=utf-8 tabstop=4 softtabstop=4 shiftwidth=4 expandtab
 #########################################################################
 #  Copyright 2018-      Martin Sinn                         m.sinn@gmx.de
 #########################################################################
-#  Backend plugin for SmartHomeNG
+#  This file is part of SmartHomeNG.
 #
-#  This plugin is free software: you can redistribute it and/or modify
+#  SmartHomeNG is free software: you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
 #  the Free Software Foundation, either version 3 of the License, or
 #  (at your option) any later version.
 #
-#  This plugin is distributed in the hope that it will be useful,
+#  SmartHomeNG is distributed in the hope that it will be useful,
 #  but WITHOUT ANY WARRANTY; without even the implied warranty of
 #  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #  GNU General Public License for more details.
 #
 #  You should have received a copy of the GNU General Public License
-#  along with this plugin. If not, see <http://www.gnu.org/licenses/>.
+#  along with SmartHomeNG.  If not, see <http://www.gnu.org/licenses/>.
 #########################################################################
 
-import threading
-import json
 
+import threading
+import os
+import logging
+import json
 import cherrypy
 
-import lib.config
+from .rest import RESTResource
 
 
-class ThreadData:
+class ThreadsController(RESTResource):
 
-    def __init__(self):
+    def __init__(self, sh):
+        self._sh = sh
+        self.base_dir = self._sh.get_basedir()
+        self.logger = logging.getLogger('API_threads')
 
-        return
-
-
-    # -----------------------------------------------------------------------------------
-    #    THREADS  -  Old Interface methods (from backend)
-    # -----------------------------------------------------------------------------------
 
     def thread_sum(self, name, count):
         thread = dict()
@@ -47,8 +46,10 @@ class ThreadData:
             thread['alive'] = 'True'
         return thread
 
+
     @cherrypy.expose
-    def threads_json(self):
+    def index(self, thread_name=False):
+
         """
         display a list of all threads
         """
@@ -94,5 +95,5 @@ class ThreadData:
 
         threads_sorted = sorted(threads, key=lambda k: k['sort'])
         return json.dumps([threads_count, threads_sorted])
-
+    index.expose_resource = True
 
