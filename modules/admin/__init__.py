@@ -38,6 +38,7 @@ from .plugindata import PluginData
 
 from .rest import RESTResource
 
+from .api_config import *
 from .api_schedulers import *
 from .api_scenes import *
 from .api_threads import *
@@ -370,6 +371,8 @@ class WebApi(object):
 
         # ----------------------
         # Add REST controllers
+        # ----------------------
+        self.config = ConfigController(self._sh)
         self.schedulers = SchedulersController(self._sh)
         self.scenes = ScenesController(self._sh)
         self.threads = ThreadsController(self._sh)

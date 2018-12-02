@@ -47,7 +47,13 @@
     "PACKAGES_REQ_TESTSUITE": "Pakete für die Testsuite",
     "PACKAGES_WO_REQ": "Pakete ohne Requirements",
     "MISSING": "fehlt",
-    "UNKNOWN": "unbekannt"
+    "UNKNOWN": "unbekannt",
+
+    "CONFIGURATION": "Konfiguration",
+    "GLOBAL_SETTINGS": "Core",
+    "HTTP_SETTINGS": "http Modul",
+    "ADMIN_SETTINGS": "Admin Modul",
+    "ADVANCED_SETTINGS": "Advanced"
   },
   "SERVICES": {
     "SERVICES": "Dienste",

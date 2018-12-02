@@ -1,0 +1,67 @@
+# Metadata for the plugin
+module:
+    # Global plugin attributes
+    classname: None
+    version: 1.5.7
+    description:
+        de: 'Core des SmartHomeNG Systems'
+        en: 'Core of the SmartHomeNG system'
+
+parameters:
+    # Definition of parameters to be configured in etc/module.yaml
+    lat:
+        type: num
+        default: 53.5989481
+        description:
+            de: Breitengrad der SmartHomeNG Installation
+            en: Lattitude of the SmartHomeNG installation
+    lon:
+        type: num
+        default: 10.0459898
+        description:
+            de: Längengrad der SmartHomeNG Installation
+            en: Logitude of the SmartHomeNG installation
+    elev:
+        type: num
+        default: 20
+        description:
+            de: Höhe der SmartHomeNG Installation über Normal-Null
+            en: Elevation of the SmartHomeNG installation
+
+    tz:
+        type: str
+        default: 'Europe/Berlin'
+        description:
+            de: Zeitzone der SmartHomeNG Installation
+            en: timezone of the SmartHomeNG installation
+
+    default_language:
+        type: str
+        default: 'de'
+        valid_list: ['de', 'en', 'fr', 'pl']
+        description:
+            de: Standard-Sprache der SmartHomeNG Installation
+            en: Default language of the SmartHomeNG installation
+
+    assign_compatibility:
+        type: str
+        default: 'latest'
+        valid_list: ['latest', 'compat_1.2']
+        description:
+            de: Wenn 'latest' gewählt wird, werden Werte bei der Zuweisung zu Items in den Datentyp des Items gewandelt, sonst werden sie als string zugewiesen
+            en: If 'latest', values are castet to the datatype of the destination item, otherwise they are assigned as strings
+
+    use_conditional_triggers:
+        type: bool
+        default: False
+        description:
+            de: 'Advanced: Verwendung konditionaler Trigger zulassen'
+            en: 'Advanced: Allow use of conditional triggers'
+
+    deprecated_warnings:
+        type: bool
+        default: False
+        description:
+            de: 'Advanced: Warnungen loggen, wenn Funktionen/Methoden aufgerufen werden, die als veraltet gekennzeichnet sind'
+            en: 'Advanced: Log warnings, if functions/methods are used which are flaged as deprecated'
+
