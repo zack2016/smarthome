@@ -79,6 +79,9 @@ plugin_sections = [ ['gateway', 'Gateway', 'Gateway'],
                     ['web', 'Web/Cloud', 'Web/Cloud']
                   ]
 
+def bold(s):
+    return "**"+s+"**" if s else ""
+
 
 def get_pluginlist_fromgit():
     plglist = []

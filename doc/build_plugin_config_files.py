@@ -79,6 +79,9 @@ plugin_sections = [ ['gateway', 'Gateway', 'Gateway'],
                     ['web', 'Web/Cloud', 'Web/Cloud']
                   ]
 
+def bold(s):
+    return "**"+s+"**" if s else ""
+
 
 def get_pluginlist_fromgit():
     plglist = []
@@ -416,7 +419,7 @@ def write_configfile(plg, configfile_dir, language='de'):
         fh.write('   <br />\n')
         fh.write('\n')
     
-    fh.write('Im folgenden sind etwaige Anforderungen und unterstützte Hardware beschrieben. Danach folgt die Beschreibung, wie das Plugin **'+plgname+'** konfiguriert wird. Außerdem ist im folgenden beschrieben, wie das Plugin in den Item Definitionen genutzt werden kann. [#f1]_ \n')
+    fh.write('Im folgenden sind etwaige Anforderungen und unterstützte Hardware beschrieben. Danach folgt die Beschreibung, wie das Plugin '+bold(plgname)+' konfiguriert wird. Außerdem ist im folgenden beschrieben, wie das Plugin in den Item Definitionen genutzt werden kann. [#f1]_ \n')
     fh.write('\n')
     fh.write('\n')
 
@@ -434,9 +437,9 @@ def write_configfile(plg, configfile_dir, language='de'):
         fh.write('\n')
         write_formatted(fh, get_doc_description(plugin_yaml, language, 'requirements'))
         if min_version != '':
-            fh.write(' - Minimum SmartHomeNG Version: **'+min_version+'**\n')
+            fh.write(' - Minimum SmartHomeNG Version: '+bold(min_version)+'\n')
         if max_version != '':
-            fh.write(' - Maximum SmartHomeNG Version: **'+max_version+'**\n')
+            fh.write(' - Maximum SmartHomeNG Version: '+bold(max_version)+'\n')
 
 
     # ---------------------------------
@@ -453,7 +456,7 @@ def write_configfile(plg, configfile_dir, language='de'):
     # ---------------------------------
     write_heading(fh, 'Konfiguration', 2)
     fh.write('\n')
-    fh.write('Im folgenden ist beschrieben, wie das Plugin **'+plgname+'** konfiguriert wird. Außerdem ist im folgenden beschrieben, wie das Plugin in den Item Definitionen genutzt werden kann.\n')
+    fh.write('Im folgenden ist beschrieben, wie das Plugin '+bold(plgname)+' konfiguriert wird. Außerdem ist im folgenden beschrieben, wie das Plugin in den Item Definitionen genutzt werden kann.\n')
     fh.write('\n')
 
 
@@ -462,7 +465,7 @@ def write_configfile(plg, configfile_dir, language='de'):
     # ---------------------------------
     write_heading(fh, 'Parameter', 1)
     fh.write('\n')
-    fh.write('Das Plugin verfügt über folgende Parameter, die in der Datei **../etc/plugin.yaml** konfiguriert werden:\n')
+    fh.write('Das Plugin verfügt über folgende Parameter, die in der Datei ``../etc/plugin.yaml`` konfiguriert werden:\n')
     fh.write('\n')
 
     if len(parameter_yaml) == 0:
@@ -482,14 +485,14 @@ def write_configfile(plg, configfile_dir, language='de'):
         validlist = parameter_yaml[p].get('valid_list', [])
         validmin = parameter_yaml[p].get('valid_min', '')
         validmax = parameter_yaml[p].get('valid_max', '')
-        fh.write(' - Datentyp: **'+datatype+'**\n')
+        fh.write(' - Datentyp: '+bold(datatype)+'\n')
         if default != '':
-            fh.write(' - Standardwert: **'+default+'**\n')
+            fh.write(' - Standardwert: '+bold(default)+'\n')
         fh.write('\n')
         if validmin != '':
-            fh.write(' - Minimalwert: **' + str(validmin) + '**\n')
+            fh.write(' - Minimalwert: ' + bold(str(validmin)) + '\n')
         if validmax != '':
-            fh.write(' - Maximalwert: **' + str(validmax) + '**\n')
+            fh.write(' - Maximalwert: ' + bold(str(validmax)) + '\n')
         if len(validlist) > 0:
             fh.write(' - Mögliche Werte:\n')
             fh.write('\n')
@@ -497,7 +500,7 @@ def write_configfile(plg, configfile_dir, language='de'):
                 desc = get_doc_description(parameter_yaml[p], language, key='valid_list_description', index=index)
                 if desc != '':
                     desc = ' |_| - |_| ' + desc
-                fh.write('   - **' + str(v) + '**' + desc + '\n')
+                fh.write('   - ' + bold(str(v)) + desc + '\n')
             fh.write('\n')
             
 
@@ -506,7 +509,7 @@ def write_configfile(plg, configfile_dir, language='de'):
     # ---------------------------------
     write_heading(fh, 'Item Attribute', 1)
     fh.write('\n')
-    fh.write('Das Plugin unterstützt folgende Item Attribute, die in den Dateien im Verzeichnis  **../items** verwendet werden:\n')
+    fh.write('Das Plugin unterstützt folgende Item Attribute, die in den Dateien im Verzeichnis  ``../items`` verwendet werden:\n')
     fh.write('\n')
 
     if len(iattributes_yaml) == 0:
@@ -526,14 +529,14 @@ def write_configfile(plg, configfile_dir, language='de'):
         validlist = iattributes_yaml[a].get('valid_list', [])
         validmin = iattributes_yaml[a].get('valid_min', '')
         validmax = iattributes_yaml[a].get('valid_max', '')
-        fh.write(' - Datentyp: **'+datatype+'**\n')
+        fh.write(' - Datentyp: '+bold(datatype)+'\n')
         if default != '':
-            fh.write(' - Standardwert: **'+default+'**\n')
+            fh.write(' - Standardwert: '+bold(default)+'\n')
         fh.write('\n')
         if validmin != '':
-            fh.write(' - Minimalwert: **' + str(validmin) + '**\n')
+            fh.write(' - Minimalwert: ' + bold(str(validmin)) + '\n')
         if validmax != '':
-            fh.write(' - Maximalwert: **' + str(validmax) + '**\n')
+            fh.write(' - Maximalwert: ' + bold(str(validmax)) + '\n')
         if len(validlist) > 0:
             fh.write(' - Mögliche Werte:\n')
             fh.write('\n')
@@ -541,7 +544,7 @@ def write_configfile(plg, configfile_dir, language='de'):
                 desc = get_doc_description(iattributes_yaml[a], language, key='valid_list_description', index=index)
                 if desc != '':
                     desc = ' |_| - |_| ' + desc
-                fh.write('   - **' + str(v) + '**' + desc + '\n')
+                fh.write('   - ' + bold(str(v)) + desc + '\n')
             fh.write('\n')
 
 
@@ -550,7 +553,7 @@ def write_configfile(plg, configfile_dir, language='de'):
     # ---------------------------------
     write_heading(fh, 'Logik Parameter', 1)
     fh.write('\n')
-    fh.write('Das Plugin verfügt über folgende Parameter, die in der Datei **../etc/logic.yaml** konfiguriert werden:\n')
+    fh.write('Das Plugin verfügt über folgende Parameter, die in der Datei ``../etc/logic.yaml`` konfiguriert werden:\n')
     fh.write('\n')
 
     if len(lparameter_yaml) == 0:
@@ -570,14 +573,14 @@ def write_configfile(plg, configfile_dir, language='de'):
         validlist = lparameter_yaml[l].get('valid_list', [])
         validmin = lparameter_yaml[l].get('valid_min', '')
         validmax = lparameter_yaml[l].get('valid_max', '')
-        fh.write(' - Datentyp: **'+datatype+'**\n')
+        fh.write(' - Datentyp: '+bold(datatype)+'\n')
         if default != '':
-            fh.write(' - Standardwert: **'+default+'**\n')
+            fh.write(' - Standardwert: '+bold(default)+'\n')
         fh.write('\n')
         if validmin != '':
-            fh.write(' - Minimalwert: **' + str(validmin) + '**\n')
+            fh.write(' - Minimalwert: '+bold(str(validmin)) + '\n')
         if validmax != '':
-            fh.write(' - Maximalwert: **' + str(validmax) + '**\n')
+            fh.write(' - Maximalwert: '+bold(str(validmax)) + '\n')
         if len(validlist) > 0:
             fh.write(' - Mögliche Werte:\n')
             fh.write('\n')
@@ -585,7 +588,7 @@ def write_configfile(plg, configfile_dir, language='de'):
                 desc = get_doc_description(lparameter_yaml[l], language, key='valid_list_description', index=index)
                 if desc != '':
                     desc = ' |_| - |_| ' + desc
-                fh.write('   - **' + str(v) + '**' + desc + '\n')
+                fh.write('   - '+bold(str(v)) + desc + '\n')
             fh.write('\n')
 
 
@@ -635,14 +638,14 @@ def write_configfile(plg, configfile_dir, language='de'):
         if datatype == 'void':
             fh.write(' - Die Funktion liefert kein Ergebnis\n')
         else:
-            fh.write(' - Ergebnistyp der Funktion: **' + datatype + '**\n')
+            fh.write(' - Ergebnistyp der Funktion: ' + bold(datatype) + '\n')
         if default != '':
-            fh.write(' - Standardwert: **' + default + '**\n')
+            fh.write(' - Standardwert: ' + bold(default) + '\n')
         fh.write('\n')
         if validmin != '':
-            fh.write(' - Minimalwert: **' + str(validmin) + '**\n')
+            fh.write(' - Minimalwert: ' + bold(str(validmin)) + '\n')
         if validmax != '':
-            fh.write(' - Maximalwert: **' + str(validmax) + '**\n')
+            fh.write(' - Maximalwert: ' + bold(str(validmax)) + '\n')
         if len(validlist) > 0:
             fh.write(' - Mögliche Werte:\n')
             fh.write('\n')
@@ -650,7 +653,7 @@ def write_configfile(plg, configfile_dir, language='de'):
                 desc = get_doc_description(functions_yaml[f], language, key='valid_list_description', index=index)
                 if desc != '':
                     desc = ' |_| - |_| ' + desc
-                fh.write('   - **' + str(v) + '**' + desc + '\n')
+                fh.write('   - ' + bold(str(v)) + desc + '\n')
             fh.write('\n')
 
 #        func_param_yaml = functions_yaml[f].get('parameters', None)
@@ -663,14 +666,14 @@ def write_configfile(plg, configfile_dir, language='de'):
                 validlist = func_param_yaml[par].get('valid_list', [])
                 validmin = func_param_yaml[par].get('valid_min', '')
                 validmax = func_param_yaml[par].get('valid_max', '')
-                fh.write(' - Datentyp: **' + datatype + '**\n')
+                fh.write(' - Datentyp: ' + bold(datatype) + '\n')
                 if default != '':
-                    fh.write(' - Standardwert: **' + default + '**\n')
+                    fh.write(' - Standardwert: ' + bold(default) + '\n')
                 fh.write('\n')
                 if validmin != '':
-                    fh.write(' - Minimalwert: **' + str(validmin) + '**\n')
+                    fh.write(' - Minimalwert: ' + bold(str(validmin)) + '\n')
                 if validmax != '':
-                    fh.write(' - Maximalwert: **' + str(validmax) + '**\n')
+                    fh.write(' - Maximalwert: ' + bold(str(validmax)) + '\n')
                 if len(validlist) > 0:
                     fh.write(' - Mögliche Werte:\n')
                     fh.write('\n')
@@ -678,7 +681,7 @@ def write_configfile(plg, configfile_dir, language='de'):
                         desc = get_doc_description(func_param_yaml[par], language, key='valid_list_description', index=index)
                         if desc != '':
                             desc = ' |_| - |_| ' + desc
-                        fh.write('   - **' + str(v) + '**' + desc + '\n')
+                        fh.write('   - ' + bold(str(v)) + desc + '\n')
                     fh.write('\n')
 
 

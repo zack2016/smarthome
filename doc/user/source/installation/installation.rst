@@ -13,7 +13,7 @@ Es wird auch die Installation mit Docker und das Update bzw. Upgrade von ältere
    :hidden:
    :titlesonly:
    
-   anforderungen.md
+   anforderungen.rst
    komplettanleitung.rst
    docker.rst
    update_upgrade.rst
