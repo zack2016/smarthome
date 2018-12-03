@@ -160,7 +160,8 @@ class Utils(object):
         except:
             IP = '127.0.0.1'
         finally:
-            s.close()
+            if 's' in locals():
+                s.close()
         return IP
 
     @staticmethod
@@ -179,7 +180,8 @@ class Utils(object):
         except:
             IP = '::1'
         finally:
-            s.close()
+            if 's' in locals():
+                s.close()
         return IP
 
 
