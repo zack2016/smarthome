@@ -444,7 +444,7 @@ class Metadata():
                 return (int(value) >= 0) and (int(value) < 256)
             else:
                 return False
-        elif typ == 'str':
+        elif typ in ['str','password']:
             return True     # Everything can be converted to a string
         elif typ == 'list':
             if subtype != '' and subtype != FOO:
@@ -519,7 +519,7 @@ class Metadata():
             result = int(value)
         elif typ in ['float','num']:
             result = float(value)
-        elif typ == 'str':
+        elif typ in ['str','password']:
             result = str(value)
         elif typ == 'list':
             if isinstance(value, list):
