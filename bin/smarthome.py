@@ -195,6 +195,8 @@ class SmartHome():
         """
         Initialization of main smarthome object
         """
+        self.shng_status = {'code': 0, 'text': 'Initalizing'}
+
         self._extern_conf_dir = extern_conf_dir
         
         # set default timezone to UTC
@@ -253,6 +255,8 @@ class SmartHome():
         # setup logging
         self.init_logging(self._log_conf_basename, MODE)
 
+        self.shng_status = {'code': 1, 'text': 'Initalizing: Logging initalized'}
+
         #############################################################
         # Fork process and write pidfile
         if MODE == 'default':
@@ -292,6 +296,8 @@ class SmartHome():
             self._logger.critical("Python package requirements for configured plugins are not met.")
             self._logger.critical("Aborting")
             exit(1)
+
+        self.shng_status = {'code': 2, 'text': 'Initalizing: Requirements checked'}
 
         # Add Signal Handling
 #        signal.signal(signal.SIGHUP, self.reload_logics)
@@ -419,7 +425,7 @@ class SmartHome():
         """
         if conf_basename == '':
             conf_basename = self._log_conf_basename
-        fo = open(conf_basename + YAML_FILE, 'r')
+        #fo = open(conf_basename + YAML_FILE, 'r')
         doc = lib.shyaml.yaml_load(conf_basename + YAML_FILE, True)
         if doc == None:
             print()
@@ -427,7 +433,7 @@ class SmartHome():
             exit(1)
         self.logging_config = doc
         logging.config.dictConfig(doc)
-        fo.close()
+        #fo.close()
         if MODE == 'interactive':  # remove default stream handler
             logging.getLogger().disabled = True
         elif MODE == 'verbose':
@@ -465,6 +471,8 @@ class SmartHome():
         The main thread that is beeing started is called ``Main``
         """
 
+        self.shng_status = {'code': 10, 'text': 'Starting'}
+
         threading.currentThread().name = 'Main'
 
         #############################################################
@@ -482,6 +490,8 @@ class SmartHome():
         #############################################################
         # Init and start loadable Modules
         #############################################################
+        self.shng_status = {'code': 11, 'text': 'Starting: Initalizing and starting loadable modules'}
+
         self._logger.info("Init loadable Modules")
         self.modules = lib.module.Modules(self, configfile=self._module_conf_basename)
         self.modules.start()
@@ -494,6 +504,8 @@ class SmartHome():
         #############################################################
         # Init Plugins
         #############################################################
+        self.shng_status = {'code': 12, 'text': 'Starting: Initalizing plugins'}
+
         self._logger.info("Init Plugins")
         self.plugins = lib.plugin.Plugins(self, configfile=self._plugin_conf_basename)
         self.plugin_load_complete = True
@@ -501,6 +513,8 @@ class SmartHome():
         #############################################################
         # Init Items (load item definitions)
         #############################################################
+        self.shng_status = {'code': 13, 'text': 'Starting: Loading item definitions'}
+
         self._logger.info("Start initialization of items")
         self.items.load_itemdefinitions(self._env_dir, self._items_dir)
 
@@ -511,6 +525,8 @@ class SmartHome():
         #############################################################
         # Init Logics
         #############################################################
+        self.shng_status = {'code': 14, 'text': 'Starting: Initializing logics'}
+
         self.logics = lib.logic.Logics(self, self._logic_conf_basename, self._env_logic_conf_basename)
         # signal.signal(signal.SIGHUP, self.logics.reload_logics)
 
@@ -527,6 +543,8 @@ class SmartHome():
         #############################################################
         # Start Plugins
         #############################################################
+        self.shng_status = {'code': 15, 'text': 'Starting: Starting plugins'}
+
         self.plugins.start()
         self.plugin_start_complete = True
 
@@ -538,6 +556,8 @@ class SmartHome():
         #############################################################
         # Main Loop
         #############################################################
+        self.shng_status = {'code': 20, 'text': 'Running'}
+
         while self.alive:
             try:
                 self.connections.poll()
@@ -547,8 +567,9 @@ class SmartHome():
 
     def stop(self, signum=None, frame=None):
         """
-        This function is used to stop SmartHomeNG and all it's threads
+        This method is used to stop SmartHomeNG and all it's threads
         """
+        self.shng_status = {'code': 31, 'text': 'Stopping'}
 
         self.alive = False
         self._logger.info("stop: Number of Threads: {}".format(threading.activeCount()))
@@ -558,6 +579,8 @@ class SmartHome():
         self.plugins.stop()
         self.modules.stop()
         self.connections.close()
+
+        self.shng_status = {'code': 32, 'text': 'Stopping: Stopping threads'}
 
         for thread in threading.enumerate():
             if thread.name != 'Main':
@@ -579,10 +602,24 @@ class SmartHome():
         else:
             self._logger.warning("SmartHomeNG stopped")
 
+        self.shng_status = {'code': 33, 'text': 'Stopped'}
+
         lib.daemon.remove_pidfile(PIDFILE)
 
         logging.shutdown()
         exit()
+
+
+    def restart(self,source=''):
+        """
+        This method is used to restart the python interpreter amd SmartHomeNG
+        """
+        self.shng_status = {'code': 30, 'text': 'Restarting'}
+        if source != '':
+            source = ', initiated by ' + source
+        self._logger.warning("SmartHomeNG restarting"+source)
+        command = sys.executable + ' ' + os.path.join(self._base_dir, 'bin', 'smarthome.py') + ' -r'
+        p = subprocess.Popen(command, shell=True)
 
 
     def list_threads(self, txt):

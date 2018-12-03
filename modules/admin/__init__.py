@@ -348,7 +348,7 @@ class WebInterface(SystemData, ItemData, PluginData):
 
 
 
-class WebApi(object):
+class WebApi(RESTResource):
 
     exposed = True
 
@@ -378,6 +378,8 @@ class WebApi(object):
         self.threads = ThreadsController(self._sh)
         self.logs = LogsController(self._sh, self.jwt_secret)
 
+        self.status = StatusController(self._sh)
+        self.restart = RestartController(self._sh)
         self.authenticate = AuthController(self.module, self._user_dict, self.send_hash, self.jwt_secret)
         return
 
@@ -385,6 +387,39 @@ class WebApi(object):
     @cherrypy.expose(['home', ''])
     def index(self):
         return "Give SmartHomeNG a REST."
+
+
+class StatusController(RESTResource):
+
+    def __init__(self, sh):
+        self._sh = sh
+        self.base_dir = self._sh.get_basedir()
+
+    @cherrypy.expose
+    def index(self, param=False):
+        response = {}
+        try:
+            response = self._sh.shng_status
+        except:
+            response = {'code': -1, 'text': 'unknown'}
+
+        return json.dumps(response)
+    index.expose_resource = True
+
+
+class RestartController(RESTResource):
+
+    def __init__(self, sh):
+        self._sh = sh
+        self.base_dir = self._sh.get_basedir()
+
+    @cherrypy.expose
+    def index(self, param=False):
+        self._sh.restart('admin interface')
+        response = {'result': 'ok'}
+
+        return json.dumps(response)
+    index.expose_resource = True
 
 
 class AuthController(RESTResource):

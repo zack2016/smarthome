@@ -190,7 +190,8 @@
     "ABORT": "Abort",
     "LOGOUT": "Logout",
     "ADD_PLUGIN": "Add Plugin",
-    "RELOAD_LOG": "Reload Log"
+    "RELOAD_LOG": "Reload Log",
+    "RESTART_SHNG": "Restart Core"
   },
 
   "ERROR": {

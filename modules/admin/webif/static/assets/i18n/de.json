@@ -191,7 +191,8 @@
     "ABORT": "Abbrechen",
     "LOGOUT": "Abmelden",
     "ADD_PLUGIN": "Plugin hinzufügen",
-    "RELOAD_LOG": "Log aktualisieren"
+    "RELOAD_LOG": "Log aktualisieren",
+    "RESTART_SHNG": "Core neu starten"
   },
 
   "ERROR": {
