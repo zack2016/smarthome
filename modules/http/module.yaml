@@ -2,8 +2,8 @@
 module:
     # Global plugin attributes
     classname: Http
-    version: 1.4.7
-    sh_minversion: 1.4
+    version: 1.6.0
+    sh_minversion: 1.5b
 #   sh_maxversion:              # maximum shNG version to use this plugin (leave empty if latest)
     description:
         de: 'Modul zur Implementierung von Backend-Webinterfaces für Plugins'
@@ -54,7 +54,7 @@ parameters:
         default: 8383
         description:
             de: Portnummer für die Webinterfaces
-            en: Port number for the access to webervices
+            en: Port number for the access to web interfaces
     tls_port:
         type: int
         default: 8385
@@ -83,18 +83,37 @@ parameters:
     servicesport:
         type: int
         default: 8384
+        description:
+            de: Portnummer für die Webservices
+            en: Port number for the access to webervices
+
     showpluginlist:
         type: bool
         default: True
+        description:
+            de: Anzeige einer Liste der Plugins mit Webinterfaces unter der url /plugins
+            en: Show a list of plugins with web interfaces under the url /plugins
+
     showservicelist:
         type: bool
         default: False
+        description:
+            de: Anzeige einer Liste der Plugins mit Webservices unter der url /services
+            en: Show a list of plugins with webservices under the url /services
+
     starturl:
         type: str
-        default: 
+        default: backend
+        description:
+            de: Weiterleitungs-Url, wenn SmartHomeNG im Browser nur mit <DNS-Name>:<Portnummer> aufgerufen wird.
+            en: Redirection-url, if SmartHomeNG is called in the browser only by <dns-name>:<portnumber>
+
     threads:
         type: int
-        default: 8
+        default: 4
+        description:
+            de: Anzahl Threads, die für jede CherryPy App eingerichtet wird
+            en: number of threads setup per CherryPy app
         valid_list:
           - 2
           - 3
@@ -103,23 +122,11 @@ parameters:
           - 6
           - 7
           - 8
+
     showtraceback:
         type: bool
         default: False
-        
-#    test1:
-#        Test auf einen ungültigen Default Wert (-1 bei Datentyp positive Integer): es wird der default für pint (0) verwendet
-#        type: pint
-#        default: -1
+        description:
+            de: Traceback bei Python Exceptions in der Fehlermeldung im Browser anzeigen. (Sollte in Produktionsinstallationen False sein)
+            en: Show traceback of Python exceptions on the error page displayed in the browser. (Should be False in production environment)
 
-#    test2:
-#        Test auf einen ungültigen Default Wert (8 ist nicht Element der Liste): es wird der 1. Listeneintrag verwendet
-#        type: int
-#        default: 8
-#        valid_list:
-#          - 4
-#          - 2
-#          - 3
-#          - 5
-#          - 6
-        

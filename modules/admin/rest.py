@@ -124,7 +124,7 @@ with the post with the slug 'my-first-post' that is owned by bob.
 class RESTResource:
     # default method mapping. ie, if a GET request is made for
     # the resource's url, it will try to call an index() method (if it exists);
-    # if a PUT request is made, it will try to call an add() method.
+    # if a PUT request is made, it will try to call an update() method.
     # if you prefer other method names, just override these values in your
     # controller with REST_map
     REST_defaults = {'DELETE' : 'delete',
@@ -132,11 +132,11 @@ class RESTResource:
                      'POST' : 'add',
                      'PUT' : 'update'}
     REST_map = {}
+
     # if the resource has children resources, list them here. format is
     # a dictionary of name -> resource mappings. ie,
     #
     # REST_children = {'posts' : PostController()}
-
     REST_children = {}
 
     logger = logging.getLogger('REST')
@@ -181,7 +181,6 @@ class RESTResource:
                 self.logger.warning("RESTResource: default: params = '{}'".format(**params))
             except:
                 self.logger.warning("RESTResource: default: params = 'tuple index out of range'")
-#            return self.list(**params)
             return list(**params)
         # Make a copy of vpath in a list
         vpath = list(vpath)

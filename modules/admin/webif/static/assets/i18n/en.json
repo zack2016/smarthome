@@ -27,7 +27,7 @@
     "HOST": "Host",
     "OS": "Operating System",
     "ARCHITECTURE": "Architecture",
-    "USER": "User",
+    "USER": "OS User",
     "PYTHON VERSION": "Python Version",
     "FREE DISC SPACE": "Free disk space",
     "DATE": "Date",
@@ -50,8 +50,8 @@
     "UNKNOWN": "unknown",
 
     "CONFIGURATION": "Configuration",
-    "CORE_SETTINGS": "Core",
-    "HTTP_SETTINGS": "http Module",
+    "COMMON_SETTINGS": "Common",
+    "HTTP_SETTINGS": "Http Module",
     "ADMIN_SETTINGS": "Admin Module",
     "ADVANCED_SETTINGS": "Advanced"
   },
@@ -191,7 +191,8 @@
     "LOGOUT": "Logout",
     "ADD_PLUGIN": "Add Plugin",
     "RELOAD_LOG": "Reload Log",
-    "RESTART_SHNG": "Restart Core"
+    "RESTART_SHNG": "Restart Core",
+    "SAVE_SETTINGS": "Save Settings"
   },
 
   "ERROR": {

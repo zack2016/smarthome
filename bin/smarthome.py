@@ -576,8 +576,10 @@ class SmartHome():
 
         self.items.stop()
         self.scheduler.stop()
-        self.plugins.stop()
-        self.modules.stop()
+        if self.plugins is not None:
+            self.plugins.stop()
+        if self.modules is not None:
+            self.modules.stop()
         self.connections.close()
 
         self.shng_status = {'code': 32, 'text': 'Stopping: Stopping threads'}

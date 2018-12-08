@@ -31,6 +31,15 @@ from .rest import RESTResource
 
 
 class ConfigController(RESTResource):
+    """
+    Support for
+
+        - api/config            GET (same result as api/config/core)
+        - api/config/common
+        - api/config/http
+        - api/config/admin
+        - api/config/core       GET/PUT (all three above: common, http, admin)
+    """
 
     def __init__(self, sh):
         self._sh = sh
@@ -51,42 +60,102 @@ class ConfigController(RESTResource):
     @cherrypy.expose
     def index(self, config=False):
 
+        token = cherrypy.request.headers.get('Authorization', '')
+        self.logger.warning("ConfigController (index): jwt token = {}".format(token))
+
         self.logger.warning("ConfigController: index: config = {}".format(config))
 
         self.core_confdata = shyaml.yaml_load(os.path.join(self.etc_dir, 'smarthome.yaml'))
         self.module_confdata = shyaml.yaml_load(os.path.join(self.etc_dir, 'module.yaml'))
 
         result = {}
-        if not config:
-            result['core'] = {}
-            result['core']['data'] = self.core_confdata
-            result['core']['meta'] = self.core_conf
+        if (not config) or config['config'] == 'core':
+            result['common'] = {}
+            result['common']['data'] = self.core_confdata
+            result['common']['meta'] = self.core_conf
             result['http'] = {}
             result['http']['data'] = self.module_confdata.get('http', {})
             result['http']['meta'] = self.http_conf
             result['admin'] = {}
             result['admin']['data'] = self.module_confdata.get('admin', {})
             result['admin']['meta'] = self.admin_conf
+            self.logger.warning("  - index: core = {}".format(result))
             return json.dumps(result)
 
-        if config['config'] == 'core':
-            result['data'] = {}
+        if config['config'] == 'common':
+            result['data'] = self.core_confdata
             result['meta'] = self.core_conf
+            self.logger.warning("  - index: common = {}".format(result))
             return json.dumps(result)
 
         if config['config'] == 'http':
-            result['data'] = {}
+            result['data'] = self.module_confdata.get('http', {})
             result['meta'] = self.http_conf
+            self.logger.warning("  - index: http = {}".format(result))
             return json.dumps(result)
 
         if config['config'] == 'admin':
-            result['data'] = {}
+            result['data'] = self.module_confdata.get('admin', {})
             result['meta'] = self.admin_conf
+            self.logger.warning("  - index: admin = {}".format(result))
             return json.dumps(result)
 
+        self.logger.warning("  - index: config = {}".format(config))
         result = config
         return json.dumps(result)
     index.expose_resource = True
+
+
+
+    def update_configdict(self, config_dict, data, section='unknown'):
+        """
+        Update loaded config dict from data received from the admin frontend
+        """
+        update_data = data.get(section, {}).get('data', {})
+        for key in update_data:
+            # self.logger.warning("  - update: {}: {} = {}".format(section, key, update_data[key]))
+            if update_data[key] is None:
+                config_dict.pop(key, None)
+            else:
+                config_dict[key] = update_data[key]
+        return
+
+
+    @cherrypy.expose
+    def update(self, config=False):
+
+        token = cherrypy.request.headers.get('Authorization', '')
+        self.logger.warning("ConfigController (update): jwt token = {}".format(token))
+
+        self.logger.warning("ConfigController: update: config {}".format(config))
+        if config['config'] in ['common', 'http', 'admin', 'core']:
+
+            # get http headers
+            cl = cherrypy.request.headers.get('Content-Length', 0)
+            if cl == 0:
+                raise cherrypy.HTTPError(status=411)
+            rawbody = cherrypy.request.body.read(int(cl))
+            data = json.loads(rawbody.decode('utf-8'))
+            self.logger.warning("  - update: data = {}".format(data))
+
+            # update etc/smarthome.yaml with data from admin frontend
+            self.core_confdata = shyaml.yaml_load_roundtrip(os.path.join(self.etc_dir, 'smarthome.yaml'))
+            self.update_configdict(self.core_confdata, data, 'common')
+            shyaml.yaml_save_roundtrip(os.path.join(self.etc_dir, 'smarthome.yaml'), self.core_confdata, create_backup=True)
+
+            # update etc/module.yaml with data from admin frontend
+            self.module_confdata = shyaml.yaml_load_roundtrip(os.path.join(self.etc_dir, 'module.yaml'))
+            self.update_configdict(self.module_confdata['http'], data, 'http')
+            self.update_configdict(self.module_confdata['admin'], data, 'admin')
+            shyaml.yaml_save_roundtrip(os.path.join(self.etc_dir, 'module.yaml'), self.module_confdata, create_backup=True)
+
+            result = {"result": "ok"}
+            return json.dumps(result)
+
+        result = {"result": "error"}
+        return json.dumps(result)
+    update.expose_resource = True
+
 
 
     def REST_instantiate(self,id):
@@ -100,11 +169,11 @@ class ConfigController(RESTResource):
         an error. if this method returns None and it is a PUT request,
         REST_create() will be called so you can actually create the resource.
         """
-        self.logger.warning("ConfigController: REST_instantiate: id = {}".format(id))
-        if id in ['core', 'http', 'admin']:
+        # self.logger.warning("ConfigController: REST_instantiate: id = {}".format(id))
+        if id in ['common', 'http', 'admin', 'core']:
             result = {}
             result['config'] = id
-            self.logger.warning("ConfigController: REST_instantiate: result = {}".format(result))
+            # self.logger.warning("ConfigController: REST_instantiate: result = {}".format(result))
             return result
         return None
 #        raise cherrypy.NotFound

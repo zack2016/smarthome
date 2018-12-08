@@ -27,7 +27,7 @@
     "HOST": "Host",
     "OS": "Betriebssystem",
     "ARCHITECTURE": "Architektur",
-    "USER": "Benutzer",
+    "USER": "BS Benutzer",
     "PYTHON VERSION": "Python Version",
     "FREE DISC SPACE": "Freier Speicher",
     "DATE": "Datum",
@@ -50,8 +50,8 @@
     "UNKNOWN": "unbekannt",
 
     "CONFIGURATION": "Konfiguration",
-    "GLOBAL_SETTINGS": "Core",
-    "HTTP_SETTINGS": "http Modul",
+    "COMMON_SETTINGS": "Allgemein",
+    "HTTP_SETTINGS": "Http Modul",
     "ADMIN_SETTINGS": "Admin Modul",
     "ADVANCED_SETTINGS": "Advanced"
   },
@@ -192,7 +192,8 @@
     "LOGOUT": "Abmelden",
     "ADD_PLUGIN": "Plugin hinzufügen",
     "RELOAD_LOG": "Log aktualisieren",
-    "RESTART_SHNG": "Core neu starten"
+    "RESTART_SHNG": "Core neu starten",
+    "SAVE_SETTINGS": "Einstellungen sichern"
   },
 
   "ERROR": {
