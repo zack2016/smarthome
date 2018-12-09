@@ -205,6 +205,7 @@
     "USERNAME": "Username",
     "PASSWORD": "Password",
     "INVALID_SIGNIN": "Invalid username and/or password",
+    "EXPIRED_SIGNIN": "The previous login session has expired",
     "SIGN_IN": "Sign in"
   },
 
