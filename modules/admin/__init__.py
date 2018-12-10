@@ -24,13 +24,11 @@ import os
 import logging
 import json
 import cherrypy
-from datetime import datetime, timedelta
 
-import jwt
+# import jwt
 
 from lib.module import Modules
 from lib.shtime import Shtime
-from lib.utils import Utils
 
 from .systemdata import SystemData
 from .itemdata import ItemData
@@ -38,8 +36,9 @@ from .plugindata import PluginData
 
 from .rest import RESTResource
 
+from .api_auth import *
 from .api_config import *
-from .api_schedulers import *
+from .api_sched import *
 from .api_scenes import *
 from .api_threads import *
 from .api_logs import *
@@ -49,7 +48,7 @@ suburl = 'admin'
 
 
 class Admin():
-    version = '0.2.2'
+    version = '1.6.0'
     longname = 'Admin module for SmartHomeNG'
     port = 0
 
@@ -83,6 +82,7 @@ class Admin():
         self._showtraceback = self.mod_http._showtraceback
 
         try:
+            self.login_expiration = self._parameters['login_expiration']
             self.pypi_timeout = self._parameters['pypi_timeout']
             self.itemtree_fullpath = self._parameters['itemtree_fullpath']
             self.itemtree_searchstart = self._parameters['itemtree_searchstart']
@@ -342,12 +342,6 @@ class WebInterface(SystemData, ItemData, PluginData):
 
 
 
-
-
-
-
-
-
 class WebApi(RESTResource):
 
     exposed = True
@@ -420,107 +414,5 @@ class RestartController(RESTResource):
 
         return json.dumps(response)
     index.expose_resource = True
-
-
-class AuthController(RESTResource):
-
-    def __init__(self, module, user_dict, send_hash, jwt_secret):
-        self.module = module
-        self._user_dict = user_dict
-        self.send_hash = send_hash
-        self.jwt_secret = jwt_secret
-        self.logger = logging.getLogger('API_Auth')
-
-
-    @cherrypy.expose
-    def index(self, param=False):
-#        return "REST: Auth: index: param = '{}'".format(param)
-        self.add()
-
-    @cherrypy.expose
-    def add(self, param=False):
-        self.logger.warning("/api authenticate add: param = {}".format(param))
-        self.logger.warning("/api authenticate add: cherrypy.request.headers = {}".format(cherrypy.request.headers))
-
-        cl = cherrypy.request.headers.get('Content-Length', 0)
-        if cl == 0:
-            # cherrypy.reponse.headers["Status"] = "400"
-            # return 'Bad request'
-            raise cherrypy.HTTPError(status=411)
-        rawbody = cherrypy.request.body.read(int(cl))
-        self.logger.warning("/api authenticate login: rawbody = {}".format(rawbody))
-        try:
-            credentials = json.loads(rawbody.decode('utf-8'))
-        except:
-            return 'Bad, bad request'
-
-        response = {}
-        if self._user_dict == {}:
-            # no password required
-            url = cherrypy.url().split(':')[0] + ':' + cherrypy.url().split(':')[1]
-            payload = {'iss': url, 'iat': self.module.shtime.now(), 'jti': self.module.shtime.now().timestamp()}
-            payload['exp'] = self.module.shtime.now() + timedelta(days=7)
-            payload['name'] = 'Autologin'
-            payload['admin'] = True
-            response['token'] = jwt.encode(payload, self.jwt_secret, algorithm='HS256').decode('utf-8')
-            self.logger.warning("/api authenticate login: Autologin")
-            self.logger.warning("/api authenticate login: payload = {}".format(payload))
-        else:
-            user = self._user_dict.get(credentials['username'], None)
-            if user:
-                self.logger.warning("/api authenticate login: user = {}".format(user))
-                if Utils.create_hash(user.get('password_hash', 'x')+self.send_hash) == credentials['password']:
-                    url = cherrypy.url().split(':')[0] + ':' + cherrypy.url().split(':')[1]
-                    payload = {'iss': url, 'iat': self.module.shtime.now(), 'jti': self.module.shtime.now().timestamp()}
-                    payload['exp'] = self.module.shtime.now() + timedelta(days=7)
-                    payload['name'] = user.get('name', '?')
-                    payload['admin'] = ('admin' in user.get('groups', []))
-                    response['token'] = jwt.encode(payload, self.jwt_secret, algorithm='HS256').decode('utf-8')
-                    self.logger.warning("/api authenticate login: payload = {}".format(payload))
-                    self.logger.warning("/api authenticate login: response = {}".format(response))
-                    self.logger.warning("/api authenticate login: cherrypy.url = {}".format(cherrypy.url()))
-                    self.logger.warning("/api authenticate login: remote.ip    = {}".format(cherrypy.request.remote.ip))
-        self.logger.warning("/api authenticate login: response = {}".format(response))
-        return json.dumps(response)
-
-    add.expose_resource = True
-
-    @cherrypy.expose
-    def update(self, param=False):
-        self.logger.warning("api authenticate update: param = {}".format(param))
-        return self.add(param)
-    update.expose_resource = True
-
-
-    def REST_instantiate(self, param):
-        """
-        instantiate a REST resource based on the id
-        """
-        self.logger.warning("api REST_instantiate login: param = {}".format(param))
-        return param
-
-
-    # -----------------------------------------------------------------------------------
-    #    SERVERINFO
-    # -----------------------------------------------------------------------------------
-
-    # @cherrypy.expose
-    # def shng_serverinfo2_json(self):
-    #     """
-    #
-    #     :return:
-    #     """
-    #     client_ip = cherrypy.request.wsgi_environ.get('REMOTE_ADDR')
-    #
-    #     response = {'api': 'api2'}
-    #     response['default_language'] = self._sh.get_defaultlanguage()
-    #     response['client_ip'] = client_ip
-    #     response['itemtree_fullpath'] = self.module.itemtree_fullpath
-    #     response['itemtree_searchstart'] = self.module.itemtree_searchstart
-    #     response['tz'] = self.module.shtime.tz
-    #     response['tzname'] = str(self.module.shtime.tzname())
-    #     response['websocket_host'] = self.module.websocket_host
-    #     response['websocket_port'] = self.module.websocket_port
-    #     return json.dumps(response)
 
 

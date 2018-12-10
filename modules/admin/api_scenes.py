@@ -35,7 +35,7 @@ class ScenesController(RESTResource):
     def __init__(self, sh):
         self._sh = sh
         self.base_dir = self._sh.get_basedir()
-        self.logger = logging.getLogger('API_scenes')
+        self.logger = logging.getLogger(__name__)
 
         self.items = Items.get_instance()
 
@@ -45,7 +45,7 @@ class ScenesController(RESTResource):
 
     @cherrypy.expose
     def index(self, scene_name=False):
-        self.logger.warning("ScenesController: index")
+        self.logger.info("ScenesController(): index")
 
         if self.items == None:
             self.items = Items.get_instance()

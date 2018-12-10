@@ -41,7 +41,7 @@ class LogsController(RESTResource):
 
         self.logging_conf = shyaml.yaml_load(os.path.join(self.etc_dir, 'logging.yaml'))
 
-        self.logger = logging.getLogger('API_logs')
+        self.logger = logging.getLogger(__name__)
         self.jwt_secret = jwt_secret
 
         try:
@@ -49,7 +49,7 @@ class LogsController(RESTResource):
             self.root_logname = os.path.splitext(os.path.basename(self.logging_conf['handlers'][roothandler]['filename']))[0]
         except:
             self.root_logname = ''
-        self.logger.warning("logging_conf: self.root_logname = {}".format(self.root_logname))
+        self.logger.info("logging_conf: self.root_logname = {}".format(self.root_logname))
 
     def get_logs(self):
         """
@@ -104,10 +104,10 @@ class LogsController(RESTResource):
 
         # test existance of jwt  (is to be moved to rest.py)
         #
-        self.logger.warning("/api LogsController index: cherrypy.request.headers = {}".format(cherrypy.request.headers))
+        self.logger.info("LogsController index: cherrypy.request.headers = {}".format(cherrypy.request.headers))
         token = cherrypy.request.headers.get('Authorization', '')
         decoded = {}
-        self.logger.warning("/api LogsController (index): jwt token = {}".format(token))
+        self.logger.info("LogsController (index): jwt token = {}".format(token))
         if self.jwt_secret:
             if token != '':
                 if token.startswith('Bearer '):
@@ -115,11 +115,11 @@ class LogsController(RESTResource):
             try:
                 decoded = jwt.decode(token, self.jwt_secret, verify=True, algorithms='HS256')
             except Exception as e:
-                self.logger.error("/api LogsController (index): Exception = {}".format(e))
+                self.logger.error("LogsController (index): Exception = {}".format(e))
                 token = ''
                 decoded = {}
-        self.logger.warning("/api LogsController (index): jwt token = {}".format(token))
-        self.logger.warning("/api LogsController (index): decoded token = {}".format(decoded))
+        self.logger.info("LogsController (index): jwt token = {}".format(token))
+        self.logger.info("LogsController (index): decoded token = {}".format(decoded))
 
 
         if log_name:
@@ -136,7 +136,7 @@ class LogsController(RESTResource):
         logs = self.get_logs()
 
         if log_name:
-            self.logger.warning("LogController (GET): log_name = {}".format(log_name))
+            self.logger.info("LogController() index: log_name = {}".format(log_name))
             # get filenames available for the log
             if log_name in logs:
                 logfiles = self.get_files_of_log(log_name)
@@ -144,7 +144,7 @@ class LogsController(RESTResource):
             raise cherrypy.NotFound
 
         logs = self.get_logs_with_files()
-        self.logger.warning("/api LogController (GET): logfiles = {}".format(logs))
+        self.logger.info("LogController (GET): logfiles = {}".format(logs))
         return json.dumps({'logs':logs, 'default': self.root_logname})
     index.expose_resource = True
 

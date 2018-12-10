@@ -34,7 +34,7 @@ class ThreadsController(RESTResource):
     def __init__(self, sh):
         self._sh = sh
         self.base_dir = self._sh.get_basedir()
-        self.logger = logging.getLogger('API_threads')
+        self.logger = logging.getLogger(__name__)
 
 
     def thread_sum(self, name, count):

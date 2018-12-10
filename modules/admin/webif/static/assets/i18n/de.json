@@ -53,7 +53,18 @@
     "COMMON_SETTINGS": "Allgemein",
     "HTTP_SETTINGS": "Http Modul",
     "ADMIN_SETTINGS": "Admin Modul",
-    "ADVANCED_SETTINGS": "Advanced"
+    "ADVANCED_SETTINGS": "Advanced",
+
+    "SET_PASSWORD": "Passwort setzen",
+    "CHANGE_PASSWORD": "Password ändern",
+    "OLDPWD_EMPTY": "Altes Passwort darf nicht leer sein",
+    "OLDPWD_WRONG": "Altes Passwort ist falsch",
+    "NEWPWDS_DIFFER": "Versionen des neuen Passworts differieren",
+    "OLD_PASSWORD": "Altes Passwort",
+    "NEW_PASSWORD": "Neues Passwort",
+    "NEW_PASSWORD_REPEAT": "Neues Passwort (Wiederholung)",
+    "SHOW_PASSWORDS": "Passworte anzeigen",
+    "REMEMBER TO SAVE CHANGES": "Daran denken die Änderungen zu speichern, nachdem ein neues Passwort gesetzt wurde"
   },
   "SERVICES": {
     "SERVICES": "Dienste",
@@ -187,6 +198,7 @@
 
   "BUTTON": {
     "CLOSE": "Schließen",
+    "CHANGE": "Ändern",
     "SAVE": "Sichern",
     "ABORT": "Abbrechen",
     "LOGOUT": "Abmelden",

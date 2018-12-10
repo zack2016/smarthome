@@ -33,7 +33,7 @@ class SchedulersController(RESTResource):
     def __init__(self, sh):
         self._sh = sh
         self.base_dir = self._sh.get_basedir()
-        self.logger = logging.getLogger('API_schedulers')
+        self.logger = logging.getLogger(__name__)
 
         return
 
@@ -44,7 +44,7 @@ class SchedulersController(RESTResource):
         """
         return a list of all known schedules
         """
-        self.logger.warning("SchedulersController: index")
+        self.logger.info("SchedulersController(): index")
 
         schedule_list = []
         #        for entry in self._sh.scheduler._scheduler:

@@ -150,7 +150,7 @@ class RESTResource:
             try:
                 m = getattr(self,self.REST_map[method])
             except:
-                self.logger.warning("REST_dispatch: Unsupported method  = {} for resource '{}'".format(method, resource))
+                self.logger.info("REST_dispatch: Unsupported method  = {} for resource '{}'".format(method, resource))
                 raise cherrypy.HTTPError(status=400)
             try:
                 if m and getattr(m, "expose_resource"):
@@ -162,7 +162,7 @@ class RESTResource:
                 try:
                     m = getattr(self,self.REST_defaults[method])
                 except:
-                    self.logger.warning("REST_dispatch: Unsupported method  = {} for resource '{}'".format(method, resource))
+                    self.logger.info("REST_dispatch: Unsupported method  = {} for resource '{}'".format(method, resource))
                     raise cherrypy.HTTPError(status=400)
                 try:
                     if m and getattr(m, "expose_resource"):
@@ -174,13 +174,12 @@ class RESTResource:
 
     @cherrypy.expose
     def default(self, *vpath, **params):
-        #self.logger = logging.getLogger('REST')
-        self.logger.warning("RESTResource: default: vpath  = {}".format(vpath))
+        self.logger.info("RESTResource: default: vpath  = {}".format(vpath))
         if not vpath:
             try:
-                self.logger.warning("RESTResource: default: params = '{}'".format(**params))
+                self.logger.info("RESTResource: default: params = '{}'".format(**params))
             except:
-                self.logger.warning("RESTResource: default: params = 'tuple index out of range'")
+                self.logger.info("RESTResource: default: params = 'tuple index out of range'")
             return list(**params)
         # Make a copy of vpath in a list
         vpath = list(vpath)

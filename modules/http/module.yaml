@@ -1,6 +1,6 @@
 # Metadata for the plugin
 module:
-    # Global plugin attributes
+    # Global module attributes
     classname: Http
     version: 1.6.0
     sh_minversion: 1.5b
