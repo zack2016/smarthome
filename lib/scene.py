@@ -64,6 +64,7 @@ class Scenes():
         _scenes_instance = self
 
         self.items = Items.get_instance()
+        self.logics = Logics.get_instance()
 
         self._scenes = {}
         self._learned_values = {}
@@ -75,9 +76,9 @@ class Scenes():
      #   for item in smarthome.return_items():
         for item in self.items.return_items():
             if item.type() == 'scene':
-                scene_file = os.path.join(self._scenes_dir, item.id())
+                self.scene_file = os.path.join(self._scenes_dir, item.id())
 
-                scene_file_yaml = yaml.yaml_load(scene_file+'.yaml', ordered=False, ignore_notfound=True)
+                scene_file_yaml = yaml.yaml_load(self.scene_file+'.yaml', ordered=False, ignore_notfound=True)
                 if scene_file_yaml is not None:
                     # Reading yaml file with scene definition
                     for state in scene_file_yaml:
@@ -97,7 +98,7 @@ class Scenes():
                     self._load_learned_values(str(item.id()))
                 else:
                     # Trying to read conf file with scene definition
-                    scene_conf_file = scene_file + '.conf'
+                    scene_conf_file = self.scene_file + '.conf'
                     try:
                         with open(scene_conf_file, 'r', encoding='UTF-8') as f:
                             reader = csv.reader(f, delimiter=' ')
@@ -108,7 +109,7 @@ class Scenes():
                                     continue
                                 self._add_scene_entry(item, row[0], row[1], row[2])
                     except Exception as e:
-                        logger.warning("Problem reading scene file {0}: {1}".format(scene_file, e))
+                        logger.warning("Problem reading scene file {0}: {1}".format(self.scene_file, e))
                         continue
                 item.add_method_trigger(self._trigger)
 
@@ -254,7 +255,7 @@ class Scenes():
         :type row: list (with 3 entries)
         :type name: str
         """
-        logger.debug("_add_scene_entry: item = {}, state = {}, ditem = {}, value = {}, learn = {}, name = {}".format(item.id(), state, ditemname, value, learn, name))
+        logger.debug("_add_scene_entry: item = {}, state = {}, ditemname = {}, value = {}, learn = {}, name = {}".format(item.id(), state, ditemname, value, learn, name))
         value = item.get_stringwithabsolutepathes(value, 'sh.', '(', 'scene')
 #        ditem = self._sh.return_item(item.get_absolutepath(ditemname, attribute='scene'))
         ditem = self.items.return_item(item.get_absolutepath(ditemname, attribute='scene'))
@@ -266,9 +267,9 @@ class Scenes():
                 learn = False
         
         if ditem is None:
-            ditem = Logics.return_logic(ditemname)
+            ditem = self.logics.return_logic(ditemname)
             if ditem is None:
-                logger.warning("Could not find item or logic '{}' specified in {}".format(ditemname, scene_file))
+                logger.warning("Could not find item or logic '{}' specified in {}".format(ditemname, self.scene_file))
                 return
 
         if item.id() in self._scenes:
@@ -301,7 +302,7 @@ class Scenes():
             scenes.xxx()
 
         
-        :return: logics instance
+        :return: scenes instance
         :rtype: object of None
         """
         if _scenes_instance == None:
