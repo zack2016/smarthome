@@ -100,9 +100,10 @@ class Admin():
         ip = get_local_ipv4_address()
         self.port = self.mod_http._port
         # self.logger.warning('port = {}'.format(self.port))
-        self.url_root = 'http://' + ip + ':' + str(self.port) + mysuburl
-        self.api_url_root = 'http://' + ip + ':' + str(self.port) + 'api'
-        self.api2_url_root = 'http://' + ip + ':' + str(self.port) + 'api2'
+        self.shng_url_root = 'http://' + ip + ':' + str(self.port)         # for links mto plugin webinterfaces
+        self.url_root = self.shng_url_root + mysuburl
+        self.api_url_root = self.shng_url_root + 'api'
+        self.api2_url_root = self.shng_url_root + 'api2'
 
     def start(self):
         """
@@ -170,7 +171,7 @@ class Admin():
         """
 
         # Register the web interface as a cherrypy app
-        self.mod_http.register_webif(WebInterface(self.webif_dir, self, self.url_root),
+        self.mod_http.register_webif(WebInterface(self.webif_dir, self, self.shng_url_root, self.url_root),
                                      suburl,
                                      config,
                                      'admin', '',
@@ -303,11 +304,12 @@ from lib.utils import Utils
 
 class WebInterface(SystemData, ItemData, PluginData):
 
-    def __init__(self, webif_dir, module, url_root):
+    def __init__(self, webif_dir, module, shng_url_root, url_root):
         self._sh = module._sh
         self.logger = logging.getLogger(__name__)
         self.module = module
         self.pypi_timeout = module.pypi_timeout
+        self.shng_url_root = shng_url_root
         self.url_root = url_root
 
         SystemData.__init__(self)

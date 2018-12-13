@@ -140,7 +140,8 @@
     "INSTANCE": "Instanz",
     "VERSION": "Version",
     "MULTI INSTANCE": "Multi-Instance",
-    "WEBIF": "Web Interface",
+    "WEBIF": "Web IF",
+    "HELP": "Hilfe",
 
     "DETAILS OF CONFIGURATION": "Details des Plugin Konfigurations-Abschnitts '{{configname}}' --- (für Plugin '{{pluginname}}')",
     "PARAMETERS": "Parameter",

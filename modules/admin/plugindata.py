@@ -83,7 +83,7 @@ class PluginData:
                 if self.module.mod_http.get_webifs_for_plugin(x.get_shortname()) != []:
                     for webif in self.module.mod_http.get_webifs_for_plugin(x.get_shortname()):
                         if webif['Instance'] == plugin['instancename']:
-                            plugin['webif_url'] = self.url_root + webif['Mount']
+                            plugin['webif_url'] = self.shng_url_root + webif['Mount']
 
                 plugin['parameters'] = []
                 if bool(x._parameters):
