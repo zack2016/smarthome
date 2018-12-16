@@ -47,7 +47,7 @@ class SchedulersController(RESTResource):
         self.logger.info("SchedulersController(): index")
 
         schedule_list = []
-        #        for entry in self._sh.scheduler._scheduler:
+
         for entry in self._sh.scheduler._scheduler:
             schedule = dict()
             #            s = self._sh.scheduler._scheduler[entry]

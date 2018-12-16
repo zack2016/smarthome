@@ -39,6 +39,7 @@ from .rest import RESTResource
 from .api_auth import *
 from .api_config import *
 from .api_sched import *
+from .api_instplg import *
 from .api_scenes import *
 from .api_threads import *
 from .api_logs import *
@@ -370,6 +371,7 @@ class WebApi(RESTResource):
         # ----------------------
         self.config = ConfigController(self._sh)
         self.schedulers = SchedulersController(self._sh)
+        self.installedplugins = InstalledPluginsController(self._sh)
         self.scenes = ScenesController(self._sh)
         self.threads = ThreadsController(self._sh)
         self.logs = LogsController(self._sh, self.jwt_secret)
