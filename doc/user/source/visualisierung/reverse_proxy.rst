@@ -77,7 +77,7 @@ Nun die Datei ``/etc/nginx/snippets/letsencrypt.conf`` bearbeiten:
 Dort folgenden Inhalt einfügen, damit certbot die Identität überprüfen
 kann.:
 
-.. code-block::
+.. code-block:: nginx
 
    location ^~ /.well-known/acme-challenge/ {
     default_type "text/plain";
@@ -95,7 +95,7 @@ kann.:
 Dort unterhalb von ``listen [::]:80 default_server;`` die Zeile
 ``include /etc/nginx/snippets/letsencrypt.conf;`` einhängen:
 
-.. code-block::
+.. code-block:: nginx
 
    server {
            listen 80 default_server;
@@ -112,7 +112,7 @@ ReverseProxy-RaspberryPi mappen!
 
 .. code-block:: bash
 
-   sudo certbot certonly --rsa-key-size 4096 --webroot -w /var/www/letsencrypt -d <mydomain>.<myds>.<me> 
+   sudo certbot certonly --rsa-key-size 4096 --webroot -w /var/www/letsencrypt -d <mydomain>.<myds>.<me>
 
 Nachdem man seine E-Mail eingegeben hat, sollte die Generierung
 erfolgreich durchlaufen und mit
@@ -131,7 +131,7 @@ NGINX Konfiguration
 Einstellungen hinzufügen. Unter der Konfiguration der **virtual hosts**
 noch einen Block als Schutz gegen Denial of Service Angriffe ergänzen:
 
-.. code-block::
+.. code-block::  nginx
 
    http {
        ##
@@ -180,16 +180,16 @@ NGINX mit ``sudo service nginx restart`` neu starten.
 /etc/nginx/conf.d/<mydomain>.<myds>.<me>.conf erstellen
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-.. code-block::
+.. code-block::  nginx
 
    server {
        server_tokens off;
-       
+
        ## Blocken, wenn Zugriff aus einem nicht erlaubten Land erfolgt ##
        if ($allowed_country = no) {
            return 403;
-       }    
-       
+       }
+
        # https://www.cyberciti.biz/tips/linux-unix-bsd-nginx-webserver-security.html
        ## Block download agents ##
        if ($http_user_agent ~* LWP::Simple|BBBike|wget) {
@@ -213,9 +213,9 @@ NGINX mit ``sudo service nginx restart`` neu starten.
        ##
        # SSL
        ##
-       
-       ## Activate SSL, setze SERVER Zertifikat Informationen ## 
-       # Generiert via Let's Encrypt! 
+
+       ## Activate SSL, setze SERVER Zertifikat Informationen ##
+       # Generiert via Let's Encrypt!
        ssl on;
        ssl_certificate /etc/letsencrypt/live/<mydomain>.<myds>.<me>/fullchain.pem;
        ssl_certificate_key /etc/letsencrypt/live/<mydomain>.<myds>.<me>/privkey.pem;
@@ -223,7 +223,7 @@ NGINX mit ``sudo service nginx restart`` neu starten.
        ssl_prefer_server_ciphers on;
        # unsichere SSL Ciphers deaktivieren!
        ssl_ciphers    HIGH:!aNULL:!eNULL:!LOW:!3DES:!MD5:!RC4;
-       
+
        ##
        # HSTS
        ##
@@ -236,12 +236,12 @@ NGINX mit ``sudo service nginx restart`` neu starten.
 
        root /var/www/<mydomain>.<myds>.<me>;
        index index.php index.htm index.html;
-       
+
        # Weiterleitung zu SmartHomeNG (Websocket Schnittstelle) mit Basic Auth
        location / {
            auth_basic "Restricted Area: smartVISU";
            auth_basic_user_file /etc/nginx/.smartvisu;
-           
+
            # Zugreifendes Land erlaubt?
            if ($allowed_country = no) {
                    return 403;
@@ -257,11 +257,11 @@ NGINX mit ``sudo service nginx restart`` neu starten.
        }
 
        # Zugriff auf die SmartVISU mit Basic Auth
-       location /smartVISU {      
+       location /smartVISU {
            auth_basic "Restricted Area: smartVISU";
            auth_basic_user_file /etc/nginx/.smartvisu;
 
-           # Zugreifendes Land erlaubt? 
+           # Zugreifendes Land erlaubt?
            if ($allowed_country = no)  {
                    return 403;
            }
@@ -272,7 +272,7 @@ NGINX mit ``sudo service nginx restart`` neu starten.
            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
            proxy_set_header X-Forwarded-Proto $scheme;
        }
-       
+
        # Alexa Plugin Weiterleitung
        location /alexa {
            auth_basic "Restricted Area: Alexa";
@@ -336,7 +336,7 @@ Da NGINX im LAN aktuell noch auf Port 80 konfiguriert ist, sollte man in
 der /etc/nginx/sites-available/default noch ein ``return 403`` ergänzen
 und NGINX neu starten:
 
-.. code-block::
+.. code-block:: nginx
 
    server {
            listen 80 default_server;
@@ -351,7 +351,7 @@ HTTPS (Port 443) URL gesetzt werden. Das ist insbesondere beim Erneuern
 von Zertifikaten von Vorteil, da hier eine Anfrage gegen Port 80 gemacht
 wird:
 
-.. code-block::
+.. code-block:: nginx
 
    server {
            listen 80 default_server;
@@ -380,7 +380,7 @@ openssl.cnf editieren
 
 Folgende Zeilen anpassen:
 
-.. code-block::
+.. code-block:: ini
 
    dir = /etc/ssl/ca                       # Directory where everything is kept
    [...]
@@ -438,7 +438,7 @@ bestätigen und ein Export Passwort wählen:
 
 .. code-block:: bash
 
-   sudo openssl pkcs12 -export -clcerts -in /etc/ssl/ca/certs/users/<USERNAME>.crt -inkey /etc/ssl/ca/certs/users/<USERNAME>.key -out /etc/ssl/ca/certs/users/<USERNAME>.p12 
+   sudo openssl pkcs12 -export -clcerts -in /etc/ssl/ca/certs/users/<USERNAME>.crt -inkey /etc/ssl/ca/certs/users/<USERNAME>.key -out /etc/ssl/ca/certs/users/<USERNAME>.p12
 
 <USERNAME>.p12 File herunterladen:
 
@@ -461,14 +461,14 @@ https://arcweb.co/securing-websites-nginx-and-client-side-certificate-authentica
 /etc/nginx/conf.d/<mydomain>.<myds>.<me>.conf bearbeiten und die Zeilen
 im SSL Block ergänzen (“ab Client Zertifikat spezifisch”)
 
-.. code-block:: bash
+.. code-block::  nginx
 
        ##
        # SSL
        ##
 
        ## Activate SSL, setze SERVER Zertifikat Informationen ##
-       # Generiert via Let's Encrypt!    
+       # Generiert via Let's Encrypt!
        ssl on;
        ssl_certificate /etc/letsencrypt/live/<mydomain>.<myds>.<me>/fullchain.pem;
        ssl_certificate_key /etc/letsencrypt/live/<mydomain>.<myds>.<me>/privkey.pem;
@@ -486,7 +486,7 @@ im SSL Block ergänzen (“ab Client Zertifikat spezifisch”)
 Die smartVISU relevanten Teile könnten jetzt folgendermaßen über
 Clientzertifikate geschützt werden:
 
-.. code-block:: bash
+.. code-block::  nginx
 
        # Weiterleitung zu SmartHomeNG (Websocket Schnittstelle) mit Clientzertifikat
        location / {
@@ -510,13 +510,13 @@ Clientzertifikate geschützt werden:
        }
 
        # Zugriff auf die SmartVISU mit Clientzertifikat
-       location /smartVISU {  
-           # Clientzertifikat gültig?    
+       location /smartVISU {
+           # Clientzertifikat gültig?
            if ($ssl_client_verify != SUCCESS) {
                    return 403;
            }
 
-           # Zugreifendes Land erlaubt? 
+           # Zugreifendes Land erlaubt?
            if ($allowed_country = no)  {
                    return 403;
            }
@@ -560,9 +560,9 @@ und NGINX neu zu starten:
 .. code-block:: bash
 
    # Konfiguration editieren
-   sudo nano /etc/nginx/conf.d/\<mydomain\>.\<myds\>.\<me\>.conf 
+   sudo nano /etc/nginx/conf.d/\<mydomain\>.\<myds\>.\<me\>.conf
 
-.. code-block::
+.. code-block:: nginx
 
    ## Dort folgende Zeile im Block SSL einfügen:
 
