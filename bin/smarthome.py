@@ -279,7 +279,7 @@ class SmartHome():
             self._logger.critical("Please create folder '{}' and install plugins.".format(self._plugins_dir))
             self._logger.critical("Aborting")
             exit(1)
-        if not os.path.isdir(os.path.join(self._plugins_dir, 'backend')):
+        if not os.path.isdir(os.path.join(self._plugins_dir, 'database')):
             self._logger.critical("No plugins found in folder '{}'. Please install plugins.".format(self._plugins_dir))
             self._logger.critical("Aborting")
             exit(1)
