@@ -35,7 +35,7 @@ Codes oder auch Beispiele sein.
 Wie alles zusammenhängt
 -----------------------
 
-.. figure:: https://www.smarthomeNG.de/dev/user/_static/img/SmarthomeNG_V6.svg?raw=true
+.. figure:: /_static/img/SmarthomeNG_V6.svg?raw=true
    :alt: Image
 
 .. raw:: html
@@ -44,19 +44,19 @@ Wie alles zusammenhängt
 
    ## Overview of SmartHomeNG
 
-   SmartHomeNG is a system that works as a meta gateway between many different things and is used for connecting many 
-   different devices via their interfaces. The number of possible methods to access a devices standard interface will be 
-   increased by large. This way it is e.g. possible that the door bell communicates with the sound and TV set and ordern 
-   them to be quiet or while being absent send an email to anounce a visitor. 
+   SmartHomeNG is a system that works as a meta gateway between many different things and is used for connecting many
+   different devices via their interfaces. The number of possible methods to access a devices standard interface will be
+   increased by large. This way it is e.g. possible that the door bell communicates with the sound and TV set and ordern
+   them to be quiet or while being absent send an email to anounce a visitor.
 
 
-   There is a strong user basis for smarthome.py already where many individuals put efforts into configuring their systems 
-   and they like the idea of an open systems. Thus the project smarthome.py was forked here and this serves as a starting 
+   There is a strong user basis for smarthome.py already where many individuals put efforts into configuring their systems
+   and they like the idea of an open systems. Thus the project smarthome.py was forked here and this serves as a starting
    point for ongoing development. To distinguish between the two, the forked project was named **SmartHomeNG**.
 
-   The most pages in this wiki will be in German but the documentation within the code shall be kept in English. If you 
-   are a user with a special problem where you will need a document of this wiki in English please contact the support 
-   forum at [KNX-User-Forum](https://knx-user-forum.de/forum/supportforen/smarthome-py) or the chat on 
+   The most pages in this wiki will be in German but the documentation within the code shall be kept in English. If you
+   are a user with a special problem where you will need a document of this wiki in English please contact the support
+   forum at [KNX-User-Forum](https://knx-user-forum.de/forum/supportforen/smarthome-py) or the chat on
    [gitter.im.](https://gitter.im/smarthomeNG/smarthome?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
    An extensive Developer documentation in English can be found on [www.SmartHomeNG.de/developer](https://www.smarthomeng.de/developer).
