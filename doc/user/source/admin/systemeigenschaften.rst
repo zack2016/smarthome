@@ -1,15 +1,43 @@
 
-.. index:: Scheduler
+.. index:: Systemeigenschaften: Übersicht
 
+===================
+Systemeigenschaften
+===================
+
+
+Übersicht
 =========
-Scheduler
-=========
 
-Die Anzeige der Scheduler ist in 4 Tabs unterteilt, wobei für jeden Scheduler der Name, der nächste Ausführungszeitpunkt,
-sowie Einstellungen zu Ausführungszyklus und Crontab angezeigt werden.
-
-
-.. image:: assets/scheduler.jpg
+.. image:: assets/system-info.jpg
    :class: screenshot
 
+
+Ressource Graphen
+=================
+
+.. image:: assets/system-ressource-graphs.jpg
+   :class: screenshot
+
+
+PyPI Check
+==========
+
+.. image:: assets/system-pypi-check.jpg
+   :class: screenshot
+
+
+Urheberrechtshinweise
+=====================
+
+.. image:: assets/system-copyright.jpg
+   :class: screenshot
+
+
+.. toctree::
+   :maxdepth: 4
+   :hidden:
+   :titlesonly:
+
+   systemconfig
 
