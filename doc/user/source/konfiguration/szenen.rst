@@ -1,9 +1,9 @@
 
 .. role:: bluesup
 
-########################
-Szenen :bluesup:`update`
-########################
+######
+Szenen
+######
 
 Für die Verwendung von Szenen ist eine Konfigurationsdatei für jedes 'Szenenobjekt' im Szenenverzeichnis
 erforderlich. Diese Dateien können im alten Szenen-Conf Format (Endung '.conf') oder im

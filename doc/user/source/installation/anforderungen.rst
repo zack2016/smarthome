@@ -18,9 +18,9 @@ wie Rechner mit einer ARM CPU wie Raspberry.
 
 Häufig verwendete Hardware ist:
 
--  Raspberry Pi 1, Raspberry Pi 2 oder Raspberry Pi 3 (der Letztere wird
-   aufgrund der besseren Hardware **unbedingt empfohlen**) Der Großteil
-   der Nutzer verwendet diese Hardware, siehe
+-  Raspberry Pi 2 oder Raspberry Pi 3 (der Letztere wird aufgrund der besseren Hardware **unbedingt empfohlen**)
+   besonders wenn die Webinterfaces der Plugins genutzt werden und falls die Visualisierung (smartVISU) auf dem
+   selben System betrieben werden sollen. Der Großteil der Nutzer verwendet diese Hardware, siehe
    `Umfrage <https://knx-user-forum.de/forum/supportforen/smarthome-py/1112952-welche-hardware-nutzt-ihr-f%C3%BCr-euer-smarthomeng>`__
 -  Intel NUC (Empfohlen für Stabilität und Geschwindigkeit, auch wenn
    diese Rechner mehr Leistung haben, als benötigt wird. Unterstützt
@@ -39,9 +39,12 @@ Eine brauchbare Grundlage um **SmartHomeNG** auszuprobieren ist eine
 Virtuelle Maschine mit 512MB RAM und zwischen 20GB und 60GB
 Plattenplatz.
 
-Raspberry Pi 1, 2 oder 3, jeweils Modell B oder B+
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+Raspberry Pi 2 oder 3, jeweils Modell B oder B+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+SmartHomeNG ist auf einem Rapberry Pi 1 zwar lauffähig, sollte dann aber nur in einer Minimalkonfiguration eingesetzt
+werden. Das
 Vorteile:
 ^^^^^^^^^
 
@@ -59,11 +62,16 @@ Nachteile:
    Schreibzyklen (Alternativ ist eine `Auslagerung der
    Dateien <https://knx-user-forum.de/forum/supportforen/smarthome-py/862047-wie-sqlite-auf-schnelleres-medium-verlagern>`__
    auf einen USB-Stick möglich
+   Aktuelle Raspbian Versionen unterstüten auch das booten von USB Devices, so dass eine HD oder SSD über USB angeschlossen
+   werden kann.
 -  Empfindlich, braucht eine **sehr stabile Spannungsversorgung**
 -  ARM Plattform, es gibt nicht für alles fertige Pakete zum Download
 
+
 Intel NUC (z.B. DN2820FYKH0) oder vergleichbar
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Intel NUC Systeme mit Atom CPUs sind vollkommen ausreichend. Core i3 Prozzessoren oder höher werden nicht benötigt.
 
 Vorteile:
 ^^^^^^^^^
@@ -79,9 +87,9 @@ Nachteile:
 
 -  teurer (z.B. bei 4GB RAM, 60GB SSD um 250 EUR)
 
+
 NAS wie z.B. Synology, QNAP
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
 
 Vorteile:
 ^^^^^^^^^
@@ -99,9 +107,9 @@ Nachteile:
 -  Bei Systemsoftware Updates des NAS werden zusätzliche Einstellungen
    oft wieder überschrieben
 
+
 Weitere Einplatinencomputer (Banana PI, ODroid, BeagleBone, etc.)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
 
 Vorteile:
 ^^^^^^^^^
@@ -114,27 +122,30 @@ Nachteile:
 
 -  es hängt sehr von der Plattform ab ob sich Nachteile ergeben
 
+
 Betriebssystem
 --------------
 
-Ein beliebiges Linux oder Unix System (mit Shell Zugang um die
-Requirements und SmartHomeNG zu installieren) sollte funktionieren.
-SmartHomeNG ist mindestend getestet auf Raspbian und Debian Jessie
-(amd64)
+Ein beliebiges Linux oder Unix System (mit Shell Zugang um die Requirements und SmartHomeNG zu installieren) sollte
+funktionieren.
+
+SmartHomeNG ist mindestens getestet auf Raspbian und Debian Jessie (amd64)
 
 Wenn eine Hardware ohne gepufferte Realtime Clock genutzt wird, ist der
 Einsatz eines NTP Deamons notwendig, um die Zeit über das Internet zu
 beziehen. Sonst wird SmartHomeNG aufgrund der fehlenden Zeitinformation
 nicht starten.
 
-Einige Libraries in SmartHomeNG benutzen noch Bibliotheken, die ein
-Unix-artiges Betriebssystem voraussetzen. Daher läuft SmartHomeNG nicht
-auf Windows und z.Zt. noch nicht unter MacOS.
+Einige Libraries in SmartHomeNG benutzen noch Bibliotheken, die ein Unix-artiges Betriebssystem voraussetzen.
+Daher läuft SmartHomeNG nicht auf Windows.
+
+Ab SmartHomeNG v1.6 sollte eine Installation unter MacOS möglich sein.
+
 
 weitere Software
 ----------------
 
-Die aktuelle Version 1.5 von SmartHomeNG setzt Python der Version 3.4
+Die aktuelle Version 1.6 von SmartHomeNG setzt Python der Version 3.5
 oder neuer voraus.
 
 Die Grundregel nach der sich der Support für Python Versionen richten
@@ -151,7 +162,9 @@ Version aktuelle Python Version und die zwei Vorgängerversionen.**
   "v1.4",            "Python 3.6",  "Python 3.4, 3.5, 3.6"
   "v1.5",            "Python 3.6",  "Python 3.4, 3.5, 3.6"
   "v1.6",            "Python 3.7",  "Python 3.5, 3.6, 3.7"
+  "v1.7",            "Python 3.7",  "Python 3.5, 3.6, 3.7"
 
 Das bedeutet nicht automatisch, dass SmartHomeNG auf älteren Versionen
 von Python nicht mehr funktioniert. Die Entwicklung wird nur nicht mehr
 gegen die älteren Versionen getestet.
+

@@ -72,6 +72,14 @@ der Plugins ermittelt. Dies Skript wird aufgerufen mit:
 
     python3 tools/build_requirements.py
 
+
+.. note::
+
+   Ab SmartHomeNG v1.6 werden, falls dieser Schritt ausgelassen wird, die Requirements meim Start von SmartHomeNG bestimmt.
+   Dabei werden die Packages bestimmt, die vom Core und von den konfigurierten Plugins benötigt werden. Sind die Requirements
+   nicht erfüllt, beendet sich SmartHomeNG mit einem entsprechenden Eintrag im Log.
+
+
 Nun kann man wählen zwischen zwei Vorgehensweisen:
 
 1) Vom Programmkern und allen Plugins benötigte Bibliotheken

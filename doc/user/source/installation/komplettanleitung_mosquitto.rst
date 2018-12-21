@@ -1,9 +1,9 @@
 
 .. role:: redsup
 
-######################################
-MQTT Broker installieren :redsup:`neu`
-######################################
+########################
+MQTT Broker installieren
+########################
 
 Um MQTT zu nutzen, muss ein Broker verwendet werden, mit dem die MQTT Clients kommunizieren. Wenn im Netzwerk noch kein
 Broker installiert ist, kann auf dem Rechner auf dem SmartHomeNG installiert wird, auch ein Broker installiert werden.

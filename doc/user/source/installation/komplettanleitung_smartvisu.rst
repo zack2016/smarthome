@@ -30,15 +30,18 @@ Oder ab Debian 9.x (Stretch) mit folgendem Befehl:
 
     sudo apt-get install libawl-php php-curl php php-json php-xml
 
+
     **Achtung**: Wenn PHP 7 installiert ist/wird muss darauf geachtet
     werden, dass im Gegensatz zu älteren Versionen das Paket
     **mbstring** nicht mit installiert wird. Es muss mit den folgenden
     Kommandos nachinstalliert werden:
 
+
 .. code-block:: bash
 
     sudo apt-get install php7.0-mbstring
     sudo service apache2 restart
+
 
 SmartVISU Quellcode laden
 ~~~~~~~~~~~~~~~~~~~~~~~~~

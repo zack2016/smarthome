@@ -20,5 +20,6 @@ möglich.
    :maxdepth: 4
    :hidden:
 
-   module_http.rst
+   module_http
+   module_admin
 
