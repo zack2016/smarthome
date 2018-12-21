@@ -6,7 +6,7 @@ Threads
 =======
 
 
-.. image:: assets/threaads.jpg
+.. image:: assets/threads.jpg
    :class: screenshot
 
 

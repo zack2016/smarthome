@@ -1,9 +1,9 @@
 
 .. index:: Systemeigenschaften: Übersicht
 
-===================
-Systemeigenschaften
-===================
+======
+System
+======
 
 
 Übersicht

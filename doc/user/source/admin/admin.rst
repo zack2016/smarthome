@@ -56,6 +56,7 @@ Ansonsten wird direkt die Übersichtsseite der Systemeigenschaften angezeigt.
 
    systemeigenschaften
    scheduler
+   plugins
    szenen
    threads
 

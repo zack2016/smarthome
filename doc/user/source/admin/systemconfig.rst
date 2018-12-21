@@ -1,8 +1,8 @@
 
-.. index:: System-Konfiguration
+.. index:: System Konfiguration
 
 ====================
-System-Konfiguration
+System Konfiguration
 ====================
 
 
