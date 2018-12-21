@@ -9,12 +9,16 @@ Administrations GUI
 Seit SmartHomeNG v1.2 steht eine graphische Oberfläche zur Verfügung, die bei der Administration
 von SmartHomeNG hilft.
 
-Diese Oberfläche wird durch das **Backend Plugin** zur Verfügung gestellt. Dazu implementiert 
+Diese Oberfläche wird durch das **Backend Plugin** zur Verfügung gestellt. Dazu implementiert
 SmartHomeNG einen eigenen Webserver, der in der Standardkonfiguration auf **Port 8383** hört.
 
 
-Das Backen Plugin liefert Informationen über die aktuelle SmartHomeNG Installation. Im Moment 
-dient es als Support-Tool, um anderen Benutzern bei einer Installation zu helfen, die nicht 
+Das Backend Plugin ist unter :doc:`/plugins/backend/user_doc` ausführlich beschrieben.
+Die Konfiguration des Plugins ist unter :doc:`/plugins_doc/config/backend` ausführlich beschrieben.
+
+
+Das Backen Plugin liefert Informationen über die aktuelle SmartHomeNG Installation. Im Moment
+dient es als Support-Tool, um anderen Benutzern bei einer Installation zu helfen, die nicht
 ordnungsgemäß ausgeführt wird.
 
 Einige Höhepunkte:
@@ -64,6 +68,6 @@ SmartHomeNG läuft:
    :maxdepth: 4
    :hidden:
    :titlesonly:
-   
+
    items
    logiken
