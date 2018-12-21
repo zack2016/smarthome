@@ -66,6 +66,12 @@ Datei *../etc/module.yaml*
    #    service_hashed_password: 1245a9633edf47b7091f37c4d294b5be5a9936c81c5359b16d1c4833729965663f1943ef240959c53803fedef7ac19bd59c66ad7e7092d7dbf155ce45884607d
 
 
+.. note::
+
+    Die Konfigurationsparameter des http Modules, die in dieser Datei konfiguriert werden, können auch über das graphische
+    Administrations-Interface geändert werden.
+
+
 
 +-------------------------+------------------------------------------------------------------------------------------------------+
 | Parameter               | Bemerkung                                                                                            |

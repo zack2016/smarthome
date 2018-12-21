@@ -15,6 +15,12 @@ So ist zum Beispiel der Einsatz des Plugins **Backend** ohne das geladene Modul 
 möglich.
 
 
+.. note::
+
+    Die Konfigurationsparameter des http Modules und des admin Mudules, die in dieser Datei konfiguriert werden, können
+    auch über das graphische Administrations-Interface geändert werden.
+
+
 
 .. toctree::
    :maxdepth: 4

@@ -1,0 +1,68 @@
+==========================
+Release 1.6 - tt. mmm 2019
+==========================
+
+Es gibt eine Menge neuer Features im Core von SmartHomeNG und den Plugins.
+
+
+Unterstützte Python Versionen
+=============================
+
+Bitte beachten: Seit SmartHomeNG Release 1.4 wollen wir die aktive Unterstützung älterer Python
+Versionen einstellen. Die älteste unterstützte Python Version wird dann Python 3.4 sein. Es kann jedoch sein,
+dass Plugins Funktionalitäten implementieren (z.B. Async IO), die Python 3.5 voraussetzen
+(Siehe *Hard- u. Software Anforderungen* im Abschnitt *Installation* zu unterstützten Python Versionen)
+
+Das bedeutet nicht unbedingt, dass SmartHomeNG ab Release 1.5 nicht mehr unter älteren Python
+Versionen läuft. Es bedeutet, dass SmartHomeNG nicht mehr mit älteren Python Versionen getestet
+wird und das gemeldete Fehler mit älteren Python Versionen nicht mehr zu Buxfixen führen.
+
+
+Absolute minimum Python Versionen auf 3.5 angehoben
+===================================================
+
+Die Minimum Python Version in der SmartHomeNG startet wurde von 3.4 auf 3.5 erhöht. Bei einer Neuinstallation wird jedoch
+empfohlen auf einer der neueren Python Versionen (3.6 oder 3.7) aufzusetzenn.
+
+
+
+Bitte auch die Release Notes für Version 1.6 unter `https://www.smarthomeNG.de/user/release <../../user/release/1_6.html>`_ beachten.
+
+
+
+
+Bugfixes im CORE
+----------------
+
+* ...
+
+
+
+Updates im CORE
+---------------
+
+* Module http:
+  * Updated ... to v...
+
+
+
+Neue Plugin Versionen
+---------------------
+
+Für Details zu den inhaltlichen Änderungen der einzelnen Plugins, bitte die Dokumentation des jeweiligen Plugins konsultieren.
+
+
+* ...:
+
+  * Neue Version ... des Plugins
+
+
+
+Dokumentation
+-------------
+
+* Anwender Dokumentation
+
+  * Hinweis zum Neubau der Python Requiremments zur Installationsanleitung hinzugefügt
+
+

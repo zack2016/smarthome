@@ -33,6 +33,11 @@ Datei *../etc/module.yaml*
    #    itemtree_searchstart: 3
 
 
+.. note::
+
+    Die Konfigurationsparameter des admin Modules, die in dieser Datei konfiguriert werden, können auch über das graphische
+    Administrations-Interface geändert werden.
+
 
 +-------------------------+------------------------------------------------------------------------------------------------------+
 | Parameter               | Bemerkung                                                                                            |
