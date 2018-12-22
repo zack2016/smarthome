@@ -36,6 +36,7 @@ from .plugindata import PluginData
 
 from .rest import RESTResource
 
+from .api_srvinfo import *
 from .api_auth import *
 from .api_config import *
 from .api_sched import *
@@ -320,30 +321,6 @@ class WebInterface(SystemData, ItemData, PluginData):
         return
 
 
-    # -----------------------------------------------------------------------------------
-    #    SERVERINFO
-    # -----------------------------------------------------------------------------------
-
-    @cherrypy.expose
-    def shng_serverinfo_json(self):
-        """
-
-        :return:
-        """
-        client_ip = cherrypy.request.wsgi_environ.get('REMOTE_ADDR')
-
-        response = {}
-        response['default_language'] = self._sh.get_defaultlanguage()
-        response['client_ip'] = client_ip
-        response['itemtree_fullpath'] = self.module.itemtree_fullpath
-        response['itemtree_searchstart'] = self.module.itemtree_searchstart
-        response['tz'] = self.module.shtime.tz
-        response['tzname'] = str(self.module.shtime.tzname())
-        response['websocket_host'] = self.module.websocket_host
-        response['websocket_port'] = self.module.websocket_port
-        return json.dumps(response)
-
-
 
 class WebApi(RESTResource):
 
@@ -369,6 +346,7 @@ class WebApi(RESTResource):
         # ----------------------
         # Add REST controllers
         # ----------------------
+        self.serverinfo = ServerinfoController(self._sh, self.module)
         self.config = ConfigController(self._sh)
         self.schedulers = SchedulersController(self._sh)
         self.installedplugins = InstalledPluginsController(self._sh)

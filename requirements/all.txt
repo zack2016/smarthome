@@ -4,7 +4,7 @@
 #   |            DON'T EDIT THIS FILE               |
 #   |           THIS FILE IS GENERATED              |
 #   |       BY tools/build_requirements.py          |
-#   |            ON 16.12.2018 14:00                |
+#   |            ON 22.12.2018 12:50                |
 #   |                                               |
 #   |               INSTALL WITH:                   |
 #   | sudo pip3 install -r requirements/all.txt     |
@@ -80,8 +80,14 @@ ruamel.yaml>=0.13.7,<=0.15.74;python_version<'3.7'
 # SmartHomeNG-lib
 ruamel.yaml>0.15.0,<=0.15.74;python_version>='3.7'
 
+# plugin uzsu
+scipy>=1.1.0
+
 # plugin harmony
 sleekxmpp>=1.3.1
+
+# plugin priv_telegram_1_1_3
+telepot>=8.3
 
 # plugin sonos
 tinytag>=0.18.0

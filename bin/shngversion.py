@@ -36,9 +36,10 @@ import subprocess
 # Update auf 1.5  wg. Release"
 # Update auf 1.5.1 wg. Hotfix Release
 # Update auf 1.5a wg. Changes in lib.shtime
-# Update auf 1.5b wg. Introduction of lib.shpypi
+# Update auf 1.5b wg. Einführung von lib.shpypi
+# Update auf 1.5c wg. Einführung von bin.shngversion.get_shng_branch()
 
-shNG_version = '1.5b'
+shNG_version = '1.5c'
 
 # ---------------------------------------------------------------------------------
 FileBASE = None
@@ -65,13 +66,13 @@ def _get_git_data(sub='', printout=False):
             pass
     if printout:
         print()
-        print("_get_git_data: BASE={}".format(BASE)) 
+        print("_get_git_data: BASE={}".format(BASE))
         print("- describe: {}".format(describe))
         print("- commit_short : {}".format(commit_short))
         print("- commit .: {}".format(commit))
         print("- branch .: {}".format(branch))
         print()
-    return commit, commit_short, branch, describe 
+    return commit, commit_short, branch, describe
 
 # ---------------------------------------------------------------------------------
 
@@ -87,6 +88,10 @@ def get_shng_version():
         VERSION += '.'+commit_short+'.'+branch
     return VERSION
 
+def get_shng_branch():
+    commit, commit_short, branch, describe = _get_git_data()
+    return branch
+
 def get_shng_description():
     commit, commit_short, branch, describe = _get_git_data()
     return describe
@@ -99,6 +104,10 @@ def get_plugins_version():
     else:
         VERSION += '.'+commit_short+'.'+branch
     return VERSION
+
+def get_plugins_branch():
+    commit, commit_short, branch, describe = _get_git_data('plugins')
+    return branch
 
 def get_plugins_description():
     commit, commit_short, branch, describe = _get_git_data('plugins')
