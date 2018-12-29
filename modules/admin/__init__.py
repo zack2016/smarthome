@@ -40,7 +40,9 @@ from .api_srvinfo import *
 from .api_auth import *
 from .api_config import *
 from .api_sched import *
-from .api_instplg import *
+from .api_plugins import *
+from .api_plugin import *
+#from .api_plginst import *
 from .api_scenes import *
 from .api_threads import *
 from .api_logs import *
@@ -182,7 +184,7 @@ class Admin():
                                      use_global_basic_auth=False)
 
         # Register the web interface as a cherrypy app
-        self.mod_http.register_webif(WebApi(self.webif_dir, self, self.api_url_root),
+        self.mod_http.register_webif(WebApi(self.webif_dir, self, self.shng_url_root, self.api_url_root),
                                      'api',
                                      config_api,
                                      'api', '',
@@ -326,10 +328,11 @@ class WebApi(RESTResource):
 
     exposed = True
 
-    def __init__(self, webif_dir, module, url_root):
+    def __init__(self, webif_dir, module, shng_url_root, url_root):
         self._sh = module._sh
         self.logger = logging.getLogger(__name__)
         self.module = module
+        self.shng_url_root = shng_url_root
         self.url_root = url_root
 
         self.send_hash = 'shNG0160$'
@@ -343,13 +346,18 @@ class WebApi(RESTResource):
             if http_user_dict[user]['password_hash'] != '':
                 self._user_dict[Utils.create_hash(user + self.send_hash)] = http_user_dict[user]
 
-        # ----------------------
-        # Add REST controllers
-        # ----------------------
+        # ------------------------------
+        # ---  Add REST controllers  ---
+        # ------------------------------
         self.serverinfo = ServerinfoController(self._sh, self.module)
         self.config = ConfigController(self._sh)
         self.schedulers = SchedulersController(self._sh)
-        self.installedplugins = InstalledPluginsController(self._sh)
+        self.plugins = PluginsController(self._sh)
+        self.plugins.installed = PluginsInstalledController(self._sh)
+        # self.pluginsinstalled = PluginsInstalledController(self._sh)
+        self.plugins.config = PluginsConfigController(self._sh)
+        self.plugins.info = PluginsInfoController(self._sh, self.module, self.shng_url_root)
+        self.plugin = PluginController(self._sh, self.jwt_secret)
         self.scenes = ScenesController(self._sh)
         self.threads = ThreadsController(self._sh)
         self.logs = LogsController(self._sh, self.jwt_secret)

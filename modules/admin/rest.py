@@ -24,6 +24,7 @@
 
 import cherrypy
 import logging
+import jwt
 
 
 """
@@ -140,6 +141,36 @@ class RESTResource:
     REST_children = {}
 
     logger = logging.getLogger('REST')
+    jwt_secret = 'SmartHomeNG$0815'
+
+    def REST_test_jwt_token(self):
+        """
+        test existance of jwt  (is to be moved to rest.py)
+
+        :return:
+        """
+        self.logger.debug("REST_test_jwt_token(): cherrypy.request.headers = {}".format(cherrypy.request.headers))
+        token = cherrypy.request.headers.get('Authorization', '')
+        decoded = {}
+        self.logger.debug("REST_test_jwt_token(): raw token = {}".format(token))
+        if token != '':
+            if token.startswith('Bearer '):
+                token = token[len('Bearer '):]
+
+        self.logger.debug("REST_test_jwt_token(): jwt token = {}".format(token))
+        if self.jwt_secret and (len(token) > 0):
+            try:
+                decoded = jwt.decode(token, self.jwt_secret, verify=True, algorithms='HS256')
+            except Exception as e:
+                self.logger.info("REST_test_jwt_token(): Exception = {}".format(e))
+                token = ''
+                decoded = {}
+        self.logger.debug("REST_test_jwt_token(): decoded token = {}".format(decoded))
+
+        if len(token) == 0 or decoded == {}:
+            return False
+
+        return True
 
     def REST_dispatch(self, resource, **params):
         # if this gets called, we assume that default has already
@@ -166,6 +197,15 @@ class RESTResource:
                     raise cherrypy.HTTPError(status=400)
                 try:
                     if m and getattr(m, "expose_resource"):
+                        try:
+                            auth_needed = getattr(m, "authentication_needed")
+                        except:
+                            auth_needed = False
+                        if auth_needed:
+                            self.logger.info("REST_dispatch: Authentication needed for {} ({})".format(method, str(m).split()[2]))
+                            if not self.REST_test_jwt_token():
+                                self.logger.warning("REST_dispatch: Authentication failed for {} ({})".format(method, str(m).split()[2]))
+                                raise cherrypy.NotFound
                         return m(resource,**params)
                 except:
                     pass
@@ -174,7 +214,6 @@ class RESTResource:
 
     @cherrypy.expose
     def default(self, *vpath, **params):
-        self.logger.info("RESTResource: default: vpath  = {}".format(vpath))
         if not vpath:
             try:
                 self.logger.info("RESTResource: default: params = '{}'".format(**params))
