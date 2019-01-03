@@ -687,10 +687,10 @@ def write_configfile(plg, configfile_dir, language='de'):
 
     fh.write('\n')
 
-    if not os.path.isfile(plg['name'] + '/README.md'):
-        print("---> Datei " + plg['name'] + "/README.md nicht gefunden.")
-
-    fh.write('.. [#f1] Diese Seite wurde aus den Metadaten des Plugins erzeugt. Für den Fall, dass diese Seite nicht alle benötigten Informationen enthält, bitte auf die englischsprachige :doc:`README Datei <../../plugins/'+plgname+'/README>` des Plugins zugreifen.\n')
+    if os.path.isfile(plg['name'] + '/README.md'):
+        fh.write('.. [#f1] Diese Seite wurde aus den Metadaten des Plugins erzeugt. Für den Fall, dass diese Seite nicht alle benötigten Informationen enthält, bitte auf die englischsprachige :doc:`README Datei <../../plugins/'+plgname+'/README>` des Plugins zugreifen.\n')
+    else:
+        fh.write('.. [#f1] Diese Seite wurde aus den Metadaten des Plugins erzeugt.\n')
 
     fh.close()
     return
