@@ -36,9 +36,8 @@ The API is implemented through the following module:
 lib.item
 --------
 
-.. automodule:: lib.item
+ .. automodule:: lib.item
     :no-members:
-    :noindex:
 
 
 .. module:: lib.item
