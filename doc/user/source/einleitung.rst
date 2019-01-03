@@ -35,7 +35,7 @@ Codes oder auch Beispiele sein.
 Wie alles zusammenhängt
 -----------------------
 
-.. figure:: /_static/img/SmarthomeNG_V6.svg?raw=true
+.. figure:: /_static/img/SmarthomeNG_V6.svg
    :alt: Image
 
 .. raw:: html
