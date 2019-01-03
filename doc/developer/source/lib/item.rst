@@ -2,10 +2,10 @@ Items-API
 =========
 
 There are two ways to access the API
-        
+
 1. Directly
 
-   Use it the following way to access the api, if you have no access to the sh object in your 
+   Use it the following way to access the api, if you have no access to the sh object in your
    method or function:
 
    .. code-block:: python
@@ -20,10 +20,10 @@ There are two ways to access the API
    This is the preferred method.
 
 
-2. Through the main SmartHome object 
-        
+2. Through the main SmartHome object
+
    If you have access to the sh object in your method or function, you can use the following way:
-           
+
    .. code-block:: python
 
        # to access a method (eg. to get the list of Items):
@@ -38,11 +38,12 @@ lib.item
 
 .. automodule:: lib.item
     :no-members:
+    :noindex:
 
 
 .. module:: lib.item
 
-The API consists of two classes. 
+The API consists of two classes.
 
 
 class Item
@@ -53,7 +54,7 @@ This class implements the item itself:
 .. autoclass:: Item
    :no-members:
 
-:doc:`class Item </lib/item_class_item>` 
+:doc:`class Item </lib/item_class_item>`
 
 
 class Items
@@ -64,5 +65,5 @@ This class implements the loading and management of the items in form of the ite
 .. autoclass:: Items
    :no-members:
 
-:doc:`class Items </lib/item_class_items>` 
+:doc:`class Items </lib/item_class_items>`
 
