@@ -4,10 +4,20 @@
 Items
 #####
 
-Iin der graphischen Oberfläche steht eine Übersicht über alle definierten Items zur Verfügung.
+
+.. note::
+
+   Ist bisher im Admin Interface nicht implementiert. Bis auf weiteres bitte die Funktionalität
+   im Backend Plugin nutzen.
 
 
-X .. index:: Item Tree
+Items im Backend Plugin
+=======================
+
+In der graphischen Oberfläche steht eine Übersicht über alle definierten Items zur Verfügung.
+
+
+.. index:: Item Tree
 
 Item Tree
 =========
@@ -15,7 +25,6 @@ Item Tree
 Der Item Tree ermöglicht die Ansicht der Attribute aller Items. Außerdem ist es möglich den
 Wert des jeweiligen Items zu setzen.
 
-X .. image:: assets/backend_itemtree.jpg
-X   :class: screenshot
-
+.. image:: assets/backend_itemtree.jpg
+  :class: screenshot
 

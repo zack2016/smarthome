@@ -55,6 +55,8 @@ Ansonsten wird direkt die Übersichtsseite der Systemeigenschaften angezeigt.
    :titlesonly:
 
    systemeigenschaften
+   items
+   logiken
    scheduler
    plugins
    szenen
