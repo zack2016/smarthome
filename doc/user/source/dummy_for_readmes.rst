@@ -14,7 +14,7 @@
    /modules/admin/README.md
    /modules/dummy/README.md
    /modules/http/README.md
-   /modules/mqttREADME.md
+   /modules/mqtt/README.md
 
 .. toctree::
    :maxdepth: 2

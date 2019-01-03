@@ -274,6 +274,8 @@ def write_rstfile(plgtype='All', plgtype_print='', heading=''):
     """
     Create a .rst file for each plugin category
     """
+    fh_dummy_used = False;
+
     if heading == '':
         title = plgtype + ' Plugins'
     else:
@@ -287,7 +289,6 @@ def write_rstfile(plgtype='All', plgtype_print='', heading=''):
 
 #    print("> Opening file "+plugin_rst_dir+'/'+rst_filename)
     fh = open(plugin_rst_dir+'/'+rst_filename, "w")
-    fh_dummy = open(plugin_rst_dir+'/'+rst_dummyname, "w")
 
 #    fh.write(title+'\n')
 #    fh.write('-'*len(title)+'\n')
@@ -300,6 +301,9 @@ def write_rstfile(plgtype='All', plgtype_print='', heading=''):
     if (len(plglist) == 0):
         fh.write('At the moments there are no plugins that have not been classified.\n')
     else:
+        if not fh_dummy_used:
+            fh_dummy = open(plugin_rst_dir + '/' + rst_dummyname, "w")
+            fh_dummy_used = True;
         # write toctree to dummy file to suppress warnings for not included README.md files.
         fh_dummy.write(':orphan:\n')
         fh_dummy.write('\n')
@@ -322,8 +326,6 @@ def write_rstfile(plgtype='All', plgtype_print='', heading=''):
         for plg in plglist:
             if os.path.isfile(plg['name']+'/README.md'):
                 fh_dummy.write('   /plugins/'+plg['name']+'/README.md\n')
-            else:
-                print("---> Datei " + plg['name'] + "/README.md nicht gefunden.")
             if docu_type == 'user':
                 fp = plg['name']+'/user_doc'
 #                fp_ignore = plg['name']+'/developer_doc'
@@ -386,7 +388,8 @@ def write_rstfile(plgtype='All', plgtype_print='', heading=''):
         fh.write('.. include:: /plugins_doc/plugins_footer.rst\n')
 
     fh.close()
-    fh_dummy.close()
+    if fh_dummy_used:
+        fh_dummy.close()
 
 
 # ==================================================================================

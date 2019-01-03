@@ -31,7 +31,7 @@ it creates the files:
 - plugins_gateway.rst
 - plugins_interface.rst
 - plugins_protocol.rst
-- plugins_system.rst 
+- plugins_system.rst
 - plugins_unclassified.rst
 - plugins_web.rst
 
@@ -91,11 +91,11 @@ def get_pluginlist_fromgit():
 #            print(plg.split('/')[0], '   -   ', plg)
             plglist.append(plg.split('/')[0])
     return plglist
-    
-    
+
+
 def get_local_pluginlist():
     plglist = os.listdir('.')
-    
+
     for entry in plglist:
         if entry[0] in ['.','_'] or entry == 'deprecated_plugins':
             plglist.remove(entry)
@@ -106,8 +106,8 @@ def get_local_pluginlist():
         if entry[0] in ['.','_']:
             plglist.remove(entry)
     return plglist
-    
-    
+
+
 def get_pluginyamllist_fromgit():
     plglist = []
     plg_git = subprocess.check_output(['git', 'ls-files', '*/plugin.yaml'], stderr=subprocess.STDOUT).decode().strip('\n')
@@ -116,8 +116,8 @@ def get_pluginyamllist_fromgit():
 #            print(plg,'   -   ', plg.split('/')[0], )
             plglist.append(plg.split('/')[0])
     return plglist
-    
-    
+
+
 def get_description(section_dict, maxlen=70, lang='en',textkey='description'):
     desc = ''
     if lang == 'en':
@@ -133,7 +133,7 @@ def get_description(section_dict, maxlen=70, lang='en',textkey='description'):
             desc = section_dict[textkey].get(lang2, '')
         except:
             pass
-            
+
     if type(desc) is list:
         return desc
 
@@ -164,7 +164,7 @@ def get_doc_description(yml, language, key='description', index=None):
 
 def get_maintainer(section_dict, maxlen=20):
     maint = section_dict.get('maintainer', '')
-            
+
     import textwrap
     lines = textwrap.wrap(maint, maxlen, break_long_words=False)
     if lines == []:
@@ -174,7 +174,7 @@ def get_maintainer(section_dict, maxlen=20):
 
 def get_tester(section_dict, maxlen=20):
     maint = section_dict.get('tester', '')
-            
+
     import textwrap
     try:
         lines = textwrap.wrap(str(maint), maxlen, break_long_words=False)
@@ -189,7 +189,7 @@ def get_tester(section_dict, maxlen=20):
 
 def get_docurl(section_dict, maxlen=70):
     maint = section_dict.get('documentation', '')
-            
+
     import textwrap
     lines = textwrap.wrap(maint, maxlen, break_long_words=True)
     if lines == []:
@@ -199,7 +199,7 @@ def get_docurl(section_dict, maxlen=70):
 
 def get_supurl(section_dict, maxlen=70):
     maint = section_dict.get('support', '')
-            
+
     import textwrap
     lines = textwrap.wrap(maint, maxlen, break_long_words=True)
     if lines == []:
@@ -223,7 +223,7 @@ def build_pluginlist( plugin_type='all' ):
     result = []
     plugin_type = plugin_type.lower()
     for metaplugin in plugins_git:
-        metafile = metaplugin + '/plugin.yaml' 
+        metafile = metaplugin + '/plugin.yaml'
         plg_dict = {}
         if metaplugin in plugins_git:    #pluginsyaml_git
             if os.path.isfile(metafile):
@@ -261,7 +261,7 @@ def build_pluginlist( plugin_type='all' ):
                     plg_dict['doc'] = html_escape(section_dict.get('documentation', ''))
                     plg_dict['sup'] = html_escape(section_dict.get('support', ''))
                     print("unclassified: metafile = {}, plg_dict = {}".format(metafile, str(plg_dict)))
-                    
+
                 plg_dict['desc'].append('')
             else:
                 plgtype = type_unclassified
@@ -272,8 +272,8 @@ def build_pluginlist( plugin_type='all' ):
                 plg_dict['test'] = ['']
                 plg_dict['doc'] = ''
                 plg_dict['sup'] = ''
-                
-            
+
+
             # Adjust list lengths
             maxlen = max( len(plg_dict['desc']), len(plg_dict['maint']), len(plg_dict['test']) )
             while len(plg_dict['desc']) < maxlen:
@@ -282,7 +282,7 @@ def build_pluginlist( plugin_type='all' ):
                 plg_dict['maint'].append('')
             while len(plg_dict['test']) < maxlen:
                 plg_dict['test'].append('')
-                
+
 
         if (plgtype == plugin_type) or (plugin_type == 'all'):
 #            result.append(metaplugin)
@@ -307,7 +307,7 @@ def write_dummyfile(configfile_dir, namelist):
     for n in namelist:
 #        fh_dummy.write('   /doc/user/source/plugins_doc/config/'+n+'.rst\n')
         fh_dummy.write('   '+n+'.rst\n')
-        
+
     fh_dummy.close()
     return
 
@@ -328,8 +328,8 @@ def write_heading(fh, heading, level):
     fh.write('\n')
 
     return
-    
-        
+
+
 def write_formatted(fh, str):
 
     sl = str.split('\\n')
@@ -358,7 +358,7 @@ def write_configfile(plg, configfile_dir, language='de'):
     # ---------------------------------
     # read metadata for plugin
     # ---------------------------------
-    metafile = plgname + '/plugin.yaml' 
+    metafile = plgname + '/plugin.yaml'
     if os.path.isfile(metafile):
         meta_yaml = shyaml.yaml_load(metafile, ordered=True)
         plugin_yaml = meta_yaml.get('plugin', {})
@@ -418,7 +418,7 @@ def write_configfile(plg, configfile_dir, language='de'):
         fh.write('\n')
         fh.write('   <br />\n')
         fh.write('\n')
-    
+
     fh.write('Im folgenden sind etwaige Anforderungen und unterstützte Hardware beschrieben. Danach folgt die Beschreibung, wie das Plugin '+bold(plgname)+' konfiguriert wird. Außerdem ist im folgenden beschrieben, wie das Plugin in den Item Definitionen genutzt werden kann. [#f1]_ \n')
     fh.write('\n')
     fh.write('\n')
@@ -502,7 +502,7 @@ def write_configfile(plg, configfile_dir, language='de'):
                     desc = ' |_| - |_| ' + desc
                 fh.write('   - ' + bold(str(v)) + desc + '\n')
             fh.write('\n')
-            
+
 
     # ---------------------------------
     # write item_attribute section
@@ -686,25 +686,29 @@ def write_configfile(plg, configfile_dir, language='de'):
 
 
     fh.write('\n')
+
+    if not os.path.isfile(plg['name'] + '/README.md'):
+        print("---> Datei " + plg['name'] + "/README.md nicht gefunden.")
+
     fh.write('.. [#f1] Diese Seite wurde aus den Metadaten des Plugins erzeugt. Für den Fall, dass diese Seite nicht alle benötigten Informationen enthält, bitte auf die englischsprachige :doc:`README Datei <../../plugins/'+plgname+'/README>` des Plugins zugreifen.\n')
 
     fh.close()
     return
-    
+
 
 # ==================================================================================
 #   Main Generator Routine
 #
 
 if __name__ == '__main__':
-    
+
 #    print ('Number of arguments:', len(sys.argv), 'arguments.')
-#    print ('Argument List:', str(sys.argv))    
+#    print ('Argument List:', str(sys.argv))
 
     global language
     language = 'en'
 
-    
+
     if 'de' in sys.argv:
         language = 'de'
     if 'en' in sys.argv:
@@ -720,26 +724,26 @@ if __name__ == '__main__':
 
     # change the working diractory to the directory from which the converter is loaded (../tools)
     os.chdir(os.path.dirname(os.path.abspath(os.path.basename(__file__))))
-    
+
     plugindirectory = '../plugins'
     pluginabsdirectory = os.path.abspath(plugindirectory)
-            
+
     os.chdir(pluginabsdirectory)
-    
+
     plugins_git = get_pluginlist_fromgit()
     if not 'xmpp' in plugins_git:
         plugins_git.append('xmpp')
-        
+
     print('--- Liste der Plugins auf github ('+str(len(plugins_git))+'):')
-    
+
     pluginsyaml_git = get_pluginyamllist_fromgit()
 #    if not 'xmpp' in plugins_git:
 #        plugins_git.append('xmpp')
-        
+
     print('--- Liste der Plugins mit Metadaten auf github ('+str(len(pluginsyaml_git))+'):')
     print()
-    
-    
+
+
 
     plugin_rst_dir = start_dir+'/source'
     print('zu schreiben in: '+plugin_rst_dir)
@@ -747,7 +751,7 @@ if __name__ == '__main__':
     plugin_types = []
     for pl in plugin_sections:
        plugin_types.append(pl[0])
-           
+
     plglist = build_pluginlist()
 
     configfile_dir = plugin_rst_dir+'/'+'plugins_doc/config'
@@ -773,4 +777,4 @@ if __name__ == '__main__':
     write_dummyfile(configfile_dir, dummy_list)
     print(' '*50)
     print()
-    
+
