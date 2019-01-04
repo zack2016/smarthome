@@ -191,6 +191,32 @@ class PluginController(RESTResource):
     update.authentication_needed = True
 
 
+    @cherrypy.expose
+    def delete(self, plgsection=None):
+        self.logger.info("PluginController(): delete('{}')".format(plgsection))
+
+        config_filename = self.get_config_filename()
+
+        if self.test_for_old_config(config_filename):
+            # make it 'readonly', if plugin.conf is used
+            response = {'result': 'error', 'description': 'Updateing .CONF files is not supported'}
+        else:
+            response = {}
+            plugin_conf = shyaml.yaml_load_roundtrip(config_filename)
+            sect = plugin_conf.pop(plgsection, None)
+            if sect is None:
+                response = {'result': 'error', 'description': "Configuration section '{}' does not exist".format(plgsection)}
+            else:
+                shyaml.yaml_save_roundtrip(config_filename, plugin_conf, False)
+                response = {'result': 'ok'}
+
+        self.logger.info("PluginController(): delete(): response = {}".format(response))
+        return json.dumps(response)
+
+    delete.expose_resource = True
+    delete.authentication_needed = True
+
+
     def REST_instantiate(self, id=None):
         """ instantiate a REST resource based on the id
 
