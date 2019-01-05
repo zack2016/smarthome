@@ -70,7 +70,11 @@
     "SERVICES": "Services",
     "EVAL CHECKER": "eval Syntax Checker",
     "YAML CHECKER": "YAML Syntax Checker",
-    "CONF TO YAML": "CONF-YAML Converter"
+    "CONF TO YAML": "CONF-YAML Converter",
+    "SERVICE": "Service",
+    "STATUS": "State",
+    "ACTION": "Action",
+    "INACTIVE": "Not active"
   },
   "ITEMS": {
     "TOOLTIP SEARCH": "Search starts after entering a minimum of {{number}} characters",
