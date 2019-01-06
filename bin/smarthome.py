@@ -198,7 +198,7 @@ class SmartHome():
         self.shng_status = {'code': 0, 'text': 'Initalizing'}
 
         self._extern_conf_dir = extern_conf_dir
-        
+
         # set default timezone to UTC
         self.shtime = Shtime(self)
 
@@ -271,7 +271,7 @@ class SmartHome():
         if self._extern_conf_dir != BASE:
             self._logger.warning("Using config dir {}".format(self._extern_conf_dir))
 
-        
+
         #############################################################
         # Test if plugins are installed
         if not os.path.isdir(self._plugins_dir):
@@ -715,8 +715,8 @@ class SmartHome():
             return self.__event_listeners[event]
         else:
             return []
-    
-    
+
+
     #################################################################
     # Helper Methods
     #################################################################
@@ -801,7 +801,7 @@ class SmartHome():
                 if c_b == '':
                     break
                 called_by += ' -> ' + c_b
-                               
+
 #            called_by = str(sys._getframe(3).f_code.co_name)
 
         if not hasattr(self, 'dep_id_list'):
@@ -810,9 +810,9 @@ class SmartHome():
         if not id_str in self.dep_id_list:
             self._logger.warning("DEPRECATED: Used function '{}', called in '{}' by '{}' {}".format(d_func, in_class, called_by, n_func))
             self.dep_id_list.append(id_str)
-        return    
-    
-    
+        return
+
+
     #####################################################################
     # THE FOLLOWING METHODS ARE DEPRECATED
     #####################################################################
@@ -1044,7 +1044,7 @@ class SmartHome():
     def now(self):
         """
         Returns the actual time in a timezone aware format
-        
+
         DEPRECATED - Use the Shtime-API instead
 
         :return: Actual time for the local timezone
@@ -1066,7 +1066,7 @@ class SmartHome():
 
         self._deprecated_warning('Shtime-API')
         return self.shtime.tzinfo()
-        
+
 
     def utcnow(self):
         """
