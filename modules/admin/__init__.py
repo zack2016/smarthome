@@ -40,6 +40,7 @@ from .api_srvinfo import *
 from .api_auth import *
 from .api_config import *
 from .api_sched import *
+from .api_logics import *
 from .api_plugins import *
 from .api_plugin import *
 #from .api_plginst import *
@@ -352,6 +353,7 @@ class WebApi(RESTResource):
         self.serverinfo = ServerinfoController(self._sh, self.module)
         self.config = ConfigController(self._sh)
         self.schedulers = SchedulersController(self._sh)
+        self.logics = LogicsController(self._sh)
         self.plugins = PluginsController(self._sh)
         self.plugins.installed = PluginsInstalledController(self._sh)
         # self.pluginsinstalled = PluginsInstalledController(self._sh)
