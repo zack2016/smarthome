@@ -188,6 +188,12 @@ class LogicsController(RESTResource):
 
         # create a list of dicts, where each dict contains the information for one logic
         self.logger.info("LogicsController(): index")
+
+        if self.plugins is None:
+            self.plugins = Plugins.get_instance()
+        if self.scheduler is None:
+            self.scheduler = Scheduler.get_instance()
+
         logics_list = []
         self.logics_initialize()
 
