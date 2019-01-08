@@ -67,11 +67,14 @@ class PluginsController(RESTResource):
                 if not (p[0] in ['.', '_']):
                     if os.path.isfile(os.path.join(self.plugins_dir, p, 'plugin.yaml')):
                         plg_yaml = shyaml.yaml_load(os.path.join(os.path.join(self.plugins_dir, p, 'plugin.yaml')))
-                        plg_data = plg_yaml.get('plugin', None)
-                        if plg_data is None:
-                            self.logger.info("- plugin.yaml has no section 'plugin': {}".format(p))
+                        if plg_yaml is None:
+                            self.logger.warning("- no plugin.yaml found for plugin {}".format(p))
                         else:
-                            self.plugin_data[p] = plg_data.get('type', '')
+                            plg_data = plg_yaml.get('plugin', None)
+                            if plg_data is None:
+                                self.logger.info("- plugin.yaml has no section 'plugin': {}".format(p))
+                            else:
+                                self.plugin_data[p] = plg_data.get('type', '')
                     else:
                         self.logger.info("- no plugin.yaml: {}".format(p))
 
