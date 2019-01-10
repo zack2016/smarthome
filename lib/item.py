@@ -157,7 +157,7 @@ class Items():
         item_conf = None
         item_conf = lib.config.parse_itemsdir(env_dir, item_conf)
         item_conf = lib.config.parse_itemsdir(items_dir, item_conf, addfilenames=True)
-        
+
         for attr, value in item_conf.items():
             if isinstance(value, dict):
                 child_path = attr
@@ -636,14 +636,14 @@ class Item():
     def _split_destitem_from_value(self, value):
         """
         For on_change and on_update: spit destination item from attribute value
-        
+
         :param value: attribute value
-        
+
         :return: dest_item, value
         :rtype: str, str
         """
         dest_item = ''
-        # Check if assignment operator ('=') exists                   
+        # Check if assignment operator ('=') exists
         if value.find('=') != -1:
             # If delimiter exists, check if equal operator exists
             if value.find('==') != -1:
@@ -661,11 +661,11 @@ class Item():
 
     def _castvalue_to_itemtype(self, value, compat):
         """
-        casts the value to the type of the item, if backward compatibility 
+        casts the value to the type of the item, if backward compatibility
         to version 1.2 (ATTRIB_COMPAT_V12) is not enabled
-        
+
         If backward compatibility is enabled, the value is returned unchanged
-        
+
         :param value: value to be casted
         :param compat: compatibility attribute
         :return: return casted valu3
@@ -687,19 +687,19 @@ class Item():
             else:
                 logger.warning("Item {}: Unable to cast '{}' to {}".format(self._path, str(value), self._type))
         return value
-        
 
-    def _cast_duration(self, time): 
+
+    def _cast_duration(self, time):
         """
         casts a time valuestring (e.g. '5m') to an duration integer
         used for autotimer, timer, cycle
-    
+
         supported formats for time parameter:
         - seconds as integer (45)
         - seconds as a string ('45')
         - seconds as a string, traild by 's' ('45s')
         - minutes as a string, traild by 'm' ('5m'), is converted to seconds (300)
-        
+
         :param time: string containing the duration
         :param itempath: item path as aditional information for logging
         :return: number of seconds as an integer
@@ -722,17 +722,17 @@ class Item():
             logger.warning("Item {}: _cast_duration ({}) problem: unable to convert to int".format(self._path, time))
             time = False
         return(time)
-    
+
 
     def _build_cycledict(self, value):
         """
         builds a dict for a cycle parameter from a duration_value_string
-        
+
         This dict is to be passed to the scheduler to circumvemt the parameter
         parsing within the scheduler, which can't to casting
 
         :param value: raw attribute string containing duration, value (and compatibility)
-        :return: cycle-dict for a call to scheduler.add 
+        :return: cycle-dict for a call to scheduler.add
         """
         time, value, compat = _split_duration_value_string(value)
         time = self._cast_duration(time)
@@ -1702,15 +1702,15 @@ class Item():
         """
         converts a configuration attribute containing relative item pathes
         to absolute pathes
-        
+
         The item's attribute can be of type str or list (of strings)
-        
+
         The begintag and the endtag remain in the result string!
 
         :param attr: Name of the attribute
         :param begintag: string that signals the beginning of a relative path is following
         :param endtag: string that signals the end of a relative path
-        
+
         """
         if attr in self.conf:
             if isinstance(self.conf[attr], str):
@@ -1734,20 +1734,20 @@ class Item():
             else:
                 logger.warning("expand_relativepathes: attr={} can not expand for type(self.conf[attr])={}".format(attr, type(self.conf[attr])))
         return
-        
+
 
     def get_stringwithabsolutepathes(self, evalstr, begintag, endtag, attribute=''):
         """
         converts a string containing relative item pathes
         to a string with absolute item pathes
-        
+
         The begintag and the endtag remain in the result string!
 
         :param evalstr: string with the statement that may contain relative item pathes
         :param begintag: string that signals the beginning of a relative path is following
         :param endtag: string that signals the end of a relative path
         :param attribute: string with the name of the item's attribute, which contains the relative path
-        
+
         :return: string with the statement containing absolute item pathes
         """
         if evalstr.find(begintag+'.') == -1:
@@ -1762,7 +1762,7 @@ class Item():
             rel = rest[:rest.find(endtag)]
             rest = rest[rest.find(endtag):]
             pref += self.get_absolutepath(rel, attribute)
-            
+
         pref += rest
 #        logger.warning("{}.get_stringwithabsolutepathes(): result = '{}'".format(self._path, pref))
         return pref
@@ -1883,6 +1883,8 @@ class Item():
             # Only if item has an eval_trigger
             _items = []
             for trigger in self._trigger:
+                if _items_instance.match_items(trigger) == [] and self._eval:
+                    logger.warning("item '{}': trigger item '{}' not found for function '{}'".format(self._path, trigger, self._eval))
                 _items.extend(_items_instance.match_items(trigger))
             for item in _items:
                 if item != self:  # prevent loop
@@ -1989,8 +1991,8 @@ class Item():
             else:
                 logger.debug(" - : '{}' {} not set (cause: eval=None)".format(attr, on_dest))
                 pass
-            
-    
+
+
     def __run_on_update(self, value=None):
         """
         evaluate all 'on_update' entries of the actual item
@@ -2213,7 +2215,7 @@ class Item():
                  "type": self._type,
                  "attributes": self.conf,
                  "children": self.get_children_path() }
-                 
+
 # alternative method to get all class members
 #    @staticmethod
 #    def get_members(instance):
@@ -2322,10 +2324,10 @@ def _cast_num(value):
 # Methods for handling of duration_value strings
 #####################################################################
 
-def _split_duration_value_string(value): 
+def _split_duration_value_string(value):
     """
     splits a duration value string into its thre components
-    
+
     components are:
     - time
     - value
@@ -2347,10 +2349,10 @@ def _split_duration_value_string(value):
     return (time, value, compat)
 
 
-def _join_duration_value_string(time, value, compat=''): 
+def _join_duration_value_string(time, value, compat=''):
     """
     joins a duration value string from its thre components
-    
+
     components are:
     - time
     - value
@@ -2367,8 +2369,8 @@ def _join_duration_value_string(time, value, compat=''):
         if compat != '':
            result = result + ' = ' + compat
     return result
-    
-    
+
+
 #####################################################################
 # Cache Methods
 #####################################################################
