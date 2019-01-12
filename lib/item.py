@@ -55,6 +55,7 @@ import datetime
 import dateutil.parser
 import time     # for calls to time in eval
 import logging
+import collections
 import os
 import re
 import pickle
@@ -65,12 +66,14 @@ from ast import literal_eval
 import inspect
 
 from lib.plugin import Plugins
+import lib.shyaml as shyaml
 from lib.shtime import Shtime
 
 import lib.utils
 from lib.constants import (ITEM_DEFAULTS, FOO, KEY_ENFORCE_UPDATES, KEY_CACHE, KEY_CYCLE, KEY_CRONTAB, KEY_EVAL,
-                           KEY_EVAL_TRIGGER, KEY_TRIGGER, KEY_CONDITION, KEY_NAME, KEY_TYPE, KEY_VALUE, KEY_INITVALUE, PLUGIN_PARSE_ITEM,
-                           KEY_AUTOTIMER, KEY_ON_UPDATE, KEY_ON_CHANGE, KEY_LOG_CHANGE, KEY_THRESHOLD, CACHE_FORMAT, CACHE_JSON, CACHE_PICKLE,
+                           KEY_EVAL_TRIGGER, KEY_TRIGGER, KEY_CONDITION, KEY_NAME, KEY_TYPE, KEY_STRUCT,
+                           KEY_VALUE, KEY_INITVALUE, PLUGIN_PARSE_ITEM, KEY_AUTOTIMER, KEY_ON_UPDATE, KEY_ON_CHANGE,
+                           KEY_LOG_CHANGE, KEY_THRESHOLD, CACHE_FORMAT, CACHE_JSON, CACHE_PICKLE,
                            KEY_ATTRIB_COMPAT, ATTRIB_COMPAT_V12, ATTRIB_COMPAT_LATEST)
 
 
@@ -96,10 +99,12 @@ class Items():
     :type samrthome: object
     """
 
-    __items = []            # list with the pathes of all items that are defined
-    __item_dict = {}        # dict with all the items that are defined in the form: {"<item-path>": "<item-object>", ...}
+    __items = []                # list with the pathes of all items that are defined
+    __item_dict = {}            # dict with all the items that are defined in the form: {"<item-path>": "<item-object>", ...}
 
-    _children = []          # List of top level items
+    _children = []              # List of top level items
+
+    _struct_definitions = collections.OrderedDict()    # definitions of item structures
 
 
     def __init__(self, smarthome):
@@ -141,7 +146,19 @@ class Items():
         return _items_instance
 
 
-    def load_itemdefinitions(self, env_dir, items_dir):
+    def add_struct_definition(self, plugin_name, struct_name, struct):
+
+        if plugin_name == '':
+            name = struct_name
+        else:
+            name = plugin_name + '.' + struct_name
+
+        logger.info("add_struct_definition: struct '{}' = {}".format(name, struct))
+        self._struct_definitions[name] = struct
+        return
+
+
+    def load_itemdefinitions(self, env_dir, items_dir, etc_dir, plugins_dir):
         """
         Load item definitions
 
@@ -151,12 +168,26 @@ class Items():
 
         :param env_dir: path to the directory containing the core's environment item definition files
         :param items_dir: path to the directory containing the user's item definition files
+        :param etc_dir: path to the directory containing the user's configuration files (only used for 'struct' support)
+        :param plugins_dir: path to the directory containing the plugins (only used for 'struct' support)
         :type env_dir: str
         :type items_dir: str
+        :type etc_dir: str
+        :type plugins_dir: str
         """
+
+        # Read in item structs from ../etc/struct.yaml
+        struct_filename = os.path.join(etc_dir, 'struct.yaml')
+        struct_definitions = shyaml.yaml_load(os.path.join(etc_dir, 'struct.yaml'), ordered=True)
+        for key in struct_definitions:
+            self.add_struct_definition('', key, struct_definitions[key])
+        # for Testing: Save structure of joined item structs
+        logger.warning("load_itemdefinitions: For testing the joined item structs are saved to {}".format(os.path.join(etc_dir, 'structs_joined.yaml')))
+        shyaml.yaml_save(os.path.join(etc_dir, 'structs_joined.yaml'), self._struct_definitions)
+
         item_conf = None
         item_conf = lib.config.parse_itemsdir(env_dir, item_conf)
-        item_conf = lib.config.parse_itemsdir(items_dir, item_conf, addfilenames=True)
+        item_conf = lib.config.parse_itemsdir(items_dir, item_conf, addfilenames=True, struct_dict=self._struct_definitions)
 
         for attr, value in item_conf.items():
             if isinstance(value, dict):
@@ -403,6 +434,7 @@ class Item():
         self._sh = smarthome
         self._threshold = False
         self._type = None
+        self._struct = None
         self._value = None
         self.__last_value = None
         self.__prev_value = None
@@ -443,7 +475,7 @@ class Item():
         #############################################################
         for attr, value in config.items():
             if not isinstance(value, dict):
-                if attr in [KEY_CYCLE, KEY_NAME, KEY_TYPE, KEY_VALUE, KEY_INITVALUE]:
+                if attr in [KEY_CYCLE, KEY_NAME, KEY_TYPE, KEY_STRUCT, KEY_VALUE, KEY_INITVALUE]:
                     if attr == KEY_INITVALUE:
                         attr = KEY_VALUE
                     setattr(self, '_' + attr, value)

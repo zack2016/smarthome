@@ -28,6 +28,7 @@ This library does the handling and parsing of the configuration of SmartHomeNG.
 
 """
 
+import copy
 import logging
 import collections
 import keyword
@@ -50,15 +51,15 @@ def parse_basename(basename, configtype=''):
     The configuration is only specified by the basename.
     At the moment it looks for a .yaml file or a .conf file
     .yaml files take preference
-    
+
     :param basename: Name of the configuration
     :param configtype: Optional string with config type (only used for log output)
     :type basename: str
     :type configtype: str
-    
+
     :return: The resulting merged OrderedDict tree
     :rtype: OrderedDict
-    
+
     '''
     config = parse(basename+YAML_FILE)
     if config == {}:
@@ -67,15 +68,15 @@ def parse_basename(basename, configtype=''):
         if not (configtype == 'logics'):
             logger.critical("No file '{}.*' found with {} configuration".format(basename, configtype))
     return config
-        
 
-def parse_itemsdir(itemsdir, item_conf, addfilenames=False):
+
+def parse_itemsdir(itemsdir, item_conf, addfilenames=False, struct_dict={}):
     '''
     Load and parse item configurations and merge it to the configuration tree
     The configuration is only specified by the name of the directory.
     At the moment it looks for .yaml files and a .conf files
     Both filetypes are read, even if they have the same basename
-    
+
     :param itemsdir: Name of folder containing the configuration files
     :param item_conf: Optional OrderedDict tree, into which the configuration should be merged
     :type itemsdir: str
@@ -85,24 +86,26 @@ def parse_itemsdir(itemsdir, item_conf, addfilenames=False):
     :rtype: OrderedDict
 
     '''
+    logger.info("parse_itemsdir: Beginning to parse items directory {}".format(itemsdir))
     for item_file in sorted(os.listdir(itemsdir)):
         if item_file.endswith(CONF_FILE) or item_file.endswith(YAML_FILE):
             if item_file == 'logic'+YAML_FILE and itemsdir.find('lib/env/') > -1:
-                logger.info("config.parse_itemsdir: skipping logic definition file = {}".format( itemsdir+item_file ))
+                logger.info("parse_itemsdir: skipping logic definition file = {}".format( itemsdir+item_file ))
             else:
                 try:
-                    item_conf = parse(itemsdir + item_file, item_conf, addfilenames)
+                    item_conf = parse(itemsdir + item_file, item_conf, addfilenames, parseitems=True, struct_dict=struct_dict)
                 except Exception as e:
                     logger.exception("Problem reading {0}: {1}".format(item_file, e))
                     continue
+    logger.info("parse_itemsdir: Finished parsing items directory {}".format(itemsdir))
     return item_conf
 
 
-def parse(filename, config=None, addfilenames=False):
+def parse(filename, config=None, addfilenames=False, parseitems=False, struct_dict={}):
     '''
     Load and parse a configuration file and merge it to the configuration tree
     Depending on the extension of the filename, the apropriate parser is called
-    
+
     :param filename: Name of the configuration file
     :param config: Optional OrderedDict tree, into which the configuration should be merged
     :type filename: str
@@ -113,7 +116,7 @@ def parse(filename, config=None, addfilenames=False):
 
     '''
     if filename.endswith(YAML_FILE) and os.path.isfile(filename):
-         return parse_yaml(filename, config, addfilenames)
+         return parse_yaml(filename, config, addfilenames, parseitems, struct_dict)
     elif filename.endswith(CONF_FILE) and os.path.isfile(filename):
         return parse_conf(filename, config)
     return {}
@@ -131,7 +134,7 @@ def remove_keys(ydata, func, remove=[REMOVE_ATTR], level=0, msg=None, key_prefix
     :type ydata: OrderedDict
     :type func: function
     :type level: int
-    
+
     '''
     try:
         level_keys = list(ydata.keys())
@@ -159,7 +162,7 @@ def remove_comments(ydata):
 
     :param ydata: configuration (sub)tree to work on
     :type ydata: OrderedDict
-    
+
     '''
     remove_keys(ydata, lambda k: k.startswith('comment'), [REMOVE_ATTR])
 
@@ -212,7 +215,7 @@ def remove_invalid(ydata):
 def merge(source, destination):
     '''
     Merges an OrderedDict Tree into another one
-    
+
     :param source: source tree to merge into another one
     :param destination: destination tree to merge into
     :type source: OrderedDict
@@ -229,7 +232,7 @@ def merge(source, destination):
         >>> b = { 'first' : { 'all_rows' : { 'fail' : 'cat', 'number' : '5' } } }
         >>> merge(b, a) == { 'first' : { 'all_rows' : { 'pass' : 'dog', 'fail' : 'cat', 'number' : '5' } } }
         True
-    
+
     '''
     try:
         for key, value in source.items():
@@ -247,21 +250,114 @@ def merge(source, destination):
         logger.error("Problem merging subtrees, probably invalid YAML file")
 
     return destination
-    
-    
-def parse_yaml(filename, config=None, addfilenames=False):
+
+
+#-------------------------------------------------------------------------------------
+# Handling of structs while loading item tree from yaml files
+#
+
+#def nested_get(input_dict, nested_key):
+#    internal_dict_value = input_dict
+#    for k in nested_key:
+#        internal_dict_value = internal_dict_value.get(k, None)
+#        if internal_dict_value is None:
+#            return None
+#    return internal_dict_value
+
+
+def nested_put(output_dict, path, value):
+    '''
+
+    :param output_dict: dict structure to write to
+    :param path: path to write to
+    :param value: value to write to the nested key
+    :return:
+    '''
+    internal_dict_value = output_dict
+    nested_key = path.split('.')
+    for k in nested_key:
+        if internal_dict_value.get(k, None) is None:
+            if isinstance(output_dict, collections.OrderedDict):
+                internal_dict_value[k] = collections.OrderedDict()
+            else:
+                internal_dict_value[k] = {}
+        internal_last_dict_value = internal_dict_value
+        internal_dict_value = internal_dict_value.get(k, None)
+    internal_last_dict_value[nested_key[len(nested_key)-1]] = value
+    return
+
+
+def search_for_struct_in_items(items, template, struct_dict, parent=''):
+    '''
+    Test if the loaded file contains items with 'struct' attribute.
+
+    This function is called before merging the loaded file into the item tree
+
+    :return:
+    '''
+
+    result = False
+    for key in items:
+        value = items[key]
+        if key == 'struct':
+            add_struct_to_template(parent, value, template, struct_dict)
+            result = True
+        else:
+            if isinstance(value, collections.OrderedDict):
+                # treat value as node
+                if parent == '':
+                    path = key
+                else:
+                    path = parent+'.'+key
+                if search_for_struct_in_items(value, template, struct_dict, parent=path):
+                    result = True
+
+    return result
+
+
+def add_struct_to_template(path, struct_name, template, struct_dict):
+    '''
+    Add the referenced struct to the items_template subtree
+
+    :param path:
+    :param struct_name:
+    :param template:
+    :return:
+    '''
+    logger.info("add_struct_to_template: 'struct' '{}' reference found in item '{}'".format(struct_name, path))
+    struct = struct_dict.get(struct_name, None)
+    if struct is None:
+        nf = collections.OrderedDict()
+        nf['name'] = "ERROR: struct '" + struct_name+"' not found!"
+        nf['value'] = nf['name']
+        nested_put(template, path, nf)
+        logger.warning("add_struct_to_template: 'struct' definition for '{}' not found".format(struct_name))
+    else:
+        nested_put(template, path, copy.deepcopy(struct))
+        logger.debug("add_struct_to_template: struct_dict = {}".format(struct_dict))
+
+    return
+
+
+def parse_yaml(filename, config=None, addfilenames=False, parseitems=False, struct_dict={}):
     """
     Load and parse a yaml configuration file and merge it to the configuration tree
 
     :param filename: Name of the configuration file
     :param config: Optional OrderedDict tree, into which the configuration should be merged
+    :param addfilenames: x
+    :param parseitems: x
+    :param struct_dict: dictionry with stuct definitions (templates) for reading item tree
     :type filename: str
     :type config: bool
-    
+    :type addfilenames: bool
+    :type parseitems: bool
+    :type struct_dict: dict
+
     :return: The resulting merged OrderedDict tree
     :rtype: OrderedDict
 
-    
+
     The config file should stick to the following setup:
 
     .. code-block:: yaml
@@ -270,17 +366,17 @@ def parse_yaml(filename, config=None, addfilenames=False):
            attribute1: xyz
            attribute2: foo
            attribute3: bar
-           
+
            secondlevel:
                attribute1: abc
                attribute2: bar
                attribute3: foo
-               
+
                thirdlevel:
                    attribute1: def
                    attribute2: barfoo
                    attribute3: foobar
-                   
+
            anothersecondlevel:
                attribute1: and so on
 
@@ -302,24 +398,39 @@ def parse_yaml(filename, config=None, addfilenames=False):
         remove_keyword(items)
         remove_invalid(items)
 
+        if parseitems:
+            # test if file contains 'struct' attribute
+            items_template = collections.OrderedDict()
+            logger.debug("parse_yaml: Checking if file {} contains 'struct' attribute".format(os.path.basename(filename)))
+            if search_for_struct_in_items(items, items_template, struct_dict):
+                # logger.info("parse_yaml: 'struct' found in file '{}'".format(filename))
+                # logger.info("parse_yaml: items = '{}'".format(items))
+                # logger.info("parse_yaml: items_template = '{}'".format(items_template))
+
+                # For testing: shyaml.yaml_save('/usr/local/shng_dev/etc/items_template.yaml', items_template)
+                # logger.info("parse_yaml: /usr/local/shng_dev/etc/items_template.yaml saved")
+                if items_template != {}:
+                    config = merge(items_template, config)
+                    pass
+
         if addfilenames:
             logger.debug("parse_yaml: Add filename = {} to items".format(os.path.basename(filename)))
             _add_filenames_to_config(items, os.path.basename(filename))
 
         config = merge(items, config)
     return config
-    
+
 
 def _add_filenames_to_config(items, filename, level=0):
     """
     Adds the name of the config file to the config items
-    
-    This routine is used to add the source filename to: 
+
+    This routine is used to add the source filename to:
     - be able to display the file an item is defined in (backend page items)
     - to enable editing and storing back of item definitions
-    
+
     This function calls itself recurselively
-    
+
     """
     for attr, value in items.items():
         if isinstance(value, dict):
@@ -328,7 +439,7 @@ def _add_filenames_to_config(items, filename, level=0):
                 value['_filename'] = filename
             _add_filenames_to_config(child_path, filename, level+1)
     return
-    
+
 
 # --------------------------------------------------------------------------------------
 
@@ -336,13 +447,13 @@ def _add_filenames_to_config(items, filename, level=0):
 def strip_quotes(string):
     """
     Strip single-quotes or double-quotes from string beggining and end
-    
+
     :param string: String to strip the quotes from
     :type string: str
-    
+
     :return: Stripped string
     :rtype: str
-    
+
     """
     string = string.strip()
     if len(string) > 0:
@@ -362,7 +473,7 @@ def parse_conf(filename, config=None):
     :param config: Optional OrderedDict tree, into which the configuration should be merged
     :type filename: str
     :type config: bool
-    
+
     :return: The resulting merged OrderedDict tree
     :rtype: OrderedDict
 
@@ -375,17 +486,17 @@ def parse_conf(filename, config=None):
            attribute1 = xyz
            attribute2 = foo
            attribute3 = bar
-           
+
            [[secondlevel]]
                attribute1 = abc
                attribute2 = bar
                attribute3 = foo
-               
+
                [[[thirdlevel]]]
                    attribute1 = def
                    attribute2 = barfoo
                    attribute3 = foobar
-                   
+
            [[anothersecondlevel]]
                attribute1 = and so on
 
@@ -395,7 +506,7 @@ def parse_conf(filename, config=None):
     Valid characters for the attributes are the same as for an item plus @ and *
 
     """
-    
+
     valid_set = set(valid_attr_chars)
     if config is None:
         config = collections.OrderedDict()
@@ -434,7 +545,7 @@ def parse_conf(filename, config=None):
                     return config
                 name = line.strip("[]")
                 name = strip_quotes(name)
-                
+
                 if len(name) == 0:
                     logger.error("Problem parsing '{}' tried to use an empty item name in line {}: {}".format(filename, linenu, line))
                     return config
@@ -447,7 +558,7 @@ def parse_conf(filename, config=None):
                 elif keyword.iskeyword(name):
                     logger.error("Problem parsing '{}': item using reserved Python keyword {} in line {}: {}".format(filename, name, linenu, line))
                     return config
-                    
+
                 if level == 1:
                     if name not in config:
                         config[name] = collections.OrderedDict()
@@ -472,7 +583,7 @@ def parse_conf(filename, config=None):
                 if not set(attr).issubset(valid_set):
                     logger.error("Problem parsing '{}' invalid character in line {}: {}. Valid characters are: {}".format(filename, linenu, attr, valid_attr_chars))
                     continue
-                    
+
                 if len(attr) > 0:
                     if attr[0] in digits:
                         logger.error("Problem parsing '{}' attrib starts with a digit '{}' in line {}: {}.".format(filename, attr[0], linenu, attr ))

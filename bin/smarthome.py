@@ -516,7 +516,7 @@ class SmartHome():
         self.shng_status = {'code': 13, 'text': 'Starting: Loading item definitions'}
 
         self._logger.info("Start initialization of items")
-        self.items.load_itemdefinitions(self._env_dir, self._items_dir)
+        self.items.load_itemdefinitions(self._env_dir, self._items_dir, self._etc_dir, self._plugins_dir)
 
         self.item_count = self.items.item_count()
         self._logger.info("Items initialization finished, {} items loaded".format(self.items.item_count()))

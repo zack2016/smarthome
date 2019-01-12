@@ -2,7 +2,7 @@
 # vim: set encoding=utf-8 tabstop=4 softtabstop=4 shiftwidth=4 expandtab
 #########################################################################
 # Copyright 2016-       Martin Sinn                         m.sinn@gmx.de
-# Copyright 2016-       Christian Strassburg 
+# Copyright 2016-       Christian Strassburg
 # Copyright 2018        Stefan Widmer (smailee)
 # Copyright 2011-2013   Marcus Popp                        marcus@popp.mx
 #########################################################################
@@ -29,14 +29,14 @@
 """
 This library implements loading and starting of plugins of SmartHomeNG.
 
-The methods of the class Plugins implement the API for plugins. 
+The methods of the class Plugins implement the API for plugins.
 They can be used the following way: To call eg. **xxx()**, use the following syntax:
 
 .. code-block:: python
 
         from lib.plugin import Plugins
         plugins = Plugins.get_instance()
-        
+
         # to access a method (eg. xxx()):
         plugins.xxx()
 
@@ -59,6 +59,7 @@ from lib.model.smartplugin import SmartPlugin
 from lib.constants import (KEY_CLASS_NAME, KEY_CLASS_PATH, KEY_INSTANCE,YAML_FILE,CONF_FILE)
 #from lib.utils import Utils
 from lib.metadata import Metadata
+#import lib.item
 
 logger = logging.getLogger(__name__)
 
@@ -72,7 +73,7 @@ def namestr(obj, namespace):
 class Plugins():
     """
     Plugin loader Class. Parses config file and creates a worker thread for each plugin
-    
+
     :param smarthome: Instance of the smarthome master-object
     :param configfile: Basename of the plugin configuration file
     :type samrthome: object
@@ -81,7 +82,7 @@ class Plugins():
     """
     _plugins = []
     _threads = []
-    
+
     def __init__(self, smarthome, configfile):
         self._sh = smarthome
 
@@ -105,15 +106,22 @@ class Plugins():
         _conf = lib.config.parse_basename(configfile, configtype='plugin')
         if _conf == {}:
             return
-            
+
         self._load_translations()
-        
+
         logger.info('Load plugins')
 
         # for every section (plugin) in the plugin.yaml file
         for plugin in _conf:
             logger.debug("Plugins, section: {}".format(plugin))
             plugin_name, self.meta = self._get_pluginname_and_metadata(plugin, _conf[plugin])
+
+            # Test if plugin defines item structs
+            item_structs = self.meta.itemstructs
+            if item_structs is not None:
+                struct_keys = list(item_structs.keys())
+                for struct_name in struct_keys:
+                    self._sh.items.add_struct_definition(plugin_name, struct_name, item_structs[struct_name])
 
             # Test if plugin is disabled
             if str(_conf[plugin].get('plugin_enabled', None)).lower() == 'false':
@@ -148,27 +156,27 @@ class Plugins():
 
         logger.info('Load of plugins finished')
         del(_conf)  # clean up
-        
+
 
     def _load_translations(self):
         """
         """
         self._gtrans = {}
-        self.relative_filename = os.path.join( 'bin', 'locale'+YAML_FILE ) 
+        self.relative_filename = os.path.join( 'bin', 'locale'+YAML_FILE )
         filename = os.path.join( self._sh.get_basedir(), self.relative_filename )
         trans = shyaml.yaml_load(filename, ordered=False, ignore_notfound=True)
         if trans != None:
             self._gtrans = trans.get('global_translations', {})
             logger.info("Loaded global translations = {}".format(self._gtrans))
-    
-    
+
+
     def _get_pluginname_and_metadata(self, plg_section, plg_conf):
         """
         Return the actual plugin name and the metadata instance
-        
+
         :param plg_conf: loaded section of the plugin.yaml for the actual plugin
         :type plg_conf: dict
-        
+
         :return: plugin_name and metadata_instance
         :rtype: string, object
         """
@@ -190,15 +198,15 @@ class Plugins():
                 logger.error("Plugin configuration section '{}': Neither 'plugin_name' nor '{}' are defined.".format( plg_section, KEY_CLASS_PATH ))
                 meta = Metadata(self._sh, plugin_name, 'plugin', classpath)
         return (plugin_name+plugin_version, meta)
-        
+
 
     def _get_conf_args(self, plg_conf):
         """
         Return the parameters/values for the actual plugin as args-dict
-        
+
         :param plg_conf: loaded section of the plugin.yaml for the actual plugin
         :type plg_conf: dict
-        
+
         :return: args = specified parameters and their values
         :rtype: dict
         """
@@ -215,12 +223,12 @@ class Plugins():
     def _get_classname_and_classpath(self, plg_conf, plugin_name):
         """
         Returns the classname and the classpath for the actual plugin
-        
+
         :param plg_conf: loaded section of the plugin.yaml for the actual plugin
         :param plugin_name: Plugin name (to be used, for building classpass, if it is not specified in the configuration
         :type plg_conf: dict
         :type plugin_name: str
-        
+
         :return: classname, classpass
         :rtype: str, str
         """
@@ -247,30 +255,30 @@ class Plugins():
     def _get_instancename(self, plg_conf):
         """
         Returns the instancename for the actual plugin
-        
+
         :param plg_conf: loaded section of the plugin.yaml for the actual plugin
         :type plg_conf: dict
-        
+
         :return: instance name
         :rtype: str
         """
         instance = ''
         if KEY_INSTANCE in plg_conf:
             instance = plg_conf[KEY_INSTANCE].strip()
-            if instance == 'default': 
+            if instance == 'default':
                 instance = ''
         return instance
-                
+
 
     def _test_duplicate_pluginconfiguration(self, plugin, classname, instance):
         """
         Returns True, if a plugin instance of the classname is already loaded by another configuration section
-        
+
         :param plugin: Name of the configuration
         :param classname: Name of the class to check
         :type plugin: str
         :type classname: str
-        
+
         :return: True, if plugin is already loaded
         :rtype: bool
         """
@@ -291,8 +299,8 @@ class Plugins():
             elif p.__class__.__name__ == classname:
                 logger.warning("Multiple classic plugin instances of class '{}' detected".format(classname))
         return duplicate
-        
-        
+
+
 
     def __iter__(self):
         for plugin in self._plugins:
@@ -306,18 +314,18 @@ class Plugins():
     def get_instance():
         """
         Returns the instance of the Plugins class, to be used to access the plugin-api
-        
+
         Use it the following way to access the api:
-        
+
         .. code-block:: python
 
             from lib.plugin import Plugins
             plugins = Plugins.get_instance()
-            
+
             # to access a method (eg. xxx()):
             plugins.xxx()
 
-        
+
         :return: logics instance
         :rtype: object of None
         """
@@ -364,7 +372,7 @@ class Plugins():
         Returns the name of the logic configuration file
         """
         return self._plugin_conf_filename
-        
+
 
     class PyObject(ctypes.Structure):
         _fields_ = [("refcnt", ctypes.c_long)]
@@ -399,7 +407,7 @@ class Plugins():
         self._plugins.remove(myplugin)
         logger.info("Plugins._plugins nach remove ({}) = {}".format(len(self._plugins), self._plugins))
         logger.info("Plugins._threads nach remove ({}) = {}".format(len(self._threads), self._threads))
- 
+
         myplugin_address = id(myplugin)
         logger.info("myplugin sizeof       = {}".format(sys.getsizeof(myplugin)))
         logger.info("myplugin refcnt       = {}".format(self.PyObject.from_address(myplugin_address).refcnt))
@@ -409,7 +417,7 @@ class Plugins():
             logger.info("myplugin referrer     = {} / {} / {}".format(r, namestr(r, globals()), namestr(r, locals())))
         gc.collect()
         logger.info("myplugin referrer cnt2= {}".format(len(gc.get_referrers(myplugin))))
-        
+
         del mythread
         del myplugin
         logger.warning("myplugin refcnt nach del    = {}".format(self.PyObject.from_address(myplugin_address).refcnt))
@@ -424,7 +432,7 @@ class Plugins():
         logger.info("Plugins._threads nach del ({}) = {}".format(len(self._threads), self._threads))
         return False
 
-    
+
 
     # ------------------------------------------------------------------------------------
 
@@ -461,8 +469,8 @@ class Plugins():
 
     def get_pluginthread(self, configname):
         """
-        Returns one plugin with given name 
-        
+        Returns one plugin with given name
+
         :return: Thread object for the given plugin name
         :rtype: object
         """
@@ -491,7 +499,7 @@ class PluginWrapper(threading.Thread):
     :type instance: str
     :type meta: object
     """
-    
+
     def __init__(self, smarthome, name, classname, classpath, args, instance, meta, gtranslations):
         """
         Initialization of wrapper class
@@ -517,7 +525,7 @@ class PluginWrapper(threading.Thread):
         except Exception as e:
             logger.exception("Plugin '{}' exception during execution of plugin: {}".format(name, e))
 
-        relative_filename = os.path.join( classpath.replace('.', '/'), 'locale'+YAML_FILE ) 
+        relative_filename = os.path.join( classpath.replace('.', '/'), 'locale'+YAML_FILE )
         filename = os.path.join( smarthome.get_basedir(), relative_filename )
         trans = shyaml.yaml_load(filename, ordered=False, ignore_notfound=True)
         if trans != None:
@@ -580,7 +588,7 @@ class PluginWrapper(threading.Thread):
             self.get_implementation()._parameters = plugin_params
             self.get_implementation()._hide_parameters = hide_params
             self.get_implementation()._metadata = self.meta
- 
+
             # initialize the loaded instance of the plugin
             self.get_implementation()._init_complete = True   # set to false by plugin, if an initalization error occurs
 
@@ -651,7 +659,7 @@ class PluginWrapper(threading.Thread):
         Returns the name of current plugin instance
 
         :return: name of the current plugin instance
-        :rtype: str 
+        :rtype: str
         """
         return self.name
 
@@ -659,7 +667,7 @@ class PluginWrapper(threading.Thread):
     def get_ident(self):
         """
         Returns the thread ident of current plugin instance
-        
+
         :return: Thread identifier of current plugin instance
         :rtype: int
         """
@@ -669,12 +677,12 @@ class PluginWrapper(threading.Thread):
     def get_implementation(self):
         """
         Returns the implementation of current plugin instance
-        
+
         :return: the current plugin instance
         :rtype: object
         """
         return self.plugin
-    
+
 
 # addition von smai:
 class PluginLoggingAdapter(logging.LoggerAdapter):
