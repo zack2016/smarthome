@@ -31,6 +31,26 @@ admin:
 
 ## API of module admin
 
+### PLUGINS API
+
+####GET /api/plugins
+liefert die Liste der installierten Plugins
+
+#### GET /api/plugins/config
+liefert die gesamte config
+
+#### POST /api/plugins/config/\<neu> 
+legt eine neue Confic-section Namens ‚\<neu>‘ an
+
+#### PUT /api/plugins/config/\<plgsection>
+Macht ein Update auf section ‚\<plgsection>‘
+
+#### DELETE /api/plugins/config/\<plgsection> 
+Löscht section ‚\<plgsection>‘
+
+
+
+
 ### Test if module admin is loaded
 
 `dummy` is a loadlable module. Therefore there is no guarantiee that it is present in every system. Before you can use this module, you have to make sure ist is loaded. You can do it by calling a method of the main smarthome object. Do it like this:

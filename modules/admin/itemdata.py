@@ -211,6 +211,9 @@ class ItemData:
                          'filename': str(item._filename),
                          }
 
+            if item._struct is not None:
+                data_dict['struct'] = item._struct
+
             # cast raw data to a string
             if item.type() in ['foo', 'list', 'dict']:
                 data_dict['value'] = str(item._value)

@@ -68,7 +68,7 @@ class PluginsController(RESTResource):
                     if os.path.isfile(os.path.join(self.plugins_dir, p, 'plugin.yaml')):
                         plg_yaml = shyaml.yaml_load(os.path.join(os.path.join(self.plugins_dir, p, 'plugin.yaml')))
                         if plg_yaml is None:
-                            self.logger.warning("- no plugin.yaml found for plugin {}".format(p))
+                            self.logger.warning("- no valid plugin.yaml found for plugin {}".format(p))
                         else:
                             plg_data = plg_yaml.get('plugin', None)
                             if plg_data is None:
