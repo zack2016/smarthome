@@ -70,7 +70,7 @@ Strukturen werden in der Konfigurationdatei **../etc/struct.yaml** abgelegt werd
 
 Diese Template werden mit dem Namen der Struktur ohne vorrangestellten Plugin-Namen angegeben:
 
-. code-block:: yaml
+.. code-block:: yaml
 
     komplexes_item:
         struct: meine_struktur
