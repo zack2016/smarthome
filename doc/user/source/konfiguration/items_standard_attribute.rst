@@ -8,7 +8,7 @@ Standard Attribute :bluesup:`update`
 ====================================
 
 
-In SmartHomeNG werden eine Reihe von Standard Attributen unterstützt. Diese sind in der folgenden 
+In SmartHomeNG werden eine Reihe von Standard Attributen unterstützt. Diese sind in der folgenden
 Liste aufgeführt. Die Bedeutung und Verwendung der Attribute wird auf den folgenden Seiten beschrieben.
 
 Zusätzlich können Plugins eigene Attribute definieren. Die Bedeutung und Verwendung dieser zusätzlichen
@@ -66,6 +66,9 @@ plugin-spezifischen Attribute ist in der Dokumentation des jeweiligen Plugins na
 |                 | später kommenden graphischen Konfigurationsoberfläche angezeigt und gepflegt |
 |                 | werden.                                                                      |
 +-----------------+------------------------------------------------------------------------------+
+| struct          | Mit dem Attribut struct kann ein Template für eine Itemstruktur statt eines  |
+|                 | einzelnen Items in den Item-Tree eingefügt werden. **Ab SmartHomeNG v1.6**   |
++-----------------+------------------------------------------------------------------------------+
 | threshold       | legt einen Schwellwert oder einen Schwellwertbereich fest., z.B. 21.4|25.0   |
 |                 | der eine Logik triggert, wenn der Wert höher als 25.0 or niedriger als 21.4  |
 |                 | ist. Es kann auch ein einzelner Wert notiert werden                          |
@@ -85,5 +88,6 @@ plugin-spezifischen Attribute ist in der Dokumentation des jeweiligen Plugins na
    items_standard_attribute_enforce_updates
    items_standard_attribute_eval
    items_standard_attribute_on_update
+   items_standard_attribute_struct
    items_standard_attribute_type
 
