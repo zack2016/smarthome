@@ -16,7 +16,7 @@ The following sample configuration file defines four logic scripts for use by Sm
   The attribute ``crontab: init`` tells SmartHomeNG to start the script just after
   SmartHomeNG has started.
 * The second logic script named ``Hourly`` resides in ``logics/time.py``
-  and the attribute ``cycle: 60`` tells SmartHomeNG to call (execute) the script every 60 minutes.
+  and the attribute ``cycle: 3600`` tells SmartHomeNG to call (execute) the script every 3600 seconds (one hour).
 * The third logic script named ``Gate`` resides in ``logics/gate.py`` and the attribute
   ``watch_item: gate.alarm`` tells SmartHomeNG to call the script when item
   value of gate.alarm changed.
@@ -32,7 +32,7 @@ The following sample configuration file defines four logic scripts for use by Sm
 
    Hourly:
        filename: time.py
-       cycle: 60
+       cycle: 3600
 
    Gate:
        filename: gate.py
@@ -94,8 +94,15 @@ Optional use a parameter
    cycle: 60 = 100
 
 
-This triggers the logic every 60 minutes and passes the value 100 to the logic.
+This triggers the logic every 60 seconds and passes the value 100 to the logic.
 The object ``trigger['value']`` can be queried and will here result in '100'
+
+**Since SmartHomeNG v1.3** there are extended configuration options.
+
+The value for the ``cycle duration`` can be provided as follows:
+
+1. a number defining the duration in seconds, can be optionally followed by an ``s``
+2. a number follows by an ``m`` to define the duration in minutes
 
 crontab
 ~~~~~~~

@@ -35,10 +35,8 @@ erweitert.
 
 Der Wert für ``dauer`` kann auf folgende Weise angegeben werden:
 
-1. eine Zahl, die die Anzahl an Sekunden angibt
+1. eine Zahl, die die Anzahl an Sekunden angibt, optional kann ein ``s`` angehängt werden.
 2. eine Zahl gefolgt von ``m``, gibt die Anzahl an Minuten an
-3. eine Zahl gefolgt von ``s``, gibt die Anzahl an Sekunden an
-   (alternative Schreibweise zur Variante 1)
 
 Außerdem kann ab SmartHomeNG v1.3 der `Datentyp der
 Wertzuweisung <#datentyp-der-wertzuweisung>`__ beeinflusst werden.
