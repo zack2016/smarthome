@@ -179,8 +179,9 @@ class Items():
         # Read in item structs from ../etc/struct.yaml
         struct_filename = os.path.join(etc_dir, 'struct.yaml')
         struct_definitions = shyaml.yaml_load(os.path.join(etc_dir, 'struct.yaml'), ordered=True)
-        for key in struct_definitions:
-            self.add_struct_definition('', key, struct_definitions[key])
+        if struct_definitions is not None:
+            for key in struct_definitions:
+                self.add_struct_definition('', key, struct_definitions[key])
         # for Testing: Save structure of joined item structs
         logger.warning("load_itemdefinitions: For testing the joined item structs are saved to {}".format(os.path.join(etc_dir, 'structs_joined.yaml')))
         shyaml.yaml_save(os.path.join(etc_dir, 'structs_joined.yaml'), self._struct_definitions)

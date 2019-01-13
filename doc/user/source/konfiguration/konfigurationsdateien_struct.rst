@@ -94,4 +94,4 @@ zumindest in Teilen aus einem Template stammt.
 
 Der Name, der im Template bereits angegeben war, wird durch die Angabe au der Datei items/item.yaml ersetzt.
 
-Das **individual_item** wir in die Struktur des Templates eingefügt.
+Das **individual_item** wird in die Struktur des Templates eingefügt.
