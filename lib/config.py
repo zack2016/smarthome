@@ -256,13 +256,14 @@ def merge(source, destination):
 # Handling of structs while loading item tree from yaml files
 #
 
-#def nested_get(input_dict, nested_key):
-#    internal_dict_value = input_dict
-#    for k in nested_key:
-#        internal_dict_value = internal_dict_value.get(k, None)
-#        if internal_dict_value is None:
-#            return None
-#    return internal_dict_value
+def nested_get(input_dict, path):
+    internal_dict_value = input_dict
+    nested_key = path.split('.')
+    for k in nested_key:
+        internal_dict_value = internal_dict_value.get(k, None)
+        if internal_dict_value is None:
+            return None
+    return internal_dict_value
 
 
 def nested_put(output_dict, path, value):
@@ -287,11 +288,13 @@ def nested_put(output_dict, path, value):
     return
 
 
-def search_for_struct_in_items(items, template, struct_dict, parent=''):
+def search_for_struct_in_items(items, template, struct_dict, config, nestlevel=0, parent=''):
     '''
     Test if the loaded file contains items with 'struct' attribute.
 
     This function is called before merging the loaded file into the item tree
+
+    :param config: OrderedDict tree, into which the configuration should be merged
 
     :return:
     '''
@@ -300,7 +303,13 @@ def search_for_struct_in_items(items, template, struct_dict, parent=''):
     for key in items:
         value = items[key]
         if key == 'struct':
-            add_struct_to_template(parent, value, template, struct_dict)
+            struct_names = value
+            if isinstance(struct_names, str):
+                struct_names = [struct_names]
+            for struct_name in struct_names:
+                add_struct_to_template(parent, struct_name, template, struct_dict, items.get('instance', ''))
+                if template != {}:
+                    config = merge(template, config)
             result = True
         else:
             if isinstance(value, collections.OrderedDict):
@@ -309,22 +318,48 @@ def search_for_struct_in_items(items, template, struct_dict, parent=''):
                     path = key
                 else:
                     path = parent+'.'+key
-                if search_for_struct_in_items(value, template, struct_dict, parent=path):
+                if search_for_struct_in_items(value, template, struct_dict, config, nestlevel+1, parent=path):
                     result = True
 
+#        if nestlevel == 0:
+#            if template != {}:
+#                config = merge(template, config)
     return result
 
 
-def add_struct_to_template(path, struct_name, template, struct_dict):
+def set_attr_for_subtree(subtree, attr, value, indent=0):
+    '''
+
+    :param subtree: dict (subtree) to operate on
+    :param attr: Attribute to set for every item
+    :param value: Value to set the attribute to
+    :param indent: indent level (only for debug-logging)
+
+    :return:
+    '''
+    for k, v in subtree.items():
+        if isinstance(v, dict):
+            v[attr] = value
+            spc = " " * 2 * indent
+            logger.debug("set_attr_for_subtree:{} node: {} => {}".format(spc, k, v))
+            set_attr_for_subtree(v, attr, value, indent+1)
+    return
+
+
+def add_struct_to_template(path, struct_name, template, struct_dict, instance):
     '''
     Add the referenced struct to the items_template subtree
 
-    :param path:
-    :param struct_name:
-    :param template:
+    :param path: Path of the item which references a struct (template)
+    :param struct_name: Name of the to use for the item
+    :param template: Template dict to be merged into the item tree
+    :param struct_dict: struct to be inserted
+    :param instance: For multi instance plugins: instance for which the items work (is derived from item with struct attribute)
+
     :return:
     '''
     logger.info("add_struct_to_template: 'struct' '{}' reference found in item '{}'".format(struct_name, path))
+
     struct = struct_dict.get(struct_name, None)
     if struct is None:
         nf = collections.OrderedDict()
@@ -334,6 +369,11 @@ def add_struct_to_template(path, struct_name, template, struct_dict):
         logger.warning("add_struct_to_template: 'struct' definition for '{}' not found".format(struct_name))
     else:
         nested_put(template, path, copy.deepcopy(struct))
+        if instance != '':
+            # add instance to items added by template struct
+            subtree = nested_get(template, path)
+            logger.info("add_struct_to_template: Adding 'instance: {}' to template for subtree '{}'".format(instance, path))
+            set_attr_for_subtree(subtree, 'instance', instance)
         logger.debug("add_struct_to_template: struct_dict = {}".format(struct_dict))
 
     return
@@ -347,7 +387,7 @@ def parse_yaml(filename, config=None, addfilenames=False, parseitems=False, stru
     :param config: Optional OrderedDict tree, into which the configuration should be merged
     :param addfilenames: x
     :param parseitems: x
-    :param struct_dict: dictionry with stuct definitions (templates) for reading item tree
+    :param struct_dict: dictionary with stuct definitions (templates) for reading item tree
     :type filename: str
     :type config: bool
     :type addfilenames: bool
@@ -402,16 +442,10 @@ def parse_yaml(filename, config=None, addfilenames=False, parseitems=False, stru
             # test if file contains 'struct' attribute
             items_template = collections.OrderedDict()
             logger.debug("parse_yaml: Checking if file {} contains 'struct' attribute".format(os.path.basename(filename)))
-            if search_for_struct_in_items(items, items_template, struct_dict):
-                # logger.info("parse_yaml: 'struct' found in file '{}'".format(filename))
-                # logger.info("parse_yaml: items = '{}'".format(items))
-                # logger.info("parse_yaml: items_template = '{}'".format(items_template))
-
-                # For testing: shyaml.yaml_save('/usr/local/shng_dev/etc/items_template.yaml', items_template)
-                # logger.info("parse_yaml: /usr/local/shng_dev/etc/items_template.yaml saved")
-                if items_template != {}:
-                    config = merge(items_template, config)
-                    pass
+            if search_for_struct_in_items(items, items_template, struct_dict, config):
+                pass
+#                if items_template != {}:
+#                    config = merge(items_template, config)
 
         if addfilenames:
             logger.debug("parse_yaml: Add filename = {} to items".format(os.path.basename(filename)))
