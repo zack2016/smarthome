@@ -52,25 +52,60 @@ Um nun die ganzen Items für die Wettervorhersage anzulegen, muss nur noch für 
 **struct** gesetzt werden:
 
 .. code-block:: yaml
+    :caption: items/item.yaml
 
-    aussen:
-        mein_wetter:
+    outside:
+        my_weather:
             struct: darksky.weather
 
 
 Wenn das Plugin darksky konfiguriert ist, kann man in der Administrationsoberfläche die gesamten Items, die zum Wetterbericht
 gehören, sehen.
 
+Das Attribut **struct** kann dabei ein String oder eine Liste von Strings sein. Wenn eine Liste angegeben wird, werden
+die Template Strukturen in der Reihenfolge angewendet, in der sie in der Liste angegeben wurden.
+
+
+Multi-Instance Unterstützung
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Wenn mehrere Instanzen eines Plugins verwendet werden, so muss (wie zu erwarten) bei dem Item welches die **struct**
+referenziert, das Attribute **instance** angegeben werden.
+
+
+.. code-block:: yaml
+    :caption: items/item.yaml
+
+    ...:
+        weather_home:
+            struct: darksky.weather
+            instance: home
+
+        weather_summer_residence:
+            struct: darksky.weather
+            instance: summer_residence
+
+
+Diese Angabe (**instance: \<instance>**) wird dann auf alle Items übertragen, die durch das Template hinzugefügt wurden.
+Das kann man auch in der Administrationsoberfläche sehen.
+
+.. note:
+
+    Wenn man eigene Items in den Teilbaum der durch das Template hinzugefügt wurde einfügen will, muss man für diese selbst
+    hinzugefügten Items natürlich das Attribut **instance** angeben.
+
+
 
 Selbst definierte Item-Strukturen
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Zusätzlich zu den Item-Strukturen, die Plugins als Template mitbringen, können eigene Strukturen angelegt werden. Diese
-Strukturen werden in der Konfigurationdatei **../etc/struct.yaml** abgelegt werden.
+Strukturen werden in der Konfigurationdatei **../etc/struct.yaml** abgelegt werden. (Siehe Konfigurationsdateien/struct)
 
 Diese Template werden mit dem Namen der Struktur ohne vorrangestellten Plugin-Namen angegeben:
 
 .. code-block:: yaml
+    :caption: items/item.yaml
 
     komplexes_item:
         struct: meine_struktur

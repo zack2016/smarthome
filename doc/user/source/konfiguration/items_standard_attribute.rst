@@ -66,8 +66,11 @@ plugin-spezifischen Attribute ist in der Dokumentation des jeweiligen Plugins na
 |                 | später kommenden graphischen Konfigurationsoberfläche angezeigt und gepflegt |
 |                 | werden.                                                                      |
 +-----------------+------------------------------------------------------------------------------+
-| struct          | Mit dem Attribut struct kann ein Template für eine Itemstruktur statt eines  |
-|                 | einzelnen Items in den Item-Tree eingefügt werden. **Ab SmartHomeNG v1.6**   |
+| struct          | Mit dem Attribut **struct** kann ein Template für eine Itemstruktur statt    |
+|                 | eines einzelnen Items in den Item-Tree eingefügt werden. **struct** kann ein |
+|                 | String oder eine Liste von Strings sein. Wenn eine Liste angegeben wird,     |
+|                 | werden die Template Strukturen in der Reihenfolge angewendet, in der sie in  |
+|                 | der Liste angegeben wurden. **Ab SmartHomeNG v1.6**                          |
 +-----------------+------------------------------------------------------------------------------+
 | threshold       | legt einen Schwellwert oder einen Schwellwertbereich fest., z.B. 21.4|25.0   |
 |                 | der eine Logik triggert, wenn der Wert höher als 25.0 or niedriger als 21.4  |

@@ -49,7 +49,7 @@ Strukturen (**my_struct_01** und **my_struct_02**):
 Wenn jetzt in der Item Definition diese Strukturen referenziert werden:
 
 .. code-block:: yaml
-    :caption: items/item.yaml
+    :caption: items/items.yaml
 
     my_tree:
         my_complex_data:
@@ -65,7 +65,7 @@ Wenn jetzt in der Item Definition diese Strukturen referenziert werden:
 entsteht im Item-Tree die selbe Struktur, als wenn man folgendes direkt in die item.yaml eingetragen hätte:
 
 .. code-block:: yaml
-    :caption: items/item.yaml
+    :caption: items/items.yaml
 
     my_tree:
         name: Geänderter Name für meine komplexen Daten
