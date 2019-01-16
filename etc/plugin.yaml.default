@@ -76,7 +76,7 @@ websocket:
 #     - port:3306
 
 # sqlite:
-#     plugin_name: sqlite
+#     plugin_name: sqlite_visu2_8
 
 # apcups:
 #     plugin_name: apcups
