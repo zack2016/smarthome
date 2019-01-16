@@ -1,6 +1,6 @@
 
 .. index:: Items; Standard-Attribute
-.. index:: Standard-Attribute
+.. index:: Standard-Attribute; Übersicht
 
 .. index:: Standard-Attribute; cache
 .. index:: cache
