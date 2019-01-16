@@ -1,3 +1,6 @@
+.. index:: Standard-Attribute; autotimer
+.. index:: autotimer
+
 *autotimer*
 ===========
 

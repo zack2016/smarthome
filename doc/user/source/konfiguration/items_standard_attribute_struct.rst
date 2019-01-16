@@ -1,8 +1,10 @@
+.. index:: Standard-Attribute; struct
+.. index:: struct
+
 .. index:: Items; Item-Struktur Template
 .. index:: Items; struct
 .. index:: Items; Template
 .. index:: Item-Struktur Template
-.. index:: struct
 .. index:: Template
 
 .. role:: bluesup

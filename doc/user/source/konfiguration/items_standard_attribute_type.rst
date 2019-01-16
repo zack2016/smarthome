@@ -1,10 +1,13 @@
+.. index:: Standard-Attribute; type
+.. index:: type
+
 .. index:: Items; Datentypen
 .. index:: Datentypen
 
 `type`
 ------
 
-Das Attribut **type** legt den Datentyp des Items fest. Dadurch wird bestimmt, was für Daten in 
+Das Attribut **type** legt den Datentyp des Items fest. Dadurch wird bestimmt, was für Daten in
 dem Item gespeichert werden können und wie das Item verwendet werden kann.
 
 Folgende mögliche Datentypen sind für Items definiert:

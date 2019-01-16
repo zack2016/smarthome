@@ -2,7 +2,7 @@
 #
 # Das Skript checkt dazu den Core und die Plugins aus und baut die Dokumentation
 #
-# Das neu erzeugte Verzeichnis kann gelöscht werden, nachdem die Doku auf 
+# Das neu erzeugte Verzeichnis kann gelöscht werden, nachdem die Doku auf
 # den Webserver kopiert wurde
 #
 
@@ -16,7 +16,7 @@ if [ "$1" == "-h" ]; then
   echo   -f  -  Github Repos erneut auschecken \(auch wenn bereits lokale Clones vorhanden sind\)
   echo   -u  -  Nur die Anwender Dokumentation erzeugen
   echo   -d  -  Nur die Entwickler Dokumentation erzeugen
-  echo   -m  -  Die Dokumentation aus dem master Branch bauen (statt aus dem develop Branch)
+  echo   -m  -  Die Dokumentation aus dem master Branch bauen \(statt aus dem develop Branch)
   echo
   exit
 fi
@@ -111,7 +111,7 @@ fi
 echo
 echo Während des Laufes erfolgt die Ausgabe einer Reihe von Warnungen. Das ist
 echo normal. Es wurden markdown \(.md\) Dateien gefunden, die bewusst nicht in die
-echo Dokumentation aufgenommen wurden. Darauf weisen diese Warnungen hin. 
+echo Dokumentation aufgenommen wurden. Darauf weisen diese Warnungen hin.
 
 echo
 read -rsp $'Um fortzufahren ENTER drücken, zum Abbruch ^C drücken...\n'
@@ -203,7 +203,7 @@ if [ "${KEEP_REPO,,}" != "true" ]; then
   echo
   echo Zur Veröffentlichung der Doku \(Branch $DESTBRANCH\):
   echo
-  echo   Bitte jetzt noch den Inhalt des Verzeichnisses \'$DIR/html\' 
+  echo   Bitte jetzt noch den Inhalt des Verzeichnisses \'$DIR/html\'
   echo   auf den webserver www.smarthomeNG.de in das Verzeichnis /dev kopieren
   echo
 fi

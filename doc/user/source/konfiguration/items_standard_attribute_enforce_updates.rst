@@ -1,6 +1,8 @@
 
 .. index:: Items; enforce_updates
+.. index:: Standard-Attribute; enforce_updates
 .. index:: enforce_updates
+
 
 .. role:: bluesup
 

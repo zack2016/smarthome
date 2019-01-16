@@ -1,3 +1,6 @@
+.. index:: Standard-Attribute; cycle
+.. index:: cycle
+
 cycle
 =====
 

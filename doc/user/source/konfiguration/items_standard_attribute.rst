@@ -1,6 +1,22 @@
 
-.. index:: Items; Standardattribute
-.. index:: Standardattribute
+.. index:: Items; Standard-Attribute
+.. index:: Standard-Attribute
+
+.. index:: Standard-Attribute; cache
+.. index:: cache
+.. index:: Standard-Attribute; initial_value
+.. index:: initial_value
+.. index:: Standard-Attribute; value
+.. index:: value
+.. index:: Standard-Attribute; log_change
+.. index:: log_change
+.. index:: Standard-Attribute; name
+.. index:: name
+.. index:: Standard-Attribute; remark
+.. index:: remark
+.. index:: Standard-Attribute; threshold
+.. index:: threshold
+
 
 .. role:: bluesup
 
