@@ -209,5 +209,5 @@ class LogicsController(RESTResource):
 
         newlogics = sorted(self.logic_findnew(logics_list), key=lambda k: k['name'])
         logics_sorted = sorted(logics_list, key=lambda k: k['name'])
-        self.logics_data = {'new_logices': newlogics, 'logics': logics_sorted}
+        self.logics_data = {'new_logics': newlogics, 'logics': logics_sorted}
         return json.dumps(self.logics_data)
