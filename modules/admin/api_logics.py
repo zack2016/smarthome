@@ -207,7 +207,7 @@ class LogicsController(RESTResource):
                     str(logic['name']), str(logic['enabled']), str(logic['logictype']), str(logic['filename']),
                     str(logic['userlogic']), str(logic['watch_item'])))
 
-        newlogics = sorted(self.logic_findnew(logics_list), key=lambda k: k['name'])
+        logics_new = sorted(self.logic_findnew(logics_list), key=lambda k: k['name'])
         logics_sorted = sorted(logics_list, key=lambda k: k['name'])
-        self.logics_data = {'new_logics': newlogics, 'logics': logics_sorted}
+        self.logics_data = {'logics_new': logics_new, 'logics': logics_sorted}
         return json.dumps(self.logics_data)
