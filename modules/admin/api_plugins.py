@@ -39,8 +39,8 @@ from .rest import RESTResource
 
 class PluginsController(RESTResource):
 
-    def __init__(self, sh):
-        self._sh = sh
+    def __init__(self, module):
+        self._sh = module._sh
         self.base_dir = self._sh.get_basedir()
         self.plugins_dir = os.path.join(self.base_dir, 'plugins')
         self.logger = logging.getLogger(__name__)
@@ -85,8 +85,8 @@ class PluginsController(RESTResource):
 
 class PluginsInstalledController(RESTResource):
 
-    def __init__(self, sh):
-        self._sh = sh
+    def __init__(self, module):
+        self._sh = module._sh
         self.base_dir = self._sh.get_basedir()
         self.plugins_dir = os.path.join(self.base_dir, 'plugins')
         self.logger = logging.getLogger(__name__)
@@ -134,8 +134,8 @@ class PluginsInstalledController(RESTResource):
 
 class PluginsConfigController(RESTResource):
 
-    def __init__(self, sh):
-        self._sh = sh
+    def __init__(self, module):
+        self._sh = module._sh
         self.base_dir = self._sh.get_basedir()
         self.plugins_dir = os.path.join(self.base_dir, 'plugins')
         self.logger = logging.getLogger(__name__)
@@ -242,8 +242,8 @@ class PluginsConfigController(RESTResource):
 
 class PluginsInfoController(RESTResource):
 
-    def __init__(self, sh, module, shng_url_root):
-        self._sh = sh
+    def __init__(self, module, shng_url_root):
+        self._sh = module._sh
         self.module = module
         self.shng_url_root = shng_url_root
 

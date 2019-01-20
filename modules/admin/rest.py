@@ -22,6 +22,7 @@
 #########################################################################
 
 
+import json
 import cherrypy
 import logging
 import jwt
@@ -147,30 +148,53 @@ class RESTResource:
         """
         test existance of jwt  (is to be moved to rest.py)
 
-        :return:
+        :return: tuple
         """
+        error_text = 'Unauthorized'
         self.logger.debug("REST_test_jwt_token(): cherrypy.request.headers = {}".format(cherrypy.request.headers))
         token = cherrypy.request.headers.get('Authorization', '')
         decoded = {}
-        self.logger.debug("REST_test_jwt_token(): raw token = {}".format(token))
+        # self.logger.debug("REST_test_jwt_token(): raw token = {}".format(token))
         if token != '':
             if token.startswith('Bearer '):
                 token = token[len('Bearer '):]
 
-        self.logger.debug("REST_test_jwt_token(): jwt token = {}".format(token))
+        # self.logger.debug("REST_test_jwt_token(): jwt token = {}".format(token))
         if self.jwt_secret and (len(token) > 0):
             try:
                 decoded = jwt.decode(token, self.jwt_secret, verify=True, algorithms='HS256')
             except Exception as e:
-                self.logger.info("REST_test_jwt_token(): Exception = {}".format(e))
+                self.logger.debug("REST_test_jwt_token(): Exception = {}".format(e))
+                se = format(e)
+                if se.endswith('expired'):
+                    error_text = format(e)
                 token = ''
                 decoded = {}
-        self.logger.debug("REST_test_jwt_token(): decoded token = {}".format(decoded))
+        self.logger.debug("REST_test_jwt_token(): decoded jwt token = {}".format(decoded))
 
         if len(token) == 0 or decoded == {}:
-            return False
+            return (False, error_text)
 
-        return True
+        return (True, '')
+
+    def REST_dispatch_execute(self, m, method, resource, **params):
+        if m and getattr(m, "expose_resource"):
+            try:
+                auth_needed = getattr(m, "authentication_needed")
+            except:
+                auth_needed = False
+                self.logger.info("REST_dispatch: Need for Authentication can not be read for m = {}".format(m))
+            self.logger.debug("REST_dispatch: {}Authentication needed for {} ({})".format(('' if auth_needed else 'No '), method, str(m).split()[2]))
+            if auth_needed:
+#                self.logger.info("REST_dispatch: Authentication needed for {} ({})".format(method, str(m).split()[2]))
+                token_valid, error_text = self.REST_test_jwt_token()
+                if not token_valid:
+                    self.logger.warning("REST_dispatch: Authentication failed for {} ({})".format(method, str(m).split()[2]))
+                    response = {'result': 'error', 'description': error_text}
+                    return json.dumps(response)
+
+            return m(resource, **params)
+        return None
 
     def REST_dispatch(self, resource, **params):
         # if this gets called, we assume that default has already
@@ -181,13 +205,13 @@ class RESTResource:
             try:
                 m = getattr(self,self.REST_map[method])
             except:
-                self.logger.info("REST_dispatch: Unsupported method  = {} for resource '{}'".format(method, resource))
+                self.logger.info("REST_dispatch *1: Unsupported method  = {} for resource '{}'".format(method, resource))
                 raise cherrypy.HTTPError(status=400)
-            try:
-                if m and getattr(m, "expose_resource"):
-                    return m(resource,**params)
-            except:
-                pass
+            result = self.REST_dispatch_execute(m, method, resource, **params)
+            if result != None:
+                return result
+            else:
+                raise cherrypy.HTTPError(status=405)
         else:
             if method in self.REST_defaults:
                 try:
@@ -195,20 +219,11 @@ class RESTResource:
                 except:
                     self.logger.info("REST_dispatch: Unsupported method  = {} for resource '{}'".format(method, resource))
                     raise cherrypy.HTTPError(status=400)
-                try:
-                    if m and getattr(m, "expose_resource"):
-                        try:
-                            auth_needed = getattr(m, "authentication_needed")
-                        except:
-                            auth_needed = False
-                        if auth_needed:
-                            self.logger.info("REST_dispatch: Authentication needed for {} ({})".format(method, str(m).split()[2]))
-                            if not self.REST_test_jwt_token():
-                                self.logger.warning("REST_dispatch: Authentication failed for {} ({})".format(method, str(m).split()[2]))
-                                raise cherrypy.NotFound
-                        return m(resource,**params)
-                except:
-                    pass
+                result = self.REST_dispatch_execute(m, method, resource, **params)
+                if result != None:
+                    return result
+                else:
+                    raise cherrypy.HTTPError(status=405)
 
         raise cherrypy.NotFound
 
@@ -216,10 +231,11 @@ class RESTResource:
     def default(self, *vpath, **params):
         if not vpath:
             try:
-                self.logger.info("RESTResource: default: params = '{}'".format(**params))
+                self.logger.info("RESTResource.default: params = '{}'".format(**params))
             except:
-                self.logger.info("RESTResource: default: params = 'tuple index out of range'")
+                self.logger.info("RESTResource.default: params = 'tuple index out of range'")
             return list(**params)
+        # self.logger.debug("RESTResource.default: vpath = '{}'".format(list(vpath)))
         # Make a copy of vpath in a list
         vpath = list(vpath)
         atom = vpath.pop(0)

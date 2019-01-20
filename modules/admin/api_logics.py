@@ -38,12 +38,13 @@ class LogicsController(RESTResource):
     logics = None
     _logicname_prefix = 'logics.'  # prefix for scheduler names
 
-    def __init__(self, sh):
-        self._sh = sh
+    def __init__(self, module):
+        self._sh = module._sh
+        self.module = module
         self.base_dir = self._sh.get_basedir()
-        self.logics_dir = os.path.join(self.base_dir, 'logics')
         self.logger = logging.getLogger(__name__)
 
+        self.logics_dir = os.path.join(self.base_dir, 'logics')
         self.logics = Logics.get_instance()
         self.logger.info("__init__ self.logics = {}".format(self.logics))
         self.plugins = Plugins.get_instance()

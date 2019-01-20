@@ -39,8 +39,8 @@ from .rest import RESTResource
 
 class PluginController(RESTResource):
 
-    def __init__(self, sh, jwt_secret=False):
-        self._sh = sh
+    def __init__(self, module, jwt_secret=False):
+        self._sh = module._sh
         self.base_dir = self._sh.get_basedir()
         self.plugins_dir = os.path.join(self.base_dir, 'plugins')
         self.logger = logging.getLogger(__name__)

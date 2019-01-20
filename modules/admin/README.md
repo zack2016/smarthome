@@ -5,7 +5,7 @@ This module implements the administration interface for SmartHomeNG.
 
 ## Requirements
 
-This module is running under SmmartHomeNG versions beyond v1.5.1. It requires Python >= 3.4 as well as ... . You can install the libraries (python modules) with:
+This module is running under SmmartHomeNG versions beyond develop version v1.5d. It requires Python >= 3.4 as well as ... . You can install the libraries (python modules) with:
 
 ```
 (sudo apt-get install ...)
@@ -31,24 +31,113 @@ admin:
 
 ## API of module admin
 
-### PLUGINS API
+Im folgenden sind die einzelnen Teile des REST APIs beschrieben, 
+welches das admin Modul zur Verfügung stellt und intern nutzt.
 
-####GET /api/plugins
+Wenn zur Nutzung des einzelen APIs eine Authentifizierung notwendig 
+ist, ist dieses erwähnt.
+
+
+### AUTH API -  Authentification for clients
+
+#### POST /api/auth/
+Authentifiziert den Client bei SmartHomeNG und erhält einen
+Token (JWT) bei erfolgreicher Authentifizierung.
+
+
+### CONFIG API - Get and update information about the core's configuration
+
+#### GET /api/config
+liefert die Konfiguration des Core von SmartHomeNG
+
+#### GET /api/config/\<module (or 'common')>
+liefert die Konfiguration der Modules oder des allgemeinen 
+(common) Teils von SmartHomeNG
+
+#### PUT /api/config/\<module (or 'common')>
+Macht ein Update auf den entsprechenden Teil der Konfiguration
+
+-> authentication_needed = True
+
+
+### LOGICS API - xxx
+
+#### ???
+
+
+### LOGS API - Get information about logs and get log content
+
+#### GET /api/logs
+liefert die Liste der vorhandenen logs
+
+#### GET /api/logs/\<logname>
+liefert den Inhalt einer log-Datei
+
+
+### PLUGINS API - Get information about installed or configured plugins
+
+#### GET /api/plugins
 liefert die Liste der installierten Plugins
 
 #### GET /api/plugins/config
 liefert die gesamte config
 
-#### POST /api/plugins/config/\<neu> 
+
+## PLUGIN API  -  Handle a single plugin configuration
+
+#### POST /api/plugin/config/\<neu> 
 legt eine neue Confic-section Namens ‚\<neu>‘ an
 
-#### PUT /api/plugins/config/\<plgsection>
-Macht ein Update auf section ‚\<plgsection>‘
+-> authentication_needed = True
 
-#### DELETE /api/plugins/config/\<plgsection> 
-Löscht section ‚\<plgsection>‘
+#### PUT /api/plugin/config/\<plgsection>
+Macht ein Update auf die Section ‚\<plgsection>‘
+
+-> authentication_needed = True
+
+#### DELETE /api/plugin/config/\<plgsection> 
+Löscht die Section ‚\<plgsection>‘
+
+-> authentication_needed = True
 
 
+## SCENES API  -  Get information about configured scenes
+
+####GET /api/scenes
+liefert die Liste der konfigurierten Szenen
+
+
+## SCHEDULER API  -  Get information about configured schedulers
+
+####GET /api/sched
+liefert die Liste der konfigurierten Scheduler
+
+
+## SCHEDULER API  -  Get information about the SmartHomeNG server configuration
+
+####GET /api/serverinfo
+liefert Informationen über die Konfiguration des SmartHomeNG Servers
+
+
+## THREADS API  -  Get information about running threads
+
+####GET /api/threads
+liefert die Liste der laufenden Threads
+
+
+## STATUS API  -  Get running status of the SmartHomeNG server instance
+
+####GET /api/status
+liefert den aktuellen Status von SmartHomeNG
+
+
+## RESTART API  -  Restart the SmartHomeNG server instance
+
+####GET /api/restart
+Startet die SmartHomeNG Server Instanz neu
+
+
+##
 
 
 ### Test if module admin is loaded

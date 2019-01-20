@@ -25,7 +25,6 @@ import logging
 import json
 import cherrypy
 
-# import jwt
 
 from lib.module import Modules
 from lib.shtime import Shtime
@@ -36,8 +35,8 @@ from .plugindata import PluginData
 
 from .rest import RESTResource
 
-from .api_srvinfo import *
 from .api_auth import *
+from .api_server import *
 from .api_config import *
 from .api_sched import *
 from .api_logics import *
@@ -141,6 +140,7 @@ class Admin():
                 'error_page.404': self._error_page,
                 'error_page.400': self._error_page,
                 'error_page.401': self._error_page,
+                'error_page.405': self._error_page,
                 'error_page.411': self._error_page,
                 'error_page.500': self._error_page,
                 # 'tools.auth_basic.on': False,
@@ -350,61 +350,27 @@ class WebApi(RESTResource):
         # ------------------------------
         # ---  Add REST controllers  ---
         # ------------------------------
-        self.serverinfo = ServerinfoController(self._sh, self.module)
-        self.config = ConfigController(self._sh)
-        self.schedulers = SchedulersController(self._sh)
-        self.logics = LogicsController(self._sh)
-        self.plugins = PluginsController(self._sh)
-        self.plugins.installed = PluginsInstalledController(self._sh)
-        # self.pluginsinstalled = PluginsInstalledController(self._sh)
-        self.plugins.config = PluginsConfigController(self._sh)
-        self.plugins.info = PluginsInfoController(self._sh, self.module, self.shng_url_root)
-        self.plugin = PluginController(self._sh, self.jwt_secret)
-        self.scenes = ScenesController(self._sh)
-        self.threads = ThreadsController(self._sh)
-        self.logs = LogsController(self._sh, self.jwt_secret)
-
-        self.status = StatusController(self._sh)
-        self.restart = RestartController(self._sh)
+        self.server = ServerController(self.module)
         self.authenticate = AuthController(self.module, self._user_dict, self.send_hash, self.jwt_secret)
+
+        self.config = ConfigController(self.module)
+        self.logs = LogsController(self.module)
+        self.scenes = ScenesController(self.module)
+        self.schedulers = SchedulersController(self.module)
+        self.threads = ThreadsController(self.module)
+
+        self.logics = LogicsController(self.module)
+        self.plugins = PluginsController(self.module)
+        self.plugins.installed = PluginsInstalledController(self.module)
+        self.plugins.config = PluginsConfigController(self.module)
+        self.plugins.info = PluginsInfoController(self.module, self.shng_url_root)
+        self.plugin = PluginController(self.module, self.jwt_secret)
+
         return
 
 
     @cherrypy.expose(['home', ''])
     def index(self):
         return "Give SmartHomeNG a REST."
-
-
-class StatusController(RESTResource):
-
-    def __init__(self, sh):
-        self._sh = sh
-        self.base_dir = self._sh.get_basedir()
-
-    @cherrypy.expose
-    def index(self, param=False):
-        response = {}
-        try:
-            response = self._sh.shng_status
-        except:
-            response = {'code': -1, 'text': 'unknown'}
-
-        return json.dumps(response)
-    index.expose_resource = True
-
-
-class RestartController(RESTResource):
-
-    def __init__(self, sh):
-        self._sh = sh
-        self.base_dir = self._sh.get_basedir()
-
-    @cherrypy.expose
-    def index(self, param=False):
-        self._sh.restart('admin interface')
-        response = {'result': 'ok'}
-
-        return json.dumps(response)
-    index.expose_resource = True
 
 

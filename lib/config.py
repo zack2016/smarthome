@@ -300,6 +300,7 @@ def search_for_struct_in_items(items, template, struct_dict, config, nestlevel=0
     '''
 
     result = False
+    template = collections.OrderedDict()
     for key in items:
         value = items[key]
         if key == 'struct':
@@ -310,6 +311,7 @@ def search_for_struct_in_items(items, template, struct_dict, config, nestlevel=0
                 add_struct_to_template(parent, struct_name, template, struct_dict, items.get('instance', ''))
                 if template != {}:
                     config = merge(template, config)
+                    template = collections.OrderedDict()
             result = True
         else:
             if isinstance(value, collections.OrderedDict):
@@ -362,12 +364,14 @@ def add_struct_to_template(path, struct_name, template, struct_dict, instance):
 
     struct = struct_dict.get(struct_name, None)
     if struct is None:
+        # no struct/template with this name
         nf = collections.OrderedDict()
         nf['name'] = "ERROR: struct '" + struct_name+"' not found!"
         nf['value'] = nf['name']
         nested_put(template, path, nf)
         logger.warning("add_struct_to_template: 'struct' definition for '{}' not found".format(struct_name))
     else:
+        # add struct/template to temporary item(template) tree
         nested_put(template, path, copy.deepcopy(struct))
         if instance != '':
             # add instance to items added by template struct
@@ -440,8 +444,8 @@ def parse_yaml(filename, config=None, addfilenames=False, parseitems=False, stru
 
         if parseitems:
             # test if file contains 'struct' attribute
-            items_template = collections.OrderedDict()
             logger.debug("parse_yaml: Checking if file {} contains 'struct' attribute".format(os.path.basename(filename)))
+            items_template = collections.OrderedDict()
             if search_for_struct_in_items(items, items_template, struct_dict, config):
                 pass
 #                if items_template != {}:

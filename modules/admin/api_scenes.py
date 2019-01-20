@@ -32,8 +32,9 @@ from .rest import RESTResource
 
 class ScenesController(RESTResource):
 
-    def __init__(self, sh):
-        self._sh = sh
+    def __init__(self, module):
+        self._sh = module._sh
+        self.module = module
         self.base_dir = self._sh.get_basedir()
         self.logger = logging.getLogger(__name__)
 
@@ -42,11 +43,10 @@ class ScenesController(RESTResource):
         return
 
 
-
-    @cherrypy.expose
-    def index(self, scene_name=False):
-        self.logger.info("ScenesController(): index")
-
+    # ======================================================================
+    #  /api/scenes
+    #
+    def root(self):
         if self.items == None:
             self.items = Items.get_instance()
 
@@ -55,7 +55,9 @@ class ScenesController(RESTResource):
         if callable(get_param_func):
             supported = True
             self.scenes = Scenes.get_instance()
-            scene_list = self.scenes.get_loaded_scenes()
+            scene_list = []
+            if self.scenes is not None:
+                scene_list = self.scenes.get_loaded_scenes()
 
             disp_scene_list = []
             for scene in scene_list:
@@ -81,12 +83,55 @@ class ScenesController(RESTResource):
 
                     disp_action_list.append(action_dict)
                 scene_dict['values'] = disp_action_list
-                self.logger.info("scenes_html: disp_action_list for scene {} = {}".format(scene, disp_action_list))
+                self.logger.debug("scenes_html: disp_action_list for scene {} = {}".format(scene, disp_action_list))
 
                 disp_scene_list.append(scene_dict)
         else:
             supported = False
         return json.dumps(disp_scene_list)
+
+
+    # ======================================================================
+    #  Handling of http REST requests
+    #
+    @cherrypy.expose
+    def index(self, id=''):
+        """
+        Handle GET requests
+        """
+
+        if id == '':
+            # Enforce authentication for root of API
+            if getattr(self.index, "authentication_needed"):
+                token_valid, error_text = self.REST_test_jwt_token()
+                if not token_valid:
+                    self.logger.info("ScenesController.index(): {}".format(error_text))
+                    return json.dumps({'result': 'error', 'description': error_text})
+            return self.root()
+        # elif id == 'info':
+        #     return self.info()
+        else:
+            return self.root(id)
+
+        return None
     index.expose_resource = True
+    index.authentication_needed = True
+
+
+    def REST_instantiate(self,param):
+        """
+        instantiate a REST resource based on the id
+
+        this method MUST be overridden in your class. it will be passed
+        the id (from the url fragment) and should return a model object
+        corresponding to the resource.
+
+        if the object doesn't exist, it should return None rather than throwing
+        an error. if this method returns None and it is a PUT request,
+        REST_create() will be called so you can actually create the resource.
+        """
+#        if param in ['info']:
+#            return param
+        return None
 
 

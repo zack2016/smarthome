@@ -33,16 +33,16 @@ from .rest import RESTResource
 
 class LogsController(RESTResource):
 
-    def __init__(self, sh, jwt_secret=False):
-        self._sh = sh
+    def __init__(self, module):
+        self._sh = module._sh
+        self.module = module
         self.base_dir = self._sh.get_basedir()
+        self.logger = logging.getLogger(__name__)
+
         self.etc_dir = self._sh._etc_dir
         self.log_dir = os.path.join(self.base_dir, 'var', 'log')
 
         self.logging_conf = shyaml.yaml_load(os.path.join(self.etc_dir, 'logging.yaml'))
-
-        self.logger = logging.getLogger(__name__)
-        self.jwt_secret = jwt_secret
 
         try:
             roothandler = self.logging_conf['root']['handlers'][0]
@@ -50,6 +50,9 @@ class LogsController(RESTResource):
         except:
             self.root_logname = ''
         self.logger.info("logging_conf: self.root_logname = {}".format(self.root_logname))
+
+        return
+
 
     def get_logs(self):
         """
@@ -99,43 +102,28 @@ class LogsController(RESTResource):
         return logfiles
 
 
-    @cherrypy.expose
-    def index(self, log_name=False):
+    # ======================================================================
+    #  /api/logs
+    #
+    def root(self, log_name=''):
+        """
+        returns information if the root of the REST API is called
 
-        # test existance of jwt  (is to be moved to rest.py)
-        #
-        self.logger.info("LogsController index: cherrypy.request.headers = {}".format(cherrypy.request.headers))
-        token = cherrypy.request.headers.get('Authorization', '')
-        decoded = {}
-        self.logger.info("LogsController (index): jwt token = {}".format(token))
-        if self.jwt_secret:
-            if token != '':
-                if token.startswith('Bearer '):
-                    token = token[len('Bearer '):]
-            try:
-                decoded = jwt.decode(token, self.jwt_secret, verify=True, algorithms='HS256')
-            except Exception as e:
-                self.logger.error("LogsController (index): Exception = {}".format(e))
-                token = ''
-                decoded = {}
-        self.logger.info("LogsController (index): jwt token = {}".format(token))
-        self.logger.info("LogsController (index): decoded token = {}".format(decoded))
-
-
-        if log_name:
+        Note: the root of the REST API is not protected by authentication
+        """
+        if log_name != '':
             # return content of the logfile
             if os.path.isfile(os.path.join(self.log_dir, log_name)):
                 with open(os.path.join(self.log_dir, log_name), 'r') as lf:
                     content = lf.read()
                 return content
-#                return "Logfile " + os.path.join(self.log_dir, log_name) + " found"
 
         # get names of files in log directory
         self.files = sorted(os.listdir(self.log_dir))
         # get names of logs (from filenames enting with '.log')
         logs = self.get_logs()
 
-        if log_name:
+        if log_name != '':
             self.logger.info("LogController() index: log_name = {}".format(log_name))
             # get filenames available for the log
             if log_name in logs:
@@ -146,12 +134,44 @@ class LogsController(RESTResource):
         logs = self.get_logs_with_files()
         self.logger.info("LogController (GET): logfiles = {}".format(logs))
         return json.dumps({'logs':logs, 'default': self.root_logname})
-    index.expose_resource = True
 
-    def REST_instantiate(self, log_name):
+
+    # ======================================================================
+    #  Handling of http REST requests
+    #
+    @cherrypy.expose
+    def index(self, id=''):
+        """
+        Handle GET requests
+        """
+
+        if id == '':
+            if getattr(self.index, "authentication_needed"):
+                # Enforce authentication for root of API
+                token_valid, error_text = self.REST_test_jwt_token()
+                if not token_valid:
+                    self.logger.info("LogsController.index(): {}".format(error_text))
+                    return json.dumps({'result': 'error', 'description': error_text})
+            return self.root()
+        else:
+            return self.root(id)
+
+        return None
+    index.expose_resource = True
+    index.authentication_needed = True
+
+
+    def REST_instantiate(self,param):
         """
         instantiate a REST resource based on the id
-        """
-        return log_name
 
+        this method MUST be overridden in your class. it will be passed
+        the id (from the url fragment) and should return a model object
+        corresponding to the resource.
+
+        if the object doesn't exist, it should return None rather than throwing
+        an error. if this method returns None and it is a PUT request,
+        REST_create() will be called so you can actually create the resource.
+        """
+        return param
 
