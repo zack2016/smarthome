@@ -37,7 +37,7 @@ from .rest import RESTResource
 
 class AuthController(RESTResource):
 
-    def __init__(self, module, user_dict, send_hash, jwt_secret):
+    def __init__(self, module):
         self._sh = module._sh
         self.module = module
         self.base_dir = self._sh.get_basedir()
@@ -46,9 +46,17 @@ class AuthController(RESTResource):
         self.etc_dir = self._sh._etc_dir
         self.modules_dir = os.path.join(self.base_dir, 'modules')
 
-        self._user_dict = user_dict
-        self.send_hash = send_hash
-        self.jwt_secret = jwt_secret
+        #self._user_dict = user_dict
+        self.send_hash = module.send_hash
+        self.jwt_secret = module.jwt_secret
+
+        http_user_dict = self.module.mod_http.get_user_dict()
+        self._user_dict = {}
+        for user in http_user_dict:
+            if http_user_dict[user]['password_hash'] != '':
+                self._user_dict[Utils.create_hash(user + self.send_hash)] = http_user_dict[user]
+
+
         return
 
 

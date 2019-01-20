@@ -71,6 +71,10 @@ class Admin():
 
         self.logger.debug("Module '{}': Parameters = '{}'".format(self._shortname, str(self._parameters)))
 
+        # for authentication
+        self.send_hash = 'shNG0160$'
+        self.jwt_secret = 'SmartHomeNG$0815'
+
         try:
             self.mod_http = Modules.get_instance().get_module(
                 'http')  # try/except to handle running in a core version that does not support modules
@@ -336,22 +340,12 @@ class WebApi(RESTResource):
         self.shng_url_root = shng_url_root
         self.url_root = url_root
 
-        self.send_hash = 'shNG0160$'
-        self.jwt_secret = 'SmartHomeNG$0815'
-
-
-        http_user_dict = self.module.mod_http.get_user_dict()
-
-        self._user_dict = {}
-        for user in http_user_dict:
-            if http_user_dict[user]['password_hash'] != '':
-                self._user_dict[Utils.create_hash(user + self.send_hash)] = http_user_dict[user]
 
         # ------------------------------
         # ---  Add REST controllers  ---
         # ------------------------------
         self.server = ServerController(self.module)
-        self.authenticate = AuthController(self.module, self._user_dict, self.send_hash, self.jwt_secret)
+        self.authenticate = AuthController(self.module)
 
         self.config = ConfigController(self.module)
         self.logs = LogsController(self.module)
