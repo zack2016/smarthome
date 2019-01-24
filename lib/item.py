@@ -158,6 +158,16 @@ class Items():
         return
 
 
+    def return_struct_definitions(self):
+        """
+        Return all loaded structure template definitions
+
+        :return:
+        :rtype: dict
+        """
+        return self._struct_definitions
+
+
     def load_itemdefinitions(self, env_dir, items_dir, etc_dir, plugins_dir):
         """
         Load item definitions

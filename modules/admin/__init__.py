@@ -35,17 +35,20 @@ from .plugindata import PluginData
 
 from .rest import RESTResource
 
-from .api_auth import *
 from .api_server import *
+from .api_auth import *
+
 from .api_config import *
+from .api_items import *
+from .api_logs import *
+from .api_scenes import *
 from .api_sched import *
+from .api_threads import *
+
 from .api_logics import *
 from .api_plugins import *
 from .api_plugin import *
 #from .api_plginst import *
-from .api_scenes import *
-from .api_threads import *
-from .api_logs import *
 
 
 suburl = 'admin'
@@ -348,6 +351,7 @@ class WebApi(RESTResource):
         self.authenticate = AuthController(self.module)
 
         self.config = ConfigController(self.module)
+        self.items = ItemsController(self.module)
         self.logs = LogsController(self.module)
         self.scenes = ScenesController(self.module)
         self.schedulers = SchedulersController(self.module)

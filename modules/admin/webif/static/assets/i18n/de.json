@@ -4,6 +4,8 @@
     "SYSTEM_PROPERTIES": "System Eigenschaften",
     "SERVICES": "Dienste",
     "ITEMS": "Items",
+    "ITEM_TREE": "Item Baum",
+    "ITEM_STRUCTS": "Struktur Templates",
     "LOGICS": "Logiken",
     "SCHEDULERS": "Scheduler",
     "PLUGINS": "Plugins",
@@ -167,7 +169,8 @@
     "ALERT": {
       "NOT NUMERIC": "FEHLER: Der eingegebene Wert ist nicht numerisch!",
       "INVALID SCENE NUMBER": "FEHLER: Szenen Nummern müssen zwischen 0 und 63 liegen!"
-    }
+    },
+    "STRUCT_TEMPLATES": "Item-Struktur Templates"
   },
   "LOGICS": {
     "USERLOGICS": "Nutzerlogiken",
@@ -176,11 +179,18 @@
     "NEXT_EXEC": "Nächste Ausführung",
     "CYCLE": "Cycle",
     "CRONTAB": "Crontab",
-    "WATCH_ITEMS": "Beobachtete Items",
+    "WATCH_ITEMS": "Watch Items",
     "FILENAME": "Dateiname",
     "ACTIONS": "Aktionen",
     "ENABLE": "Aktivieren",
-    "DISABLE": "Deaktivieren"
+    "DISABLE": "Deaktivieren",
+    "TRIGGER": "Auslösen",
+    "UNLOAD": "Entladen",
+    "DELETE": "Löschen",
+    "ADD": "Hinzufügen",
+    "RELOAD": "Neu Laden",
+    "NEW_LOGICS": "Neue Logiken (nicht geladen)",
+    "NO_DATA": "Keine Daten verfügbar"
   },
   "SCHEDULERS": {
     "ITEM SCHEDULERS": "Item Scheduler",

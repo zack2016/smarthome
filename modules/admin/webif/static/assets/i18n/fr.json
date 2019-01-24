@@ -4,6 +4,8 @@
     "SYSTEM_PROPERTIES": "Info système",
     "SERVICES": "Services",
     "ITEMS": "Objets",
+    "ITEM_TREE": "Item Tree",
+    "ITEM_STRUCTS": "Structure Templates",
     "LOGICS": "Logiques",
     "SCHEDULERS": "Planificateur",
     "PLUGINS": "Extensions",
@@ -58,7 +60,14 @@
     "FILENAME": "Nom du fichier",
     "ACTIONS": "Actions",
     "ENABLE": "Activer",
-    "DISABLE": "Désactiver"
+    "DISABLE": "Désactiver",
+    "TRIGGER": "Déclencher",
+    "UNLOAD": "Décharger",
+    "DELETE": "Supprimer",
+    "ADD": "Ajouter",
+    "RELOAD": "Recharger",
+    "NEW_LOGICS": "Nouvelles logiques (non encore chargées)",
+    "NO_DATA": "Pas de données disponibles"
   },
   "SCHEDULERS": {
   },
