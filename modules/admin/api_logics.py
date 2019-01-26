@@ -182,7 +182,7 @@ class LogicsController(RESTResource):
         return newlogics
 
     @cherrypy.expose
-    def index(self):
+    def index(self, logicname=None):
         """
         return an object with type info about all logics
         """
@@ -195,20 +195,78 @@ class LogicsController(RESTResource):
         if self.scheduler is None:
             self.scheduler = Scheduler.get_instance()
 
-        logics_list = []
-        self.logics_initialize()
+        if logicname is None:
+            logics_list = []
+            self.logics_initialize()
 
-        for ln in self.logics.return_loaded_logics():
-            logic = self.fill_logicdict(ln)
-            if logic['logictype'] == 'Blockly':
-                logic['pathname'] = os.path.splitext(logic['pathname'])[0] + '.blockly'
-            logics_list.append(logic)
-            self.logger.debug(
-                "- logic = {}, enabled = {}, , logictype = {}, filename = {}, userlogic = {}, watch_item = {}".format(
-                    str(logic['name']), str(logic['enabled']), str(logic['logictype']), str(logic['filename']),
-                    str(logic['userlogic']), str(logic['watch_item'])))
+            for ln in self.logics.return_loaded_logics():
+                logic = self.fill_logicdict(ln)
+                if logic['logictype'] == 'Blockly':
+                    logic['pathname'] = os.path.splitext(logic['pathname'])[0] + '.blockly'
+                logics_list.append(logic)
+                self.logger.debug(
+                    "- logic = {}, enabled = {}, , logictype = {}, filename = {}, userlogic = {}, watch_item = {}".format(
+                        str(logic['name']), str(logic['enabled']), str(logic['logictype']), str(logic['filename']),
+                        str(logic['userlogic']), str(logic['watch_item'])))
 
-        logics_new = sorted(self.logic_findnew(logics_list), key=lambda k: k['name'])
-        logics_sorted = sorted(logics_list, key=lambda k: k['name'])
-        self.logics_data = {'logics_new': logics_new, 'logics': logics_sorted}
-        return json.dumps(self.logics_data)
+            logics_new = sorted(self.logic_findnew(logics_list), key=lambda k: k['name'])
+            logics_sorted = sorted(logics_list, key=lambda k: k['name'])
+            self.logics_data = {'logics_new': logics_new, 'logics': logics_sorted}
+            return json.dumps(self.logics_data)
+        else:
+            mylogic = self.fill_logicdict(logicname)
+
+            if 'pathname' in mylogic:
+                file_path = mylogic['pathname']
+            else:
+                self.logger.error('No pathname for logic given or pathname cannot be retrieved via logic name!')
+
+            config_list = self.logics.read_config_section(logicname)
+            for config in config_list:
+                if config[0] == 'cycle':
+                    mylogic['cycle'] = config[1]
+                if config[0] == 'crontab':
+                    #                mylogic['crontab'] = config[1]
+                    self.logger.debug("logics_view_html: crontab = >{}<".format(config[1]))
+                    edit_string = self.list_to_editstring(config[1])
+                    mylogic['crontab'] = Utils.strip_quotes_fromlist(edit_string)
+                if config[0] == 'watch_item':
+                    # Attention: watch_items are always stored as a list in logic object
+                    edit_string = self.list_to_editstring(config[1])
+                    mylogic['watch'] = Utils.strip_quotes_fromlist(edit_string)
+                    mylogic['watch_item'] = Utils.strip_quotes_fromlist(edit_string)
+                    mylogic['watch_item_list'] = config[1]
+                if config[0] == 'visu_acl':
+                    mylogic['visu_acl'] = config[1]
+
+            if os.path.splitext(file_path)[1] == '.blockly':
+                mode = 'xml'
+                updates = False
+            else:
+                mode = 'python'
+                updates = self.updates_allowed
+                if not 'userlogic' in mylogic:
+                    mylogic['userlogic'] = True
+                if mylogic['userlogic'] == False:
+                    updates = False
+
+            return mylogic
+
+    index.expose_resource = True
+    index.authentication_needed = True
+
+    def REST_instantiate(self, param):
+        """
+        instantiate a REST resource based on the id
+
+        this method MUST be overridden in your class. it will be passed
+        the id (from the url fragment) and should return a model object
+        corresponding to the resource.
+
+        if the object doesn't exist, it should return None rather than throwing
+        an error. if this method returns None and it is a PUT request,
+        REST_create() will be called so you can actually create the resource.
+        """
+        #        if param in ['info']:
+        #            return param
+        return None
