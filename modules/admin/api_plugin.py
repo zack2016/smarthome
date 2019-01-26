@@ -96,12 +96,14 @@ class PluginController(RESTResource):
 
 
 
-    @cherrypy.expose
-    def index(self, plugin=None):
+    # ======================================================================
+    #  GET /api/plugin
+    #
+    def read(self, id=None):
         """
         return an object with type info about all installed plugins
         """
-        self.logger.info("PluginController(): index('{}')".format(plugin))
+        self.logger.info("PluginController(): index('{}')".format(id))
 
         config_filename = self.get_config_filename()
 
@@ -112,28 +114,30 @@ class PluginController(RESTResource):
         _conf = lib.config.parse_basename(os.path.splitext(config_filename)[0], configtype='plugin')
 
         plg_found = False
-        for confplg in _conf:
-            if (confplg == plugin) or (plugin == None):
-                self.logger.info("PluginController(): index('{}') - confplg {}".format(plugin, confplg))
-                info['config'] = _conf[confplg]
-                plg_found = True
+        if id is not None:
+            for confplg in _conf:
+                if (confplg == id) or (id == None):
+                    self.logger.info("PluginController(): index('{}') - confplg {}".format(id, confplg))
+                    info['config'] = _conf[confplg]
+                    plg_found = True
 
-        if plg_found:
-            return json.dumps(info)
+            if plg_found:
+                return json.dumps(info)
+
         raise cherrypy.NotFound
 
-    index.expose_resource = True
+    read.expose_resource = True
+    read.authentication_needed = True
 
 
-    @cherrypy.expose
-    def add(self, plgsection=None):
-        self.logger.info("PluginController(): add('{}')".format(plgsection))
+    def add(self, id=None):
+        self.logger.info("PluginController(): add('{}')".format(id))
 
         params = self.get_body()
         if params is None:
-            self.logger.warning("PluginController(): add(): section '{}': Bad, add request".format(plgsection))
+            self.logger.warning("PluginController(): add(): section '{}': Bad, add request".format(id))
             raise cherrypy.HTTPError(status=411)
-        self.logger.info("PluginController(): add(): section '{}' = {}".format(plgsection, params))
+        self.logger.info("PluginController(): add(): section '{}' = {}".format(id, params))
 
         config_filename = self.get_config_filename()
 
@@ -143,11 +147,11 @@ class PluginController(RESTResource):
         else:
             response = {}
             plugin_conf = shyaml.yaml_load_roundtrip(config_filename)
-            sect = plugin_conf.get(plgsection)
+            sect = plugin_conf.get(id)
             if sect is not None:
-                response = {'result': 'error', 'description': "Configuration section '{}' already exists".format(plgsection)}
+                response = {'result': 'error', 'description': "Configuration section '{}' already exists".format(id)}
             else:
-                plugin_conf[plgsection] = params.get('config', {})
+                plugin_conf[id] = params.get('config', {})
                 shyaml.yaml_save_roundtrip(config_filename, plugin_conf, False)
                 response = {'result': 'ok'}
 
@@ -158,15 +162,14 @@ class PluginController(RESTResource):
     add.authentication_needed = True
 
 
-    @cherrypy.expose
-    def update(self, plgsection=None):
-        self.logger.info("PluginController(): update('{}')".format(plgsection))
+    def update(self, id=None):
+        self.logger.info("PluginController(): update('{}')".format(id))
 
         params = self.get_body()
         if params is None:
-            self.logger.warning("PluginController(): update(): section '{}': Bad, add request".format(plgsection))
+            self.logger.warning("PluginController(): update(): section '{}': Bad, add request".format(id))
             raise cherrypy.HTTPError(status=411)
-        self.logger.info("PluginController(): update(): section '{}' = {}".format(plgsection, params))
+        self.logger.info("PluginController(): update(): section '{}' = {}".format(id, params))
 
         config_filename = self.get_config_filename()
 
@@ -176,11 +179,11 @@ class PluginController(RESTResource):
         else:
             response = {}
             plugin_conf = shyaml.yaml_load_roundtrip(config_filename)
-            sect = plugin_conf.get(plgsection)
+            sect = plugin_conf.get(id)
             if sect is None:
-                response = {'result': 'error', 'description': "Configuration section '{}' does not exist".format(plgsection)}
+                response = {'result': 'error', 'description': "Configuration section '{}' does not exist".format(id)}
             else:
-                plugin_conf[plgsection] = params.get('config', {})
+                plugin_conf[id] = params.get('config', {})
                 shyaml.yaml_save_roundtrip(config_filename, plugin_conf, False)
                 response = {'result': 'ok'}
 
@@ -192,8 +195,8 @@ class PluginController(RESTResource):
 
 
     @cherrypy.expose
-    def delete(self, plgsection=None):
-        self.logger.info("PluginController(): delete('{}')".format(plgsection))
+    def delete(self, id=None):
+        self.logger.info("PluginController(): delete('{}')".format(id))
 
         config_filename = self.get_config_filename()
 
@@ -203,9 +206,9 @@ class PluginController(RESTResource):
         else:
             response = {}
             plugin_conf = shyaml.yaml_load_roundtrip(config_filename)
-            sect = plugin_conf.pop(plgsection, None)
+            sect = plugin_conf.pop(id, None)
             if sect is None:
-                response = {'result': 'error', 'description': "Configuration section '{}' does not exist".format(plgsection)}
+                response = {'result': 'error', 'description': "Configuration section '{}' does not exist".format(id)}
             else:
                 shyaml.yaml_save_roundtrip(config_filename, plugin_conf, False)
                 response = {'result': 'ok'}
@@ -215,23 +218,4 @@ class PluginController(RESTResource):
 
     delete.expose_resource = True
     delete.authentication_needed = True
-
-
-    def REST_instantiate(self, id=None):
-        """ instantiate a REST resource based on the id
-
-        this method MUST be overridden in your class. it will be passed
-        the id (from the url fragment) and should return a model object
-        corresponding to the resource.
-
-        if the object doesn't exist, it should return None rather than throwing
-        an error. if this method returns None and it is a PUT request,
-        REST_create() will be called so you can actually create the resource.
-        """
-        # self.logger.info("PluginController(): REST_instantiate(id): id = {}".format(id))
-        if id is not None:
-            return id
-        return None
-#        raise cherrypy.NotFound
-
 

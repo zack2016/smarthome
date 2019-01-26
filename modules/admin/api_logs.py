@@ -103,75 +103,37 @@ class LogsController(RESTResource):
 
 
     # ======================================================================
-    #  /api/logs
+    #  GET /api/logs
     #
-    def root(self, log_name=''):
+    def read(self, id=None):
         """
-        returns information if the root of the REST API is called
-
-        Note: the root of the REST API is not protected by authentication
+        Handle GET requests for logs API
         """
-        if log_name != '':
-            # return content of the logfile
-            if os.path.isfile(os.path.join(self.log_dir, log_name)):
-                with open(os.path.join(self.log_dir, log_name), 'r') as lf:
-                    content = lf.read()
-                return content
+        self.logger.info("LogsController.read()")
 
         # get names of files in log directory
         self.files = sorted(os.listdir(self.log_dir))
         # get names of logs (from filenames enting with '.log')
         logs = self.get_logs()
 
-        if log_name != '':
-            self.logger.info("LogController() index: log_name = {}".format(log_name))
-            # get filenames available for the log
-            if log_name in logs:
-                logfiles = self.get_files_of_log(log_name)
-                return json.dumps(sorted(logfiles))
-            raise cherrypy.NotFound
+        if id is None:
+            # get list of existing logs and name of default log
+            logs = self.get_logs_with_files()
+            return json.dumps({'logs':logs, 'default': self.root_logname})
 
-        logs = self.get_logs_with_files()
-        self.logger.info("LogController (GET): logfiles = {}".format(logs))
-        return json.dumps({'logs':logs, 'default': self.root_logname})
+        if os.path.isfile(os.path.join(self.log_dir, id)):
+            # return content of the logfile specified in id, if file is found
+            with open(os.path.join(self.log_dir, id), 'r') as lf:
+                content = lf.read()
+            return content
 
+        if id in logs:
+            # get filenames available for the specified log (if log is specified without extension)
+            logfiles = self.get_files_of_log(id)
+            return json.dumps(sorted(logfiles))
 
-    # ======================================================================
-    #  Handling of http REST requests
-    #
-    @cherrypy.expose
-    def index(self, id=''):
-        """
-        Handle GET requests
-        """
+        raise cherrypy.NotFound
 
-        if id == '':
-            if getattr(self.index, "authentication_needed"):
-                # Enforce authentication for root of API
-                token_valid, error_text = self.REST_test_jwt_token()
-                if not token_valid:
-                    self.logger.info("LogsController.index(): {}".format(error_text))
-                    return json.dumps({'result': 'error', 'description': error_text})
-            return self.root()
-        else:
-            return self.root(id)
-
-        return None
-    index.expose_resource = True
-    index.authentication_needed = True
-
-
-    def REST_instantiate(self,param):
-        """
-        instantiate a REST resource based on the id
-
-        this method MUST be overridden in your class. it will be passed
-        the id (from the url fragment) and should return a model object
-        corresponding to the resource.
-
-        if the object doesn't exist, it should return None rather than throwing
-        an error. if this method returns None and it is a PUT request,
-        REST_create() will be called so you can actually create the resource.
-        """
-        return param
+    read.expose_resource = True
+    read.authentication_needed = True
 

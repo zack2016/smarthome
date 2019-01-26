@@ -130,7 +130,7 @@ class RESTResource:
     # if you prefer other method names, just override these values in your
     # controller with REST_map
     REST_defaults = {'DELETE' : 'delete',
-                     'GET' : 'index',
+                     'GET' : 'read',
                      'POST' : 'add',
                      'PUT' : 'update'}
     REST_map = {}
@@ -143,6 +143,18 @@ class RESTResource:
 
     logger = logging.getLogger('REST')
     jwt_secret = 'SmartHomeNG$0815'
+
+    @cherrypy.expose
+    def index(self, *vpath, **params):
+        self.logger.info("RESTResource index {}".format(self.__class__.__name__))
+        return self.default(*vpath, **params)
+
+
+    def index2(self):
+        self.logger.info("RESTResource index2 (nicht überschrieben){}".format(self.__class__.__name__))
+        # Methode muss überschrieben werden
+        return
+
 
     def REST_test_jwt_token(self):
         """
@@ -177,26 +189,27 @@ class RESTResource:
 
         return (True, '')
 
-    def REST_dispatch_execute(self, m, method, resource, **params):
-        if m and getattr(m, "expose_resource"):
-            try:
-                auth_needed = getattr(m, "authentication_needed")
-            except:
-                auth_needed = False
-                self.logger.info("REST_dispatch: Need for Authentication can not be read for m = {}".format(m))
-            self.logger.debug("REST_dispatch: {}Authentication needed for {} ({})".format(('' if auth_needed else 'No '), method, str(m).split()[2]))
-            if auth_needed:
-#                self.logger.info("REST_dispatch: Authentication needed for {} ({})".format(method, str(m).split()[2]))
-                token_valid, error_text = self.REST_test_jwt_token()
-                if not token_valid:
-                    self.logger.warning("REST_dispatch: Authentication failed for {} ({})".format(method, str(m).split()[2]))
-                    response = {'result': 'error', 'description': error_text}
-                    return json.dumps(response)
+    def REST_dispatch_execute(self, m, method, public_root, resource, **params):
+        if m and getattr(m, "expose_resource", False):
+            if not public_root:
+                auth_needed = getattr(m, "authentication_needed", False)
+#                try:
+#                except:
+#                    auth_needed = False
+#                    self.logger.info("REST_dispatch: Need for Authentication can not be read for m = {}".format(m))
+                self.logger.debug("REST_dispatch: {}Authentication needed for {} ({})".format(('' if auth_needed else 'No '), method, str(m).split()[2]))
+                if auth_needed:
+                    # self.logger.info("REST_dispatch: Authentication needed for {} ({})".format(method, str(m).split()[2]))
+                    token_valid, error_text = self.REST_test_jwt_token()
+                    if not token_valid:
+                        self.logger.warning("REST_dispatch: Authentication failed for {} ({})".format(method, str(m).split()[2]))
+                        response = {'result': 'error', 'description': error_text}
+                        return json.dumps(response)
 
             return m(resource, **params)
         return None
 
-    def REST_dispatch(self, resource, **params):
+    def REST_dispatch(self, public_root, resource, **params):
         # if this gets called, we assume that default has already
         # traversed down the tree to the right location and this is
         # being called for a raw resource
@@ -207,11 +220,11 @@ class RESTResource:
             except:
                 self.logger.info("REST_dispatch *1: Unsupported method  = {} for resource '{}'".format(method, resource))
                 raise cherrypy.HTTPError(status=400)
-            result = self.REST_dispatch_execute(m, method, resource, **params)
+            result = self.REST_dispatch_execute(m, method, public_root, resource, **params)
             if result != None:
                 return result
             else:
-                raise cherrypy.HTTPError(status=405)
+                raise cherrypy.NotFound
         else:
             if method in self.REST_defaults:
                 try:
@@ -219,11 +232,11 @@ class RESTResource:
                 except:
                     self.logger.info("REST_dispatch: Unsupported method  = {} for resource '{}'".format(method, resource))
                     raise cherrypy.HTTPError(status=400)
-                result = self.REST_dispatch_execute(m, method, resource, **params)
+                result = self.REST_dispatch_execute(m, method, public_root, resource, **params)
                 if result != None:
                     return result
                 else:
-                    raise cherrypy.HTTPError(status=405)
+                    raise cherrypy.NotFound
 
         raise cherrypy.NotFound
 
@@ -231,11 +244,17 @@ class RESTResource:
     def default(self, *vpath, **params):
         if not vpath:
             try:
-                self.logger.info("RESTResource.default: params = '{}'".format(**params))
+                public_root = self.read.public_root
             except:
-                self.logger.info("RESTResource.default: params = 'tuple index out of range'")
-            return list(**params)
-        # self.logger.debug("RESTResource.default: vpath = '{}'".format(list(vpath)))
+                public_root = False
+            self.logger.info("RESTResource.default: public_root = '{}'".format(public_root))
+
+            resource = None
+            # self.logger.info("RESTResource.default: vpath = '{}',  params = '{}'".format(list(vpath), dict(**params)))
+
+            return self.REST_dispatch(public_root, resource, **params)
+            # return list(**params)
+        # self.logger.info("RESTResource.default: vpath = '{}',  params = '{}'".format(list(vpath), dict(**params)))
         # Make a copy of vpath in a list
         vpath = list(vpath)
         atom = vpath.pop(0)
@@ -268,7 +287,7 @@ class RESTResource:
 
         # No further known vpath components. Call a default handler
         # based on the method
-        return self.REST_dispatch(resource,**params)
+        return self.REST_dispatch(False, resource,**params)
 
     def REST_instantiate(self,id):
         """ instantiate a REST resource based on the id
@@ -281,7 +300,8 @@ class RESTResource:
         an error. if this method returns None and it is a PUT request,
         REST_create() will be called so you can actually create the resource.
         """
-        raise cherrypy.NotFound
+        return id
+        # raise cherrypy.NotFound
 
     def REST_create(self,id):
         """ create a REST resource with the specified id
@@ -291,5 +311,6 @@ class RESTResource:
         that doesn't already exist. you should create the resource in this method
         and return it.
         """
-        raise cherrypy.NotFound
+        return id
+        # raise cherrypy.NotFound
 

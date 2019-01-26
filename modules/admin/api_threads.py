@@ -38,13 +38,10 @@ class ThreadsController(RESTResource):
         self.logger = logging.getLogger(__name__)
 
 
-    # ======================================================================
-    #  /api/threads
-    #
-    def root(self):
+    def get_thread_list(self):
 
         """
-        display a list of all threads
+        get a list of all threads
         """
         threads_count = 0
         cp_threads = 0
@@ -99,47 +96,18 @@ class ThreadsController(RESTResource):
             thread['alive'] = 'True'
         return thread
 
+
     # ======================================================================
-    #  Handling of http REST requests
+    #  GET /api/threads
     #
-    @cherrypy.expose
-    def index(self, id=''):
+    def read(self, id=None):
         """
-        Handle GET requests
+        Handle GET requests for threads API
         """
+        self.logger.info("ThreadsController.read()")
 
-        if id == '':
-            # Enforce authentication for root of API
-            if getattr(self.index, "authentication_needed"):
-                token_valid, error_text = self.REST_test_jwt_token()
-                if not token_valid:
-                    self.logger.info("ThreadsController.index(): {}".format(error_text))
-                    return json.dumps({'result': 'error', 'description': error_text})
-            return self.root()
-        # elif id == 'info':
-        #     return self.info()
-        else:
-            return self.root(id)
+        return self.get_thread_list()
 
-        return None
-
-    index.expose_resource = True
-    index.authentication_needed = True
-
-    def REST_instantiate(self, param):
-        """
-        instantiate a REST resource based on the id
-
-        this method MUST be overridden in your class. it will be passed
-        the id (from the url fragment) and should return a model object
-        corresponding to the resource.
-
-        if the object doesn't exist, it should return None rather than throwing
-        an error. if this method returns None and it is a PUT request,
-        REST_create() will be called so you can actually create the resource.
-        """
-        #        if param in ['info']:
-        #            return param
-        return None
-
+    read.expose_resource = True
+    read.authentication_needed = True
 

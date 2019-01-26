@@ -197,54 +197,37 @@ class ServerController(RESTResource):
 
 
     # ======================================================================
-    #  Handling of http REST requests
+    #  GET /api/server/
     #
-    @cherrypy.expose
-    def index(self, id=''):
+    def read(self, id=''):
         """
-        Handle GET requests
+        Handle GET requests for server API
         """
-        if id == 'status':
+        if id is None:
+            return self.root()
+        elif id == 'status':
             return self.status()
         elif id == 'info':
             return self.info()
-        elif id == '':
-            return self.root()
 
         return None
-    index.expose_resource = True
-    index.authentication_needed = True
+
+    read.expose_resource = True
+    read.authentication_needed = True
+    read.public_root = True
 
 
     @cherrypy.expose
     def update(self, id=''):
         """
-        Handle PUT requests
+        Handle PUT requests for server API
         """
-        self.logger.info("ServerController.update(): /{}".format(id))
 
         if id == 'restart':
             return self.restart()
 
-        self.logger.info("ServerController.update(): /{} - unhandled".format(id))
         return None
+
     update.expose_resource = True
     update.authentication_needed = True
-
-
-    def REST_instantiate(self,param):
-        """
-        instantiate a REST resource based on the id
-
-        this method MUST be overridden in your class. it will be passed
-        the id (from the url fragment) and should return a model object
-        corresponding to the resource.
-
-        if the object doesn't exist, it should return None rather than throwing
-        an error. if this method returns None and it is a PUT request,
-        REST_create() will be called so you can actually create the resource.
-        """
-        if param in ['status', 'restart', 'info']:
-            return param
-        return None
 

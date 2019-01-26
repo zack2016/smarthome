@@ -40,19 +40,16 @@ class SchedulersController(RESTResource):
 
 
     # ======================================================================
-    #  /api/schedulers
+    #  GET /api/schedulers
     #
-    def root(self):
+    def read(self, id=None):
         """
-        return a list of all known schedules
+        Handle GET requests for schedulers API
         """
-        self.logger.info("SchedulersController(): index")
-
         schedule_list = []
 
         for entry in self._sh.scheduler._scheduler:
             schedule = dict()
-            #            s = self._sh.scheduler._scheduler[entry]
             s = self._sh.scheduler._scheduler[entry]
             if s['next'] != None and s['cycle'] != '' and s['cron'] != '':
                 schedule['fullname'] = entry
@@ -80,48 +77,6 @@ class SchedulersController(RESTResource):
         schedule_list_sorted = sorted(schedule_list, key=lambda k: k['fullname'].lower())
         return json.dumps(schedule_list_sorted)
 
-
-   # ======================================================================
-    #  Handling of http REST requests
-    #
-    @cherrypy.expose
-    def index(self, id=''):
-        """
-        Handle GET requests
-        """
-
-        if id == '':
-            # Enforce authentication for root of API
-            if getattr(self.index, "authentication_needed"):
-                token_valid, error_text = self.REST_test_jwt_token()
-                if not token_valid:
-                    self.logger.info("SchedulersController.index(): {}".format(error_text))
-                    return json.dumps({'result': 'error', 'description': error_text})
-            return self.root()
-        # elif id == 'info':
-        #     return self.info()
-        else:
-            return self.root(id)
-
-        return None
-    index.expose_resource = True
-    index.authentication_needed = True
-
-
-    def REST_instantiate(self,param):
-        """
-        instantiate a REST resource based on the id
-
-        this method MUST be overridden in your class. it will be passed
-        the id (from the url fragment) and should return a model object
-        corresponding to the resource.
-
-        if the object doesn't exist, it should return None rather than throwing
-        an error. if this method returns None and it is a PUT request,
-        REST_create() will be called so you can actually create the resource.
-        """
-#        if param in ['info']:
-#            return param
-        return None
-
+    read.expose_resource = True
+    read.authentication_needed = True
 

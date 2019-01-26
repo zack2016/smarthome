@@ -49,13 +49,16 @@ class PluginsController(RESTResource):
         return
 
 
-
-    @cherrypy.expose
-    def index(self, scheduler_name=False):
+    # ======================================================================
+    #  GET /api/plugins
+    #
+    def read(self, id=None):
         """
+        Handle GET requests for threads API
+
         return an object with type info about all installed plugins
         """
-        self.logger.info("PluginsController(): index")
+        self.logger.info("PluginsController(): read")
 
         default_language = self._sh.get_defaultlanguage()
 
@@ -80,7 +83,8 @@ class PluginsController(RESTResource):
 
         return json.dumps(self.plugin_data)
 
-
+    read.expose_resource = True
+    read.authentication_needed = True
 
 
 class PluginsInstalledController(RESTResource):
@@ -95,9 +99,10 @@ class PluginsInstalledController(RESTResource):
         return
 
 
-
-    @cherrypy.expose
-    def index(self, scheduler_name=False):
+    # ======================================================================
+    #  GET /api/plugins/installed
+    #
+    def read(self, id=None):
         """
         return an object with data about all installed plugins
         """
@@ -129,7 +134,8 @@ class PluginsInstalledController(RESTResource):
 
         return json.dumps(self.plugin_data)
 
-
+    read.expose_resource = True
+    read.authentication_needed = True
 
 
 class PluginsConfigController(RESTResource):
@@ -178,8 +184,10 @@ class PluginsConfigController(RESTResource):
         return (plugin_name + plugin_version, meta)
 
 
-    @cherrypy.expose
-    def index(self, id=False):
+    # ======================================================================
+    #  GET /api/plugins/config
+    #
+    def read(self, id=None):
         """
         return an object with data about all installed plugins
         """
@@ -238,6 +246,8 @@ class PluginsConfigController(RESTResource):
 
         return json.dumps(info)
 
+    read.expose_resource = True
+    read.authentication_needed = True
 
 
 class PluginsInfoController(RESTResource):
@@ -257,8 +267,10 @@ class PluginsInfoController(RESTResource):
         return
 
 
-    @cherrypy.expose
-    def index(self, scheduler_name=False):
+    # ======================================================================
+    #  GET /api/plugins/info
+    #
+    def read(self, id=None):
         """
         return a list of all configured plugin instances
         """
@@ -356,63 +368,6 @@ class PluginsInfoController(RESTResource):
 
         return json.dumps(plugins_sorted)
 
-
-
-
-
-        if self.plugins is None:
-            self.plugins = Plugins.get_instance()
-
-        config_filename = self.plugins._get_plugin_conf_filename()
-        _etc_dir = os.path.dirname(config_filename)
-
-        info = {}
-        # make it 'readonly', if plugin.conf is used
-        info['readonly'] = not(os.path.splitext(config_filename)[1].lower() == '.yaml')
-
-        if not info['readonly']:
-            # for beta-testing: create a backup of ../etc/plugin.yaml
-            if not os.path.isfile(os.path.join(_etc_dir, 'plugin_before_admin_config.yaml')):
-                shutil.copy2(config_filename, os.path.join(_etc_dir, 'plugin_before_admin_config.yaml'))
-                self.logger.warning('Created a backup copy of plugin.yaml ({})'.format(os.path.join(_etc_dir, 'plugin_before_admin_config.yaml')))
-
-        # get path to plugin configuration file, withou extension
-        _conf = lib.config.parse_basename(os.path.splitext(config_filename)[0], configtype='plugin')
-
-
-        for confplg in _conf:
-            plg = _conf[confplg].get('plugin_name', '?')
-            if plg == '?':
-                plg = _conf[confplg].get('class_path', '?')
-            plginstance = self.plugins.return_plugin(confplg)
-            typ = '?'
-            if plginstance != None:
-                # self.logger.warning("confplg {}: type(plginstance) = {}".format(confplg, type(plginstance)))
-                # self.logger.warning("confplg {}: type(plginstance.metadata) = {}".format(confplg, type(plginstance.metadata)))
-                try:
-                    typ = plginstance.metadata.get_string('type')
-                    _conf[confplg]['_meta'] = plginstance.metadata.meta
-                    _conf[confplg]['_description'] = plginstance.metadata.meta['plugin']['description']
-                except:
-                    self.logger.warning('confplg {}: Passed for plginstance = {}'.format(confplg, plginstance))
-            else:
-                # nicht geladene Plugins
-                # self.logger.warning("confplg {}: type(plginstance) = None".format(confplg))
-                plugin_name, metadata = self._get_pluginname_and_metadata(confplg, _conf[confplg])
-                # self.logger.warning("plugin_name = {}, meta = {}".format(plugin_name, metadata.meta))
-
-                typ = metadata.get_string('type')
-                _conf[confplg]['_meta'] = metadata.meta
-                try:
-                    _conf[confplg]['_description'] = metadata.meta['plugin']['description']
-                except:
-                    _conf[confplg]['_description'] = {}
-                    _conf[confplg]['_description']['de'] = ''
-                    _conf[confplg]['_description']['en'] = ''
-
-
-        info['plugin_config'] = _conf
-
-        return json.dumps(info)
-
+    read.expose_resource = True
+    read.authentication_needed = True
 

@@ -67,6 +67,9 @@ class LogicsController(RESTResource):
             return
 
         self.logics = Logics.get_instance()
+        if self.logics is None:
+            # SmartHomeNG has not yet initialized the logics module (still starting up)
+            return
         self.yaml_updates = (self.logics.return_config_type() == '.yaml')
 
         # find out if blockly plugin is loaded
@@ -181,91 +184,98 @@ class LogicsController(RESTResource):
                     newlogics.append(mylogic)
         return newlogics
 
-    @cherrypy.expose
-    def index(self, logicname=None):
+
+    def get_logics_info(self):
+        """
+        Get list of logics with info for logic-list
+        """
+
+        logics_list = []
+
+        for ln in self.logics.return_loaded_logics():
+            logic = self.fill_logicdict(ln)
+            if logic['logictype'] == 'Blockly':
+                logic['pathname'] = os.path.splitext(logic['pathname'])[0] + '.blockly'
+            logics_list.append(logic)
+            self.logger.debug(
+                "- logic = {}, enabled = {}, , logictype = {}, filename = {}, userlogic = {}, watch_item = {}".format(
+                    str(logic['name']), str(logic['enabled']), str(logic['logictype']), str(logic['filename']),
+                    str(logic['userlogic']), str(logic['watch_item'])))
+
+        logics_new = sorted(self.logic_findnew(logics_list), key=lambda k: k['name'])
+        logics_sorted = sorted(logics_list, key=lambda k: k['name'])
+        self.logics_data = {'logics_new': logics_new, 'logics': logics_sorted}
+        return json.dumps(self.logics_data)
+
+
+    def get_logic_info(self, logicname):
+        """
+        Get code of a logic from file
+        """
+        mylogic = self.fill_logicdict(logicname)
+        self.logger.info("get_logic: logicname = '{}', mylogic = '{}'".format(logicname, mylogic))
+
+        if 'pathname' in mylogic:
+            file_path = mylogic['pathname']
+        else:
+            self.logger.error('No pathname for logic given or pathname cannot be retrieved via logic name!')
+            return
+
+        config_list = self.logics.read_config_section(logicname)
+        for config in config_list:
+            if config[0] == 'cycle':
+                mylogic['cycle'] = config[1]
+            if config[0] == 'crontab':
+                #                mylogic['crontab'] = config[1]
+                self.logger.debug("logics_view_html: crontab = >{}<".format(config[1]))
+                edit_string = self.list_to_editstring(config[1])
+                mylogic['crontab'] = Utils.strip_quotes_fromlist(edit_string)
+            if config[0] == 'watch_item':
+                # Attention: watch_items are always stored as a list in logic object
+                edit_string = self.list_to_editstring(config[1])
+                mylogic['watch'] = Utils.strip_quotes_fromlist(edit_string)
+                mylogic['watch_item'] = Utils.strip_quotes_fromlist(edit_string)
+                mylogic['watch_item_list'] = config[1]
+            if config[0] == 'visu_acl':
+                mylogic['visu_acl'] = config[1]
+
+        if os.path.splitext(file_path)[1] == '.blockly':
+            mode = 'xml'
+            updates = False
+        else:
+            mode = 'python'
+            # updates = self.updates_allowed
+            if not 'userlogic' in mylogic:
+                mylogic['userlogic'] = True
+            #if mylogic['userlogic'] == False:
+            #    updates = False
+
+        return json.dumps(mylogic)
+
+
+    def read(self, logicname=None):
         """
         return an object with type info about all logics
         """
         # create a list of dicts, where each dict contains the information for one logic
-        self.logger.info("LogicsController(): index")
+        self.logger.info("LogicsController.read()")
 
         if self.plugins is None:
             self.plugins = Plugins.get_instance()
         if self.scheduler is None:
             self.scheduler = Scheduler.get_instance()
 
+        self.logics_initialize()
+        if self.logics is None:
+            # SmartHomeNG has not yet initialized the logics module (still starting up)
+            raise cherrypy.NotFound
+
         if logicname is None:
-            logics_list = []
-            self.logics_initialize()
-
-            for ln in self.logics.return_loaded_logics():
-                logic = self.fill_logicdict(ln)
-                if logic['logictype'] == 'Blockly':
-                    logic['pathname'] = os.path.splitext(logic['pathname'])[0] + '.blockly'
-                logics_list.append(logic)
-                self.logger.debug(
-                    "- logic = {}, enabled = {}, , logictype = {}, filename = {}, userlogic = {}, watch_item = {}".format(
-                        str(logic['name']), str(logic['enabled']), str(logic['logictype']), str(logic['filename']),
-                        str(logic['userlogic']), str(logic['watch_item'])))
-
-            logics_new = sorted(self.logic_findnew(logics_list), key=lambda k: k['name'])
-            logics_sorted = sorted(logics_list, key=lambda k: k['name'])
-            self.logics_data = {'logics_new': logics_new, 'logics': logics_sorted}
-            return json.dumps(self.logics_data)
+            return self.get_logics_info()
         else:
-            mylogic = self.fill_logicdict(logicname)
+            return self.get_logic_info(logicname)
 
-            if 'pathname' in mylogic:
-                file_path = mylogic['pathname']
-            else:
-                self.logger.error('No pathname for logic given or pathname cannot be retrieved via logic name!')
 
-            config_list = self.logics.read_config_section(logicname)
-            for config in config_list:
-                if config[0] == 'cycle':
-                    mylogic['cycle'] = config[1]
-                if config[0] == 'crontab':
-                    #                mylogic['crontab'] = config[1]
-                    self.logger.debug("logics_view_html: crontab = >{}<".format(config[1]))
-                    edit_string = self.list_to_editstring(config[1])
-                    mylogic['crontab'] = Utils.strip_quotes_fromlist(edit_string)
-                if config[0] == 'watch_item':
-                    # Attention: watch_items are always stored as a list in logic object
-                    edit_string = self.list_to_editstring(config[1])
-                    mylogic['watch'] = Utils.strip_quotes_fromlist(edit_string)
-                    mylogic['watch_item'] = Utils.strip_quotes_fromlist(edit_string)
-                    mylogic['watch_item_list'] = config[1]
-                if config[0] == 'visu_acl':
-                    mylogic['visu_acl'] = config[1]
+    read.expose_resource = True
+    read.authentication_needed = True
 
-            if os.path.splitext(file_path)[1] == '.blockly':
-                mode = 'xml'
-                updates = False
-            else:
-                mode = 'python'
-                updates = self.updates_allowed
-                if not 'userlogic' in mylogic:
-                    mylogic['userlogic'] = True
-                if mylogic['userlogic'] == False:
-                    updates = False
-
-            return mylogic
-
-    index.expose_resource = True
-    index.authentication_needed = True
-
-    def REST_instantiate(self, param):
-        """
-        instantiate a REST resource based on the id
-
-        this method MUST be overridden in your class. it will be passed
-        the id (from the url fragment) and should return a model object
-        corresponding to the resource.
-
-        if the object doesn't exist, it should return None rather than throwing
-        an error. if this method returns None and it is a PUT request,
-        REST_create() will be called so you can actually create the resource.
-        """
-        #        if param in ['info']:
-        #            return param
-        return param

@@ -347,22 +347,21 @@ class WebApi(RESTResource):
         # ------------------------------
         # ---  Add REST controllers  ---
         # ------------------------------
-        self.server = ServerController(self.module)
         self.authenticate = AuthController(self.module)
 
         self.config = ConfigController(self.module)
         self.items = ItemsController(self.module)
-        self.logs = LogsController(self.module)
-        self.scenes = ScenesController(self.module)
-        self.schedulers = SchedulersController(self.module)
-        self.threads = ThreadsController(self.module)
-
         self.logics = LogicsController(self.module)
+        self.logs = LogsController(self.module)
+        self.plugin = PluginController(self.module, self.jwt_secret)
         self.plugins = PluginsController(self.module)
         self.plugins.installed = PluginsInstalledController(self.module)
         self.plugins.config = PluginsConfigController(self.module)
         self.plugins.info = PluginsInfoController(self.module, self.shng_url_root)
-        self.plugin = PluginController(self.module, self.jwt_secret)
+        self.scenes = ScenesController(self.module)
+        self.schedulers = SchedulersController(self.module)
+        self.server = ServerController(self.module)
+        self.threads = ThreadsController(self.module)
 
         return
 

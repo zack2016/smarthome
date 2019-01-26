@@ -47,6 +47,11 @@ securitySchemes:
     put:
       securedBy: [JWT]
 
+/items
+  /structs
+    get:
+    securedBy: [JWT]
+
 /logs:
   displayName: Information about existing logs or content of a specified log
   get:

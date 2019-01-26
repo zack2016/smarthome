@@ -127,19 +127,20 @@ class AuthController(RESTResource):
     #  Handling of http REST requests
     #
     @cherrypy.expose
-    def index(self, id=''):
+    def read(self, id=None):
         """
         Handle GET requests
         """
         # self.logger.debug("AuthController.index(): /{}".format(id))
 
-        if id == '':
+        if id is None:
             return self.root()
 
         # self.logger.info("AuthController.index(): /{} - unhandled".format(id))
         return None
-    index.expose_resource = True
-    index.authentication_needed = False
+
+    read.expose_resource = True
+    read.authentication_needed = False
 
 
     @cherrypy.expose
@@ -161,7 +162,7 @@ class AuthController(RESTResource):
     @cherrypy.expose
     def update(self, id=''):
         """
-        Handle PUT requests
+        Handle PUT requests (hief kommt noch die Token Verlängerung rein)
         """
         self.logger.info("AuthController.update(): /{}".format(id))
 
@@ -173,23 +174,4 @@ class AuthController(RESTResource):
         return None
     update.expose_resource = True
     update.authentication_needed = True
-
-
-    def REST_instantiate(self,param):
-        """
-        instantiate a REST resource based on the id
-
-        this method MUST be overridden in your class. it will be passed
-        the id (from the url fragment) and should return a model object
-        corresponding to the resource.
-
-        if the object doesn't exist, it should return None rather than throwing
-        an error. if this method returns None and it is a PUT request,
-        REST_create() will be called so you can actually create the resource.
-        """
-        self.logger.info("AuthController(): REST_instantiate: param = {}".format(param))
-        if param in ['user']:
-            # self.logger.debug("AuthController() REST_instantiate: result = '{}'".format(param))
-            return param
-        return None
 

@@ -46,7 +46,59 @@ class ScenesController(RESTResource):
     # ======================================================================
     #  /api/scenes
     #
-    def root(self):
+    # def root(self):
+    #     if self.items == None:
+    #         self.items = Items.get_instance()
+    #
+    #     from lib.scene import Scenes
+    #     get_param_func = getattr(Scenes, "get_instance", None)
+    #     if callable(get_param_func):
+    #         supported = True
+    #         self.scenes = Scenes.get_instance()
+    #         scene_list = []
+    #         if self.scenes is not None:
+    #             scene_list = self.scenes.get_loaded_scenes()
+    #
+    #         disp_scene_list = []
+    #         for scene in scene_list:
+    #             scene_dict = {}
+    #             scene_dict['path'] = scene
+    #             #                scene_dict['name'] = str(self._sh.return_item(scene))
+    #             scene_dict['name'] = str(self.items.return_item(scene))
+    #
+    #             action_list = self.scenes.get_scene_actions(scene)
+    #             scene_dict['value_list'] = action_list
+    #             #                scene_dict[scene] = action_list
+    #
+    #             disp_action_list = []
+    #             for value in action_list:
+    #                 action_dict = {}
+    #                 action_dict['action'] = value
+    #                 action_dict['action_name'] = self.scenes.get_scene_action_name(scene, value)
+    #                 action_list = self.scenes.return_scene_value_actions(scene, value)
+    #                 for action in action_list:
+    #                     if not isinstance(action[0], str):
+    #                         action[0] = action[0].id()
+    #                 action_dict['action_list'] = action_list
+    #
+    #                 disp_action_list.append(action_dict)
+    #             scene_dict['values'] = disp_action_list
+    #             self.logger.debug("scenes_html: disp_action_list for scene {} = {}".format(scene, disp_action_list))
+    #
+    #             disp_scene_list.append(scene_dict)
+    #     else:
+    #         supported = False
+    #     return json.dumps(disp_scene_list)
+
+
+    # ======================================================================
+    #  GET /api/scenes
+    #
+    @cherrypy.expose
+    def read(self, id=None):
+        """
+        Handle GET requests for scenes API
+        """
         if self.items == None:
             self.items = Items.get_instance()
 
@@ -90,48 +142,6 @@ class ScenesController(RESTResource):
             supported = False
         return json.dumps(disp_scene_list)
 
-
-    # ======================================================================
-    #  Handling of http REST requests
-    #
-    @cherrypy.expose
-    def index(self, id=''):
-        """
-        Handle GET requests
-        """
-
-        if id == '':
-            # Enforce authentication for root of API
-            if getattr(self.index, "authentication_needed"):
-                token_valid, error_text = self.REST_test_jwt_token()
-                if not token_valid:
-                    self.logger.info("ScenesController.index(): {}".format(error_text))
-                    return json.dumps({'result': 'error', 'description': error_text})
-            return self.root()
-        # elif id == 'info':
-        #     return self.info()
-        else:
-            return self.root(id)
-
-        return None
-    index.expose_resource = True
-    index.authentication_needed = True
-
-
-    def REST_instantiate(self,param):
-        """
-        instantiate a REST resource based on the id
-
-        this method MUST be overridden in your class. it will be passed
-        the id (from the url fragment) and should return a model object
-        corresponding to the resource.
-
-        if the object doesn't exist, it should return None rather than throwing
-        an error. if this method returns None and it is a PUT request,
-        REST_create() will be called so you can actually create the resource.
-        """
-#        if param in ['info']:
-#            return param
-        return None
-
+    read.expose_resource = True
+    read.authentication_needed = True
 
