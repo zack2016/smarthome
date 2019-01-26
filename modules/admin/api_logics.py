@@ -186,7 +186,6 @@ class LogicsController(RESTResource):
         """
         return an object with type info about all logics
         """
-
         # create a list of dicts, where each dict contains the information for one logic
         self.logger.info("LogicsController(): index")
 
@@ -269,4 +268,4 @@ class LogicsController(RESTResource):
         """
         #        if param in ['info']:
         #            return param
-        return None
+        return param
