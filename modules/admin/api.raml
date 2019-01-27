@@ -20,23 +20,6 @@ securitySchemes:
           body:
             # type: common.Error
 
-/server:
-  displayName: Public Serverinfo of the SmartHomeNG software
-  get:
-    securedBy: [null]
-  /status:
-    displayName: Run state of the SmartHomeNG software
-    get:
-      securedBy: [JWT]
-  /restart:
-    displayName: Restart the SmartHomeNG software
-    put:
-      securedBy: [JWT]
-  /info:
-    displayName: Serverinfo of the SmartHomeNG software and operating system
-    get:
-      securedBy: [JWT]
-
 /authenticate:
   /user:
     post:
@@ -47,9 +30,34 @@ securitySchemes:
     put:
       securedBy: [JWT]
 
-/items
-  /structs
+/config:
+  /core:
     get:
+    put:
+    securedBy: [JWT]
+  /common:
+    get:
+    put:
+    securedBy: [JWT]
+  /admin:
+    get:
+    put:
+    securedBy: [JWT]
+  /http:
+    get:
+    put:
+    securedBy: [JWT]
+
+/items:
+  /structs:
+    get:
+    securedBy: [JWT]
+
+/loics:
+  displayName: Information about existing logics or info about a specified logic
+  get:
+    securedBy: [JWT]
+  /{logicName}
     securedBy: [JWT]
 
 /logs:
@@ -60,30 +68,40 @@ securitySchemes:
     securedBy: [JWT]
 
 /scenes:
+  displayName: Info about defined scenes
   get:
     securedBy: [JWT]
 
 /schedulers:
+  displayName: Info about defined schedulers
   get:
     securedBy: [JWT]
+
+/server:
+  displayName: Public Serverinfo of the SmartHomeNG software
+  get:
+    securedBy: [null]
+  /info:
+    displayName: Serverinfo of the SmartHomeNG software and operating system
+    get:
+      securedBy: [JWT]
+  /status:
+    displayName: Run state of the SmartHomeNG software
+    get:
+      securedBy: [JWT]
+  /restart:
+    displayName: Restart the SmartHomeNG software
+    put:
+      securedBy: [JWT]
+
+/services:
+  /yamlcheck:
+    displayName: Check the syntax of yaml text snippet
+    put:
+      securedBy: [JWT]
 
 /threads:
+  displayName: Info about running threads
   get:
     securedBy: [JWT]
-
-# ------
-
-/config:
-  /core:
-    get:
-    put:
-  /common:
-    get:
-    put:
-  /admin:
-    get:
-    put:
-  /http:
-    get:
-    put:
 

@@ -43,6 +43,7 @@ from .api_items import *
 from .api_logs import *
 from .api_scenes import *
 from .api_sched import *
+from .api_services import *
 from .api_threads import *
 
 from .api_logics import *
@@ -361,6 +362,7 @@ class WebApi(RESTResource):
         self.scenes = ScenesController(self.module)
         self.schedulers = SchedulersController(self.module)
         self.server = ServerController(self.module)
+        self.services = ServicesController(self.module)
         self.threads = ThreadsController(self.module)
 
         return

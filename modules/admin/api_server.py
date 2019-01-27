@@ -217,7 +217,6 @@ class ServerController(RESTResource):
     read.public_root = True
 
 
-    @cherrypy.expose
     def update(self, id=''):
         """
         Handle PUT requests for server API
