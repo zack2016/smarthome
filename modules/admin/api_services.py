@@ -29,6 +29,7 @@ from .rest import RESTResource
 
 import bin.shngversion
 from lib.item_conversion import convert_yaml as convert_yaml
+from lib.item_conversion import parse_for_convert as parse_for_convert
 
 
 # ======================================================================
@@ -87,6 +88,18 @@ class ServicesController(RESTResource):
 
 
     # ======================================================================
+    #  conf_yaml_converter
+    #
+    def conf_yaml_converter(self, conf_code):
+        conf_code = self.strip_empty_lines(conf_code)
+        yaml_code = ''
+        ydata = parse_for_convert(conf_code=conf_code)
+        if ydata != None:
+            yaml_code = convert_yaml(ydata)
+        return yaml_code
+
+
+    # ======================================================================
     #  yaml_syntax_checker
     #
     def yaml_syntax_checker(self, yaml_code):
@@ -103,6 +116,24 @@ class ServicesController(RESTResource):
             check_result += convert_yaml(ydata).replace('\n\n', '\n')
 
         return check_result
+
+
+    # ======================================================================
+    #  /api/server/yamlconvert
+    #
+    def yamlconvert(self):
+        """
+        restart the SmartHomneNG server software
+
+        :return: status dict
+        """
+        params = self.get_body(text=True)
+        if params is None:
+            self.logger.warning("ServicesController(): yamlconvert(): Bad, request")
+            raise cherrypy.HTTPError(status=411)
+        self.logger.info("ServicesController(): yamlconvert(): '{}'".format(params))
+
+        return self.conf_yaml_converter(params)
 
 
     # ======================================================================
@@ -145,6 +176,8 @@ class ServicesController(RESTResource):
 
         if id == 'yamlcheck':
             return self.yamlcheck()
+        elif id == 'yamlconvert':
+            return self.yamlconvert()
 
         return None
 
