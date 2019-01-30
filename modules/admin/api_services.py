@@ -30,6 +30,7 @@ from .rest import RESTResource
 import bin.shngversion
 from lib.item_conversion import convert_yaml as convert_yaml
 from lib.item_conversion import parse_for_convert as parse_for_convert
+from lib.shtime import Shtime
 
 
 # ======================================================================
@@ -88,6 +89,34 @@ class ServicesController(RESTResource):
 
 
     # ======================================================================
+    #  eval_syntax_checker
+    #
+    def eval_syntax_checker(self, eval_code, relative_to):
+        expanded_code = ''
+
+        # set up environment for calculating eval-expression
+        sh = self._sh
+        shtime = Shtime.get_instance()
+
+        eval_code = eval_code.replace('\r', '').replace('\n', ' ').replace('  ', ' ').strip()
+        if relative_to == '':
+            expanded_code = eval_code
+        else:
+            rel_to_item = sh.return_item(relative_to)
+            if rel_to_item is not None:
+                expanded_code = rel_to_item.get_stringwithabsolutepathes(eval_code, 'sh.', '(')
+            else:
+                expanded_code = "Error: Item {} does not exist!".format(relative_to)
+        try:
+            value = eval(expanded_code)
+        except Exception as e:
+            check_result = "Problem evaluating {}:  {}".format(expanded_code, e)
+        else:
+            check_result = value
+        return expanded_code, check_result
+
+
+    # ======================================================================
     #  conf_yaml_converter
     #
     def conf_yaml_converter(self, conf_code):
@@ -119,21 +148,24 @@ class ServicesController(RESTResource):
 
 
     # ======================================================================
-    #  /api/server/yamlconvert
+    #  /api/server/evalcheck
     #
-    def yamlconvert(self):
+    def evalcheck(self):
         """
-        restart the SmartHomneNG server software
+        Check syntax of eval expression
 
         :return: status dict
         """
-        params = self.get_body(text=True)
+        params = self.get_body(text=False)
         if params is None:
-            self.logger.warning("ServicesController(): yamlconvert(): Bad, request")
+            self.logger.warning("ServicesController(): evalcheck(): Bad, request")
             raise cherrypy.HTTPError(status=411)
-        self.logger.info("ServicesController(): yamlconvert(): '{}'".format(params))
+        self.logger.info("ServicesController(): evalcheck(): {}".format(params))
 
-        return self.conf_yaml_converter(params)
+        expanded_code, eval_result = self.eval_syntax_checker(params['expression'], params['relative_to'])
+        result = {'expression': expanded_code, 'result': eval_result}
+        # return json.dumps({'expression': 'Expandierter Ausdruck (Antwort vom Server)', 'result': '42 (Antwort vom Server)'})
+        return json.dumps(result)
 
 
     # ======================================================================
@@ -141,7 +173,7 @@ class ServicesController(RESTResource):
     #
     def yamlcheck(self):
         """
-        restart the SmartHomneNG server software
+        Check syntax of YAML configuration
 
         :return: status dict
         """
@@ -152,6 +184,24 @@ class ServicesController(RESTResource):
         self.logger.info("ServicesController(): yamlcheck(): '{}'".format(params))
 
         return self.yaml_syntax_checker(params)
+
+
+    # ======================================================================
+    #  /api/server/yamlconvert
+    #
+    def yamlconvert(self):
+        """
+        convert CONF configuration to YAML syntax
+
+        :return: status dict
+        """
+        params = self.get_body(text=True)
+        if params is None:
+            self.logger.warning("ServicesController(): yamlconvert(): Bad, request")
+            raise cherrypy.HTTPError(status=411)
+        self.logger.info("ServicesController(): yamlconvert(): '{}'".format(params))
+
+        return self.conf_yaml_converter(params)
 
 
     # ======================================================================
@@ -174,6 +224,8 @@ class ServicesController(RESTResource):
         """
         self.logger.info("ServicesController.update('{}')".format(id))
 
+        if id == 'evalcheck':
+            return self.evalcheck()
         if id == 'yamlcheck':
             return self.yamlcheck()
         elif id == 'yamlconvert':

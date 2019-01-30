@@ -219,7 +219,7 @@ class RESTResource:
                 m = getattr(self,self.REST_map[method])
             except:
                 self.logger.info("REST_dispatch *1: Unsupported method  = {} for resource '{}'".format(method, resource))
-                raise cherrypy.HTTPError(status=400)
+                raise cherrypy.HTTPError(status=404)
             result = self.REST_dispatch_execute(m, method, root, resource, **params)
             if result != None:
                 return result
@@ -231,7 +231,7 @@ class RESTResource:
                     m = getattr(self,self.REST_defaults[method])
                 except:
                     self.logger.info("REST_dispatch: Unsupported method  = {} for resource '{}'".format(method, resource))
-                    raise cherrypy.HTTPError(status=400)
+                    raise cherrypy.HTTPError(status=404)
                 result = self.REST_dispatch_execute(m, method, root, resource, **params)
                 if result != None:
                     return result
