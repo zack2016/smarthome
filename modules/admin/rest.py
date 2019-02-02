@@ -202,11 +202,16 @@ class RESTResource:
                     # self.logger.info("REST_dispatch: Authentication needed for {} ({})".format(method, str(m).split()[2]))
                     token_valid, error_text = self.REST_test_jwt_token()
                     if not token_valid:
-                        self.logger.warning("REST_dispatch: Authentication failed for {} ({})".format(method, str(m).split()[2]))
+                        self.logger.warning("REST_dispatch_execute: Authentication failed for {} ({})".format(method, str(m).split()[2]))
                         response = {'result': 'error', 'description': error_text}
                         return json.dumps(response)
 
-            return m(resource, **params)
+            try:
+                return m(resource, **params)
+            except Exception as e:
+                self.logger.warning("REST_dispatch_execute: {}: {}".format(resource, e))
+                response = {'result': 'error', 'description': format(e)}
+                return json.dumps(response)
         return None
 
     def REST_dispatch(self, root, resource, **params):

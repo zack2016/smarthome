@@ -99,6 +99,14 @@ securitySchemes:
     displayName: Check the syntax of yaml text snippet
     put:
       securedBy: [JWT]
+  /cachecheck:
+    displayName: Check for orphan cache files and return them as a list
+    get:
+      securedBy: [JWT]
+  /cachefile_delete:
+    displayName: delete a cache file (cachefile_delete?filename=cachefile) or a list of cache files (cachefile_delete?filename=["cachefile1","cachefile2"])
+    put:
+      securedBy: [JWT]
 
 /threads:
   displayName: Info about running threads

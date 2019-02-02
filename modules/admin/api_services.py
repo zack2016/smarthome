@@ -21,10 +21,12 @@
 
 
 import os
+import datetime
 import logging
 import json
 import cherrypy
 
+from lib.item import Items
 from .rest import RESTResource
 
 import bin.shngversion
@@ -204,6 +206,66 @@ class ServicesController(RESTResource):
         return self.conf_yaml_converter(params)
 
 
+    def cachecheck(self):
+        """
+        returns a list of items as json structure
+        """
+        unused_cache_files = []
+
+        if self._sh.shng_status['code'] == 20:
+            # {'code': 20, 'text': 'Running'}
+            cache_path = os.path.join(self.base_dir, 'var', 'cache')
+            onlyfiles = [f for f in os.listdir(cache_path) if os.path.isfile(os.path.join(cache_path, f))]
+
+            for file in onlyfiles:
+                if not file.find(".") == 0:  # filter .gitignore etc.
+                    self.items = Items.get_instance()
+                    item = self.items.return_item(file)
+                    no_cache_file = False;
+                    if item is None:
+                        self.logger.debug("cachecheck: no item {}".format(file))
+                        no_cache_file = True
+                    elif not item._cache:
+                        self.logger.debug("cachecheck: item {}, no _cache".format(file))
+                        no_cache_file = True
+
+                    if no_cache_file:
+                        file_data = {}
+                        file_data['last_modified'] = datetime.datetime.fromtimestamp(
+                            int(os.path.getmtime(os.path.join(cache_path, file)))
+                        ).strftime('%Y-%m-%d %H:%M:%S')
+                        file_data['created'] = datetime.datetime.fromtimestamp(
+                            int(os.path.getctime(os.path.join(cache_path, file)))
+                        ).strftime('%Y-%m-%d %H:%M:%S')
+                        file_data['filename'] = file
+                        file_data['filename'] = file
+                        unused_cache_files.append(file_data)
+
+        return json.dumps(unused_cache_files)
+
+
+    # cache_file_delete.html?filename="+filename
+    def cachefile_delete(self, filename=''):
+        """
+        deletes a file from cache
+        """
+        self.logger.info("cachefile_delete: filename '{}'".format(filename))
+        if filename[0] == '[':
+            filenames = json.loads(filename)
+        else:
+            filenames = [filename]
+        response = {'result': 'error', 'description': "cache file '" + filename + "' not found"}
+        for filename in filenames:
+            if len(filename) > 0:
+                file_path = os.path.join(self.base_dir, 'var', 'cache', filename)
+                if os.path.isfile(file_path):
+                    self.logger.info("cachefile_delete: cachefile '{}' deleted".format(file_path))
+                    os.remove(file_path);
+                    response = {'result': 'ok'}
+
+        return json.dumps(response)
+
+
     # ======================================================================
     #  GET /api/services/
     #
@@ -212,13 +274,15 @@ class ServicesController(RESTResource):
         Handle GET requests for server API
         """
 
+        if id == 'cachecheck':
+            return self.cachecheck()
         return None
 
-#    read.expose_resource = True
-#    read.authentication_needed = True
+    read.expose_resource = True
+    read.authentication_needed = True
 
 
-    def update(self, id=''):
+    def update(self, id='', filename=''):
         """
         Handle PUT requests for server API
         """
@@ -226,10 +290,12 @@ class ServicesController(RESTResource):
 
         if id == 'evalcheck':
             return self.evalcheck()
-        if id == 'yamlcheck':
+        elif id == 'yamlcheck':
             return self.yamlcheck()
         elif id == 'yamlconvert':
             return self.yamlconvert()
+        elif id == 'cachefile_delete':
+            return self.cachefile_delete(filename)
 
         return None
 
