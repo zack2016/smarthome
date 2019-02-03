@@ -29,8 +29,8 @@ YAML Syntax-Prüfer
    :class: screenshot
 
 
-.. index:: eval Syntax-Prüfer
-.. index:: Dienste; eval Syntax-Prüfer
+.. index:: CONF-YAML Konverter
+.. index:: Dienste; CONF-YAML Konverter
 
 CONF-YAML Konverter
 ===================

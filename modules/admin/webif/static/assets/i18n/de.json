@@ -89,6 +89,7 @@
     "EVAL_RELATIVE_TO": "Relativ zu Item (Pfad des Items angeben)",
     "EVAL_CHECK_EXPANDED": "Expandierter Ausdruck",
     "EVAL_CHECK_RESULT": "Ergebnis der Berechnung des Ausdrucks",
+    "EVAL_RESULT_TYPE": "Datentyp des berechneten Ausdrucks",
     "YAML_CHECK_SOURCE": "Eingabe im .YAML Format",
     "YAML_CHECK_RESULT": "Ergebnis: Aufbereitetes .YAML Format",
     "YAML_CONVERTER_SOURCE": "Eingabe im .CONF Format",

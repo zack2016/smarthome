@@ -61,6 +61,12 @@ plugin-spezifischen Attribute ist in der Dokumentation des jeweiligen Plugins na
 +-----------------+------------------------------------------------------------------------------+
 | initial_value,  | Ein optionaler Startwert für dieses Item. Es wird empfohlen **initial_value**|
 | value           | anstelle des bisherigen Attributnamens **value** zu verwenden.               |
+|                 |                                                                              |
+|                 | **Achtung**: Wenn in den Item Definitionen ein Wertzuweisung zu einem Item   |
+|                 | vom Typ **dict** erfolgen soll, muss unbedingt darauf geachtet werden, dass  |
+|                 | der angegebene Wert in Anführungszeichen gesetzt wird, damit yaml nicht den  |
+|                 | Wert nicht als Datenstruktur interpretiert.                                  |
+|                 |  (Also folgendermaßen: **initial_value**: "{'k1': 'v1', 'k2': 'v2'}" )       |
 +-----------------+------------------------------------------------------------------------------+
 | log_change      | Ermöglicht das Loggen jeder Veränderung des Item-Wertes. **log_change** muss |
 |                 | dazu den Namen des zu verwendeten Loggers enthalten. In **logging.yaml**     |

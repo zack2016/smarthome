@@ -165,7 +165,11 @@ class ServicesController(RESTResource):
         self.logger.info("ServicesController(): evalcheck(): {}".format(params))
 
         expanded_code, eval_result = self.eval_syntax_checker(params['expression'], params['relative_to'])
-        result = {'expression': expanded_code, 'result': eval_result}
+        result_type = str(type(eval_result))
+        if result_type.startswith("<class '"):
+            result_type = result_type[len("<class '"):]
+            result_type = result_type[:-2]
+        result = {'expression': expanded_code, 'result': eval_result, 'type': result_type}
         # return json.dumps({'expression': 'Expandierter Ausdruck (Antwort vom Server)', 'result': '42 (Antwort vom Server)'})
         return json.dumps(result)
 

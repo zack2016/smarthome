@@ -285,7 +285,7 @@ class Scheduler(threading.Thread):
         return name
 
     def return_next(self, name, from_smartplugin=False):
-        name = self.check_caller(name, from_smartplugin)
+        # name = self.check_caller(name, from_smartplugin)   # ms
         if name in self._scheduler:
             return self._scheduler[name]['next']
 
@@ -756,3 +756,4 @@ class Scheduler(threading.Thread):
             day = now + dateutil.relativedelta.relativedelta(weekday=wday(+2))
             result.append(day.strftime("%d"))
         return result
+
