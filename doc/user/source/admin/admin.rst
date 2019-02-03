@@ -23,8 +23,11 @@ Backend Plugins ist und in der Funktionalität über die Möglichkeiten des Back
 Während das Backend Plugin vorwiegend zur Anzeige von Informationen über die SmartHomeNG Installation diente, soll das
 Admin-Interface nach und nach die vollständige Konfiguration von SmartHomeNG ermöglichen.
 
-In v1.6 ist das Admin-Interface noch nicht Feature-Complete. Deshalb (und um einen problemlosen Übergang zu gewährleisten),
-steht das Backend Plugin für einen Übergangszeit weiter zur Verfügung.
+In v1.6 ist das Admin-Interface noch nicht Feature-Complete. Es können also noch nicht alle Aspekte von SmartHomeNG
+in der GUI konfiguriert werden.
+
+Um einen problemlosen Übergang zu gewährleisten, steht das Backend Plugin für einen Übergangszeit weiter zur Verfügung.
+Es wird voraussichtlich mit v1.8 von SmartHomeNG als deprecated (veraltet) eingestuft.
 
 
 Das Administrations-Interface wird durch folgenden Aufruf gestartet:
@@ -47,6 +50,12 @@ auf das Admin-Interface zuzugreifen:
 
 
 Ansonsten wird direkt die Übersichtsseite der Systemeigenschaften angezeigt.
+
+Wenn eine Anmeldung notwendig ist, so ist dieses nicht auf die Session beschränkt. Ein Beenden des Browsers meldet den
+Anwender nicht ab. Hierzu muss der Abmelde-Button in der Navigation genutzt werden. Eine automatische Abmeldung erfolgt
+nur, wenn das im Browser gespeicherte Token abläuft. Die Lebensdauer des Token ist in der Systemkonfiguration im Tab
+**Admin Modul** konfigurierbar.
+
 
 
 .. toctree::
