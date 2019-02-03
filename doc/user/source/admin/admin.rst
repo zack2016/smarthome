@@ -64,10 +64,13 @@ nur, wenn das im Browser gespeicherte Token abläuft. Die Lebensdauer des Token 
    :titlesonly:
 
    systemeigenschaften
+   dienste
    items
    logiken
    scheduler
    plugins
    szenen
    threads
+   logs
+
 

@@ -1,10 +1,12 @@
 
-.. index:: Systemeigenschaften: Übersicht
+.. index:: System
 
 ======
 System
 ======
 
+
+.. index:: Systemeigenschaften; Übersicht
 
 Übersicht
 =========
@@ -16,6 +18,10 @@ SmartHomeNG läuft.
    :class: screenshot
 
 
+
+.. index:: Ressource Graphen
+.. index:: Systemeigenschaften; Ressource Graphen
+
 Ressource Graphen
 =================
 
@@ -25,6 +31,9 @@ Drei dieser Graphen sind bereits aus der Konfigurationsseite der smartVISU bekan
 .. image:: assets/system-ressource-graphs.jpg
    :class: screenshot
 
+
+.. index:: PyPI Check
+.. index:: Systemeigenschaften; PyPI Check
 
 PyPI Check
 ==========
@@ -54,6 +63,9 @@ Version nicht der neuesten Version entspricht, wird die neueste Version in grün
 auf diese Version aktualisiert werden kann. Falls die neueste Version nicht genutzt werden kann, wenn sie also kleiner
 als eine angegebene Maximalversion ist, wird die Versionsnummer in rot angezeigt.
 
+
+.. index:: Urheberrechtshinweise
+.. index:: Systemeigenschaften; Urheberrechtshinweise
 
 Urheberrechtshinweise
 =====================
