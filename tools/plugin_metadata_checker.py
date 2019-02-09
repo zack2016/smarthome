@@ -86,7 +86,7 @@ def get_plugintype(plgName):
     except:
         return 'None' \
                ''
-    if code.find('SmartPlugin') == -1:
+    if (code.find('(SmartPlugin') == -1) and (code.find('( SmartPlugin') == -1):
         return 'Classic'
     return 'Smart'
 
@@ -111,15 +111,18 @@ def readMetadata(metaplugin, plugins_local):
 #   Functions to list plugin information
 #
 
-def list_formatted(plugin, plgvers, plgstate, plgtype, plgGlobal, plgParams, plgAttr, plgFunc=''):
-    print('{plugin:<15.15} {plgvers:<8.8} {plgstate:<9.9} {plgtype:<8.8} {plgGlobal:<7.7} {plgParams:<8.8} {plgAttr:<8.8} {plgFunc:<9.9}'.format(plugin=plugin,
-                                                                                                   plgvers=plgvers,
-                                                                                                   plgstate=plgstate,
-                                                                                                   plgtype=plgtype,
-                                                                                                   plgGlobal=plgGlobal,
-                                                                                                   plgParams=plgParams,
-                                                                                                   plgAttr=plgAttr,
-                                                                                                   plgFunc=plgFunc))
+def list_formatted(plugin, plgvers, plgstate, plgtype, plgGlobal, plgParams, plgAttr, plgFunc='', plgLog=''):
+    if plgstate == 'qa-passed':
+        plgstate = 'qa-pass'
+    print('{plugin:<14.14} {plgvers:<8.8} {plgstate:<7.7} {plgtype:<5.5} {plgGlobal:<7.7} {plgParams:<7.7} {plgAttr:<10.10} {plgFunc:<7.7} {plgLog:<7.7}'
+          .format( plugin=plugin,
+                   plgvers=plgvers,
+                   plgstate=plgstate,
+                   plgtype=plgtype,
+                   plgGlobal=plgGlobal,
+                   plgParams=plgParams,
+                   plgAttr=plgAttr,
+                   plgFunc=plgFunc, plgLog=plgLog))
 
 def list_plugins(option):
 
@@ -138,6 +141,8 @@ def list_plugins(option):
         sectionParam = '-'
         sectionIAttr = '-'
         sectionFunc = '-'
+        sectionLogics = '-'
+        sectionIStruct = ''
         comment = ''
         metadata = readMetadata(plg, plugins_local)
         if metadata == None:
@@ -171,6 +176,21 @@ def list_plugins(option):
                 sectionIAttr = 'Ok'
                 sectionIAttr += ' (' + str(len(metadata['item_attributes'])) + ')'
 
+            if metadata.get('item_structs', None) == None:
+                sectionIStruct = ''
+            elif metadata.get('item_structs', None) == 'NONE':
+                sectionIStruct = ''
+            else:
+                sectionIStruct = ',St'
+
+            if metadata.get('item_attributes', None) == None:
+                sectionIAttr = MISSING_TEXT
+            elif metadata.get('item_attributes', None) == 'NONE':
+                sectionIAttr = 'Ok'
+            else:
+                sectionIAttr = 'Ok'
+                sectionIAttr += ' (' + str(len(metadata['item_attributes'])) + sectionIStruct + ')'
+
             if metadata.get('plugin_functions', None) == None:
                 sectionFunc = MISSING_TEXT
             elif metadata.get('plugin_functions', None) == 'NONE':
@@ -179,18 +199,26 @@ def list_plugins(option):
                 sectionFunc = 'Ok'
                 sectionFunc += ' (' + str(len(metadata['plugin_functions'])) + ')'
 
+            if metadata.get('logic_parameters', None) == None:
+                sectionLogics = MISSING_TEXT
+            elif metadata.get('logic_parameters', None) == 'NONE':
+                sectionLogics = 'Ok'
+            else:
+                sectionLogics = 'Ok'
+                sectionLogics += ' (' + str(len(metadata['logic_parameters'])) + ')'
+
         if (option == 'all') or \
            (option == plgtype.lower()) or \
-           (option == 'inc' and (sectionPlg == MISSING_TEXT or sectionParam == MISSING_TEXT or sectionIAttr == MISSING_TEXT or sectionFunc == MISSING_TEXT)) or \
-           (option == 'compl' and (plgtype.lower() != 'classic' and sectionPlg != MISSING_TEXT and sectionParam != MISSING_TEXT and sectionIAttr != MISSING_TEXT and sectionFunc != MISSING_TEXT)) or \
+           (option == 'inc' and (sectionPlg == MISSING_TEXT or sectionParam == MISSING_TEXT or sectionIAttr == MISSING_TEXT or sectionFunc == MISSING_TEXT or sectionLogics == MISSING_TEXT)) or \
+           (option == 'compl' and (plgtype.lower() != 'classic' and sectionPlg != MISSING_TEXT and sectionParam != MISSING_TEXT and sectionIAttr != MISSING_TEXT and sectionFunc != MISSING_TEXT) and (sectionLogics != MISSING_TEXT)) or \
            (option == 'inc_para' and sectionParam == MISSING_TEXT) or (option == 'inc_attr' and sectionIAttr == MISSING_TEXT):
             if not header_displayed:
                 ul = '-------------------------------'
-                list_formatted('', '', '', 'Plugin', '', 'Plugin', 'Item', 'Plugin')
-                list_formatted('Plugin', 'Version', 'State', 'Type', 'Info', 'Params', 'Attrib.', 'Functions')
-                list_formatted(ul, ul, ul, ul, ul, ul, ul, ul)
+                list_formatted('',       '',        '',      'Plugin', '',     'Plugin', 'Item',    'Plugin', 'Plugin')
+                list_formatted('Plugin', 'Version', 'State', 'Type',   'Info', 'Params', 'Attrib.', 'Funct.', 'Logics')
+                list_formatted(ul, ul, ul, ul, ul, ul, ul, ul, ul)
                 header_displayed = True
-            list_formatted(plg, version, plgstate, plgtype, sectionPlg, sectionParam, sectionIAttr, sectionFunc)
+            list_formatted(plg, version, plgstate, plgtype, sectionPlg, sectionParam, sectionIAttr, sectionFunc, sectionLogics)
             plgcount += 1
             if plg.startswith('priv_'):
                 priv_plgcount += 1
@@ -527,10 +555,18 @@ def check_metadata(plg, with_description, check_quiet=False, only_inc=False):
     if metadata.get('item_attributes', None) == None:
         disp_error("No item attributes defined in metadata", "If the plugin defines no item attributes, document this by creating an empty section. Write 'item_attributes: NONE' to the metadata file.")
 
+    # Checking item struct definitions
+    if metadata.get('item_structs', None) == None:
+        disp_hint("No item structures defined in metadata", "If the plugin defines no item structures, document this by creating an empty section. Write 'item_structs: NONE' to the metadata file.")
+
 
     # Checking function metadata
     if metadata.get('plugin_functions', None) == None:
         disp_error("No public functions of the attribute defined in metadata", "If the plugin defines no public functions, document this by creating an empty section. Write 'plugin_functions: NONE' to the metadata file.")
+
+    # Checking logic parameter metadata
+    if metadata.get('logic_parameters', None) == None:
+        disp_error("No logic parameters defined in metadata", "If the plugin defines no logic parameters, document this by creating an empty section. Write 'logic_parameters: NONE' to the metadata file.")
 
     # Checking if the descriptions are complete
     if metadata.get('plugin', None) != None:
