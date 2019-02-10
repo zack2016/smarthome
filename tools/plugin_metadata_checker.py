@@ -153,7 +153,7 @@ def list_plugins(option):
             sectionPlg = 'Ok'
             version = metadata['plugin'].get('version', '-')
             plgstate = metadata['plugin'].get('state', '-')
-            if not plgstate in ['qa-passed', 'ready', 'develop', '-']:
+            if not plgstate in ['qa-passed', 'ready', 'develop', 'deprecated', '-']:
                 plgstate = 'INVALID'
         plgtype = get_plugintype(plg)
         if plgtype == 'Smart':

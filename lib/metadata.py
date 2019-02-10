@@ -160,15 +160,17 @@ class Metadata():
 
             # test validity of structs definition section
             if self.itemstructs != None:
-                self._itemstructlist = list(self.itemstructs.keys())
-                logger.info(self._log_premsg + "Metadata itemstructlist = '{}'".format(self._itemstructlist))
-#                for struct in self._itemstructlist:
-#                    for i in self.itemstructs[struct]:
-#                        self.itemstructs[struct][i] = dict(self.itemstructs[struct][i])
-#                        for si in self.itemstructs[struct][i]:
-#                            if type(self.itemstructs[struct][i][si]) is collections.OrderedDict:
-#                                self.itemstructs[struct][i][si] = dict(self.itemstructs[struct][i][si])
-#                    logger.info(self._log_premsg + "Metadata itemstruct '{}' = '{}'".format(struct, dict(self.itemstructs[struct])))
+                if self.itemstructs == 'NONE':
+                    self.itemstructs = None
+                else:
+                    logger.info(self._log_premsg + "Metadata itemstructlist = '{}'".format(self._itemstructlist))
+#                    for struct in self._itemstructlist:
+#                        for i in self.itemstructs[struct]:
+#                            self.itemstructs[struct][i] = dict(self.itemstructs[struct][i])
+#                            for si in self.itemstructs[struct][i]:
+#                                if type(self.itemstructs[struct][i][si]) is collections.OrderedDict:
+#                                    self.itemstructs[struct][i][si] = dict(self.itemstructs[struct][i][si])
+#                        logger.info(self._log_premsg + "Metadata itemstruct '{}' = '{}'".format(struct, dict(self.itemstructs[struct])))
 #            if self.itemstructs is not None:
 ##                self._test_definitions(self._itemdeflist, self.itemdefinitions)
 #                pass

@@ -24,7 +24,6 @@ import os
 import shutil
 import logging
 import json
-import cherrypy
 
 import lib.shyaml as shyaml
 import lib.config
