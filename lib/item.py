@@ -188,7 +188,7 @@ class Items():
 
         # Read in item structs from ../etc/struct.yaml
         struct_filename = os.path.join(etc_dir, 'struct.yaml')
-        struct_definitions = shyaml.yaml_load(os.path.join(etc_dir, 'struct.yaml'), ordered=True)
+        struct_definitions = shyaml.yaml_load(os.path.join(etc_dir, 'struct.yaml'), ordered=True, ignore_notfound=True)
         if struct_definitions is not None:
             for key in struct_definitions:
                 self.add_struct_definition('', key, struct_definitions[key])
