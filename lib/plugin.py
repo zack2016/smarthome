@@ -536,6 +536,8 @@ class PluginWrapper(threading.Thread):
 
         # make the plugin a method/function of the main smarthome object  (MS: Ist das zu früh? Falls Init fehlschlägt?)
 #        setattr(smarthome, self.name, self.plugin)
+        if self.meta.get_string('state') == 'deprecated':
+            logger.warning("Plugin '{}' (section '{}') is deprecated. Consider to use a replacement instead".format(classpath.split('.')[1], name))
         # initialize attributes of the newly created plugin object instance
         if isinstance(self.get_implementation(), SmartPlugin):
             self.get_implementation()._gtranslations = gtranslations
