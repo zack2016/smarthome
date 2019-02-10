@@ -183,6 +183,9 @@ class PluginController(RESTResource):
             if sect is None:
                 response = {'result': 'error', 'description': "Configuration section '{}' does not exist".format(id)}
             else:
+                self.logger.warning("update: params = {}".format(params))
+                if params.get('config', {}).get('plugin_enabled', None) == True:
+                    del params['config']['plugin_enabled']
                 plugin_conf[id] = params.get('config', {})
                 shyaml.yaml_save_roundtrip(config_filename, plugin_conf, False)
                 response = {'result': 'ok'}

@@ -317,7 +317,7 @@ class Metadata():
         If the value for the default language is empty, it trys to look up the value for English.
         If there is no value for the default language and for English, it trys to lookup the value for German.
 
-        :param key: global multilabguage-key to look up (in section 'plugin' or 'module')
+        :param key: global multilanguage-key to look up (in section 'plugin' or 'module')
         :type key: str
 
         :return: value for the key

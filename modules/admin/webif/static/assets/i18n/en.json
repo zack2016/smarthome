@@ -234,6 +234,7 @@
     "PARAMETERS": "Parameters",
     "PARAMETER": "Parameter",
     "VALUE": "Value",
+    "DESCRIPTION_INSTANCE_ATTRIBUTE": "If multiple instances of a multi-instance plugin are configured, an unique instance name has to be entered here",
     "ITEM ATTRIBUTES": "Item Attributes",
     "UPDATES TRIGGERED BY": "Plugin updates are triggered by {{count}} items",
     "PLUGIN METADATA": "Plugin Metadata",

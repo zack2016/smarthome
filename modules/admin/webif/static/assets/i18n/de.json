@@ -236,6 +236,7 @@
     "PARAMETERS": "Parameter",
     "PARAMETER": "Parameter",
     "VALUE": "Wert",
+    "DESCRIPTION_INSTANCE_ATTRIBUTE": "Falls mehrere Instanzen eines Multi-Instance Plugins konfiguriert sind, muss hier ein eindeutiger Instanz-Name angegeben werden",
     "ITEM ATTRIBUTES": "Item Attribute",
     "UPDATES TRIGGERED BY": "Plugin Updates werden durch {{count}} Items getriggered",
     "PLUGIN METADATA": "Plugin Metadata",
