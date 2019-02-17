@@ -124,6 +124,7 @@ def list_formatted(plugin, plgvers, plgstate, plgtype, plgGlobal, plgParams, plg
                    plgAttr=plgAttr,
                    plgFunc=plgFunc, plgLog=plgLog))
 
+
 def list_plugins(option):
 
     option = option.strip().lower()
@@ -614,8 +615,10 @@ def check_metadata(plg, with_description, check_quiet=False, only_inc=False):
         res = 'TO DOs'
     if check_quiet:
         if not(only_inc) or (only_inc and (errors!=0 or warnings!=0 or hints!=0 or state == '-')):
+            if state == 'qa-passed':
+                state = 'qa-pass'
             summary = "{:<8.8} {:<10.10} {:<8.8} {:<7.7} {}".format(res, state, str(errors), str(warnings), str(hints))
-            print('{plugin:<15.15} {summary:<60.60}'.format(plugin=plg, summary=summary))
+            print('{plugin:<14.14} {summary:<60.60}'.format(plugin=plg, summary=summary))
     else:
         if errors == 0 and warnings == 0 and hints == 0:
             print("Metadata is complete ({} errors, {} warnings and {} hints)".format(errors, warnings, hints))
@@ -694,9 +697,14 @@ def check_plglist(option):
                 header_displayed = True
 
             check_metadata(plg, False, check_quiet=True, only_inc=(option == 'inc'))
-            plgcount += 1
-            if plg.startswith('priv_'):
-                priv_plgcount += 1
+            if option == 'inc' and (errors > 0 or warnings > 0 or hints > 0):
+                plgcount += 1
+                if plg.startswith('priv_'):
+                    priv_plgcount += 1
+            elif option != 'inc':
+                plgcount += 1
+                if plg.startswith('priv_'):
+                    priv_plgcount += 1
         allplgcount += 1
         if plg.startswith('priv_'):
             priv_allplgcount += 1
