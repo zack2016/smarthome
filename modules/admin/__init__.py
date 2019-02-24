@@ -40,6 +40,7 @@ from .api_auth import *
 
 from .api_config import *
 from .api_items import *
+from .api_loggers import *
 from .api_logs import *
 from .api_scenes import *
 from .api_sched import *
@@ -353,6 +354,7 @@ class WebApi(RESTResource):
         self.config = ConfigController(self.module)
         self.items = ItemsController(self.module)
         self.logics = LogicsController(self.module)
+        self.loggers = LoggersController(self.module)
         self.logs = LogsController(self.module)
         self.plugin = PluginController(self.module, self.jwt_secret)
         self.plugins = PluginsController(self.module)

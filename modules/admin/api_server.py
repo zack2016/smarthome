@@ -116,6 +116,7 @@ class ServerController(RESTResource):
         response['daemon_knx'] = self.get_knx_daemon()
         response['daemon_ow'] = self.get_1wire_daemon()
         response['daemon_mqtt'] = self.get_mqtt_daemon()
+        response['daemon_node_red'] = self.get_node_red_daemon()
         return json.dumps(response)
 
 
@@ -155,6 +156,16 @@ class ServerController(RESTResource):
         daemon = 'SERVICES.INACTIVE'
         if get_process_info("ps cax|grep mosquitto") != '':
             daemon = 'mosquitto'
+        return daemon
+
+
+    def get_node_red_daemon(self):
+        """
+        Tests it 1wire are running
+        """
+        daemon = 'SERVICES.INACTIVE'
+        if get_process_info("ps cax|grep node-red") != '':
+            daemon = 'node-red'
         return daemon
 
 
