@@ -498,7 +498,7 @@ def test_description(section, par, par_dict):
     return
 
 
-def check_metadata(plg, with_description, check_quiet=False, only_inc=False):
+def check_metadata(plg, with_description, check_quiet=False, only_inc=False, list_classic=False):
 
     global errors, warnings, hints, quiet
     quiet = check_quiet
@@ -506,7 +506,7 @@ def check_metadata(plg, with_description, check_quiet=False, only_inc=False):
     warnings = 0
     hints = 0
 
-    plg_type = get_plugintype(plg)
+    plg_type = get_plugintype(plg).lower()
     plugins_local = get_local_pluginlist()
     metadata = readMetadata(plg, plugins_local)
     if metadata == None:
@@ -521,8 +521,6 @@ def check_metadata(plg, with_description, check_quiet=False, only_inc=False):
     else:
         if metadata['plugin'].get('version', None) == None:
             disp_error('No version number given', "Add 'version:' to the plugin section")
-        if metadata['plugin'].get('state', None) == None:
-            disp_error('No development state given for the plugin', "Add 'state:' to the plugin section and set it to one of the following values ['develop', 'ready', 'qa-passed']", "The state'qa-passed' should only be set by the shNG core team")
         if metadata['plugin'].get('classname', None) == None:
             disp_error('No classname for the plugin', "Add 'classname:' to the plugin section and set it to the name of the Python class that implements the plugin")
 
@@ -530,6 +528,12 @@ def check_metadata(plg, with_description, check_quiet=False, only_inc=False):
             disp_warning('No plugin type set', "Add 'type:' to the plugin section")
         if metadata['plugin'].get('maintainer', None) == None:
             disp_warning('The maintainer of the plugin is not documented', "Add 'maintainer:' to the plugin section")
+
+
+    if (plg_type != 'classic' and not list_classic):
+
+        if metadata['plugin'].get('state', None) == None:
+            disp_error('No development state given for the plugin', "Add 'state:' to the plugin section and set it to one of the following values ['develop', 'ready', 'qa-passed']", "The state'qa-passed' should only be set by the shNG core team")
         if metadata['plugin'].get('multi_instance', None) == None:
             disp_warning('It is not documented if wether the plugin is multi-instance capable or not', "Add 'multi_instance:' to the plugin section")
         else:
@@ -546,89 +550,90 @@ def check_metadata(plg, with_description, check_quiet=False, only_inc=False):
         if metadata['plugin'].get('tester', None) == None:
             disp_hint('The tester(s) of the plugin are not documented', "Add 'tester:' to the plugin section")
 
-
-    # Checking parameter metadata
-    if metadata.get('parameters', None) == None:
-        disp_error("No parameters defined in metadata", "When defining parameters, make sure that you define ALL parameters of the plugin, but dont define global parameters like 'instance'. If only a part of the parameters are defined in the metadata, the missing parameters won't be handed over to the plugin at runtime.", "If the plugin has no parameters, document this by writing 'parameters: NONE' to the metadata file.")
-
-
-    # Checking item attribute metadata
-    if metadata.get('item_attributes', None) == None:
-        disp_error("No item attributes defined in metadata", "If the plugin defines no item attributes, document this by creating an empty section. Write 'item_attributes: NONE' to the metadata file.")
-
-    # Checking item struct definitions
-    if metadata.get('item_structs', None) == None:
-        disp_hint("No item structures defined in metadata", "If the plugin defines no item structures, document this by creating an empty section. Write 'item_structs: NONE' to the metadata file.")
+        # Checking parameter metadata
+        if metadata.get('parameters', None) == None:
+            disp_error("No parameters defined in metadata", "When defining parameters, make sure that you define ALL parameters of the plugin, but dont define global parameters like 'instance'. If only a part of the parameters are defined in the metadata, the missing parameters won't be handed over to the plugin at runtime.", "If the plugin has no parameters, document this by writing 'parameters: NONE' to the metadata file.")
 
 
-    # Checking function metadata
-    if metadata.get('plugin_functions', None) == None:
-        disp_error("No public functions of the attribute defined in metadata", "If the plugin defines no public functions, document this by creating an empty section. Write 'plugin_functions: NONE' to the metadata file.")
+        # Checking item attribute metadata
+        if metadata.get('item_attributes', None) == None:
+            disp_error("No item attributes defined in metadata", "If the plugin defines no item attributes, document this by creating an empty section. Write 'item_attributes: NONE' to the metadata file.")
 
-    # Checking logic parameter metadata
-    if metadata.get('logic_parameters', None) == None:
-        disp_error("No logic parameters defined in metadata", "If the plugin defines no logic parameters, document this by creating an empty section. Write 'logic_parameters: NONE' to the metadata file.")
+        # Checking item struct definitions
+        if metadata.get('item_structs', None) == None:
+            disp_hint("No item structures defined in metadata", "If the plugin defines no item structures, document this by creating an empty section. Write 'item_structs: NONE' to the metadata file.")
 
-    # Checking if the descriptions are complete
-    if metadata.get('plugin', None) != None:
-        test_description('plugin', '', metadata['plugin'].get('description', None))
 
-    if metadata.get('parameters', None) != None:
-        if metadata.get('parameters', None) != 'NONE':
-            for par in metadata.get('parameters', None):
-                par_dict = metadata['parameters'][par]
-                if not is_dict(par_dict):
-                    disp_error("Definition of parameter '{}' is not a dict".format(par), '')
-                else:
-                    test_description('parameter', par, par_dict.get('description', None))
+        # Checking function metadata
+        if metadata.get('plugin_functions', None) == None:
+            disp_error("No public functions of the attribute defined in metadata", "If the plugin defines no public functions, document this by creating an empty section. Write 'plugin_functions: NONE' to the metadata file.")
 
-    if metadata.get('item_attributes', None) != None:
-        if metadata.get('item_attributes', None) != 'NONE':
-            for par in metadata.get('item_attributes', None):
-                par_dict = metadata['item_attributes'][par]
-                if not is_dict(par_dict):
-                    disp_error("Definition of item_attribute '{}' is not a dict".format(par), '')
-                else:
-                    test_description('item attribute', par, par_dict.get('description', None))
+        # Checking logic parameter metadata
+        if metadata.get('logic_parameters', None) == None:
+            disp_error("No logic parameters defined in metadata", "If the plugin defines no logic parameters, document this by creating an empty section. Write 'logic_parameters: NONE' to the metadata file.")
 
-    if metadata.get('plugin_functions', None) != None:
-        if metadata.get('plugin_functions', None) != 'NONE':
-            for func in metadata.get('plugin_functions', None):
-                func_dict = metadata['plugin_functions'][func]
-                test_description('plugin function', func, func_dict.get('description', None))
+        # Checking if the descriptions are complete
+        if metadata.get('plugin', None) != None:
+            test_description('plugin', '', metadata['plugin'].get('description', None))
 
-                # Check function parameters
-                if func_dict.get('parameters', None) != None:
-                    for par in func_dict.get('parameters', None):
-                        par_dict = func_dict['parameters'][par]
-                        test_description("parameter '"+par+"' of plugin function", func, par_dict.get('description', None))
+        if metadata.get('parameters', None) != None:
+            if metadata.get('parameters', None) != 'NONE':
+                for par in metadata.get('parameters', None):
+                    par_dict = metadata['parameters'][par]
+                    if not is_dict(par_dict):
+                        disp_error("Definition of parameter '{}' is not a dict".format(par), '')
+                    else:
+                        test_description('parameter', par, par_dict.get('description', None))
+
+        if metadata.get('item_attributes', None) != None:
+            if metadata.get('item_attributes', None) != 'NONE':
+                for par in metadata.get('item_attributes', None):
+                    par_dict = metadata['item_attributes'][par]
+                    if not is_dict(par_dict):
+                        disp_error("Definition of item_attribute '{}' is not a dict".format(par), '')
+                    else:
+                        test_description('item attribute', par, par_dict.get('description', None))
+
+        if metadata.get('plugin_functions', None) != None:
+            if metadata.get('plugin_functions', None) != 'NONE':
+                for func in metadata.get('plugin_functions', None):
+                    func_dict = metadata['plugin_functions'][func]
+                    test_description('plugin function', func, func_dict.get('description', None))
+
+                    # Check function parameters
+                    if func_dict.get('parameters', None) != None:
+                        for par in func_dict.get('parameters', None):
+                            par_dict = func_dict['parameters'][par]
+                            test_description("parameter '"+par+"' of plugin function", func, par_dict.get('description', None))
 
     state = ''
     if metadata.get('plugin', None) != None:
         state = metadata['plugin'].get('state', '-')
-#    global errors, warnings, hints
-    if errors == 0 and warnings == 0 and hints == 0:
-        res = 'OK'
-    elif errors == 0 and warnings == 0:
-        res = 'HINTS'
-    else:
-        res = 'TO DOs'
-    if check_quiet:
-        if not(only_inc) or (only_inc and (errors!=0 or warnings!=0 or hints!=0 or state == '-')):
-            if state == 'qa-passed':
-                state = 'qa-pass'
-            summary = "{:<8.8} {:<10.10} {:<8.8} {:<7.7} {}".format(res, state, str(errors), str(warnings), str(hints))
-            print('{plugin:<14.14} {summary:<60.60}'.format(plugin=plg, summary=summary))
-    else:
+
+    if (plg_type == 'classic' and list_classic) or (plg_type != 'classic' and not list_classic):
+        #    global errors, warnings, hints
         if errors == 0 and warnings == 0 and hints == 0:
-            print("Metadata is complete ({} errors, {} warnings and {} hints)".format(errors, warnings, hints))
+            res = 'OK'
+        elif errors == 0 and warnings == 0:
+            res = 'HINTS'
         else:
-            print("{} errors, {} warnings and {} hints".format(errors, warnings, hints))
-        print()
+            res = 'TO DOs'
+        if check_quiet:
+            if not(only_inc) or (only_inc and (errors!=0 or warnings!=0 or hints!=0 or state == '-')):
+                if state == 'qa-passed':
+                    state = 'qa-pass'
+                summary = "{:<8.8} {:<7.7} {:<5.5} {:<8.8} {:<7.7} {}".format(res, state, plg_type, str(errors), str(warnings), str(hints))
+                print('{plugin:<14.14} {summary:<60.60}'.format(plugin=plg, summary=summary))
+        else:
+            if errors == 0 and warnings == 0 and hints == 0:
+                print("Metadata is complete ({} errors, {} warnings and {} hints)".format(errors, warnings, hints))
+            else:
+                print("{} errors, {} warnings and {} hints".format(errors, warnings, hints))
+            print()
     return
 
 
-def check_plglist(option):
+def check_plglist(option, list_classic=False):
     option = option.strip().lower()
     header_displayed = False;
     plgcount = 0
@@ -691,20 +696,26 @@ def check_plglist(option):
            (option == 'inc_para' and sectionParam == MISSING_TEXT) or (option == 'inc_attr' and sectionIAttr == MISSING_TEXT):
             if not header_displayed:
                 ul = '-------------------------------'
-                list_formatted('', '', '', '', '', '', '', '')
-                list_formatted('Plugin', 'Summary', 'State', 'Errors', 'Warnings', 'Hints', '', '')
-                list_formatted(ul, ul, ul, ul, ul, ul, '', '')
+                list_formatted('',       '',        '',      'Plugin', '',       '',         '',          '')
+                list_formatted('Plugin', 'Summary', 'State', 'Type',   'Errors', 'Warnings', 'Hints', '', '')
+                list_formatted(ul, ul, ul, ul, ul, ul, ul, '', '')
                 header_displayed = True
 
-            check_metadata(plg, False, check_quiet=True, only_inc=(option == 'inc'))
+
+            check_metadata(plg, False, check_quiet=True, only_inc=(option == 'inc'), list_classic=list_classic)
             if option == 'inc' and (errors > 0 or warnings > 0 or hints > 0):
-                plgcount += 1
-                if plg.startswith('priv_'):
-                    priv_plgcount += 1
+                if ((not list_classic) and (plgtype.lower() != 'classic')) or (
+                        list_classic and (plgtype.lower() == 'classic')):
+                    plgcount += 1
+                    if plg.startswith('priv_'):
+                        priv_plgcount += 1
             elif option != 'inc':
-                plgcount += 1
-                if plg.startswith('priv_'):
-                    priv_plgcount += 1
+                if ((not list_classic) and (plgtype.lower() != 'classic')) or (
+                        list_classic and (plgtype.lower() == 'classic')):
+                    plgcount += 1
+                    if plg.startswith('priv_'):
+                        priv_plgcount += 1
+
         allplgcount += 1
         if plg.startswith('priv_'):
             priv_allplgcount += 1
@@ -782,9 +793,10 @@ if __name__ == '__main__':
         elif args.check_list:
             check_plglist('all')
         elif args.check_clist:
-            check_plglist('compl')
+            check_plglist('compl', list_classic=False)
         elif args.check_ilist:
-            check_plglist('inc')
+            check_plglist('inc', list_classic=True)
+            check_plglist('inc', list_classic=False)
         else:
             parser.print_help()
             print()
