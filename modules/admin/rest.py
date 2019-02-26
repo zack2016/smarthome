@@ -197,7 +197,7 @@ class RESTResource:
                 self.logger.info("REST_dispatch_execute(): public_root = '{}'".format(public_root))
             if not public_root:
                 auth_needed = getattr(m, "authentication_needed", False)
-                self.logger.debug("REST_dispatch: {}Authentication needed for {} ({})".format(('' if auth_needed else 'No '), method, str(m).split()[2]))
+                self.logger.debug("REST_dispatch_execute(): {}Authentication needed for {} ({})".format(('' if auth_needed else 'No '), method, str(m).split()[2]))
                 if auth_needed:
                     # self.logger.info("REST_dispatch: Authentication needed for {} ({})".format(method, str(m).split()[2]))
                     token_valid, error_text = self.REST_test_jwt_token()

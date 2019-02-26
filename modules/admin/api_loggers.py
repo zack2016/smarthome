@@ -63,6 +63,31 @@ class LoggersController(RESTResource):
 
         return
 
+    # def get_body(self, text=False):
+    #     """
+    #     Get content body of received request header
+    #
+    #     :return:
+    #     """
+    #     cl = cherrypy.request.headers.get('Content-Length', 0)
+    #     if cl == 0:
+    #         # cherrypy.reponse.headers["Status"] = "400"
+    #         # return 'Bad request'
+    #         raise cherrypy.HTTPError(status=411)
+    #     rawbody = cherrypy.request.body.read(int(cl))
+    #     self.logger.debug("LoggersController.get_body(): rawbody = {}".format(rawbody))
+    #     try:
+    #         if text:
+    #             params = rawbody.decode('utf-8')
+    #         else:
+    #             params = json.loads(rawbody.decode('utf-8'))
+    #     except Exception as e:
+    #         self.logger.warning("LoggersController.get_body(): Exception {}".format(e))
+    #         return None
+    #     return params
+
+
+
     def save_logging_config(self):
         """
         Save dict to logging.yaml
@@ -116,7 +141,7 @@ class LoggersController(RESTResource):
                 if len(h) > 0:
                     if (len(h) > 1) or (len(h) == 1 and str(h[0]) != '<NullHandler (NOTSET)>'):
                         loggerlist.append(l)
-                        self.logger.info("ld Handler = {} h = {} -> {}".format(l, h, lg))
+                        # self.logger.info("ld Handler = {} h = {} -> {}".format(l, h, lg))
                 else:
                     try:
                         lv = lg.level
@@ -124,61 +149,105 @@ class LoggersController(RESTResource):
                         lv = 0
                     if lv > 0:
                         loggerlist.append(l)
-                        self.logger.info("ld Level   = {}, lv = {} -> {}".format(l, lv, lg))
+                        # self.logger.info("ld Level   = {}, lv = {} -> {}".format(l, lv, lg))
         except Exception as e:
             self.logger.exception("Logger Exception: {}".format(e))
 
         return sorted(loggerlist)
 
 
+    def set_active_logger_level(self, logger, level):
+
+        if level is not None:
+            self.logger.warning("set_active_logger_level(): logger={}, level={}".format(logger, level))
+            lg = logging.getLogger(logger)
+            lglevel = logging.getLevelName(level)
+            self.logger.warning("set_active_logger_level(): lg={}, lglevel={}".format(lg, lglevel))
+            lg.setLevel(lglevel)
+
+            self.load_logging_config_for_edit()
+            try:
+                oldlevel = self.logging_config['loggers'][logger]['level']
+            except:
+                oldlevel = None
+            if oldlevel != None:
+                self.logger.warning(" - old level={}".format(oldlevel))
+                self.logging_config['loggers'][logger]['level'] = level
+                self.save_logging_config()
+                return True
+        return False
+
     # -----------------------------------------------------------------------------------
 
-    def get_logs(self):
-        """
-        Return the names of logs (names of .log-files without the extension)
+    # def get_logs(self):
+    #     """
+    #     Return the names of logs (names of .log-files without the extension)
+    #
+    #     :return: names of logs
+    #     :rtype: list
+    #     """
+    #     logs = []
+    #     for fn in self.files:
+    #         if os.path.splitext(fn)[1] == '.log':
+    #             log_name = os.path.splitext(fn)[0]
+    #             logs.append(log_name)
+    #     return logs
+    #
+    #
+    # def get_logs_with_files(self):
+    #     """
+    #     Return the names of logs (names of .log-files without the extension)
+    #
+    #     :return: names of logs
+    #     :rtype: list
+    #     """
+    #     logs = {}
+    #     for fn in self.files:
+    #         if os.path.splitext(fn)[1] == '.log':
+    #             log_name = os.path.splitext(fn)[0]
+    #
+    #             logfiles = self.get_files_of_log(log_name)
+    #             logs[log_name] = sorted(logfiles)
+    #     return logs
+    #
+    #
+    # def get_files_of_log(self, log_name):
+    #     """
+    #     Return the files (actual and passed days) of a log
+    #
+    #     :param log_name: name of the log
+    #     :type log_name: str
+    #     :return: filenames
+    #     :rtype: list
+    #     """
+    #     logfiles = []
+    #     for fn in self.files:
+    #         if fn.startswith(log_name+'.log'):
+    #             logfiles.append(fn)
+    #     return logfiles
 
-        :return: names of logs
-        :rtype: list
-        """
-        logs = []
-        for fn in self.files:
-            if os.path.splitext(fn)[1] == '.log':
-                log_name = os.path.splitext(fn)[0]
-                logs.append(log_name)
-        return logs
 
+    def get_logger_active_configuration(self, loggername=None):
 
-    def get_logs_with_files(self):
-        """
-        Return the names of logs (names of .log-files without the extension)
+        active = {}
+        active_logger = logging.getLogger(loggername)
+        active['disabled'] = active_logger.disabled
+        active['level'] = self.logging_levels[active_logger.level]
+        active['filters'] = active_logger.filters
 
-        :return: names of logs
-        :rtype: list
-        """
-        logs = {}
-        for fn in self.files:
-            if os.path.splitext(fn)[1] == '.log':
-                log_name = os.path.splitext(fn)[0]
+        hl = []
+        bl = []
+        for h in active_logger.handlers:
+            hl.append(h.__class__.__name__)
+            try:
+                bl.append(h.baseFilename)
+            except:
+                bl.append('')
 
-                logfiles = self.get_files_of_log(log_name)
-                logs[log_name] = sorted(logfiles)
-        return logs
+        active['handlers'] = hl
+        active['logfiles'] = bl
 
-
-    def get_files_of_log(self, log_name):
-        """
-        Return the files (actual and passed days) of a log
-
-        :param log_name: name of the log
-        :type log_name: str
-        :return: filenames
-        :rtype: list
-        """
-        logfiles = []
-        for fn in self.files:
-            if fn.startswith(log_name+'.log'):
-                logfiles.append(fn)
-        return logfiles
+        return active
 
 
     # ======================================================================
@@ -190,36 +259,21 @@ class LoggersController(RESTResource):
         """
         self.logger.info("LoggersController.read()")
 
-        if self.logging_config is None:
-            config = self.load_logging_config()
-            loggers = config['loggers']
+        config = self.load_logging_config()
+        loggers = config['loggers']
+        loggers['root'] = config['root']
+        loggers['root']['active'] = self.get_logger_active_configuration()
 
         loggerlist = self.get_active_loggers()
         self.logger.info("loggerlist = {}".format(loggerlist))
 
         for logger in loggerlist:
             if loggers.get(logger, None) == None:
-                self.logger.info("active but not configured logger = {}".format(logger))
+                # self.logger.info("active but not configured logger = {}".format(logger))
                 loggers[logger] = {}
                 loggers[logger]['not_conf'] = True
 
-            active_logger = logging.getLogger(logger)
-
-            loggers[logger]['active'] = {}
-            loggers[logger]['active']['disabled'] = active_logger.disabled
-            loggers[logger]['active']['level'] = self.logging_levels[active_logger.level]
-            loggers[logger]['active']['filters'] = active_logger.filters
-
-            hl = []
-            bl = []
-            for h in active_logger.handlers:
-                hl.append(h.__class__.__name__)
-                try:
-                    bl.append(h.baseFilename)
-                except:
-                    bl.append('')
-            loggers[logger]['active']['handlers'] = hl
-            loggers[logger]['active']['logfiles'] = bl
+            loggers[logger]['active'] = self.get_logger_active_configuration(logger)
 
         self.logger.info("logger = {} -> {}".format(logger, loggers[logger]))
 
@@ -230,3 +284,36 @@ class LoggersController(RESTResource):
     read.expose_resource = True
     read.authentication_needed = False
 
+
+    def update(self, id=None, level=None):
+        self.logger.info("LoggersController.update('{}'), level='{}'".format(id, level))
+
+        if self.set_active_logger_level(id, level):
+            response = {'result': 'ok'}
+        else:
+            response = {'result': 'error', 'description': 'unable to set logger level'}
+
+        # config_filename = self.get_config_filename()
+        #
+        # if self.test_for_old_config(config_filename):
+        #     # make it 'readonly', if plugin.conf is used
+        #     response = {'result': 'error', 'description': 'Updateing .CONF files is not supported'}
+        # else:
+        #     response = {}
+        #     plugin_conf = shyaml.yaml_load_roundtrip(config_filename)
+        #     sect = plugin_conf.get(id)
+        #     if sect is None:
+        #         response = {'result': 'error', 'description': "Configuration section '{}' does not exist".format(id)}
+        #     else:
+        #         self.logger.warning("update: params = {}".format(params))
+        #         if params.get('config', {}).get('plugin_enabled', None) == True:
+        #             del params['config']['plugin_enabled']
+        #         plugin_conf[id] = params.get('config', {})
+        #         shyaml.yaml_save_roundtrip(config_filename, plugin_conf, False)
+        #         response = {'result': 'ok'}
+        #
+        # self.logger.info("PluginController(): update(): response = {}".format(response))
+        return json.dumps(response)
+
+    update.expose_resource = True
+    update.authentication_needed = False
