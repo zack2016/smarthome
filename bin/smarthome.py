@@ -99,6 +99,7 @@ import lib.scheduler
 import lib.tools
 import lib.utils
 import lib.orb
+import lib.backup
 from lib.shtime import Shtime
 from lib.shpypi import Shpypi
 import lib.shyaml
@@ -210,6 +211,7 @@ class SmartHome():
         self._etc_dir = os.path.join(self._extern_conf_dir, 'etc')
         self._items_dir = os.path.join(self._extern_conf_dir, 'items'+os.path.sep)
         self._logic_dir = os.path.join(self._extern_conf_dir, 'logics'+os.path.sep)
+        self._scenes_dir = os.path.join(self._extern_conf_dir, 'scenes'+os.path.sep)
         self._smarthome_conf_basename = os.path.join(self._etc_dir,'smarthome')
         self._logic_conf_basename = os.path.join(self._etc_dir, 'logic')
         self._module_conf_basename = os.path.join(self._etc_dir,'module')
@@ -1149,6 +1151,7 @@ if __name__ == '__main__':
     arggroup.add_argument('-q', '--quiet', help='DEPRECATED use logging config (reduce logging to the logfile)', action='store_true')
     arggroup.add_argument('-V', '--version', help='show SmartHomeNG version', action='store_true')
     arggroup.add_argument('--start', help='start SmartHomeNG and detach from console (default)', default=True, action='store_true')
+    arggroup.add_argument('-cb', '--create_backup', help='create backup of SmartHomeNG configuration (yaml configuration only)', action='store_true')
     argparser.add_argument('-c', '--config_dir', help='use external config dir (should contain "etc", "logics" and "items" subdirectories)')
     args = argparser.parse_args()
 
@@ -1200,7 +1203,10 @@ if __name__ == '__main__':
     elif args.verbose:
         MODE = 'verbose'
         pass
-
+    elif args.create_backup:
+        fn = lib.backup.create_backup(extern_conf_dir)
+        print("Backup of configuration created: {}".format(fn))
+        exit(0)
     # check for pid file
     if lib.daemon.check_sh_is_running(PIDFILE):
         print("SmartHomeNG already running with pid {}".format(lib.daemon.read_pidfile(PIDFILE)))

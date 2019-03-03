@@ -53,7 +53,7 @@ class Scenes():
 
     def __init__(self, smarthome):
         self._sh = smarthome
-        
+
         global _scenes_instance
         if _scenes_instance is not None:
             import inspect
@@ -68,7 +68,7 @@ class Scenes():
 
         self._scenes = {}
         self._learned_values = {}
-        self._scenes_dir = smarthome.base_dir + '/scenes/'
+        self._scenes_dir = smarthome._scenes_dir
         if not os.path.isdir(self._scenes_dir):
             logger.warning("Directory scenes not found. Ignoring scenes.".format(self._scenes_dir))
             return
@@ -88,8 +88,8 @@ class Scenes():
                         if isinstance( actions, list ):
                             for action in actions:
                                 if isinstance(action, dict):
-                                    self._add_scene_entry(item, str(state), 
-                                                          action.get('item', ''), str(action.get('value', '')), 
+                                    self._add_scene_entry(item, str(state),
+                                                          action.get('item', ''), str(action.get('value', '')),
                                                           action.get('learn', ''), scene_file_yaml[state].get('name', ''))
                                 else:
                                     logger.warning("Scene {}, state {}: action '{}' is not a dict".format(item, state, action))
@@ -117,10 +117,10 @@ class Scenes():
     def _eval(self, value):
         """
         Evaluate a scene value
-        
+
         :param value: value expression to evaluate
         :type value: str
-        
+
         :return: evaluated value or None
         :rtype: type of evaluated expression or None
         """
@@ -131,8 +131,8 @@ class Scenes():
             logger.warning(" - Problem evaluating: {} - {}".format(value, e))
             return value
         return rvalue
-        
-    
+
+
     def _get_learned_value(self, scene, state, ditem):
         try:
             lvalue = self._learned_values[scene +'#'+ str(state) +'#'+ ditem.id()]
@@ -140,8 +140,8 @@ class Scenes():
             return None
         logger.debug(" - Return learned value {} for scene/state/ditem {}".format(lvalue, scene +'#'+ str(state) +'#'+ ditem.id()))
         return lvalue
-        
-    
+
+
     def _set_learned_value(self, scene, state, ditem, lvalue):
         self._learned_values[scene +'#'+ str(state) +'#'+ ditem.id()] = lvalue
         logger.debug(" - Learned value {} for scene/state/ditem {}".format(lvalue, scene +'#'+ str(state) +'#'+ ditem.id()))
@@ -162,7 +162,7 @@ class Scenes():
         scene_learnfile = os.path.join(self._scenes_dir, scene+'_learned')
         yaml.yaml_save(scene_learnfile+'.yaml', learned_dict)
         return
-        
+
 
     def _load_learned_values(self, scene):
         """
@@ -177,10 +177,10 @@ class Scenes():
             for fkey in learned_dict:
                 key = scene + '#' + fkey
                 lvalue = learned_dict[fkey]
-                self._learned_values[key] = lvalue 
+                self._learned_values[key] = lvalue
                 logger.debug(" - Loading value {} for state/ditem {}".format(lvalue, key))
         return
-        
+
 
     def _trigger_setstate(self, item, state, caller, source, dest):
         """
@@ -206,7 +206,7 @@ class Scenes():
                 except Exception as e:
                     logger.warning(" - ditem '{}', value '{}', exception {}".format(ditem, rvalue, e))
         return
-        
+
 
     def _trigger_learnstate(self, item, state, caller, source, dest):
         """
@@ -218,7 +218,7 @@ class Scenes():
                 self._set_learned_value(item.id(), state, ditem, ditem())
         self._save_learned_values(str(item.id()))
         return
-        
+
 
     def _trigger(self, item, caller, source, dest):
         """
@@ -233,7 +233,7 @@ class Scenes():
             else:
                 logger.error("Invalid state '{}' for scene {}".format(state, item.id()))
                 return
-                
+
             if (state >= 0) and (state < 64):
                 # set state
                 self._trigger_setstate(item, state, caller, source, dest)
@@ -247,7 +247,7 @@ class Scenes():
     def _add_scene_entry(self, item, state, ditemname, value, learn=False, name=''):
         """
         Adds a single assignement entry to the loaded scenes
-        
+
         :param item: item defing the scene (type: scene)
         :param row: list of: state number, item to assign to, value to assign to item
         :param name: name of the scene state
@@ -265,7 +265,7 @@ class Scenes():
             if str(rvalue) != value:
                 logger.warning("_add_scene_entry - Learn set to 'False', because '{}' != '{}'".format(rvalue, value))
                 learn = False
-        
+
         if ditem is None:
             ditem = self.logics.return_logic(ditemname)
             if ditem is None:
@@ -280,8 +280,8 @@ class Scenes():
         else:
             self._scenes[item.id()] = {state: [[ditem, value, name, learn]]}
         return
-        
-        
+
+
     # ------------------------------------------------------------------------------------
     #   Following (static) methods of the class Plugins implement the API for plugins in shNG
     # ------------------------------------------------------------------------------------
@@ -290,18 +290,18 @@ class Scenes():
     def get_instance():
         """
         Returns the instance of the Scenes class, to be used to access the scene-api
-        
+
         Use it the following way to access the api:
-        
+
         .. code-block:: python
 
             from lib.scene import Scenes
             scenes = Scenes.get_instance()
-            
+
             # to access a method (eg. xxx()):
             scenes.xxx()
 
-        
+
         :return: scenes instance
         :rtype: object of None
         """
@@ -352,7 +352,7 @@ class Scenes():
             return self._scenes[scenename][action][0][2]
         except:
             logger.warning("get_scene_action_name: unable to get self._scenes['{}']['{}'][0][2] <- {}".format(scenename, action, self._scenes[scenename][action][0]))
-            return ''    
+            return ''
 
     def return_scene_value_actions(self, name, state):
         """
