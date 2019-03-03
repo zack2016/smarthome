@@ -1142,17 +1142,18 @@ if __name__ == '__main__':
     # argument handling
     argparser = argparse.ArgumentParser()
     arggroup = argparser.add_mutually_exclusive_group()
-    arggroup.add_argument('-v', '--verbose', help='verbose (info output) logging to the logfile - DEPRECATED use logging.config', action='store_true')
-    arggroup.add_argument('-d', '--debug', help='stay in the foreground with verbose output', action='store_true')
     arggroup.add_argument('-i', '--interactive', help='open an interactive shell with tab completion and with verbose logging to the logfile', action='store_true')
     arggroup.add_argument('-l', '--logics', help='reload all logics', action='store_true')
-    arggroup.add_argument('-s', '--stop', help='stop SmartHomeNG', action='store_true')
     arggroup.add_argument('-r', '--restart', help='restart SmartHomeNG', action='store_true')
-    arggroup.add_argument('-q', '--quiet', help='DEPRECATED use logging config (reduce logging to the logfile)', action='store_true')
+    arggroup.add_argument('-s', '--stop', help='stop SmartHomeNG', action='store_true')
     arggroup.add_argument('-V', '--version', help='show SmartHomeNG version', action='store_true')
     arggroup.add_argument('--start', help='start SmartHomeNG and detach from console (default)', default=True, action='store_true')
     arggroup.add_argument('-cb', '--create_backup', help='create backup of SmartHomeNG configuration (yaml configuration only)', action='store_true')
     argparser.add_argument('-c', '--config_dir', help='use external config dir (should contain "etc", "logics" and "items" subdirectories)')
+
+    arggroup.add_argument('-v', '--verbose', help='verbose (info output) logging to the logfile - DEPRECATED use logging-configuration', action='store_true')
+    arggroup.add_argument('-d', '--debug', help='stay in the foreground with verbose output - DEPRECATED use logging-configuration', action='store_true')
+    arggroup.add_argument('-q', '--quiet', help='reduce logging to the logfile - DEPRECATED use logging-configuration', action='store_true')
     args = argparser.parse_args()
 
     extern_conf_dir = BASE

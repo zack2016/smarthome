@@ -11,12 +11,32 @@ zu starten und Password-Hashes zu erzeugen (z.B. für das CLI Plugin).
 Weiterhin kann der Status einiger von Plugins genutzter Dienste angesehen werden, soweit diese Dienste auf dem selben
 Rechner laufen wie SmartHomeNG selbt.
 
+
+.. index:: eval Syntax-Prüfer
+.. index:: Dienste; eval Syntax-Prüfer
+.. index:: Backup
+.. index:: Dienste; Backup
+.. index:: Sicherung der Konfiguration
+
+Dienste
+=======
+
+Auf diesem Tab kann der Core von SmartHomeNG neu gestartet werden, sowie die Konfigurationsdaten von SmartHomeNG
+in einem Zip-Archiv herunter geladen werden. Das Zip-Archiv enthält die yaml Konfigurationsdateien aus dem /etc
+Verzeichnis (logging.yaml, logic.yaml, module.yaml, plugin.yaml, smarthome.yaml und struct.yaml). Weiterhin sind
+alle yaml Dateien der Verzeichnisse /items und /scenes enthalten. Außerdem enthält das Archiv den Python Code der
+Logiken aus dem Verzeichnis /logics.
+
 .. image:: assets/services.jpg
    :class: screenshot
 
 
-.. index:: eval Syntax-Prüfer
-.. index:: Dienste; eval Syntax-Prüfer
+In den folgenden Zeilen wird der Status diverser Dienste angezeigt, die optional benötigt werden (abhängig von den
+eingesetzten Plugins).
+
+Außerdem ist es möglich zu einem Passwort einen Hash Wert zu erzeugen, um diesen in der Konfiuration von Plugins zu
+speichern. Für die Passworte, die vom Core bzw. den Modulen verwendet werden ist das nicht notwendig, da hier der
+Hash bei der Konfiguration automatisch erzeugt wird.
 
 eval Syntax-Prüfer
 ==================
