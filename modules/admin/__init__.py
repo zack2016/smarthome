@@ -39,6 +39,7 @@ from .api_server import *
 from .api_auth import *
 
 from .api_config import *
+from .api_files import *
 from .api_items import *
 from .api_loggers import *
 from .api_logs import *
@@ -352,6 +353,7 @@ class WebApi(RESTResource):
         self.authenticate = AuthController(self.module)
 
         self.config = ConfigController(self.module)
+        self.files = FilesController(self.module)
         self.items = ItemsController(self.module)
         self.logics = LogicsController(self.module)
         self.loggers = LoggersController(self.module)

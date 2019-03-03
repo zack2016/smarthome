@@ -52,40 +52,7 @@ class LoggersController(RESTResource):
         self.logging_levels[10] = 'DEBUG'
         self.logging_levels[0] = 'NOTSET'
 
-        # self.logging_conf = shyaml.yaml_load(os.path.join(self.etc_dir, 'logging.yaml'))
-
-        # try:
-        #     roothandler = self.logging_conf['root']['handlers'][0]
-        #     self.root_logname = os.path.splitext(os.path.basename(self.logging_conf['handlers'][roothandler]['filename']))[0]
-        # except:
-        #     self.root_logname = ''
-        # self.logger.info("logging_conf: self.root_logname = {}".format(self.root_logname))
-
         return
-
-    # def get_body(self, text=False):
-    #     """
-    #     Get content body of received request header
-    #
-    #     :return:
-    #     """
-    #     cl = cherrypy.request.headers.get('Content-Length', 0)
-    #     if cl == 0:
-    #         # cherrypy.reponse.headers["Status"] = "400"
-    #         # return 'Bad request'
-    #         raise cherrypy.HTTPError(status=411)
-    #     rawbody = cherrypy.request.body.read(int(cl))
-    #     self.logger.debug("LoggersController.get_body(): rawbody = {}".format(rawbody))
-    #     try:
-    #         if text:
-    #             params = rawbody.decode('utf-8')
-    #         else:
-    #             params = json.loads(rawbody.decode('utf-8'))
-    #     except Exception as e:
-    #         self.logger.warning("LoggersController.get_body(): Exception {}".format(e))
-    #         return None
-    #     return params
-
 
 
     def save_logging_config(self):
@@ -97,6 +64,7 @@ class LoggersController(RESTResource):
             shyaml.yaml_save_roundtrip(conf_filename, self.logging_config, create_backup=False)
         return
 
+
     def load_logging_config(self):
         """
         Load config from logging.yaml to a dict
@@ -107,6 +75,7 @@ class LoggersController(RESTResource):
         result = shyaml.yaml_load(conf_filename + '.yaml')
 
         return result
+
 
     def load_logging_config_for_edit(self):
         """
@@ -179,53 +148,6 @@ class LoggersController(RESTResource):
 
     # -----------------------------------------------------------------------------------
 
-    # def get_logs(self):
-    #     """
-    #     Return the names of logs (names of .log-files without the extension)
-    #
-    #     :return: names of logs
-    #     :rtype: list
-    #     """
-    #     logs = []
-    #     for fn in self.files:
-    #         if os.path.splitext(fn)[1] == '.log':
-    #             log_name = os.path.splitext(fn)[0]
-    #             logs.append(log_name)
-    #     return logs
-    #
-    #
-    # def get_logs_with_files(self):
-    #     """
-    #     Return the names of logs (names of .log-files without the extension)
-    #
-    #     :return: names of logs
-    #     :rtype: list
-    #     """
-    #     logs = {}
-    #     for fn in self.files:
-    #         if os.path.splitext(fn)[1] == '.log':
-    #             log_name = os.path.splitext(fn)[0]
-    #
-    #             logfiles = self.get_files_of_log(log_name)
-    #             logs[log_name] = sorted(logfiles)
-    #     return logs
-    #
-    #
-    # def get_files_of_log(self, log_name):
-    #     """
-    #     Return the files (actual and passed days) of a log
-    #
-    #     :param log_name: name of the log
-    #     :type log_name: str
-    #     :return: filenames
-    #     :rtype: list
-    #     """
-    #     logfiles = []
-    #     for fn in self.files:
-    #         if fn.startswith(log_name+'.log'):
-    #             logfiles.append(fn)
-    #     return logfiles
-
 
     def get_logger_active_configuration(self, loggername=None):
 
@@ -293,27 +215,7 @@ class LoggersController(RESTResource):
         else:
             response = {'result': 'error', 'description': 'unable to set logger level'}
 
-        # config_filename = self.get_config_filename()
-        #
-        # if self.test_for_old_config(config_filename):
-        #     # make it 'readonly', if plugin.conf is used
-        #     response = {'result': 'error', 'description': 'Updateing .CONF files is not supported'}
-        # else:
-        #     response = {}
-        #     plugin_conf = shyaml.yaml_load_roundtrip(config_filename)
-        #     sect = plugin_conf.get(id)
-        #     if sect is None:
-        #         response = {'result': 'error', 'description': "Configuration section '{}' does not exist".format(id)}
-        #     else:
-        #         self.logger.warning("update: params = {}".format(params))
-        #         if params.get('config', {}).get('plugin_enabled', None) == True:
-        #             del params['config']['plugin_enabled']
-        #         plugin_conf[id] = params.get('config', {})
-        #         shyaml.yaml_save_roundtrip(config_filename, plugin_conf, False)
-        #         response = {'result': 'ok'}
-        #
-        # self.logger.info("PluginController(): update(): response = {}".format(response))
         return json.dumps(response)
 
     update.expose_resource = True
-    update.authentication_needed = False
+    update.authentication_needed = True

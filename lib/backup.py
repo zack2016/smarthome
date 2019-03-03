@@ -111,11 +111,10 @@ def backup_directory(backupzip, source_dir, extenstion='.yaml'):
 
     path = source_dir.split(os.path.sep)
     dir = path[len(path)-1]
-    source_dir += os.path.sep
     arc_dir = dir + os.path.sep
     files = []
-    for filename in os.listdir(dir):
+    for filename in os.listdir(source_dir):
         if filename.endswith(extenstion):
-            backup_file(backupzip, source_dir, arc_dir, filename)
+            backup_file(backupzip, source_dir+os.path.sep, arc_dir, filename)
 
     return
