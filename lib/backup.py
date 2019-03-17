@@ -103,7 +103,8 @@ def create_backup(conf_base_dir):
 
 def backup_file(backupzip, source_dir, arc_dir, filename):
 
-    backupzip.write(source_dir + filename, arcname=arc_dir+filename)
+    if os.path.isfile(source_dir + filename):
+        backupzip.write(source_dir + filename, arcname=arc_dir+filename)
     return
 
 
