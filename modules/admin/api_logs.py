@@ -183,5 +183,5 @@ class LogsController(RESTResource):
         raise cherrypy.NotFound
 
     read.expose_resource = True
-    read.authentication_needed = False
+    read.authentication_needed = True
 

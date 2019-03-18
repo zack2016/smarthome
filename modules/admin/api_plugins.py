@@ -126,6 +126,7 @@ class PluginsInstalledController(RESTResource):
                             description = plg_data.get('description', {'de': '', 'en': ''})
                             self.plugin_data[p]['description'] = description[default_language]
                             self.plugin_data[p]['version'] = plg_data.get('version', '')
+                            self.plugin_data[p]['state'] = plg_data.get('state', '')
                             self.plugin_data[p]['documentation'] = plg_data.get('documentation', '')
                             self.plugin_data[p]['multi_instance'] = plg_data.get('multi_instance', '')
                     else:
@@ -344,6 +345,7 @@ class PluginsInfoController(RESTResource):
                 plugin['stopped'] = False
 
             plugin['metadata']['type'] = x._metadata.get_string('type')
+            plugin['metadata']['state'] = x._metadata.get_string('state')
             plugin['metadata']['description'] = x._metadata.get_mlstring('description')
             plugin['metadata']['description_long'] = x._metadata.get_mlstring('description_long')
             plugin['metadata']['keywords'] = x._metadata.get_string('keywords')
