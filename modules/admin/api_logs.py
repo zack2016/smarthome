@@ -26,6 +26,7 @@ import json
 import cherrypy
 
 import lib.shyaml as shyaml
+from lib.utils import Utils
 
 import jwt
 from .rest import RESTResource
@@ -43,6 +44,8 @@ class LogsController(RESTResource):
         self.log_dir = os.path.join(self.base_dir, 'var', 'log')
 
         self.logging_conf = shyaml.yaml_load(os.path.join(self.etc_dir, 'logging.yaml'))
+
+        self.chunksize = self.module.log_chunksize
 
         try:
             roothandler = self.logging_conf['root']['handlers'][0]
@@ -98,18 +101,24 @@ class LogsController(RESTResource):
         logfiles = []
         for fn in self.files:
             if fn.startswith(log_name+'.log'):
-                logfiles.append(fn)
+                size = round(os.path.getsize(os.path.join(self.log_dir, fn)) / 1024, 1)
+                logfiles.append([fn,size])
         return logfiles
 
 
     # ======================================================================
     #  GET /api/logs
     #
-    def read(self, id=None):
+    def read(self, id=None, chunk='1'):
         """
         Handle GET requests for logs API
         """
-        self.logger.info("LogsController.read()")
+        self.logger.info("LogsController.read({}, chunk={})".format(id, chunk))
+
+        if Utils.is_int(chunk):
+            chunk = int(chunk)
+        else:
+            chunk = 1
 
         # get names of files in log directory
         self.files = sorted(os.listdir(self.log_dir))
@@ -121,19 +130,58 @@ class LogsController(RESTResource):
             logs = self.get_logs_with_files()
             return json.dumps({'logs':logs, 'default': self.root_logname})
 
-        if os.path.isfile(os.path.join(self.log_dir, id)):
-            # return content of the logfile specified in id, if file is found
-            with open(os.path.join(self.log_dir, id), 'r') as lf:
-                content = lf.read()
-            return content
-
         if id in logs:
             # get filenames available for the specified log (if log is specified without extension)
             logfiles = self.get_files_of_log(id)
             return json.dumps(sorted(logfiles))
 
+        if os.path.isfile(os.path.join(self.log_dir, id)):
+            # return content of the logfile specified in id, if file is found
+            chunk_read = 0
+            if chunk > 0:
+                chunk_read = chunk-1
+            skiplines = self.chunksize * (chunk-1)
+            if skiplines < 0:
+                skiplines = 0
+            skipcount = 0
+
+            with open(os.path.join(self.log_dir, id), 'r') as lfile:
+                loglines = []
+                lastchunk = True
+                for line in lfile:
+                    if (skiplines > 0) and (skipcount < skiplines):
+                        skipcount += 1
+                    else:
+                        if len(loglines) == self.chunksize:
+                            # chunk length reached, but there is another line
+                            lastchunk = False
+                            if chunk != 0:
+                                break
+                            else:
+                                chunk_read += 1
+                                # skip forward till last chunk is read
+                                loglines = []
+                                loglines.append(line.replace(" ", chr(160)))
+                        else:
+                            loglines.append(line.replace(" ", chr(160)))
+
+                chunk_read += 1
+
+            # return content
+            first_chunk_line = (chunk_read-1)*self.chunksize   # zero based
+            result = {}
+            result['file'] = id
+            result['filesize'] = round(os.path.getsize(os.path.join(self.log_dir, id)) / 1024, 1)
+            result['chunk'] = chunk_read
+            result['chunksize'] = self.chunksize
+            result['lastchunk'] = lastchunk
+            result['lines'] = [first_chunk_line + 1, first_chunk_line + len(loglines)]
+            result['loglines'] = loglines
+
+            return json.dumps(result)
+
         raise cherrypy.NotFound
 
     read.expose_resource = True
-    read.authentication_needed = True
+    read.authentication_needed = False
 

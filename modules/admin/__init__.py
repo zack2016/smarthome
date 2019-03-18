@@ -102,6 +102,7 @@ class Admin():
             self.itemtree_searchstart = self._parameters['itemtree_searchstart']
             self.websocket_host = self._parameters['websocket_host']
             self.websocket_port = self._parameters['websocket_port']
+            self.log_chunksize = self._parameters['log_chunksize']
         except:
             self.logger.critical(
                 "Module '{}': Inconsistent module (invalid metadata definition)".format(self.shortname))

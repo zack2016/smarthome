@@ -51,12 +51,16 @@ parameters:
             en: IP adress on which the http module should operate - not deeded, has only to be specified for special configurations
     port:
         type: int
+        valid_min: 0
+        valid_max: 65535
         default: 8383
         description:
             de: Portnummer für die Webinterfaces
             en: Port number for the access to web interfaces
     tls_port:
         type: int
+        valid_min: 0
+        valid_max: 65535
         default: 8385
         description:
             de: Portnummer für die Webinterfaces bei Nutzung von https
@@ -82,6 +86,8 @@ parameters:
 
     servicesport:
         type: int
+        valid_min: 0
+        valid_max: 65535
         default: 8384
         description:
             de: Portnummer für die Webservices
