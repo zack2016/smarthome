@@ -56,28 +56,28 @@ class FilesController(RESTResource):
         return
 
 
-    # def get_body(self, text=False):
-    #     """
-    #     Get content body of received request header (for file uploads)
-    #
-    #     :return:
-    #     """
-    #     cl = cherrypy.request.headers.get('Content-Length', 0)
-    #     if cl == 0:
-    #         # cherrypy.reponse.headers["Status"] = "400"
-    #         # return 'Bad request'
-    #         raise cherrypy.HTTPError(status=411)
-    #     rawbody = cherrypy.request.body.read(int(cl))
-    #     self.logger.debug("ServicesController(): get_body(): rawbody = {}".format(rawbody))
-    #     try:
-    #         if text:
-    #             params = rawbody.decode('utf-8')
-    #         else:
-    #             params = json.loads(rawbody.decode('utf-8'))
-    #     except Exception as e:
-    #         self.logger.warning("ServicesController(): get_body(): Exception {}".format(e))
-    #         return None
-    #     return params
+    def get_body(self, text=False):
+        """
+        Get content body of received request header (for file uploads)
+
+        :return:
+        """
+        cl = cherrypy.request.headers.get('Content-Length', 0)
+        if cl == 0:
+            # cherrypy.reponse.headers["Status"] = "400"
+            # return 'Bad request'
+            raise cherrypy.HTTPError(status=411)
+        rawbody = cherrypy.request.body.read(int(cl))
+        self.logger.debug("ServicesController(): get_body(): rawbody = {}".format(rawbody))
+        try:
+            if text:
+                params = rawbody.decode('utf-8')
+            else:
+                params = json.loads(rawbody.decode('utf-8'))
+        except Exception as e:
+            self.logger.warning("ServicesController(): get_body(): Exception {}".format(e))
+            return None
+        return params
 
 
     # def strip_empty_lines(self, txt):
@@ -93,22 +93,29 @@ class FilesController(RESTResource):
 
 
     # ======================================================================
-    #  /api/server/yamlcheck
+    #  /api/files/logging
     #
-    def yamlcheck(self):
+    def save_logging_config(self):
         """
-        Check syntax of YAML configuration
+        Save logging configuration
 
         :return: status dict
         """
         params = None
-        #params = self.get_body(text=True)
+        params = self.get_body(text=True)
         if params is None:
-            self.logger.warning("ServicesController(): yamlcheck(): Bad, request")
+            self.logger.warning("FilesController(): save_logging_config(): Bad, request")
             raise cherrypy.HTTPError(status=411)
-        self.logger.info("ServicesController(): yamlcheck(): '{}'".format(params))
+        self.logger.debug("FilesController(): save_logging_config(): '{}'".format(params))
 
-        return self.yaml_syntax_checker(params)
+
+        filename = os.path.join(self.etc_dir, 'logging.yaml')
+        read_data = None
+        with open(filename, 'w') as f:
+            f.write(params)
+
+        result = {"result": "ok"}
+        return json.dumps(result)
 
 
     def cachecheck(self):
@@ -157,7 +164,6 @@ class FilesController(RESTResource):
             read_data = f.read()
         return cherrypy.lib.static.serve_file(filename, 'application/x-download',
                                  'attachment', 'logging.yaml')
-        # return read_data
 
 
     def get_config_backup(self):
@@ -193,17 +199,17 @@ class FilesController(RESTResource):
         return None
 
     read.expose_resource = True
-    read.authentication_needed = False
+    read.authentication_needed = True
 
 
-    # def update(self, id='', filename=''):
-    #     """
-    #     Handle PUT requests for server API
-    #     """
-    #     self.logger.info("ServicesController.update('{}')".format(id))
-    #
-    #     if id == 'evalcheck':
-    #         return self.evalcheck()
+    def update(self, id='', filename=''):
+        """
+        Handle PUT requests for server API
+        """
+        self.logger.info("FilesController.update('{}')".format(id))
+
+        if id == 'logging':
+            return self.save_logging_config()
     #     elif id == 'yamlcheck':
     #         return self.yamlcheck()
     #     elif id == 'yamlconvert':
@@ -213,6 +219,6 @@ class FilesController(RESTResource):
     #
     #     return None
     #
-    # update.expose_resource = True
-    # update.authentication_needed = True
+    update.expose_resource = True
+    update.authentication_needed = True
 
