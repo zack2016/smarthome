@@ -145,14 +145,30 @@ class LogsController(RESTResource):
                 skiplines = 0
             skipcount = 0
 
+            # read logfile
             with open(os.path.join(self.log_dir, id), 'r') as lfile:
+                append_to_previous_line = False
                 loglines = []
                 lastchunk = True
+                # read lines of logfile
                 for line in lfile:
                     if (skiplines > 0) and (skipcount < skiplines):
+                        # skip line, if not reading first chunk
                         skipcount += 1
                     else:
-                        if len(loglines) == self.chunksize:
+                        if len(loglines) < self.chunksize:
+                            if line.startswith('Traceback'):
+                                append_to_previous_line = True
+                            if append_to_previous_line:
+                                # append to previous log line
+                                loglines[len(loglines)-1] += '> ' + line.replace(" ", chr(160))
+                                if (not line.startswith('Traceback')) and (not line.startswith('  ')):
+                                    # last line of multiline traceback reached
+                                    append_to_previous_line = False
+                            else:
+                                # append new log line
+                                loglines.append(line.replace(" ", chr(160)))
+                        else:
                             # chunk length reached, but there is another line
                             lastchunk = False
                             if chunk != 0:
@@ -162,8 +178,6 @@ class LogsController(RESTResource):
                                 # skip forward till last chunk is read
                                 loglines = []
                                 loglines.append(line.replace(" ", chr(160)))
-                        else:
-                            loglines.append(line.replace(" ", chr(160)))
 
                 chunk_read += 1
 
@@ -177,7 +191,6 @@ class LogsController(RESTResource):
             result['lastchunk'] = lastchunk
             result['lines'] = [first_chunk_line + 1, first_chunk_line + len(loglines)]
             result['loglines'] = loglines
-
             return json.dumps(result)
 
         raise cherrypy.NotFound
