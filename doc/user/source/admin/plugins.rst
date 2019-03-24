@@ -18,6 +18,12 @@ Rechts in der jeweiligen Zeile sind Icons über die (falls vorhanden)
    :class: screenshot
 
 
+.. note::
+
+   Webinterfaces von Plugins können die durch das Admin Interface genutzte Art der Authentifizierung noch nicht
+   erkennen/nutzen. Deshalb erscheint beim ersten Aufruf eines Web Interfaces der Basic-Auth Anmeldedialog des Browsers
+   und es muss eine Anmeldung mit Username/Passwort des Admin Interfaces erfolgen.
+
 
 .. toctree::
    :maxdepth: 4

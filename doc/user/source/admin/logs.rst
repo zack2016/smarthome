@@ -30,7 +30,7 @@ Tab 'Admin Modul') konfiguriert werden.
 
 .. note::
 
-   Log-Einträge mit einem Traceback werden hierbei mit dem Trceback als ein Eintrag gezählt.
+   Log-Einträge mit einem Traceback werden hierbei zusammen mit dem Traceback als ein Eintrag gezählt.
 
 
 Wenn ein Log länger als die gewählte Chunk Größe ist, kann mit den Navigations-Buttons ein Chunk weiter oder zurück
