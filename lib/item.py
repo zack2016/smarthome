@@ -1650,7 +1650,7 @@ class Item():
         :return: Age of the previous value
         :rtype: int
         """
-        return self.property.last_change_age
+        return self.property.prev_change_age
 
     def prev_update(self):
         """
