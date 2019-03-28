@@ -138,6 +138,11 @@ class Admin():
                 'tools.staticdir.on': True,
                 'tools.staticdir.dir': 'static',
                 'tools.staticdir.index': 'index.html',
+                'tools.chaching.on': False,
+                'tools.caching.force': False,
+                'tools.caching.delay': 6,
+                'tools.expires.on': True,
+                'tools.expires.secs': 6,
                 'error_page.404': self.webif_dir + '/static/index.html',
                 #                    'error_page.404': self.error_page,
                 #                   'tools.auth_basic.on': False,
@@ -147,6 +152,11 @@ class Admin():
         # API config (special: request.dispatch)
         config_api = {
             '/': {
+                'tools.chaching.on': False,
+                'tools.caching.force': False,
+                'tools.caching.delay': 6,
+                'tools.expires.on': True,
+                'tools.expires.secs': 6,
                 'request.dispatch': cherrypy.dispatch.MethodDispatcher(),
                 'error_page.404': self._error_page,
                 'error_page.400': self._error_page,

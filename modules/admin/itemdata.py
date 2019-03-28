@@ -62,13 +62,13 @@ class ItemData:
                     parent_items_sorted.append(item)
 
             (item_data, item_count) = self._build_item_tree(parent_items_sorted)
-            self.logger.warning("admin: items_json: In tree-mode, {} items returned".format(item_count))
+            self.logger.info("admin: items_json: In tree-mode, {} items returned".format(item_count))
             return json.dumps([item_count, item_data])
         else:
             item_list = []
             for item in items_sorted:
                 item_list.append(item._path)
-            self.logger.warning("admin: items_json: Not in tree-mode, {} items returned".format(len(item_list)))
+            self.logger.info("admin: items_json: Not in tree-mode, {} items returned".format(len(item_list)))
             return json.dumps(item_list)
 
 

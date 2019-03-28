@@ -51,6 +51,7 @@ class FilesController(RESTResource):
         self.logger = logging.getLogger(__name__)
 
         self.etc_dir = self._sh._etc_dir
+        self.items_dir = self._sh._items_dir
         self.extern_conf_dir = self._sh._extern_conf_dir
         self.modules_dir = os.path.join(self.base_dir, 'modules')
         return
@@ -118,6 +119,29 @@ class FilesController(RESTResource):
         return json.dumps(result)
 
 
+    def save_items_config(self, filename):
+        """
+        Save items configuration
+
+        :return: status dict
+        """
+        params = None
+        params = self.get_body(text=True)
+        if params is None:
+            self.logger.warning("FilesController(): save_items_config(): Bad, request")
+            raise cherrypy.HTTPError(status=411)
+        self.logger.debug("FilesController(): save_items_config(): '{}'".format(params))
+
+
+        filename = os.path.join(self.items_dir, filename + '.yaml')
+        read_data = None
+        with open(filename, 'w') as f:
+            f.write(params)
+
+        result = {"result": "ok"}
+        return json.dumps(result)
+
+
     def cachecheck(self):
         """
         returns a list of items as json structure
@@ -155,15 +179,43 @@ class FilesController(RESTResource):
 
         return json.dumps(unused_cache_files)
 
+    # --------------------------------------------------------------------------------------
 
     def get_logging_config(self):
 
+        self.logger.info("FilesController.get_logging_config()")
         filename = os.path.join(self.etc_dir, 'logging.yaml')
         read_data = None
         with open(filename) as f:
             read_data = f.read()
         return cherrypy.lib.static.serve_file(filename, 'application/x-download',
                                  'attachment', 'logging.yaml')
+
+
+    def get_items_filelist(self):
+
+        list = os.listdir( self.items_dir )
+        filelist = []
+        for filename in list:
+            if filename.endswith('.yaml'):
+                filelist.append(filename)
+            if filename.endswith('.conf'):
+                filelist.append(filename)
+
+        self.logger.info("filelist = {}".format(filelist))
+        self.logger.info("filelist.sort() = {}".format(filelist.sort()))
+        return json.dumps(sorted(filelist))
+
+
+    def get_items_config(self, fn):
+
+        self.logger.info("FilesController.get_items_config({})".format(fn))
+        filename = os.path.join(self.items_dir, fn + '.yaml')
+        read_data = None
+        with open(filename) as f:
+            read_data = f.read()
+        return cherrypy.lib.static.serve_file(filename, 'application/x-download',
+                                 'attachment', fn + '.yaml')
 
 
     def get_config_backup(self):
@@ -187,13 +239,19 @@ class FilesController(RESTResource):
     # ======================================================================
     #  GET /api/services/
     #
-    def read(self, id=''):
+    def read(self, id='', filename=''):
         """
         Handle GET requests for server API
         """
+        self.logger.info("FilesController.read(id='{}', filename='{}')".format(id, filename))
 
         if id == 'logging':
             return self.get_logging_config()
+        elif (id == 'items' and filename == ''):
+            return self.get_items_filelist()
+        elif id == 'items':
+            cherrypy.response.headers['Cache-Control'] = 'no-cache, max-age=0, must-revalidate, no-store'
+            return self.get_items_config(filename)
         elif id == 'backup':
             return self.get_config_backup()
         return None
@@ -206,10 +264,12 @@ class FilesController(RESTResource):
         """
         Handle PUT requests for server API
         """
-        self.logger.info("FilesController.update('{}')".format(id))
+        self.logger.info("FilesController.update(id='{}', filename='{}')".format(id, filename))
 
         if id == 'logging':
             return self.save_logging_config()
+        elif (id == 'items' and filename != ''):
+            return self.save_items_config(filename)
     #     elif id == 'yamlcheck':
     #         return self.yamlcheck()
     #     elif id == 'yamlconvert':

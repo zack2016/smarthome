@@ -135,6 +135,8 @@ class ServicesController(RESTResource):
     #
     def yaml_syntax_checker(self, yaml_code):
         check_result = ''
+        if yaml_code == '':
+            return check_result
 
         yaml_code = self.strip_empty_lines(yaml_code)
 
