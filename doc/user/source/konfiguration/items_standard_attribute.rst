@@ -94,8 +94,12 @@ plugin-spezifischen Attribute ist in der Dokumentation des jeweiligen Plugins na
 |                 | werden die Template Strukturen in der Reihenfolge angewendet, in der sie in  |
 |                 | der Liste angegeben wurden. **Ab SmartHomeNG v1.6**                          |
 +-----------------+------------------------------------------------------------------------------+
-| threshold       | legt einen Schwellwert oder einen Schwellwertbereich fest., z.B. 21.4|25.0   |
-|                 | der eine Logik triggert, wenn der Wert höher als 25.0 or niedriger als 21.4  |
+| threshold       | legt einen Schwellwert oder einen Schwellwertbereich fest. Wenn der Wert     |
+|                 | diesen Wert über- bzw. unterschreitet oder der Wert Bereich verlässt oder    |
+|                 | wieder betritt, kann durch dieses Item eine Logik oder die Berechnung anderer|
+|                 | Items getriggert werden.                                                     |
+|                 | Die Angabe des Bereichs erfolgt in Form von zwei numerischen Werten,         |
+|                 | die durch einen Doppelpunkt getrennt werden. (z.B. 21.4:25.0)                |
 |                 | ist. Es kann auch ein einzelner Wert notiert werden                          |
 +-----------------+------------------------------------------------------------------------------+
 | type            | Um Werte zu speichern, muss ein Typ vorgegeben werden. Unterstützte Typen    |

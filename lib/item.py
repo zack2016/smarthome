@@ -451,6 +451,7 @@ class Item():
         self._path = path
         self._sh = smarthome
         self._threshold = False
+        self._threshold_data = [0,0,False]
         self._type = None
         self._struct = None
         self._value = None
@@ -580,6 +581,9 @@ class Item():
                     self.__th_crossed = False
                     self.__th_low = float(low.strip())
                     self.__th_high = float(high.strip())
+                    self._threshold_data[0] = self.__th_low
+                    self._threshold_data[1] = self.__th_high
+                    self._threshold_data[2] = self.__th_crossed
                     logger.debug("Item {}: set threshold => low: {} high: {}".format(self._path, self.__th_low, self.__th_high))
                 elif attr == '_filename':
                     # name of file, which defines this item
@@ -2157,9 +2161,11 @@ class Item():
             if self._threshold and self.__logics_to_trigger:
                 if self.__th_crossed and self._value <= self.__th_low:  # cross lower bound
                     self.__th_crossed = False
+                    self._threshold_data[2] = self.__th_crossed
                     self.__trigger_logics(trigger_source_details)
                 elif not self.__th_crossed and self._value >= self.__th_high:  # cross upper bound
                     self.__th_crossed = True
+                    self._threshold_data[2] = self.__th_crossed
                     self.__trigger_logics(trigger_source_details)
             elif self.__logics_to_trigger:
                 self.__trigger_logics(trigger_source_details)

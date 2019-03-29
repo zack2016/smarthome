@@ -202,6 +202,7 @@ class ItemData:
                          'crontab': str(crontab),
                          'autotimer': self.disp_str(item._autotimer),
                          'threshold': self.disp_str(item._threshold),
+                         'threshold_crossed': '',
 #                         'config': json.dumps(item_conf_sorted),
 #                         'logics': json.dumps(logics),
 #                         'triggers': json.dumps(triggers),
@@ -210,6 +211,9 @@ class ItemData:
                          'triggers': triggers,
                          'filename': str(item._filename),
                          }
+            if item._threshold:
+                data_dict['threshold'] = str(item._threshold_data[0]) + ' : ' + str(item._threshold_data[1])
+                data_dict['threshold_crossed'] = str(item._threshold_data[2])
 
             if item._struct is not None:
                 data_dict['struct'] = item._struct

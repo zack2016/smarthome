@@ -351,7 +351,8 @@ class SmartPlugin(SmartObject, Utils):
 
     def __get_iattr(self, attr):
         """
-        Returns item attribute for this plugin instance
+        Returns the given item attribute name for this plugin instance
+        (by adding the instance to the attribute name)
 
         :param attr: name of attribute
         :type attr: str

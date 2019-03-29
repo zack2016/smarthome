@@ -23,6 +23,7 @@
 import os
 import datetime
 import logging
+import collections
 import json
 import cherrypy
 
@@ -142,10 +143,12 @@ class ServicesController(RESTResource):
 
         import lib.shyaml as shyaml
         ydata, estr = shyaml.yaml_load_fromstring(yaml_code, True)
-
+        self.logger.info("yaml_syntax_checker(): type(ydata) = {},estr='{}'".format(type(ydata), estr))
         if estr != '':
             check_result = 'ERROR: \n\n' + estr
-        if ydata != None:
+        elif not isinstance(ydata, collections.OrderedDict):
+            check_result = 'ERROR: \n\n' + 'No valid YAML code'
+        elif ydata != None:
             check_result += convert_yaml(ydata).replace('\n\n', '\n')
 
         return check_result
