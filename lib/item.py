@@ -318,6 +318,47 @@ class Items():
             return [self.__item_dict[item] for item in self.__items if regex.match(item)]
 
 
+    def _attribute_find(self, attr, attr_list):
+        """
+        Find an attribute in an attribute list
+
+        :param attr:
+        :param attr_list:
+        :return:
+
+        examples:
+            attr_list = ['avm_identifier' , 'avm_data_type@willy_tel', 'avm_wlan_index', 'visu_acl']
+
+            attr                          result
+            ---_                          ------
+            'willy_tel'                -> False
+            '@willy_tel'               -> True
+            '@fritz_wz'                -> False
+
+            'avm_data_type@willy_tel'  -> True
+            'avm_data_type@fritz_wz'   -> False
+            'avm_data_type'            -> False
+            'avm_data_type@'           -> True
+
+            'avm_wlan_index'           -> True
+            'avm_wlan_index@'          -> True
+
+            'visu_acl'                 -> True
+            '@visu_acl'                -> False
+
+        """
+        result = False
+        if attr.endswith('@'):
+            result = any(s for s in attr_list if s.startswith(attr))
+            if not result:
+                result = attr[:-1] in attr_list
+        elif attr.startswith('@'):
+            result = any(s for s in attr_list if s.endswith(attr))
+        else:
+            result = attr in attr_list
+        return result
+
+
     def find_items(self, conf):
         """
         Function to find items that match the specified configuration
@@ -330,7 +371,9 @@ class Items():
         """
 
         for item in self.__items:
-            if conf in self.__item_dict[item].conf:
+            # if conf in self.__item_dict[item].conf:
+            #     yield self.__item_dict[item]
+            if self._attribute_find(conf, self.return_item(item).property.attributes):
                 yield self.__item_dict[item]
 
 
@@ -349,7 +392,9 @@ class Items():
 
         children = []
         for item in parent:
-            if conf in item.conf:
+            # if conf in item.conf:
+            #     children.append(item)
+            if self._attribute_find(conf, item.property.attributes):
                 children.append(item)
             children += self.find_children(item, conf)
         return children
