@@ -190,10 +190,13 @@ class Items():
         struct_filename = os.path.join(etc_dir, 'struct.yaml')
         struct_definitions = shyaml.yaml_load(os.path.join(etc_dir, 'struct.yaml'), ordered=True, ignore_notfound=True)
         if struct_definitions is not None:
-            for key in struct_definitions:
-                self.add_struct_definition('', key, struct_definitions[key])
+            if isinstance(struct_definitions, collections.OrderedDict):
+                for key in struct_definitions:
+                    self.add_struct_definition('', key, struct_definitions[key])
+            else:
+                logger.error("load_itemdefinitions(): Invalid content in struct.yaml: struct_definitions = '{}'".format(struct_definitions))
         # for Testing: Save structure of joined item structs
-        logger.warning("load_itemdefinitions: For testing the joined item structs are saved to {}".format(os.path.join(etc_dir, 'structs_joined.yaml')))
+        logger.warning("load_itemdefinitions(): For testing the joined item structs are saved to {}".format(os.path.join(etc_dir, 'structs_joined.yaml')))
         shyaml.yaml_save(os.path.join(etc_dir, 'structs_joined.yaml'), self._struct_definitions)
 
         item_conf = None
@@ -217,8 +220,12 @@ class Items():
 
         for item in self.return_items():
             item._init_prerun()
+        # starting schedulers (for crontab and cycle attributes) moved to the end of the initialization in shng v1.6
+        for item in self.return_items():
+            item._init_start_scheduler()
         for item in self.return_items():
             item._init_run()
+
 #        self.item_count = len(self.__items)
 #        self._sh.item_count = self.item_count()
 
@@ -655,12 +662,13 @@ class Item():
                 logger.warning("Item {}: Created cache for item: {}".format(self._cache, self._cache))
         #############################################################
         # Crontab/Cycle
+        # Moved to end of initialization in shng v1.6
         #############################################################
-        if self._crontab is not None or self._cycle is not None:
-            cycle = self._cycle
-            if cycle is not None:
-                cycle = self._build_cycledict(cycle)
-            self._sh.scheduler.add(self._itemname_prefix+self._path, self, cron=self._crontab, cycle=cycle)
+        # if self._crontab is not None or self._cycle is not None:
+        #     cycle = self._cycle
+        #     if cycle is not None:
+        #         cycle = self._build_cycledict(cycle)
+        #     self._sh.scheduler.add(self._itemname_prefix+self._path, self, cron=self._crontab, cycle=cycle)
         #############################################################
         # Plugins
         #############################################################
@@ -1920,7 +1928,7 @@ class Item():
         """
         Build eval expressions from special functions and triggers before first run
 
-        Called from load_itemdefinitions
+        Called from Items.load_itemdefinitions
         """
         if self._trigger:
             # Only if item has an eval_trigger
@@ -1949,11 +1957,32 @@ class Item():
                     self._eval = 'min({0})'.format(','.join(items))
 
 
+    def _init_start_scheduler(self):
+        """
+        Start schedulers of the items which have a crontab or a cycle attribute
+
+        up to version 1.5 of SmartHomeNG the schedulers were started when initializing the item. That
+        could lead to a scheduler to fire a routine, which references an item which is not yet initialized
+        :return:
+        """
+
+        #############################################################
+        # Crontab/Cycle
+        #############################################################
+        if self._crontab is not None or self._cycle is not None:
+            cycle = self._cycle
+            if cycle is not None:
+                cycle = self._build_cycledict(cycle)
+            self._sh.scheduler.add(self._itemname_prefix+self._path, self, cron=self._crontab, cycle=cycle)
+
+        return
+
+
     def _init_run(self):
         """
         Run initial eval to set an initial value for the item
 
-        Called from load_itemdefinitions
+        Called from Items.load_itemdefinitions
         """
         if self._trigger:
             # Only if item has an eval_trigger
