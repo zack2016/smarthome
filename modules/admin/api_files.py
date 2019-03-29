@@ -96,6 +96,17 @@ class FilesController(RESTResource):
     # ======================================================================
     #  /api/files/logging
     #
+    def get_logging_config(self):
+
+        self.logger.info("FilesController.get_logging_config()")
+        filename = os.path.join(self.etc_dir, 'logging.yaml')
+        read_data = None
+        with open(filename) as f:
+            read_data = f.read()
+        return cherrypy.lib.static.serve_file(filename, 'application/x-download',
+                                 'attachment', 'logging.yaml')
+
+
     def save_logging_config(self):
         """
         Save logging configuration
@@ -105,9 +116,9 @@ class FilesController(RESTResource):
         params = None
         params = self.get_body(text=True)
         if params is None:
-            self.logger.warning("FilesController(): save_logging_config(): Bad, request")
+            self.logger.warning("FilesController.save_logging_config(): Bad, request")
             raise cherrypy.HTTPError(status=411)
-        self.logger.debug("FilesController(): save_logging_config(): '{}'".format(params))
+        self.logger.debug("FilesController.save_logging_config(): '{}'".format(params))
 
 
         filename = os.path.join(self.etc_dir, 'logging.yaml')
@@ -117,6 +128,76 @@ class FilesController(RESTResource):
 
         result = {"result": "ok"}
         return json.dumps(result)
+
+
+    # ======================================================================
+    #  /api/files/structs
+    #
+    def get_struct_config(self):
+
+        self.logger.info("FilesController.get_struct_config()")
+        filename = os.path.join(self.etc_dir, 'struct.yaml')
+        if not(os.path.isfile(filename)):
+            open(filename, 'a').close()
+            self.logger.info("FilesController.get_struct_config(): created empty file {}".format(filename))
+
+        read_data = None
+        with open(filename) as f:
+            read_data = f.read()
+        return cherrypy.lib.static.serve_file(filename, 'application/x-download',
+                                 'attachment', 'struct.yaml')
+
+
+    def save_struct_config(self):
+        """
+        Save struct configuration
+
+        :return: status dict
+        """
+        params = None
+        params = self.get_body(text=True)
+        if params is None:
+            self.logger.warning("FilesController.save_struct_config(): Bad, request")
+            raise cherrypy.HTTPError(status=411)
+        self.logger.debug("FilesController.save_struct_config(): '{}'".format(params))
+
+
+        filename = os.path.join(self.etc_dir, 'struct.yaml')
+        read_data = None
+        with open(filename, 'w') as f:
+            f.write(params)
+
+        result = {"result": "ok"}
+        return json.dumps(result)
+
+
+    # ======================================================================
+    #  /api/files/items
+    #
+    def get_items_filelist(self):
+
+        list = os.listdir( self.items_dir )
+        filelist = []
+        for filename in list:
+            if filename.endswith('.yaml'):
+                filelist.append(filename)
+            if filename.endswith('.conf'):
+                filelist.append(filename)
+
+        self.logger.info("filelist = {}".format(filelist))
+        self.logger.info("filelist.sort() = {}".format(filelist.sort()))
+        return json.dumps(sorted(filelist))
+
+
+    def get_items_config(self, fn):
+
+        self.logger.info("FilesController.get_items_config({})".format(fn))
+        filename = os.path.join(self.items_dir, fn + '.yaml')
+        read_data = None
+        with open(filename) as f:
+            read_data = f.read()
+        return cherrypy.lib.static.serve_file(filename, 'application/x-download',
+                                 'attachment', fn + '.yaml')
 
 
     def save_items_config(self, filename):
@@ -181,43 +262,6 @@ class FilesController(RESTResource):
 
     # --------------------------------------------------------------------------------------
 
-    def get_logging_config(self):
-
-        self.logger.info("FilesController.get_logging_config()")
-        filename = os.path.join(self.etc_dir, 'logging.yaml')
-        read_data = None
-        with open(filename) as f:
-            read_data = f.read()
-        return cherrypy.lib.static.serve_file(filename, 'application/x-download',
-                                 'attachment', 'logging.yaml')
-
-
-    def get_items_filelist(self):
-
-        list = os.listdir( self.items_dir )
-        filelist = []
-        for filename in list:
-            if filename.endswith('.yaml'):
-                filelist.append(filename)
-            if filename.endswith('.conf'):
-                filelist.append(filename)
-
-        self.logger.info("filelist = {}".format(filelist))
-        self.logger.info("filelist.sort() = {}".format(filelist.sort()))
-        return json.dumps(sorted(filelist))
-
-
-    def get_items_config(self, fn):
-
-        self.logger.info("FilesController.get_items_config({})".format(fn))
-        filename = os.path.join(self.items_dir, fn + '.yaml')
-        read_data = None
-        with open(filename) as f:
-            read_data = f.read()
-        return cherrypy.lib.static.serve_file(filename, 'application/x-download',
-                                 'attachment', fn + '.yaml')
-
-
     def get_config_backup(self):
 
         filename = lib.backup.create_backup(self.extern_conf_dir)
@@ -246,7 +290,11 @@ class FilesController(RESTResource):
         self.logger.info("FilesController.read(id='{}', filename='{}')".format(id, filename))
 
         if id == 'logging':
+            cherrypy.response.headers['Cache-Control'] = 'no-cache, max-age=0, must-revalidate, no-store'
             return self.get_logging_config()
+        elif id == 'structs':
+            cherrypy.response.headers['Cache-Control'] = 'no-cache, max-age=0, must-revalidate, no-store'
+            return self.get_struct_config()
         elif (id == 'items' and filename == ''):
             return self.get_items_filelist()
         elif id == 'items':
@@ -268,17 +316,13 @@ class FilesController(RESTResource):
 
         if id == 'logging':
             return self.save_logging_config()
+        elif id == 'structs':
+            return self.save_struct_config()
         elif (id == 'items' and filename != ''):
             return self.save_items_config(filename)
-    #     elif id == 'yamlcheck':
-    #         return self.yamlcheck()
-    #     elif id == 'yamlconvert':
-    #         return self.yamlconvert()
-    #     elif id == 'cachefile_delete':
-    #         return self.cachefile_delete(filename)
-    #
-    #     return None
-    #
+
+        return None
+
     update.expose_resource = True
     update.authentication_needed = True
 
