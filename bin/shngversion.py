@@ -38,9 +38,10 @@ import subprocess
 # Update auf 1.5a wg. Changes in lib.shtime
 # Update auf 1.5b wg. Einführung von lib.shpypi
 # Update auf 1.5c wg. Einführung von bin.shngversion.get_shng_branch()
-# Update auf 1.54 wg. Einführung von Item Strukturen
+# Update auf 1.5d wg. Einführung von Item Strukturen
+# Update auf 1.5e wg. Einführung von Item Property 'attributes'
 
-shNG_version = '1.5d'
+shNG_version = '1.5e'
 
 # ---------------------------------------------------------------------------------
 FileBASE = None

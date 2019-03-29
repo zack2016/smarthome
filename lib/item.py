@@ -900,6 +900,18 @@ class Item():
             logger.warning("Casting value '{}' to required type before assigning it to property '{}' of item '{}'".format(value, prop, self._item._path))
             return
 
+        @property
+        def attributes(self):
+            """
+            Read-Only Property: attributes. List of plugin-specific attribute names
+
+            Available in SmartHomeNG v1.6 and above
+
+            :return: path of the item
+            :rtype: str
+            """
+            return list(self._item.conf.keys())
+
 
         @property
         def defined_in(self):
