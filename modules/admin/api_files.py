@@ -52,6 +52,7 @@ class FilesController(RESTResource):
 
         self.etc_dir = self._sh._etc_dir
         self.items_dir = self._sh._items_dir
+        self.logics_dir = self._sh._logic_dir
         self.extern_conf_dir = self._sh._extern_conf_dir
         self.modules_dir = os.path.join(self.base_dir, 'modules')
         return
@@ -223,6 +224,59 @@ class FilesController(RESTResource):
         return json.dumps(result)
 
 
+    # ======================================================================
+    #  /api/files/logics
+    #
+    def get_logics_filelist(self):
+
+        list = os.listdir( self.logics_dir )
+        filelist = []
+        for filename in list:
+            if filename.endswith('.py'):
+                filelist.append(filename)
+
+        self.logger.info("filelist = {}".format(filelist))
+        self.logger.info("filelist.sort() = {}".format(filelist.sort()))
+        return json.dumps(sorted(filelist))
+
+
+    def get_logics_config(self, fn):
+
+        self.logger.info("FilesController.get_logics_config({})".format(fn))
+        filename = os.path.join(self.logics_dir, fn)
+        read_data = None
+        with open(filename) as f:
+            read_data = f.read()
+        return cherrypy.lib.static.serve_file(filename, 'application/x-download',
+                                 'attachment', fn)
+
+
+    def save_logics_config(self, filename):
+        """
+        Save items configuration
+
+        :return: status dict
+        """
+        params = None
+        params = self.get_body(text=True)
+        if params is None:
+            self.logger.warning("FilesController.save_logics_config(): Bad, request")
+            raise cherrypy.HTTPError(status=411)
+        self.logger.debug("FilesController.save_logics_config(): '{}'".format(params))
+
+
+        filename = os.path.join(self.logics_dir, filename)
+        read_data = None
+        with open(filename, 'w') as f:
+            f.write(params)
+
+        result = {"result": "ok"}
+        return json.dumps(result)
+
+
+    # ======================================================================
+    #  /api/files/...
+    #
     def cachecheck(self):
         """
         returns a list of items as json structure
@@ -300,6 +354,11 @@ class FilesController(RESTResource):
         elif id == 'items':
             cherrypy.response.headers['Cache-Control'] = 'no-cache, max-age=0, must-revalidate, no-store'
             return self.get_items_config(filename)
+        elif (id == 'logics' and filename == ''):
+            return self.get_logics_filelist()
+        elif id == 'logics':
+            cherrypy.response.headers['Cache-Control'] = 'no-cache, max-age=0, must-revalidate, no-store'
+            return self.get_logics_config(filename)
         elif id == 'backup':
             return self.get_config_backup()
         return None
@@ -320,9 +379,12 @@ class FilesController(RESTResource):
             return self.save_struct_config()
         elif (id == 'items' and filename != ''):
             return self.save_items_config(filename)
+        elif (id == 'logics' and filename != ''):
+            return self.save_logics_config(filename)
 
         return None
 
     update.expose_resource = True
     update.authentication_needed = True
+
 
