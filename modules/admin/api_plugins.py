@@ -307,7 +307,8 @@ class PluginsInfoController(RESTResource):
                 if self.module.mod_http.get_webifs_for_plugin(x.get_shortname()) != []:
                     for webif in self.module.mod_http.get_webifs_for_plugin(x.get_shortname()):
                         if webif['Instance'] == plugin['instancename']:
-                            plugin['webif_url'] = self.shng_url_root + webif['Mount']
+                            # plugin['webif_url'] = self.shng_url_root + webif['Mount']  # don't specify full path (for docker installations reletive path is needed)
+                            plugin['webif_url'] = webif['Mount']
 
                 plugin['parameters'] = []
                 if bool(x._parameters):

@@ -28,12 +28,6 @@ Hier können eigene Struktur Templates konfiguriert werden, die in der Datei ../
    :class: screenshot
 
 
-.. toctree::
-   :maxdepth: 4
-   :hidden:
-   :titlesonly:
-
-   itemconfig
-   itemstructs
-
+.. index:: Struktur Templates
+.. index:: Items; Struktur Templates
 

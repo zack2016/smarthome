@@ -224,6 +224,20 @@ class FilesController(RESTResource):
         return json.dumps(result)
 
 
+    def delete_items_config(self, filename):
+        """
+        Delete an items configuration file
+
+        :return: status dict
+        """
+        self.logger.debug("FilesController(): delete_items_config(): '{}'".format(filename))
+
+        filename = os.path.join(self.items_dir, filename + '.yaml')
+        os.remove(filename)
+
+        result = {"result": "ok"}
+        return json.dumps(result)
+
     # ======================================================================
     #  /api/files/logics
     #
@@ -387,4 +401,18 @@ class FilesController(RESTResource):
     update.expose_resource = True
     update.authentication_needed = True
 
+
+    def delete(self, id='', filename=''):
+        """
+        Handle DELETE requests for server API
+        """
+        self.logger.info("FilesController.delete(id='{}', filename='{}')".format(id, filename))
+
+        if (id == 'items' and filename != ''):
+            return self.delete_items_config(filename)
+
+        return None
+
+    delete.expose_resource = True
+    delete.authentication_needed = True
 

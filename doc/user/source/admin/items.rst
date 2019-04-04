@@ -29,6 +29,12 @@ auch eingestellt werden, ab wieviel eingegebenen Zeichen die Suche beginnen soll
 In den rechts angezeigten Item Informationen kann der Wert des Items live angepasst werden.
 
 
-.. index:: Struktur Templates
-.. index:: Items; Struktur Templates
+.. toctree::
+   :maxdepth: 4
+   :hidden:
+   :titlesonly:
+
+   itemconfig
+   itemstructs
+
 
