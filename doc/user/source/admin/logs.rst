@@ -13,11 +13,11 @@ ein für ein Log ein **TimedRotatingFileHandler** genutzt wurde. Mit dem Button 
 aktuell vom SmartHomeNG Server angefordert.
 
 
-.. image:: assets/logs.jpg
+.. image:: assets/log-display.jpg
    :class: screenshot
 
-In der zweiten Zeile können die Logeinträge gefiltert werden. Dazu steht ein Freitextfilter zur Verfügung. Zusätzlich
-können die Logeinträge nach Log-Level gefiltert werden.
+In der zweiten Zeile können die Logeinträge gefiltert werden. Dazu steht ein Freitextfilter zur Verfügung. Dieser Filter
+ist Case-Sensitive. Zusätzlich können die Logeinträge nach Log-Level gefiltert werden.
 
 
 -----------------

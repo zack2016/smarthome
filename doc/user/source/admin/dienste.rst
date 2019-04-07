@@ -21,11 +21,20 @@ Rechner laufen wie SmartHomeNG selbt.
 Dienste
 =======
 
-Auf diesem Tab kann der Core von SmartHomeNG neu gestartet werden, sowie die Konfigurationsdaten von SmartHomeNG
-in einem Zip-Archiv herunter geladen werden. Das Zip-Archiv enthält die yaml Konfigurationsdateien aus dem /etc
-Verzeichnis (logging.yaml, logic.yaml, module.yaml, plugin.yaml, smarthome.yaml und struct.yaml). Weiterhin sind
-alle yaml Dateien der Verzeichnisse /items und /scenes enthalten. Außerdem enthält das Archiv den Python Code der
-Logiken aus dem Verzeichnis /logics.
+Auf diesem Tab können folgende Funktionen ausgelöst werden:
+
+* Neu starten des Core von SmartHomeNG
+
+  Diese Funktion setzt voraus, dass SmartHomeNG läuft
+
+* Herunterladen der Konfigurationsdaten von SmartHomeNG als Zip Archiv
+
+  Das Zip-Archiv enthält die yaml Konfigurationsdateien aus dem /etc Verzeichnis (logging.yaml, logic.yaml,
+  module.yaml, plugin.yaml, smarthome.yaml und struct.yaml). Weiterhin sind alle yaml Dateien der Verzeichnisse
+  /items und /scenes enthalten. Außerdem enthält das Archiv den Python Code der Logiken aus dem Verzeichnis /logics.
+
+  Das heruntergeladene Archiv trögt den Namen shng_config_backup_<Jahr>-<Monat>-<Tag>.zip
+
 
 .. image:: assets/services.jpg
    :class: screenshot
@@ -38,10 +47,11 @@ Außerdem ist es möglich zu einem Passwort einen Hash Wert zu erzeugen, um dies
 speichern. Für die Passworte, die vom Core bzw. den Modulen verwendet werden ist das nicht notwendig, da hier der
 Hash bei der Konfiguration automatisch erzeugt wird.
 
+
 eval Syntax-Prüfer
 ==================
 
-Auf diesem Tab können eval Ausdrücke auf richtigen Syntax geprüft werden. Die evaluierung der Ausdrücke findet im Kontext
+Auf diesem Tab können eval Ausdrücke auf richtigen Syntax geprüft werden. Die Evaluierung der Ausdrücke findet im Kontext
 von SmartHomeNG statt, so dass auf alle Items und Funktionen von Plugins zugegriffen werden kann. Es ist auch möglich
 relative Item Referenzen anzugeben. Damit die relativen Referenzen richtig aufgelöst werden, muss in einem separaten Feld
 das Item (als Item-Pfad) angegeben werden, zu welchem die Referenzen relativ sind.
