@@ -54,6 +54,8 @@ class LogicsController(RESTResource):
 
         self.blockly_plugin_loaded = None
         self.logics_data = {}
+
+        self.logics = Logics.get_instance()
         return
 
     def logics_initialize(self):
@@ -253,6 +255,90 @@ class LogicsController(RESTResource):
         return json.dumps(mylogic)
 
 
+    # ======================================================================
+    #  /api/logics/<logicname>?action=<action>
+    #
+    def logic_create_codefile(self, filename, logics_code, overwrite=False):
+
+        pathname = self.logics.get_logics_dir() + filename
+        if not overwrite:
+            if os.path.isfile(pathname):
+                return False
+
+        f = open(pathname, 'w')
+        f.write(logics_code)
+        f.close()
+
+        return True
+
+
+    def logic_create_config(self, logicname, filename):
+        """
+        Create a new configuration for a logic
+        """
+        config_list = []
+        config_list.append(['filename', filename, ''])
+        config_list.append(['enabled', False, ''])
+        self.logics.update_config_section(True, logicname, config_list)
+        #        self.logics.set_config_section_key(logicname, 'visu_acl', False)
+        return
+
+
+    def set_logic_state(self, logicname, action, filename):
+        """
+
+        :param logic_name:
+        :param action:
+        :return:
+
+        valid actions are: 'enable', 'disable', 'trigger', 'unload', 'load', 'reload', 'delete', 'create'
+        """
+
+        if action == 'enable':
+            self.logics.enable_logic(logicname)
+            return json.dumps( {"result": "ok"} )
+        elif action == 'disable':
+            self.logics.disable_logic(logicname)
+            return json.dumps( {"result": "ok"} )
+        elif action == 'trigger':
+            self.logics.trigger_logic(logicname)
+            return json.dumps( {"result": "ok"} )
+        elif action == 'unload':
+            self.logics.unload_logic(logicname)
+            return json.dumps({"result": "ok"})
+        elif action == 'load':
+            self.logics.load_logic(logicname)
+            return json.dumps({"result": "ok"})
+        elif action == 'reload':
+            self.logics.load_logic(logicname)            # implies unload_logic()
+            self.logics.trigger_logic(logicname)
+        elif action == 'delete':
+            self.logics.delete_logic(logicname)
+            return json.dumps({"result": "ok"})
+        elif action == 'create':
+            filename = filename.lower() + '.py'
+
+            if logicname in self.logics.return_defined_logics():
+                self.logger.warning("LogicsController.set_logic_state(create): Logic name {} is already used".format(logicname))
+                return json.dumps({"result": "error", "description": "Logic name {} is already used".format(logicname)})
+            else:
+                logics_code = '#!/usr/bin/env python3\n' + '# ' + filename + '\n\n'
+                if self.logic_create_codefile(filename, logics_code):
+                    self.logic_create_config(logicname, filename)
+                    if not self.logics.load_logic(logicname):
+                        self.logger.error("Could not load logic '{}', syntax error".format(logicname))
+                    return json.dumps( {"result": "ok"} )
+                else:
+                    self.logger.warning("LogicsController.set_logic_state(create): Logic file {} already exists".format(filename))
+                    return json.dumps({"result": "error", "description": "Logic file {} already exists".format(filename)})
+
+        else:
+            self.logger.warning("LogicsController.set_logic_state(): logic '"+logicname+"', action '"+action+"' is not supported")
+            return json.dumps({"result": "error", "description": "action '"+action+"' is not supported"})
+
+        return
+
+
     def read(self, logicname=None):
         """
         return an object with type info about all logics
@@ -279,3 +365,26 @@ class LogicsController(RESTResource):
     read.expose_resource = True
     read.authentication_needed = True
 
+
+    def update(self, logicname='', action='', filename=''):
+        """
+        Handle PUT requests for logics API
+        """
+        self.logger.info("LogicsController.update(logicname='{}', action='{}')".format(logicname, action))
+
+        self.logics_initialize()
+        if self.logics is None:
+            return json.dumps({'result': 'Error', 'description': "SmartHomeNG is still initializing"})
+
+        if not action in ['create', 'load']:
+            mylogic = self.logics.return_logic(logicname)
+            if mylogic is None:
+                return json.dumps({'result': 'Error', 'description': "No logic with name '" + logicname + "' found"})
+
+        if logicname != '':
+            return self.set_logic_state(logicname, action, filename)
+
+        return None
+
+    update.expose_resource = True
+    update.authentication_needed = True
