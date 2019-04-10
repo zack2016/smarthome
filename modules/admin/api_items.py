@@ -71,3 +71,31 @@ class ItemsController(RESTResource):
     read.expose_resource = True
     read.authentication_needed = True
 
+class ItemsListController(RESTResource):
+
+    def __init__(self, module):
+        self._sh = module._sh
+        self.module = module
+        self.base_dir = self._sh.get_basedir()
+        self.logger = logging.getLogger(__name__)
+
+        self.items = Items.get_instance()
+
+        return
+
+    # ======================================================================
+    #  GET /api/items
+    #
+    def read(self, id=None):
+        """
+        Handle GET requests
+        """
+        items_sorted = sorted(self.items.return_items(), key=lambda k: str.lower(k['_path']), reverse=False)
+
+        item_list = []
+        for item in items_sorted:
+            item_list.append(item._path)
+        return json.dumps(item_list)
+
+    read.expose_resource = True
+    #read.authentication_needed = True

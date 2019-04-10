@@ -366,6 +366,7 @@ class WebApi(RESTResource):
         self.config = ConfigController(self.module)
         self.files = FilesController(self.module)
         self.items = ItemsController(self.module)
+        self.items.list = ItemsListController(self.module)
         self.logics = LogicsController(self.module)
         self.loggers = LoggersController(self.module)
         self.logs = LogsController(self.module)

@@ -386,13 +386,13 @@ class PluginsAPIController(RESTResource):
 
         self.plugins = Plugins.get_instance()
 
-        self.plugin_list = {}
+        self.plugin_list = []
         return
 
     # ======================================================================
     #  GET /api/plugins/plugin_api
     #
-    def read(self):
+    def read(self, id=None):
         """
         return a list of all configured plugin instances
         """
