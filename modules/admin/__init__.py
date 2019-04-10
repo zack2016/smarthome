@@ -371,6 +371,7 @@ class WebApi(RESTResource):
         self.logs = LogsController(self.module)
         self.plugin = PluginController(self.module, self.jwt_secret)
         self.plugins = PluginsController(self.module)
+        self.plugins.api = PluginsAPIController(self.module)
         self.plugins.installed = PluginsInstalledController(self.module)
         self.plugins.config = PluginsConfigController(self.module)
         self.plugins.info = PluginsInfoController(self.module, self.shng_url_root)

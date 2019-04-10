@@ -373,3 +373,45 @@ class PluginsInfoController(RESTResource):
     read.expose_resource = True
     read.authentication_needed = True
 
+
+class PluginsAPIController(RESTResource):
+
+    def __init__(self, module):
+        self._sh = module._sh
+        self.module = module
+
+        self.base_dir = self._sh.get_basedir()
+        self.plugins_dir = os.path.join(self.base_dir, 'plugins')
+        self.logger = logging.getLogger(__name__)
+
+        self.plugins = Plugins.get_instance()
+
+        self.plugin_list = {}
+        return
+
+    # ======================================================================
+    #  GET /api/plugins/plugin_api
+    #
+    def read(self):
+        """
+        return a list of all configured plugin instances
+        """
+        self.logger.info("PluginsAPIController (index)")
+
+        if self.plugins == None:
+            self.plugins = Plugins.get_instance()
+
+        for x in self.plugins.return_plugins():
+            if isinstance(x, SmartPlugin):
+                plugin_config_name = x.get_configname()
+                if x.metadata is not None:
+                    api = x.metadata.get_plugin_function_defstrings(with_type=True, with_default=True)
+                    if api is not None:
+                        for function in api:
+                            self.plugin_list.append(plugin_config_name + "." + function)
+
+        return json.dumps(self.plugin_list)
+
+    read.expose_resource = True
+    read.authentication_needed = True
+
