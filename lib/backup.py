@@ -112,7 +112,7 @@ def create_backup(conf_base_dir, var_dir=''):
 
     #logger.warning("- backup_dir = {}".format(backup_dir))
 
-    return os.path.join(backup_dir + backup_filename)
+    return os.path.join(backup_dir, backup_filename)
 
 
 def backup_file(backupzip, source_dir, arc_dir, filename):

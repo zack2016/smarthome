@@ -333,6 +333,8 @@ class FilesController(RESTResource):
     def get_config_backup(self):
 
         filename = lib.backup.create_backup(self.extern_conf_dir)
+        # self.logger.warning("FilesController.get_config_backup(): filename = '{}'".format(filename))
+
         read_data = None
         with open(filename, 'rb') as f:
             read_data = f.read()
@@ -343,10 +345,9 @@ class FilesController(RESTResource):
     def get_config_backup2(self):
 
         filename = lib.backup.create_backup(self.extern_conf_dir)
-
-        return cherrypy.lib.static.serve_file(filename, 'application/zip',
-                                 'attachment', 'shng_backup.zip')
-
+        # self.logger.warning("FilesController.get_config_backup2(): filename = '{}'".format(filename))
+        cherrypy.lib.static.serve_file(filename, 'application/zip', 'attachment', 'shng_config_backup.zip')
+        return json.dumps({"result": "ok"})
 
     # ======================================================================
     #  GET /api/services/
