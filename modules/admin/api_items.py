@@ -90,6 +90,10 @@ class ItemsListController(RESTResource):
         """
         Handle GET requests
         """
+        
+        if self.items is None:
+            self.items = Items.get_instance()
+
         items_sorted = sorted(self.items.return_items(), key=lambda k: str.lower(k['_path']), reverse=False)
 
         item_list = []
@@ -98,4 +102,4 @@ class ItemsListController(RESTResource):
         return json.dumps(item_list)
 
     read.expose_resource = True
-    #read.authentication_needed = True
+    read.authentication_needed = True
