@@ -301,7 +301,7 @@ class LogicsController(RESTResource):
             self.logics.disable_logic(logicname)
             return json.dumps( {"result": "ok"} )
         elif action == 'trigger':
-            self.logics.trigger_logic(logicname)
+            self.logics.trigger_logic(logicname, by='Admin')
             return json.dumps( {"result": "ok"} )
         elif action == 'unload':
             self.logics.unload_logic(logicname)
@@ -311,7 +311,11 @@ class LogicsController(RESTResource):
             return json.dumps({"result": "ok"})
         elif action == 'reload':
             self.logics.load_logic(logicname)            # implies unload_logic()
-            self.logics.trigger_logic(logicname)
+            # todo: Trigger nur, wenn 'init' in crontab angegeben ist
+            crontab = self.logics.get_logiccrontab(logicname)
+            if 'init' in crontab:
+                self.logger.info("LogicsController.set_logic_state(relaod): Triggering logic because crontab contains 'init' - crontab = '{}'".format(crontab))
+                self.logics.trigger_logic(logicname, by='Admin')
         elif action == 'delete':
             self.logics.delete_logic(logicname)
             return json.dumps({"result": "ok"})

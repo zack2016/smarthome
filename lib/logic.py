@@ -459,7 +459,9 @@ class Logics():
         """
         logger.debug("trigger_logic: Trigger logic = '{}'".format(name))
         if name in self.return_loaded_logics():
-            self.scheduler.trigger(self._logicname_prefix+name, by='Backend')
+            if by == 'unknown':
+                by = 'Backend'
+            self.scheduler.trigger(self._logicname_prefix+name, by=by)
         else:
             logger.warning("trigger_logic: Logic '{}' not found/loaded".format(name))
 
@@ -538,6 +540,19 @@ class Logics():
         mylogic.watch_item = []
         self._delete_logic(name)
         return True
+
+
+    def get_logiccrontab(self, name):
+        """
+        Return the crontab string of a logic
+        """
+        logger.debug("get_logiccrontab: Get crontab of logic = '{}'".format(name))
+
+        mylogic = self.return_logic(name)
+        if mylogic is None:
+            return None
+        else:
+            return mylogic.crontab
 
 
     def return_logictype(self, name):
