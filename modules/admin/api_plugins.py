@@ -106,33 +106,41 @@ class PluginsInstalledController(RESTResource):
         return an object with data about all installed plugins
         """
         self.logger.info("PluginsInstalledController(): index")
+        if self._sh.shng_status['code'] < 20:
+            self.logger.error("PluginsInstalledController.read(): SmartHomeNG has not yet finished initialization")
+            return json.dumps({})
 
         default_language = self._sh.get_defaultlanguage()
 
         if self.plugin_data == {}:
             plugins_list = sorted(os.listdir(self.plugins_dir))
+            self.logger.warning("PluginsInstalledController.read(): plugin_list (sollte sortiert sein) = '{}'".format(plugins_list))
 
             self.logger.info("- plugins_list_sorted = {}".format(plugins_list))
             for p in plugins_list:
                 if not (p[0] in ['.', '_']):
                     if os.path.isfile(os.path.join(self.plugins_dir, p, 'plugin.yaml')):
                         plg_yaml = shyaml.yaml_load(os.path.join(os.path.join(self.plugins_dir, p, 'plugin.yaml')))
-                        plg_data = plg_yaml.get('plugin', None)
-                        if plg_data is None:
-                            self.logger.info("- plugin.yaml has no section 'plugin': {}".format(p))
+                        if plg_yaml == None:
+                            self.logger.warning("PluginsInstalledController.read(): Plugin '{}': plugin.yaml cannot be read".format(p))
                         else:
-                            self.plugin_data[p] = {}
-                            self.plugin_data[p]['type'] = plg_data.get('type', '')
-                            description = plg_data.get('description', {'de': '', 'en': ''})
-                            self.plugin_data[p]['description'] = description[default_language]
-                            self.plugin_data[p]['version'] = plg_data.get('version', '')
-                            self.plugin_data[p]['state'] = plg_data.get('state', '')
-                            self.plugin_data[p]['documentation'] = plg_data.get('documentation', '')
-                            self.plugin_data[p]['multi_instance'] = plg_data.get('multi_instance', '')
+                            plg_data = plg_yaml.get('plugin', None)
+                            if plg_data is None:
+                                self.logger.info("- plugin.yaml has no section 'plugin': {}".format(p))
+                            else:
+                                self.plugin_data[p] = {}
+                                self.plugin_data[p]['type'] = plg_data.get('type', '')
+                                description = plg_data.get('description', {'de': '', 'en': ''})
+                                self.plugin_data[p]['description'] = description[default_language]
+                                self.plugin_data[p]['version'] = plg_data.get('version', '')
+                                self.plugin_data[p]['state'] = plg_data.get('state', '')
+                                self.plugin_data[p]['documentation'] = plg_data.get('documentation', '')
+                                self.plugin_data[p]['multi_instance'] = plg_data.get('multi_instance', '')
                     else:
                         self.logger.info("- no plugin.yaml: {}".format(p))
 
-        return json.dumps(self.plugin_data)
+        self.logger.warning("PluginsInstalledController.read(): Plugin Liste (sollte sortiert sein), self.plugin_data = '{}'".format(self.plugin_data))
+        return json.dumps(dict(sorted(self.plugin_data.items())))
 
     read.expose_resource = True
     read.authentication_needed = True
