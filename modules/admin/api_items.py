@@ -90,7 +90,7 @@ class ItemsListController(RESTResource):
         """
         Handle GET requests
         """
-        
+
         if self.items is None:
             self.items = Items.get_instance()
 
