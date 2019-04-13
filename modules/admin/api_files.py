@@ -52,7 +52,7 @@ class FilesController(RESTResource):
 
         self.etc_dir = self._sh._etc_dir
         self.items_dir = self._sh._items_dir
-        self.scenes_dir = self._sh._scenesscenes_dir
+        self.scenes_dir = self._sh._scenes_dir
         self.logics_dir = self._sh._logic_dir
         self.extern_conf_dir = self._sh._extern_conf_dir
         self.modules_dir = os.path.join(self.base_dir, 'modules')
