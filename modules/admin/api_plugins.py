@@ -24,6 +24,7 @@ import os
 import shutil
 import logging
 import json
+import collections
 
 import lib.shyaml as shyaml
 import lib.config
@@ -128,7 +129,8 @@ class PluginsInstalledController(RESTResource):
                             if plg_data is None:
                                 self.logger.info("- plugin.yaml has no section 'plugin': {}".format(p))
                             else:
-                                self.plugin_data[p] = {}
+                                # self.plugin_data[p] = {}
+                                self.plugin_data[p] = collections.OrderedDict()
                                 self.plugin_data[p]['type'] = plg_data.get('type', '')
                                 description = plg_data.get('description', {'de': '', 'en': ''})
                                 self.plugin_data[p]['description'] = description[default_language]
@@ -139,7 +141,7 @@ class PluginsInstalledController(RESTResource):
                     else:
                         self.logger.info("- no plugin.yaml: {}".format(p))
 
-        self.logger.warning("PluginsInstalledController.read(): Plugin Liste (sollte sortiert sein), self.plugin_data = '{}'".format(self.plugin_data))
+        self.logger.warning("PluginsInstalledController.read(): Plugin Liste (sollte sortiert sein), json.dumps(self.plugin_data) = '{}'".format(json.dumps(self.plugin_data)))
         return json.dumps(dict(sorted(self.plugin_data.items())))
 
     read.expose_resource = True

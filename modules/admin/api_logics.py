@@ -25,6 +25,8 @@ import logging
 import json
 import cherrypy
 import time
+
+import lib.shyaml as shyaml
 import lib.config
 from lib.module import Modules
 from lib.utils import Utils
@@ -44,6 +46,8 @@ class LogicsController(RESTResource):
         self.base_dir = self._sh.get_basedir()
         self.logger = logging.getLogger(__name__)
 
+        self.etc_dir = self._sh._etc_dir
+
         self.logics_dir = os.path.join(self.base_dir, 'logics')
         self.logics = Logics.get_instance()
         self.logger.info("__init__ self.logics = {}".format(self.logics))
@@ -57,6 +61,31 @@ class LogicsController(RESTResource):
 
         self.logics = Logics.get_instance()
         return
+
+
+    def get_body(self, text=False):
+        """
+        Get content body of received request header
+
+        :return:
+        """
+        cl = cherrypy.request.headers.get('Content-Length', 0)
+        if cl == 0:
+            # cherrypy.reponse.headers["Status"] = "400"
+            # return 'Bad request'
+            raise cherrypy.HTTPError(status=411)
+        rawbody = cherrypy.request.body.read(int(cl))
+        self.logger.debug("ServicesController(): get_body(): rawbody = {}".format(rawbody))
+        try:
+            if text:
+                params = rawbody.decode('utf-8')
+            else:
+                params = json.loads(rawbody.decode('utf-8'))
+        except Exception as e:
+            self.logger.warning("ServicesController(): get_body(): Exception {}".format(e))
+            return None
+        return params
+
 
     def logics_initialize(self):
         """
@@ -72,6 +101,9 @@ class LogicsController(RESTResource):
         if self.logics is None:
             # SmartHomeNG has not yet initialized the logics module (still starting up)
             return
+
+        if self.plugins == None:
+            self.plugins = Plugins.get_instance()
         self.yaml_updates = (self.logics.return_config_type() == '.yaml')
 
         # find out if blockly plugin is loaded
@@ -294,6 +326,7 @@ class LogicsController(RESTResource):
         valid actions are: 'enable', 'disable', 'trigger', 'unload', 'load', 'reload', 'delete', 'create'
         """
 
+        self.logger.info("LogicsController.set_logic_state(): logicname = {}, action = {}".format(logicname, action))
         if action == 'enable':
             self.logics.enable_logic(logicname)
             return json.dumps( {"result": "ok"} )
@@ -311,11 +344,11 @@ class LogicsController(RESTResource):
             return json.dumps({"result": "ok"})
         elif action == 'reload':
             self.logics.load_logic(logicname)            # implies unload_logic()
-            # todo: Trigger nur, wenn 'init' in crontab angegeben ist
             crontab = self.logics.get_logiccrontab(logicname)
-            if 'init' in crontab:
+            if (crontab is not None) and ('init' in crontab):
                 self.logger.info("LogicsController.set_logic_state(relaod): Triggering logic because crontab contains 'init' - crontab = '{}'".format(crontab))
                 self.logics.trigger_logic(logicname, by='Admin')
+            return json.dumps({"result": "ok"})
         elif action == 'delete':
             self.logics.delete_logic(logicname)
             return json.dumps({"result": "ok"})
@@ -341,6 +374,37 @@ class LogicsController(RESTResource):
             return json.dumps({"result": "error", "description": "action '"+action+"' is not supported"})
 
         return
+
+
+    def save_logic_parameters(self, logicname):
+        params = self.get_body()
+        self.logger.info("LogicsController.save_logic_parameters: logic = {}, params = {}".format(logicname, params))
+
+        config_filename = os.path.join(self.etc_dir, 'logic')
+        logic_conf = shyaml.yaml_load_roundtrip(config_filename)
+        sect = logic_conf.get(logicname)
+        if sect is None:
+            response = {'result': 'error', 'description': "Configuration section '{}' does not exist".format(logicname)}
+        else:
+            self.logger.info("LogicsController.save_logic_parameters: logic = {}, alte params = {}".format(logicname, dict(sect)))
+            for param, value in params.items():
+                self.logger.info("- param = {}, value = {}, type(value) = {}".format(param, value, Utils.get_type(value)))
+                if (Utils.get_type(value) == 'str') and (value == ''):
+                    sect.pop(param, None)
+                elif (Utils.get_type(value) == 'list') and (value == []):
+                    sect.pop(param, None)
+                elif (Utils.get_type(value) == 'dict') and (value == {}):
+                    sect.pop(param, None)
+                else:
+                    sect[param] = value
+
+            self.logger.info("LogicsController.save_logic_parameters: logic = {}, neue params = {}".format(logicname, dict(sect)))
+
+
+            shyaml.yaml_save_roundtrip(config_filename, logic_conf, False)
+            response = {'result': 'ok'}
+
+        return json.dumps(response)
 
 
     def read(self, logicname=None):
@@ -376,11 +440,18 @@ class LogicsController(RESTResource):
         """
         self.logger.info("LogicsController.update(logicname='{}', action='{}')".format(logicname, action))
 
+        if self.plugins is None:
+            self.plugins = Plugins.get_instance()
+        if self.scheduler is None:
+            self.scheduler = Scheduler.get_instance()
+
         self.logics_initialize()
         if self.logics is None:
             return json.dumps({'result': 'Error', 'description': "SmartHomeNG is still initializing"})
 
-        if not action in ['create', 'load']:
+        if (action == 'saveparameters') and (logicname != ''):
+            return self.save_logic_parameters(logicname)
+        elif not action in ['create', 'load']:
             mylogic = self.logics.return_logic(logicname)
             if mylogic is None:
                 return json.dumps({'result': 'Error', 'description': "No logic with name '" + logicname + "' found"})
