@@ -12,7 +12,6 @@
    /dev/README.md
    /dev/sample_plugin/README.md
    /modules/admin/README.md
-   /modules/dummy/README.md
    /modules/http/README.md
    /modules/mqtt/README.md
 
@@ -25,6 +24,5 @@
    /plugins/alexa/nginx.md
    /plugins/buderus/TODO.md
    /plugins/buderus/URLs.md
-   /plugins/dwd/README.md
    /plugins/knx/pv_1_3_4/README.md
    /plugins/uzsu/user_doc_en.rst

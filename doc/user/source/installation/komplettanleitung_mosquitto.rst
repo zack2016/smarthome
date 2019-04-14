@@ -26,7 +26,7 @@ Anschließend kann mit dem Befehl
    sudo service mosquitto status
 
 
-überprüft werden, ob der Broker läuft. Wenn der Servic läuft, sieht man eine ähnliche Ausgabe wie folgende:
+überprüft werden, ob der Broker läuft. Wenn der Service läuft, sieht man eine ähnliche Ausgabe wie folgende:
 
 .. code-Block:: bash
 
@@ -42,7 +42,7 @@ Anschließend kann mit dem Befehl
     Mai 30 13:39:47 SmartHomeNG systemd[1]: Started LSB: mosquitto MQTT v3.1 message
 
 
-Der Service kann dann mit den folgenden Befehlen gestartet, gestoppt und restartet werden:
+Der Service kann dann mit den folgenden Befehlen gestartet, gestoppt und neugestartet werden:
 
 
 .. code-Block:: bash
@@ -52,8 +52,10 @@ Der Service kann dann mit den folgenden Befehlen gestartet, gestoppt und restart
    sudo service mosquitto restart
 
 
-Nach der Installation ist der Broker für jeden MQTT Client nutzbar. Wenn eine Authentifizierung gewünscht wird, muss Mosquitto
-entsprechend der Dokumentation (https://mosquitto.org/man/mosquitto-conf-5.html) konfiguriert und neu gestartet werden.
+Nach der Installation ist der Broker für jeden MQTT Client nutzbar.
+Wenn eine Authentifizierung gewünscht wird, muss Mosquitto
+entsprechend der Dokumentation (https://mosquitto.org/man/mosquitto-conf-5.html)
+konfiguriert und neu gestartet werden.
 
 Gleiches gilt, wenn zusätzlich zum MQTT Protokoll (auf Port 1883) auch noch Websockets genutzt werden sollen.
 

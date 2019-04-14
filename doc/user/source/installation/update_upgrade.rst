@@ -26,8 +26,7 @@ und die smartVISU Dateien rüberkopiert werden. Zusätzlich sind noch die
 Dateien der SQLite zu migrieren.
 
 Grundsätzlich empfiehlt sich, vor dem Update von SmarthomeNG auf eine
-aktuelle Linux-Distribution upzudaten. Einige Funktionen (z.B. das
-Backend) könnten sonst evtl. nicht funktionieren. Für ein Update von
+aktuelle Linux-Distribution upzudaten. Für ein Update von
 Raspian Wheezy auf Jessie findet sich
 `hier <https://www.elektronik-kompendium.de/sites/raspberry-pi/2005051.htm>`__
 eine gute Anleitung. Zusätzlich müssen noch die `in der
@@ -75,42 +74,27 @@ der Plugins ermittelt. Dies Skript wird aufgerufen mit:
 
 .. note::
 
-   Ab SmartHomeNG v1.6 werden, falls dieser Schritt ausgelassen wird, die Requirements meim Start von SmartHomeNG bestimmt.
-   Dabei werden die Packages bestimmt, die vom Core und von den konfigurierten Plugins benötigt werden. Sind die Requirements
+   Ab SmartHomeNG v1.6 werden, falls dieser Schritt ausgelassen wird,
+   die Requirements beim Start von SmartHomeNG bestimmt.
+   Dabei werden die Packages bestimmt, die vom Core und von den konfigurierten
+   Plugins benötigt werden. Sind die Requirements
    nicht erfüllt, beendet sich SmartHomeNG mit einem entsprechenden Eintrag im Log.
 
 
-Nun kann man wählen zwischen zwei Vorgehensweisen:
 
-1) Vom Programmkern und allen Plugins benötigte Bibliotheken
-   herunterladen und installieren mit:
-
-   .. code-block:: bash
-
-       sudo pip3 install -r requirements/all.txt
-
-
-2) Vom Programmkern benötigte Bibliotheken
-   herunterladen und installieren mit:
+Vom Programmkern benötigte Bibliotheken herunterladen und installieren mit:
 
    .. code-block:: bash
 
        sudo pip3 install -r requirements/base.txt
 
-   Und dann für jedes Plugin einzeln die benötigten Bibliotheken herunterladen
-   und installieren mit:
+Und dann für jedes Plugin einzeln die benötigten Bibliotheken herunterladen
+und installieren mit:
 
    .. code-block:: bash
 
        sudo pip3 install -r plugins/<pluginname>/requirements.txt
 
-
-Die erste Möglichkeit ist vermutlich die schnellste, hat aber auch den Nachteil
-das viele Bibliotheken geladen werden die evtl. nie gebraucht werden weil man
-die Plugins gar nicht braucht, die diese Bibliotheken als Voraussetzung angeben.
-
-Die zweite Möglichkeit dauert länger, aber mal lädt nur die Bibliotheken herunter, die wirklich
-benötigt werden.
 
 Zum Abschluss SmarthomeNG dann starten. Um zu prüfen, ob sich vielleicht
 Fehler oder Änderungen in den Plugins ergeben haben, sollte man dies im
@@ -118,14 +102,13 @@ Debugmodus von der Kommandozeile aus machen:
 
 .. code-block:: bash
 
-    python3 bin/smarthome.py -d
+    python3 bin/smarthome.py
 
 Jetzt heißt es genau zu schauen, was an **Warning** oder **Error**
 gemeldet wird. Logfiles findet man auch im Verzeichnis ``../var/log``
 (in der Standardinstallation unter ``/usr/local/smarthome/var/log``).
 Von da aus kann man sie mit einem Editor in Ruhe anschauen und auf
-Fehler durchsuchen. Alternativ kann man ab SmartHomeNG Version 1.2 auch
-im Backend schauen. Dort werden die Logfiles aufgelistet.
+Fehler durchsuchen.
 
 Wenn dann die Konfiguration stimmt, kann man natürlich den automatischen
 Neustart von SmartHomeNG wieder einschalten. In der Komplettanleitung

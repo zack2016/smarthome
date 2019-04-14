@@ -17,84 +17,27 @@ zusätzliche Pakete installieren
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Der Apache2 braucht noch ein paar Pakete wie PHP um die Webseiten der
-SmartVISU liefern zu können: Bis einschließlich Debian 8.x (Jessie) mit
-folgendem Befehl:
+SmartVISU liefern zu können:
 
 .. code-block:: bash
 
-    sudo apt-get install libawl-php php5-curl php5 php5-json php-xml
-
-Oder ab Debian 9.x (Stretch) mit folgendem Befehl:
-
-.. code-block:: bash
-
-    sudo apt-get install libawl-php php-curl php php-json php-xml
-
-
-    **Achtung**: Wenn PHP 7 installiert ist/wird muss darauf geachtet
-    werden, dass im Gegensatz zu älteren Versionen das Paket
-    **mbstring** nicht mit installiert wird. Es muss mit den folgenden
-    Kommandos nachinstalliert werden:
-
-
-.. code-block:: bash
-
-    sudo apt-get install php7.0-mbstring
-    sudo service apache2 restart
+   sudo apt-get install libawl-php php-curl php php-json php-xml php7.0-mbstring
+   sudo service apache2 restart
 
 
 SmartVISU Quellcode laden
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Stand 18. Februar 2018 wird die letzte verfügbare Master-Version 2.8 der
+Stand April 2019 wird die letzte verfügbare Master-Version 2.8 der
 SmartVISU geladen. Seit Dezember 2017 steht die Version 2.9 in den
 Startlöchern. Diese Dokumentation ist nicht tagesaktuell, daher bitte
 vor dem Installieren `auf der Projektseite <http://www.smartvisu.de/>`__
-prüfen, welches der aktuelle Master ist. Eine alternative Installation
-der SmartVISU 2.9 ist möglich, es sollten aber idealerweise **git**
-Kenntnisse vorhanden sein. Die Dateien der SmartVISU werden in einem
-Unterverzeichnis ab, das für den Apache2 zugänglich ist:
+prüfen, welches der aktuelle Master ist.
 
-.. raw:: html
-
-   <!--
-   ```
-   cd /var/www/html
-   sudo rm index.html
-   sudo wget http://smartvisu.de/download/smartVISU_2.8.zip
-   sudo unzip smartVISU_2.8.zip
-   sudo rm smartVISU_2.8.zip
-   ```
-   -->
-
-Variante 1
-^^^^^^^^^^
-
-Alle Dateien erhalten als Besitzer und Gruppe www-data. Das versetzt den
-Webserver Apache2 in die Lage auf die Dateien zuzugreifen.
-
-.. code-block:: bash
-
-    cd /var/www/html
-    sudo rm index.html
-    sudo git clone git://github.com/Martin-Gleiss/smartvisu.git
-    sudo mv smartvisu smartVISU
-
-Nun müssen die Zugriffsrechte und der Standardbenutzer richtig gesetzt
-werden:
-
-.. code-block:: bash
-
-    sudo chown -R www-data:www-data smartVISU
-    sudo chmod -R 775 smartVISU
-
-Variante 2
-^^^^^^^^^^
-
-Es scheint mit der obigen Variante Probleme zu geben, wenn mit
-``git pull`` Aktualisierungen geholt werden. Da man nicht als
-**www-data** angemeldet ist gibt es Zugriffprobleme mit git. Als
-Alternative hier die im Forum diskutierte Variante:
+Eine alternative Installation der SmartVISU 2.9 ist möglich und auch empfohlen.
+Dazu muß der Branch von master auf develop gewechselt werden
+Die Dateien der SmartVISU werden in einem Unterverzeichnis abgelegt,
+das für den Apache2 zugänglich ist:
 
 .. code-block:: bash
 
@@ -110,22 +53,24 @@ Alternative hier die im Forum diskutierte Variante:
     sudo find . -type d -exec chmod g+rwsx {} +
     sudo find . -type f -exec chmod g+r {} +
 
-
-Alternativ: SmartVISU 2.9 develop
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-Optional umschalten auf die SmartVISU 2.9 develop Version geht über eine
+Umschalten auf die SmartVISU 2.9 develop Version geht über eine
 Shell im Verzeichnis der smartVISU mit
 
 .. code-block:: bash
 
-    git checkout develop
+   cd /var/www/html/smartVISU
+   git checkout develop
 
-ein zurückwechseln auf den masterbranch entsprechend mit
+umschalten auf den masterbranch ginge entsprechend mit
 
 .. code-block:: bash
 
-    git checkout master
+   cd /var/www/html/smartVISU
+   git checkout master
+
+Für den ordnungsgemäßen Betrieb braucht die SmartVISU noch das SmartHomeNG Plugin
+**visu_websocket**. Dieses ist in der **plugin.yaml.default** bereits vorkonfiguriert
+und es ist zumeist nicht nötig die Vorgabewerte zu ändern.
 
 Zugriff auf die SmartVISU testen
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -138,8 +83,7 @@ configuration** sollte alles mit einem grünen Häckchen versehen sein.
 Über den Knopf **Config** kommt man ins SmartVISU Interface direkt auf
 die Config Seite.
 
-Bei I/O Connection **Smarthome.py** auswählen. [Ab SmartVISU 2.9
-**SmartHomeNG** auswählen]. Bei Adresse (URL / IP) die IP Adresse des
+Bei I/O Connection **SmartHomeNG** auswählen. Bei Adresse (URL / IP) die IP Adresse des
 Servers oder den DNS Namen eingeben auf dem SmartHomeNG installiert ist.
 Bei Port ist standardmäßig ``2424`` einzugeben.
 
@@ -152,9 +96,7 @@ Im Tab **Interfaces** muß noch die anzuzeigende Visuseite eingestellt
 werden. Dort kann unter anderem gewählt werden zwischen verschiedenen
 Demoseiten.
 
-Um die Einstellungen zu sichern bitte Save auswählen. [In älteren
-Visuversionen mußte zweimal auf Save gedrückt werden, das sollte mit SV
-2.9 behoben sein.]
+Um die Einstellungen zu sichern bitte Save auswählen.
 
 Eigene Visuseiten anlegen
 ^^^^^^^^^^^^^^^^^^^^^^^^^

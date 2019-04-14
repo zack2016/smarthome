@@ -84,3 +84,5 @@ Damit das Onewire-Plugin von SmartHomeNG genutzt werden kann, muß in der
       host: 127.0.0.1
       port: 4304
       cycle: 60  # update every minute
+
+Alternativ kann dazu natürlich auch das Admin Interface genutzt werden.

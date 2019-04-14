@@ -289,7 +289,7 @@ Der Dienst kann über den entsprechenden Befehl "systemctl" neu gestartet werden
 .. note::
 
    Der Service **smarthome.service** muss vorher eingerichtet werden. Die Einrichtung ist in der
-   Komplettanleitung unter :doc:`../installation/komplettanleitung_abschluss` beschrieben.
+   Komplettanleitung unter :doc:`../installation/komplettanleitung_shng_daemon` beschrieben.
    
 
 Weiterführende Themen

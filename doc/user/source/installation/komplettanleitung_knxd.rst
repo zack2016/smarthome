@@ -48,95 +48,7 @@ werden:
 
 .. code-block:: bash
 
-    sudo apt-get install git-core build-essential
-
-.. raw:: html
-
-   <!--- Die Installation auf einem frischen Jessie zeigt 
-   folgende nicht erfüllte Bauabhängigkeiten:
-   debhelper (>= 7.0.0)
-   autotools-dev
-   autoconf
-   automake
-   libtool
-   libusb-1.0-0-dev (>= 1.0.9) pkg-config
-   libsystemd-dev (>= 228) | libsystemd-daemon-dev (>= 200) | base-files (<< 8)
-   dh-systemd | base-files (<< 8) libev-dev
-   --->
-
-.. raw:: html
-
-   <!---
-   Diese Abhängigkeiten werden mit den nachfolgenden Paketinstallationen aufgelöst.
-   Wenn sich **dpkg-buildpackage** über weitere fehlende Pakete beschweren sollte,
-   ("Unmet build dependencies"): dann sollten sie nachinstalliert
-   (``sudo apt-get install …``) und ein neuer Versuch gestartet werden.<br>
-   Wenn **x | y** gefordert wird, erstmal nur **x** installieren.
-   Wenn das nicht funktioniert, kann auch **y** installiert werden<br>
-   Bei Beschwerden über inkompatible Pakete können diese ggf. entfernt werden.
-   Bitte in obigem Fall die Komplettanleitung anpassen !!!
-   --->
-
-debhelper-Erweiterung zur Behandlung von systemd-Dateien
-
-.. code-block:: bash
-
-    sudo apt-get install dh-systemd
-
-Erstellt automatisch configure-Skripte
-
-.. code-block:: bash
-
-    sudo apt-get install autoconf
-
-Generisches Skript zur Unterstützung von Bibliotheken
-
-.. code-block:: bash
-
-    sudo apt-get install libtool
-
-Bibliothek zum Programmieren von USB-Anwendungen ohne Kenntnis der
-Linux-Kernel-Interna
-
-.. code-block:: bash
-
-    sudo apt-get install libusb-1.0-0-dev
-
-Pkg-config ist ein System zur Verwaltung von Schaltern für die
-Übersetzung und Verknüpfung von Bibliotheken, das mit automake und
-autoconf arbeitet.
-
-.. code-block:: bash
-
-    sudo apt-get install pkg-config
-
-Die Bibliothek sd-daemon stellt eine Referenzimplementierung mehrerer
-APIs für neuartige Daemons bereit, wie sie vom Initialisierungssystem
-systemd implementiert werden
-
-Für **Debian Jessie** wird benötigt:
-
-.. code-block:: bash
-
-    sudo apt-get install libsystemd-daemon-dev
-
-Für **Debian Stretch** wird benötigt:
-
-.. code-block:: bash
-
-    sudo apt-get install libsystemd-dev
-
-Nun noch libev-dev installieren
-
-.. code-block:: bash
-
-    sudo apt-get install libev-dev
-
-Und es wird noch das cmake tool benötigt
-
-.. code-block:: bash
-
-    sudo apt-get install cmake
+    sudo apt-get install git-core build-essential dh-systemd autoconf libtool libusb-1.0-0-dev pkg-config libsystemd-dev libev-dev cmake
 
 Quellcode laden, compilieren und ein Paket schnüren
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -262,20 +174,20 @@ Wenn alles ok ist, dann sieht das etwa so aus:
 
 .. code-block:: bash
 
-    $ sudo systemctl status knxd.service
-    ● knxd.service - KNX Daemon
-       Loaded: loaded (/lib/systemd/system/knxd.service; enabled)
-       Active: active (running) since Sa 2016-08-13 10:03:27 CEST; 5 days ago
-     Main PID: 30769 (knxd)
-       CGroup: /system.slice/knxd.service
-               └─30769 /usr/bin/knxd -c -b ipt:192.168.10.38
+   $ sudo systemctl status knxd.socket
+   ● knxd.socket - KNX Daemon (socket)
+   Loaded: loaded (/lib/systemd/system/knxd.socket; enabled; vendor preset: enabled)
+   Active: active (running) since Sun 2019-03-31 19:07:49 CEST; 1 weeks 6 days ago
+   Listen: /var/run/knx (Stream)
+           [::]:6720 (Stream)
 
-    $ sudo systemctl status knxd.socket
-    ● knxd.socket - KNX Daemon (socket)
-       Loaded: loaded (/lib/systemd/system/knxd.socket; enabled)
-       Active: active (running) since Sa 2016-08-13 10:03:23 CEST; 5 days ago
-       Listen: /var/run/knx (Stream)
-               [::]:6720 (Stream)
+   ● knxd.service - KNX Daemon
+   Loaded: loaded (/lib/systemd/system/knxd.service; enabled; vendor preset: enabled)
+   Active: active (running) since Sun 2019-03-31 19:08:10 CEST; 1 weeks 6 days ago
+   Main PID: 865 (knxd)
+   Tasks: 1 (limit: 4915)
+   CGroup: /system.slice/knxd.service
+           └─865 /usr/bin/knxd -e 7.0.99 -E 0.0.2:8 -c -b ipt:192.168.x.y
 
 Die Funktion des knxd läßt sich z.B. testen mit einer Gruppenadresse
 (hier: 1/0/170) für einen Schaltaktor mit 1 oder 0.
@@ -287,15 +199,3 @@ Die Funktion des knxd läßt sich z.B. testen mit einer Gruppenadresse
 Sollte sich jetzt nichts tun, dann gibt es irgendwo einen Fehler und
 alles muß noch einmal geprüft werden. Vielleicht ist der Neustart des
 knxd vergessen oder ein Build-Fehler übersehen worden.
-
-.. raw:: html
-
-   <!--- Für Systeme ohne systemd würde gelten:
-   Damit knxd beim Start ausgeführt wird, ist noch eine Anpassung notwendig:
-
-       sudo nano /etc/default/knxd
-
-   dann folgende Einträge anpassen:
-
-       START_KNXD=YES 
-   -->

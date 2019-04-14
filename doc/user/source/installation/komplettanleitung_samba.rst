@@ -1,5 +1,9 @@
-Samba installieren
-==================
+
+.. role:: bluesup
+
+###########################################
+Samba installieren :bluesup:`update`
+###########################################
 
 Wer mit einem Windows-Rechner auf die Dateien von SmartHomeNG und
 SmartVISU zugreifen möchte, *kann* dazu **Samba** installieren:
@@ -43,17 +47,14 @@ In die Datei folgendes einfügen:
    printing = bsd
    printcap name = /dev/null
    disable spoolss = yes
+   # do not use old protocol versions due to security reasons
+   server min protocol = SMB2_10
+   #   client max protocol = SMB3
+   #   client min protocol = SMB2_10
 
-   [Logs]
-   path = /var/log
-   comment = Logfiles
-   available = yes
-   browseable = yes
-   writable = yes
-   force user = root
-   force group = root
-   create mask = 0755
-   directory mask = 0775
+   # keep access to your local network
+   hosts deny = ALL
+   hosts allow = 192.168.20.0/24
 
    [SmartHomeNG]
    path = /usr/local/smarthome
@@ -77,13 +78,16 @@ In die Datei folgendes einfügen:
    create mask = 0775
    directory mask = 0775
 
+Die Zeile ``hosts allow = 192.168.20.0/24`` muss vor dem Speichern noch auf den lokalen IP-Bereich
+angepaßt werden.
+Auch die Zeile ``server min protocol = SMB2_10`` die besagt, das nur Rechner mit SMB2 (ab Windows 7)
+auf die Freigaben zugreifen können kann von der Version her höher gesetzt werden z.B. ``SMB3_11``.
+Näheres dazu
+`hier <https://www.samba.org/samba/docs/man/manpages-3/smb.conf.5.html>`__
+
 Nun muß der User smarthome noch bekannt gemacht werden mit
 ``sudo smbpasswd -a smarthome``.
 
 Im Windows Explorer sollten nun via
-**``\\<IP des Rechners oder hostname>``** zwei Freigaben angezeigt
+``\\<IP des Rechners oder hostname>`` zwei Freigaben angezeigt
 werden.
-
-Da bei Samba immer wieder Sicherheitslöcher aufgedeckt werden, empfiehlt
-sich ein Ausschluß des SMB1 Protocols. Näheres dazu
-`hier <https://www.samba.org/samba/docs/man/manpages-3/smb.conf.5.html>`__
