@@ -95,7 +95,7 @@ class PluginsInstalledController(RESTResource):
         self.plugins_dir = os.path.join(self.base_dir, 'plugins')
         self.logger = logging.getLogger(__name__)
 
-        self.plugin_data = {}
+        self.plugin_data = collections.OrderedDict()
         return
 
 
@@ -140,9 +140,8 @@ class PluginsInstalledController(RESTResource):
                                 self.plugin_data[p]['multi_instance'] = plg_data.get('multi_instance', '')
                     else:
                         self.logger.info("- no plugin.yaml: {}".format(p))
-
         self.logger.warning("PluginsInstalledController.read(): Plugin Liste (sollte sortiert sein), json.dumps(self.plugin_data) = '{}'".format(json.dumps(self.plugin_data)))
-        return json.dumps(dict(sorted(self.plugin_data.items())))
+        return json.dumps(self.plugin_data, sort_keys=True)
 
     read.expose_resource = True
     read.authentication_needed = True
