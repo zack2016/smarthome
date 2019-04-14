@@ -95,7 +95,7 @@ class PluginsInstalledController(RESTResource):
         self.plugins_dir = os.path.join(self.base_dir, 'plugins')
         self.logger = logging.getLogger(__name__)
 
-        self.plugin_data = collections.OrderedDict()
+        self.plugin_data = {}
         return
 
 
