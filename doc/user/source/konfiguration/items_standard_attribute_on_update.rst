@@ -10,26 +10,27 @@
 Attribut *on_update*
 ====================
 
-Ermöglicht das setzen des Wertes anderer Items, wenn das aktuelle Item ein Update erhält (auch
-wenn sich der Wert des aktuellen Items dabei nicht ändert). Das ist der Unterschied zu **on_change**, welches nur ausgelöst
+Ermöglicht das Setzen des Wertes anderer Items, wenn das aktuelle Item ein Update erhält
+(auch wenn sich der Wert des aktuellen Items dabei nicht ändert).
+Das ist der Unterschied zu **on_change**, welches nur ausgelöst
 wird wenn sich bei einem Update der Wert des Items auch ändert. **Ab SmartHomeNG v1.4**
 
-Der Syntax ist folgender:
+Die Syntax ist wie folgt:
 
 +-------------------------+----------------------------------------------------------------------+
-|  <item> = <expression>  | wobei <expression> den selben syntax nutzt, der bereits vom          |
-|                         | eval-Attribut bekannt ist                                            |
+|  <item> = <expression>  | <expression>  nutzt die gleiche syntax wie ein Ausdruck beim         |
+|                         | eval-Attribut                                                        |
 +-------------------------+----------------------------------------------------------------------+
-|  <single expression>    | eval-Attribut bekannt ist. Wenn die zweite Form (ohne <item> = )     |
-|                         | genutzt wird, muss die Zuweisung innerhalb der expression erfolgen:  |
+|  <single expression>    | Wenn die zweite Form (ohne <item> = ) genutzt wird, muss die         |
+|                         | Zuweisung innerhalb der expression erfolgen:  |
 |                         | Eine <single expression> der Form `sh.<item>(<expression>)` ist      |
 |                         | weitestgehend äquivalent zur ersten Syntax Form.                     |
 +-------------------------+----------------------------------------------------------------------+
 
 
-- Expressions (eval Ausdrücker) können en selben Syntax nutzen wie das **eval** Attribut.
+- Expressions (eval Ausdrücke) können die gleiche Syntax nutzen wie das **eval** Attribut.
 - Expressions können relative Item Adressierungen nutzen.
-- Auch die Item Angabe in **<item> = <expresseion>** kann eine relative Angabe sein.
+- Auch die Item Angabe in **<item> = <expression>** kann eine relative Angabe sein.
 - Zu beachten ist, dass <item> eine reine Item Pfad Angabe ist, während in einem Ausdruck
   (wie auch bei eval), ein Item in der Form **sh.<item>()** adressiert werden muss.
 - **on_update** kann zusammen mit **eval** im selben Item genutzt werden, wobei **eval** vor
@@ -82,9 +83,9 @@ Beispiel:
 Attribut *on_change*
 ====================
 
-Ermöglicht das setzen des Wertes anderer Items, wenn der Wert des aktuellen Items verändert
-wird. Im Gegensatz zu **on_update** wird **on_change** nur ausgelöst, wenn sich beim Update eines Items der Wert auch ändert.
-**Ab SmartHomeNG v1.4**
+Ermöglicht das Setzen des Wertes anderer Items, wenn der Wert des aktuellen Items verändert wird.
+Im Gegensatz zu **on_update** wird **on_change** nur ausgelöst, wenn sich beim Update
+eines Items der Wert auch ändert. **Ab SmartHomeNG v1.4**
 
 Der Syntax ist äquivalent zum Attribut **on_update**.
 
