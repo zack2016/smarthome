@@ -1,5 +1,9 @@
-Debian Linux installieren
-=========================
+
+.. role:: bluesup
+
+###########################################
+Debian Linux installieren :bluesup:`update`
+###########################################
 
 Schritte der Installation:
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -20,39 +24,47 @@ z.B. `Linux Live USB Creator <http://www.linuxliveusb.com/>`__,
 oder `UNetbootin <https://unetbootin.github.io/>`__ auf einen USB Stick
 übertragen.
 
-Die Installation auf einem **Raspberry Pi** kann idealerweise über ein fertiges
-`Image <https://sourceforge.net/projects/smarthomeng-raspi-image/>`__
-erfolgen bei dem fast alles vorbereitet ist.
+.. topic:: Raspberry Pi
 
-Ansonsten beginnt man am besten mit dem aktuellsten `Raspbian
-Image <https://www.raspberrypi.org/downloads/raspbian/>`__ von der
-raspberrypi.org Seite. Dieses Image kann mittels
-`Etcher <https://etcher.io/>`__ oder
-`Win32Diskimager <https://sourceforge.net/projects/win32diskimager/>`__
-auf eine SD-Karte “gebrannt” werden. Die unten stehenden Schritte bis
-**Einloggen via SSH** entfallen. Es ist allerdings notwendig, sich beim
-ersten Start direkt am Raspberry Pi einzuloggen (User: pi, Passwort:
-raspberry - Achtung, englische Tastatur!) und mittels
+   Die Installation auf einem **Raspberry Pi** kann idealerweise über ein fertiges
+   `Image <https://sourceforge.net/projects/smarthomeng-raspi-image/>`__
+   erfolgen bei dem fast alles vorbereitet ist.
+   Ansonsten beginnt man am besten mit dem aktuellsten `Raspbian
+   Image <https://www.raspberrypi.org/downloads/raspbian/>`__ von der
+   `raspberrypi.org <https://raspberry.org>`__ Seite.
+   Dieses Image kann mittels
+   `Etcher <https://etcher.io/>`__ oder
+   `Win32Diskimager <https://sourceforge.net/projects/win32diskimager/>`__
+   auf eine SD-Karte übertragen werden. Die unten stehenden Schritte bis
+   **Einloggen via SSH** entfallen. Es ist allerdings notwendig, sich beim
+   ersten Start direkt am Raspberry Pi einzuloggen (User: pi, Passwort:
+   raspberry - Achtung, englische Tastatur!) und mittels
 
-.. code-block:: bash
+   .. code-block:: bash
 
-   sudo systemctl start ssh
-   sudo systemctl enable ssh
+      sudo systemctl start ssh
+      sudo systemctl enable ssh
 
-das SSH Service zu starten und für zukünftige Neustarts automatisch zu
-aktivieren.
+   den SSH server jetzt und bei zukünftigen Neustarts automatisch zu
+   zu starten.
+
 
 Im allgemeinen braucht ein Server keine grafische Benutzeroberfläche,
 also ganz normale Installation wählen. Einige Einstellungen die jetzt
-vorgenommen werden sind \* Sprache, Tastaturlayout \* Rechnername z.B.
-sh \* Das root Passwort bitte leer lassen. \* Benutzer “smarthome”
-anlegen \* Zeitzone (z.B. Berlin) \* Festplatte geführt partitionieren
-und alles verwenden, Änderungen auf Platten schreiben
+vorgenommen werden sind:
 
-Jetzt erfolgt die Grundinstallation des Systems aus dem Netinst
-Basispaket. Anschließend wird aufgrund der Landesvorwahl der
+- Sprache, Tastaturlayout
+- Rechnername z.B. **sh**, **shmuc**, **smarthome23**, ...
+- Das **root Passwort bitte leer lassen**
+- Benutzer **smarthome** anlegen
+- Zeitzone (z.B. Berlin)
+- Festplatte geführt partitionieren und alles verwenden,
+  Änderungen auf Platten schreiben
+
+Jetzt erfolgt die Grundinstallation des Systems aus dem
+Basispaket. Anschließend wird aufgrund der Landesauswahl der
 Spiegelserver für die weiteren Dateien festgelegt. Nach der Festlegung
-konfiguriert das System apt und lädt Pakete aus dem Spiegelserver nach.
+konfiguriert das System **apt** und lädt Pakete aus dem Spiegelserver nach.
 Das ist die Gelegenheit sich ein Heiß- oder Kaltgetränk nach Wahl zu
 holen da der Vorgang je nach Hardware und Netzwerkgeschwindigkeit
 zwischen 4 und 8 Minuten dauert. Die Rückmeldung des Systems an die
@@ -101,7 +113,7 @@ Einloggen via SSH oder an der Konsole
 
 Oder alternativ direkt an der **Konsole** anmelden.
 
-Benutzer zum Anmelden ist “smarthome” und das weiter oben erstellte
+Benutzer zum Anmelden ist **smarthome** und das weiter oben erstellte
 Passwort für diesen User. Wurde kein Passwort angegeben und möchte man
 SSH so konfigurieren, dass man sich mit einem leeren Passwort einloggen
 kann, sind folgende Operationen notwendig:
@@ -116,7 +128,7 @@ Generell wird aber empfohlen, den SSH-Zugang mit Zertifikaten
 abzusichern und ein Einloggen mittels Username/Passwort zu unterbinden.
 Informationen zum `Erstellen von
 Zertifikaten <https://www.thomas-krenn.com/de/wiki/SSH_Key_Login>`__
-gibt es zB bei Thomas Krenn.
+gibt es z.B. bei Thomas Krenn.
 
 Systemaktualisierung
 ~~~~~~~~~~~~~~~~~~~~
@@ -132,37 +144,35 @@ das frisch installierte System mit den neuesten Systemupdates zu
 versorgen. Eigentlich sollte dabei nix zu installieren sein aber sicher
 ist sicher.
 
-Für den Fall einer virtuellen Maschine ist jetzt eine gute Gelegenheit
-einen Snapshot zu erstellen um einen definierten Punkt zur Rückkehr zu
-haben falls im weiteren etwas schiefläuft. Alternativ kann der Snapshot
-auch nach Abschluß der Restarbeiten weiter unten ausgeführt werden.
+.. hint::
 
-Optional: Einstellen von Tastaturlayout, Sprache, etc.
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   Für den Fall das SmartHomeNG in einer virtuellen Maschine installiert wird,
+   ist jetzt eine gute Gelegenheit diese herunterzufahren mit ``sudo poweroff``
+   um einen Snapshot zu erstellen. Falls im weiteren etwas nicht so funktioniert
+   wie erwartet, kann so neu angesetzt werden ohne alles erneut herunterladen
+   zu müssen.
+   Alternativ kann der Snapshot natürlich auch nach Abschluß der Restarbeiten
+   weiter unten ausgeführt werden.
 
-Hat man das Image auf einem Raspberry Pi installiert, können nach dem
-ersten Start sämtliche Einstellungen über ein übersichtliches Menü
-getätigt werden. Es empfiehlt sich, die Sprache auf de_DE.UTF-8 und das
-Tastaturlayout auf Deutsch umzustellen. Außerdem können hier diverse
-Services aktiviert und das Filesystem auf die Größe der SD-Karte
-erweitert werden.
+.. topic:: Raspberry Pi
 
-.. code-block:: bash
+   Hat man das Image auf einem Raspberry Pi installiert, können nach dem
+   ersten Start sämtliche Einstellungen über ein übersichtliches Menü
+   getätigt werden. Es empfiehlt sich, die Sprache auf de_DE.UTF-8 und das
+   Tastaturlayout auf Deutsch umzustellen. Außerdem können hier diverse
+   Services aktiviert und das Filesystem auf die Größe der SD-Karte
+   erweitert werden.
 
-   sudo raspi-config
+   .. code-block:: bash
 
-Optional: System herunterfahren für Snapshop
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+      sudo raspi-config
 
-.. code-block:: bash
 
-   sudo poweroff
+.. hint:: Alternative Netzwerk Konfiguration für feste IP:
 
-Optional: alternative Netzwerk Konfiguration für feste IP
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   Hierfür sei `auf diese Seite
+   verwiesen <https://wiki.debian.org/NetworkConfiguration>`__
 
-Hierfür sei `auf diese Seite
-verwiesen <https://wiki.debian.org/NetworkConfiguration>`__
 
 Optional: Installation der Open VM Tools bei Verwendung als virtuelle Maschine unter VMWare Workstation oder ESXi
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -228,6 +238,24 @@ www-data mit folgendem Befehl eingetragen werden.
 
    sudo usermod -aG www-data smarthome
 
+Vor dem Neustart wird jetzt noch die Datei ``.bashrc`` bearbeitet um einige Befehle auf der
+Shell (Kommandozeile bzw. Konsole) abzukürzen:
+
+.. code-block:: bash
+
+   cd ~
+   nano .bashrc
+
+Dort an am Ende anfügen oder wenn bereits vorhanden das Kommentarzeichen ``#`` am Zeilenanfang entfernen:
+
+.. code-block:: bash
+
+   alias la='ls -A'
+   alias ll='ls -l'
+   alias ..='cd ..'
+
+
+
 Der Benutzer **smarthome** muß nun abgemeldet und neu angemeldet werden,
 damit die Rechte neu eingelesen werden. Dies ist eine gute Gelegenheit
 um einen alternativen Snapshop zu erstellen. Dazu dann wiederum das
@@ -236,3 +264,4 @@ System ausschalten mit:
 .. code-block:: bash
 
    sudo poweroff
+

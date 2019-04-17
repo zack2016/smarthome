@@ -66,7 +66,7 @@ plugin-spezifischen Attribute ist in der Dokumentation des jeweiligen Plugins na
 |                 | vom Typ **dict** erfolgen soll, muss unbedingt darauf geachtet werden, dass  |
 |                 | der angegebene Wert in Anführungszeichen gesetzt wird, damit yaml nicht den  |
 |                 | Wert nicht als Datenstruktur interpretiert.                                  |
-|                 |  (Also folgendermaßen: **initial_value**: "{'k1': 'v1', 'k2': 'v2'}" )       |
+|                 | (Also folgendermaßen: **initial_value**: "{'k1': 'v1', 'k2': 'v2'}" )        |
 +-----------------+------------------------------------------------------------------------------+
 | log_change      | Ermöglicht das Loggen jeder Veränderung des Item-Wertes. **log_change** muss |
 |                 | dazu den Namen des zu verwendeten Loggers enthalten. In **logging.yaml**     |
@@ -79,7 +79,7 @@ plugin-spezifischen Attribute ist in der Dokumentation des jeweiligen Plugins na
 |                 | Update erhält (auch wenn sich der Wert des aktuellen Items dabei nicht       |
 |                 | ändert). **Ab SmartHomeNG v1.4**                                             |
 +-----------------+------------------------------------------------------------------------------+
-| on_change       | Ermöglicht das setzen des Wertes anderer Items, wenn der Wert des aktuellen  |
+| on_change       | Ermöglicht das Setzen des Wertes anderer Items, wenn der Wert des aktuellen  |
 |                 | Items verändert wird. **Ab SmartHomeNG v1.4**                                |
 +-----------------+------------------------------------------------------------------------------+
 | remark          | ein optionaler Kommentar für das Item. Es ist sinnvoll Kommentare zu einem   |
