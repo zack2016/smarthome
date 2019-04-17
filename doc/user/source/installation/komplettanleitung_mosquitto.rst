@@ -26,7 +26,7 @@ Anschließend kann mit dem Befehl
    sudo service mosquitto status
 
 
-überprüft werden, ob der Broker läuft. Wenn der Servic läuft, sieht man eine ähnliche Ausgabe wie folgende:
+überprüft werden, ob der Broker läuft. Wenn der Service läuft, sieht man eine ähnliche Ausgabe wie folgende:
 
 .. code-Block:: bash
 
