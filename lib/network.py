@@ -300,12 +300,12 @@ class Http(object):
     :param baseurl: base URL used everywhere in this instance (example: http://www.myserver.tld)
     :type baseurl: str
     """
-    def __init__(self, baseurl=''):
+    def __init__(self, baseurl='', timeout=10):
         self.logger = logging.getLogger(__name__)
 
         self.baseurl = baseurl
         self._response = None
-        self.timeout = 10
+        self.timeout = timeout
         self._session = requests.Session()
 
     def HTTPDigestAuth(self, user=None, password=None):
