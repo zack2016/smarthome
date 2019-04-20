@@ -376,44 +376,67 @@ Converts the relative humidity to the absolute humidity.
 Accessing items
 ---------------
 
-sh.return_item(path)
-~~~~~~~~~~~~~~~~~~~~~
+Usage of Object ``sh`` for items is deprecated, it's better to use the Item API:
+
+.. code:: python
+
+   from lib.item import Items
+   items = Items.get_instance()
+   
+With ``items`` Object in place the following functions can be called:
+
+items.return_item(path)
+~~~~~~~~~~~~~~~~~~~~~~~
 
 Returns an item object for the specified path. E.g.
-``sh.return_item('first_floor.bath')``
+``items.return_item('first_floor.bath')``
 
-sh.return_items()
-~~~~~~~~~~~~~~~~~~
+items.return_items()
+~~~~~~~~~~~~~~~~~~~~
 
 Returns all item objects.
 .. code-block:: python
 
-   for item in sh.return_items():
+   for item in items.return_items():
       logger.info(item.id())
 
-sh.match_items(regex)
-~~~~~~~~~~~~~~~~~~~~~
+items.match_items(regex)
+~~~~~~~~~~~~~~~~~~~~~~~~
 
 Returns all items matching a regular expression path and optional attribute.
 
 .. code-block:: python
 
-   for item in sh.match_items('*.lights'):     # selects all items ending with 'lights'
+   for item in items.match_items('*.lights'):     # selects all items ending with 'lights'
        logger.info(item.id())
 
-   for item in sh.match_items('*.lights:special'):     # selects all items ending with 'lights' and attribute 'special'
+   for item in items.match_items('*.lights:special'):     # selects all items ending with 'lights' and attribute 'special'
        logger.info(item.id())
 
-sh.find_items(configattribute)
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+items.find_items(configattribute)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Returns all items with the specified config attribute
-.. code-block:: python
+Depending on ``configattribute`` the following items will be returned:
 
-   for item in sh.find_items('my_special_attribute'):
+.. table::
+
+   ======================  =========================================
+   attribute             Ergebnis
+   ======================  =========================================
+   ``attribute``           Only items having no instance id
+   ``attribute@``          Items with or without instance id
+   ``attribute@instance``  Items with exact match of attribute and instance id
+   ``@instance``           Items having this instance id
+   ======================  =========================================
+
+
+.. code:: python
+
+   for item in items.find_items('my_special_attribute'):
        logger.info(item.id())
 
 find\_children(parentitem, configattribute):
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Returns all children items with the specified config attribute.
+Returns all child items with the specified config attribute. The search for ``configattribute``
+will be exactly conducted as described in ``find_items(configattribute)`` above.

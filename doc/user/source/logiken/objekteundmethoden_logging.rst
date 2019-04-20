@@ -18,10 +18,11 @@ Außerdem sind die letzten 50 Einträge auch unter **sh.log** verfügbar. So ist
    Die Datum / Uhrzeit Angabe in jedem Protokolleintrag ist bezogen auf die lokale Zeitzone der SamrtHomeNG Installation.
 
 .. code-block:: python
-   :caption: Eine einfache Schleife über die Log Einträg
+   :caption: Eine einfache Schleife über die Log Einträge
 
-   # a simple loop over the log messages
    for entry in sh.log:
-       print(entry)       # remark: if SmartHome.py is run in daemon mode output by 'print' is not visible.
+       print(entry)
 
+.. hint::
 
+Wenn SmartHomeNG im Hintergrund als Daemon läuft, sind Ausgabe via print() nicht sichtbar
