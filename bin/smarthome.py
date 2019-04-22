@@ -186,7 +186,10 @@ class SmartHome():
     modules = []
     __children = []
     _logger = logging.getLogger(__name__)
+
+    # default values, if values are not specified in smarthome.yaml
     _default_language = 'de'
+    _fallback_language_order = 'en,de'
 
     plugin_load_complete = False
     item_load_complete = False
@@ -380,6 +383,26 @@ class SmartHome():
         :rtype: str
         """
         return self._extern_conf_dir
+
+
+    def get_etcdir(self):
+        """
+        Function to return the etc config directory
+
+        :return: Config directory as an absolute path
+        :rtype: str
+        """
+        return self._etc_dir
+
+
+    def get_vardir(self):
+        """
+        Function to return the var directory used by SmartHomeNG
+
+        :return: var directory as an absolute path
+        :rtype: str
+        """
+        return self._var_dir
 
 
     def getBaseDir(self):
