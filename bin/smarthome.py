@@ -1176,6 +1176,7 @@ if __name__ == '__main__':
 
     arggroup.add_argument('-v', '--verbose', help='verbose (info output) logging to the logfile - DEPRECATED use logging-configuration', action='store_true')
     arggroup.add_argument('-d', '--debug', help='stay in the foreground with verbose output - DEPRECATED use logging-configuration', action='store_true')
+    arggroup.add_argument('-f', '--foreground', help='stay in the foreground', action='store_true')
     arggroup.add_argument('-q', '--quiet', help='reduce logging to the logfile - DEPRECATED use logging-configuration', action='store_true')
     args = argparser.parse_args()
 
@@ -1226,6 +1227,9 @@ if __name__ == '__main__':
         pass
     elif args.verbose:
         MODE = 'verbose'
+        pass
+    elif args.foreground:
+        MODE = 'foreground'
         pass
     elif args.create_backup:
         fn = lib.backup.create_backup(extern_conf_dir)
