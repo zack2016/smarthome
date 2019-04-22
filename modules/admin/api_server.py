@@ -104,6 +104,7 @@ class ServerController(RESTResource):
 
         response = {}
         response['default_language'] = self._sh.get_defaultlanguage()
+        response['fallback_language_order'] = self._sh._fallback_language_order
         response['client_ip'] = client_ip
         response['itemtree_fullpath'] = self.module.itemtree_fullpath
         response['itemtree_searchstart'] = self.module.itemtree_searchstart
@@ -118,6 +119,7 @@ class ServerController(RESTResource):
         response['daemon_ow'] = self.get_1wire_daemon()
         response['daemon_mqtt'] = self.get_mqtt_daemon()
         response['daemon_node_red'] = self.get_node_red_daemon()
+        self.logger.info("ServerController.onfo(): response = {}".format(response))
         return json.dumps(response)
 
 
