@@ -8,6 +8,7 @@ module:
     description:
         de: 'Dieses Modul implementiert das Administrationinterface von SmartHomeNG'
         en: 'This module implements the administration interface for SmartHomeNG'
+        fr: "Ce module implémente l'interface d'administration pour SmartHomeNG"
 
 parameters:
     login_expiration:
@@ -15,7 +16,8 @@ parameters:
         default: 168
         description:
             de: 'Ablaufdauer des Logins in Stunden (ab Loginzeitpunkt)'
-            en: 'Expriation time of the login in hours (counting from time of login)'
+            en: 'Expiration time of the login in hours (counting from time of login)'
+            fr: "Temps d'expiration de l'identification en heures (à partir du moment de l'identification)"
 
     pypi_timeout:
         type: int
@@ -23,6 +25,7 @@ parameters:
         description:
             de: 'Timeout bei der Abfrage der pypi Website'
             en: 'Timeout for getting data from the pypi website'
+            fr: "Délai d'attente pour obtenir des données du site Web Pypi"
 
     itemtree_fullpath:
         type: bool
@@ -30,6 +33,7 @@ parameters:
         description:
             de: 'Im Item-Tree die Items mit vollem Pfad-Namen anzeigen'
             en: 'Display items with full path in item tree'
+            fr: "Afficher le chemin complèt des objets dans l'arborescence"
 
     itemtree_searchstart:
         type: num
@@ -37,12 +41,14 @@ parameters:
         description:
             de: 'Minimale Anzahl eingegebener Zeichen ab denen die Suche im Item-Tree beginnt'
             en: 'Minimum number of entered characters to start searching the item tree'
+            fr: "Nombre minimum de caractères entrés pour démarrer la recherche dans l'arborescence"
 
     websocket_host:
         type: ip
         description:
             de: 'IP Adresse für den websocket Zugriff'
-            en: 'ip address to usefor websocket access'
+            en: 'ip address to use for websocket access'
+            fr: "Adresse IP à utiliser pour l'accès websocket"
 
     websocket_port:
         type: int
@@ -52,6 +58,7 @@ parameters:
         description:
             de: 'Port der für den Websocket Zugriff verwendet wird'
             en: 'Port that is used for the websocket protocol'
+            fr: "Port à utiliser pour l'accès websocket"
 
     log_chunksize:
         type: int
@@ -61,3 +68,4 @@ parameters:
         description:
             de: 'Größe der gelesenen Blöcke bei der Anzeige großer Logdateien'
             en: 'Size of blocks (chunks) read when displaying large logfiles'
+            fr: "Taille des morceaux lus lors de l'affichage de fichiers journaux volumineux"
