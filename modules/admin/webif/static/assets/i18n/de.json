@@ -233,7 +233,9 @@
     "FILENAME": "Dateiname",
     "ACTIONS": "Aktionen",
     "ENABLE": "Aktivieren",
+    "ENABLED": "Aktiviert",
     "DISABLE": "Deaktivieren",
+    "DISABLED": "Deaktiviert",
     "TRIGGER": "Auslösen",
     "UNLOAD": "Entladen",
     "DELETE": "Löschen",
@@ -274,6 +276,8 @@
   },
   "PLUGIN": {
     "ADD": "Plugin hinzufügen",
+    "ENABLED": "Aktiviert",
+    "DISABLED": "Deaktiviert",
     "TYPE": "Typ",
     "CONFIGNAME": "Konfig Name",
     "PLUGINNAME": "Plugin",

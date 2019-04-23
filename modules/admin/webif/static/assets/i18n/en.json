@@ -231,7 +231,9 @@
     "FILENAME": "Filename",
     "ACTIONS": "Actions",
     "ENABLE": "Enable",
+    "ENABLED": "Enabled",
     "DISABLE": "Disable",
+    "DISABLED": "Disabled",
     "TRIGGER": "Trigger",
     "UNLOAD": "Unload",
     "DELETE": "Delete",
@@ -272,6 +274,8 @@
   },
   "PLUGIN": {
     "ADD": "Add Plugin",
+    "ENABLED": "Enabled",
+    "DISABLED": "Disabled",
     "TYPE": "Type",
     "CONFIGNAME": "Configname",
     "PLUGINNAME": "Plugin",
