@@ -12,9 +12,11 @@ Developer documentation ([english](https://www.smarthomeNG.de/dev)) and user doc
 Additional information / documentation can be found in the [SmartHomeNG Wiki](https://github.com/smarthomeNG/smarthome/wiki). The Wiki is written in german for the greatest part.
 
 ## Used Tools
-<a href="https://www.jetbrains.com/?from=SmartHomeNG
-"><img src="https://smarthomeng.de/images/pycharm-logo.png" width="70" height="70"></a>
- SmartHomeNG was built using the Pycharm IDE.
+
+| Tool | Description |
+| ---     | :--- |
+| <a href="https://www.jetbrains.com/?from=SmartHomeNG"><img src="https://smarthomeng.de/images/pycharm-logo.png" width="80" height="70"></a> | SmartHomeNG was built using the Pycharm IDE. |
+| <a href="https://www.jetbrains.com/?from=SmartHomeNG"><img src="https://smarthomeng.de/images/webstorm-logo.png" width="70" height="70"></a> | The admin interface of SmartHomeNG was built using the WebStorm IDE. |
 
 
 ## Directory Structure
