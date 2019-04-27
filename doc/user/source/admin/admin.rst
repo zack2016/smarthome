@@ -4,7 +4,7 @@
 .. index:: Webinterfaces; Administrations-Interface
 
 .. role:: bluesup
-.. role:: redesup
+.. role:: redsup
 
 
 Administrations-Interface :redsup:`new`

@@ -15,6 +15,8 @@ Rechts in der jeweiligen Zeile sind Icons über die
 - eine Logik entlsden werden kann,
 - eine Logik inclusive Code und Parametern gelöscht werden kann
 
+Oberhalb der Liste findet sich ein Button, der die Erstellung einer neuen Logik ermöglicht.
+
 
 .. image:: assets/logics.jpg
    :class: screenshot
