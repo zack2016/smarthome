@@ -6,9 +6,9 @@
 .. role:: bluesup
 .. role:: redesup
 
-#######################################
+
 Administrations-Interface :redsup:`new`
-#######################################
+=======================================
 
 Seit SmartHomeNG v1.2 steht eine graphische Oberfläche zur Verfügung, die bei der Administration
 von SmartHomeNG hilft.

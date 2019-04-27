@@ -1,45 +1,29 @@
+
 .. index:: Administrations GUI; Logiken
+.. index:: Logiken
 
-#######
+=======
 Logiken
-#######
+=======
 
-.. note::
+Unter **Logiken** wird eine Liste der konfigurierten Logiken mit einer Reihe von Informationen angezeigt.
+Rechts in der jeweiligen Zeile sind Icons über die
 
-   Ist bisher im Admin Interface nicht implementiert. Bis auf weiteres bitte die Funktionalität
-   im Backend Plugin nutzen.
-
-
-Logiken im Backend Plugin
-=========================
-
-Ab SmartHomeNG v1.4 stehen in der graphischen Oberfläche Funktionen zur Verfügung, mit der
-Logiken vollständig verwaltet (erstellt, geändert und konfiguriert) werden können.
+- eine Logik ausgelöst (getriggert) werden kann,
+- eine Logik neu geladen werden kann,
+- eine Logik deaktiviert bzw. aktiviert werden kann,
+- eine Logik entlsden werden kann,
+- eine Logik inclusive Code und Parametern gelöscht werden kann
 
 
-.. index:: Logik Liste
-
-Logik Liste
-===========
-
-Die Logik Liste zeigt die Übersicht aller Logiken mit Informationen zu ihrer Konfiguration an.
-
-.. image:: assets/backend_logikliste.jpg
+.. image:: assets/logics.jpg
    :class: screenshot
 
-Aus dieser Liste heraus kann man die Logiken triggern, neu laden, aktivieren bzw. deaktivieren,
-entladen und löschen. Ein Klick auf den Dateinamen führt in den Logik Editor.
 
+.. toctree::
+   :maxdepth: 4
+   :hidden:
+   :titlesonly:
 
-
-.. index:: Logik Editor
-
-Logik Editor
-============
-
-Im Logik Editor können die Konfigurationsparameter einer Logik angepasst werden und der Code
-der Logik kann editiert werden.
-
-.. image:: assets/backend_logik_editor.jpg
-   :class: screenshot
+   logicconfig
 
