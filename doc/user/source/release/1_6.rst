@@ -34,15 +34,72 @@ Bitte auch die Release Notes für Version 1.6 unter `https://www.smarthomeNG.de/
 Bugfixes im CORE
 ----------------
 
-* ...
+* Bugfix für den Interactive Mode
 
 
 
 Updates im CORE
 ---------------
 
-* Module http:
-  * Updated ... to v...
+* Vor der Initialisierung prüft SmartHomeNG ob die in requirements/base.txt beschriebenen Python Packages installiert sind und bricht ab, falls nicht.
+* Requirement für das requests package auf >=2.20.0 heraufgesetzt (wg. CVE-2018-18074)
+* Bugfix für die Initialisierung von env.system.start
+
+* Items:
+
+  * Funktionen des Python time-Packages können nun in eval genutzt werden.
+  * Werte der Items (z.B. ```var = item1()```) werden als Deep-Copy ausgeliefert, um bei dicts und lists bei Änderungen an ``var``` ungewünschte Änderungen innerhalb des Items zu verhindern.
+  * Wenn dict-Items ihren Wert als String zugewiesen bekommen (z.B. ```item1("{'k1': 'v1', 'k2: 'v2}")```) werden jetzt auch numerische Keys (z.B. ```item2("{1: 'v1', 2: 'v2}")```) richtig verarbeitet.
+  * Properties **enforce_updates** (r/w), **trigger** (r/w) und **eval** (r/w) implementiert (die ersten drei primär um dem Plugin stateengine (ehemals autoblind) den Verzicht des Zugriffs auf private Variablen zu ermöglichen)
+  * Public Properties für items implementiert. Sie sind über ```sh.<Item-Pfad>.property.<Property-Name>``` zugänglich. Folgende Properties sind bisher implementiert:
+    * enforce_updates (bool, r/w)
+    * eval (str, r/w)
+    * name (str, r/w)
+    * path (str, r/o)
+    * trigger (list of str, r/w)
+    * type (str, r/o)
+    * weitere Properties -> siehe Doku
+  * Die public Properties **name** und **path** sollen längerfristig die Nutzung von **item** (zum Zugriff auf den Item-Namen) und **item.id()** sowie **item.path()** (zum Zugriff auf den Item--Pfad) in der Nutzung ersetzen.
+  * Logiken erhalten in trigger['source_details'] Informationen über den Ursprung (z.B. Device ID), falls sie von Items getriggert werden.
+  * Templates für Item-Strukturen implementiert
+    * können in Plugins definiert werden (Metadaten in plugin.yaml)
+    * können individuell definiert werden (../etc/struct.yaml)
+  * sh.find_items(confattribute) und sh.find_children(parent, confattribute) erweitert
+    auf Berücksichtigung der eventuell vorhandenen Instanz Kennung.
+
+
+* Logiken:
+
+  * Handling korrigiert, wenn Items nicht existieren, die in Szenendefinitionen verwendet werden
+
+* lib.shtime erweitert
+* lib.shpypi hinzugefügt (zur Prüfung von Requirements und der Abfrage von Informationen von pypi.org)
+
+* Module:
+
+  * Fehlgeschlagener Import von Python Packages in Modulen wird mit einer sinnvollen Fehlermeldung abgefangen und das Plugin wird nicht geladen
+  * http:
+    * Wechsel auf WebFonts von Font Awesome, wegen Problemen in der Darstellung mit Bootstrap 4.1.2
+    * Updates der 3rd Party Komponenten
+  * admin:
+    * Initiale Version eines Admin Moduls hinzugefügt, welches das Backend-Plugin ablösen wird.
+
+* Plugins:
+
+  * Fehlgeschlagener Import von Python Packages in Plugins wird mit einer sinnvollen Fehlermeldung abgefangen und das Plugin wird nicht geladen
+  * Bei Multi-Instanz Plugins wird der Name der Plugin-Instanz automatisch zum Logtext hinzugefügt (Voraussetzung: Im Smartplugin wird die Anweisung ```self.logger = logging.getLogger(__name__)``` weggelassen.
+  * Metadaten:
+    * Tool zum Prüfen der Vollständigkeit der Metadaten von Plugins
+    * Attribut **state** für den Status des Plugins hinzugefügt ['develop', 'ready', 'qa-passed','deprecated']
+
+      Hintergrund: Plugins im Status 'develop' sollen nicht in den Releases in den Master übernommen werden.
+
+      Wenn **state** auf deprecated gesetzt wird, ist das eine Vorwarnung, dass das Plugin in kommenden Releases nicht mehr enthalten sin wird. Hierzu wird auch eine Warnung im Admin-Interface angezeigt.
+    * Attribut **restartable** hinzugefügt (Hintergrund: Kennzeichnung der Plugins für die geplante Funktionalität zum Entladen und neu Laden von Plugins)
+    * Abschnitt zur Definition der Funktionen hinzugefügt, die ein Plugin implementiert.
+  * Allgemeiner Parameter **plugin_enabled** hinzugefügt, um das Laden von Plugins zu kontrollieren/verhindern
+  * Beispiel Plugin unter dev/sample_plugin aktualisiert
+  * Exception Handling für run() und stop() Methode. Bisher wurden Exceptions, die nicht innerhalb der Methoden gehandled wurden ignoriert (unterdrückt).
 
 
 
