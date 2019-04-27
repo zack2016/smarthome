@@ -3,9 +3,12 @@
 .. index:: Webinterfaces; Administrations GUI
 .. index:: Webinterfaces; Administrations-Interface
 
-#########################
-Administrations-Interface
-#########################
+.. role:: bluesup
+.. role:: redesup
+
+#######################################
+Administrations-Interface :redsup:`new`
+#######################################
 
 Seit SmartHomeNG v1.2 steht eine graphische Oberfläche zur Verfügung, die bei der Administration
 von SmartHomeNG hilft.
@@ -69,7 +72,7 @@ nur, wenn das im Browser gespeicherte Token abläuft. Die Lebensdauer des Token 
    logiken
    scheduler
    plugins
-   szenen
+   scenes
    threads
    logs
 

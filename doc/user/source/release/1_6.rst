@@ -2,6 +2,8 @@
 Release 1.6 - tt. mmm 2019
 ==========================
 
+**NOT YET RELEASED**
+
 Es gibt eine Menge neuer Features im Core von SmartHomeNG und den Plugins.
 
 
@@ -81,9 +83,11 @@ Updates im CORE
 
   * Fehlgeschlagener Import von Python Packages in Modulen wird mit einer sinnvollen Fehlermeldung abgefangen und das Plugin wird nicht geladen
   * http:
+
     * Wechsel auf WebFonts von Font Awesome, wegen Problemen in der Darstellung mit Bootstrap 4.1.2
     * Updates der 3rd Party Komponenten
   * admin:
+
     * Initiale Version eines Admin Moduls hinzugefügt, welches das Backend-Plugin ablösen wird.
 
 * Plugins:
@@ -91,6 +95,7 @@ Updates im CORE
   * Fehlgeschlagener Import von Python Packages in Plugins wird mit einer sinnvollen Fehlermeldung abgefangen und das Plugin wird nicht geladen
   * Bei Multi-Instanz Plugins wird der Name der Plugin-Instanz automatisch zum Logtext hinzugefügt (Voraussetzung: Im Smartplugin wird die Anweisung ```self.logger = logging.getLogger(__name__)``` weggelassen.
   * Metadaten:
+
     * Tool zum Prüfen der Vollständigkeit der Metadaten von Plugins
     * Attribut **state** für den Status des Plugins hinzugefügt ['develop', 'ready', 'qa-passed','deprecated']
 
@@ -111,26 +116,32 @@ Neue Plugins
 Für Details zu den inhaltlichen Änderungen der einzelnen Plugins, bitte die Dokumentation des jeweiligen Plugins konsultieren.
 
 * Alexa4p3:
+
   * Neues Plugin, dass das alte Alexa Plugin in Release 1.6 ablösen wird. Das Plugin kommt mit V3 der Payload Daten klar und sollte zu V2 rückwärtskompatibel sein!
 
 * jsonread
+
   * Neues Plugin: json parser plugin basierend auf jq
     This is a generic JSON to smarthome plugin. Fetch any JSON encoded data via http(s) or from a file,
     extract the interesting data and feed the values to smarthome items.
 
 * mailrcv
+
   * Neues Plugin zum empfangen von Mails. Ist Multi-Instance fähig
 
 * mailsend
+
   * Neues Plugin zum senden von Mails. Ist Multi-Instance fähig
 
 * slack:
+
   * neues Benachrichtigungs-Plugin hinzugefügt
   * Slack steht für „Searchable Log of All Conversation and Knowledge“ (dt. durchsuchbares Protokoll aller Konversationen und des Wissens)
   * Sofort-Nachrichten mit programmierbarem Text an die Slack Arbeitsgruppen senden
   * Unterstützt bei der Überwachung definierter Ereignisse
 
 * stateengine:
+
   * Neues Plugin, das dem ehemeligen **autoblind** Plugin entspricht (siehe oben) welches einen besseren Namen bekommen hat
   * Bietet Templates für Item-Strukturen
 
@@ -140,6 +151,7 @@ Plugin Erweiterungen
 --------------------
 
 * avm:
+
   * CURL zum Test von AHA Devices als Codekommentar hinzugefügt
   * Plugin API in plugin.yaml beschrieben
   * item mit name monitor.trigger aus dem README muss in monitor.trigger1 umbenannt werden, da es auf dem ITEM im 1.6er Core die Funktion "trigger()" gibt!
@@ -151,24 +163,30 @@ Plugin Erweiterungen
   * Unterstützung für HKR Module (FritzDECT301)
 
 * backend:
+
   * Logik-Seite:
+
     * Autocomplete für sinnvolle Pluginmethoden
     * Info beim Autocomplete, ob man ein Plugin oder Item auswählt
     * Neue Sortierfunktion
     * Klammern beim Autocomplete von Items
     * Autocomplete für watch_items
   * Plugin Seite:
+
     * In den Plugin Details werden die durch das Plugin definierten öffentlichen Methoden angezeigt
 
 * darksky:
+
   * Erweiterung um eine Methode map_icon, mit der die zurückgelieferten Icons auf SmartVisu Icons gemapped werden können (inkl. Beispiel im README)
   * Erweiterung der Beispiele im README, um die Wettervorhersage für die nächsten 3 Tage auszulesen.
   * Bietet Templates für Item-Strukturen
 
 * dashbutton:
+
   * Nutzt jetzt das pypi "kamene" Paket, das scapy-python3 "beerbt". Vermeidet so eine Warnung beim Start!
 
 * database
+
   * Anzeige der Anzahl der Datensätze pro Tag
   * neue Funktion countall für item.db, die die Anzahl aller Datensätze zählt. Integration dieser in das WebInterface über neuen Button
   * Plugin API wird via WebIf ausgegeben
@@ -179,10 +197,12 @@ Plugin Erweiterungen
   * Neue `integrate` Funktion
 
 * datalog:
+
   * Initialisierung auf aktuelle API umgestellt (kwargs, args)
   * Konfiguration der Dateien (`filepatterns`) und Patterns (`logpatterns`) nur noch via YAML-Format möglich (default funktioniert weiterhin)
 
 * dlms
+
   * logging aktualisiert
   * Konvertierungsfunktionen bug bereinigt
   * Prüfung auf fehlende Python library (REQUIRED_PACKAGE_IMPORTED) eingebaut
@@ -191,20 +211,25 @@ Plugin Erweiterungen
   * Berücksichtigung von lib.shtime
 
 * drexelundweiss:
+
   * Beim Updaten eines Readonly-Items wird dessen Wert abgefragt
   * interne Anpassungen im Plugin (Metadaten, Logging, Initialisierung)
 
 * ebus
+
   * Plugin auf SmartPlugin umgestellt
 
 * gpio:
+
   * Bereitstellung eines Webinterface im Backend
   * Logging verbessert
 
 * homematic
+
   * Source Angaben um Device Adressen erweitert (zur Anzeige im Backend und Nutzung in Logiken)
 
 * knx
+
   * Source Angaben um Gruppen-Adressen erweitert (zur Anzeige im Backend und Nutzung in Logiken)
   * dpt 17.001 hinzugefügt (Szenennummer 1-64)
   * dpt 18.001 hinzugefügt (Szenen-Kontrolle 1-64=abrufen, 129-192=speichern)
@@ -212,43 +237,53 @@ Plugin Erweiterungen
   * dpt 275.100 hinzugefügt (DPT_TempRoomSetpSetF16 4 Bytes)
 
 * mail
+
   * Plugin aufgeteilt um dem SmartHomeNG Standard zu entsprechen (1 Plugin Klasse je Plugin).
   * Neue Plugins sind **mailrcv** und **mailsend**
 
 * nuki
+
   * noWait Flag ist jetzt konfigurierbar
   * Anpassungen des Loggings (Text)
   * Web Interface mit Schaltfunktion
   * Kleiner Fix für Exceptions bei 503er Fehlern von der Nuki Bridge
 
 * operationlog
+
   * Metadaten des Plugins angelegt
   * Einstellung `logger` hinzugefügt um in einen konfigurierten Standard-Logger zusätzlich zu loggen
 
 * openweathermap
+
   * Neues Plugin
 
 * pushbullet
+
   * API Beschreibung in plugin.yaml ergänzt
 
 * visu_websocket:
+
   * Erweitert um ``.property.<attributname>`` Damit ist es möglich Attribute direkt in der SmartVISU anzuzeigen,
     also z.B. ``Schlafzimmer.Fernseher.property.last_change``
 
 * webservices
+
   * neuer Parameter für items und itemsets der mit "?mode=..." (val oder full) angehängt werden muss. Der Parameter sorgt dafür, dass die in dem Items konfigurierten Werte für webservices_data ignoriert werden und das zurückgeliefert wird, was in mode steht
 
 * withings_health (ehemals nokia_health)
+
   * Umbenennung des Plugins und der Parameter wegen Rückübernahme durch Withings
   * Neuimplementierung für OAuth2, und Version 1.0.0-1.1.0 des Nokia Pypi Pakets. **Achtung:** es müssen 4 neue Items erstellt werden. withings_type: access_token, token_expiry, token_type, refresh_token. Diese müssen mit dem Attribut cache als File, oder in einer Datenbank (sqlite, database plugin) zwischengespeichert werden, da sonst das Plugin nach SHNG Neustart erneut OAuth2 durchlaufen muss!
   * Durchlauf des OAuth2 Prozesses von der WebGUI gegen (lokale) Callback-URL (ebenfalls via WebGUI)
   * Englische Version der WebGUI
 
 * xiaomi:
+
   * Umbenennung des Plugins von "xiaomi" nach "miflora"
   * Umbenennung der Itemattribute von "xiaomi_data_type" zu "miflora_data_type"
 
 * xmpp:
+
   * Einstellung `server` hinzugefügt mit der angegeben werden kann zu welchem Server die Verbindung aufgebaut werden soll (optional)
   * Einstellung `use_ipv6` hinzugefügt über die IPv6 deaktiviert werden kann (Default ist IPv6 aktiv)
   * Einstellung `plugins` hinzugefügt über die zusätzliche Plugins geladen werden können (z.B. Multi User Chat XEP-45)
