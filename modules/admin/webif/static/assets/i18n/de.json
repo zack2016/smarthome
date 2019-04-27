@@ -275,6 +275,13 @@
     "CRONTAB": "Crontab"
   },
   "PLUGIN": {
+    "INTERFACE": "Interface Plugin",
+    "SYSTEM": "System Plugin",
+    "WEB": "Web/Cloud Plugin",
+    "PROTOCOL": "Protokoll Plugin",
+    "GATEWAY": "Gateway Plugin",
+    "CLASSIC": "Classic Plugin",
+
     "ADD": "Plugin hinzufügen",
     "ENABLED": "Aktiviert",
     "DISABLED": "Deaktiviert",
