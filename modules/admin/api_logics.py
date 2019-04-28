@@ -451,7 +451,7 @@ class LogicsController(RESTResource):
 
         if (action == 'saveparameters') and (logicname != ''):
             return self.save_logic_parameters(logicname)
-        elif not action in ['create', 'load']:
+        elif not action in ['create', 'load', 'delete']:
             mylogic = self.logics.return_logic(logicname)
             if mylogic is None:
                 return json.dumps({'result': 'Error', 'description': "No logic with name '" + logicname + "' found"})
