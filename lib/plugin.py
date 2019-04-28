@@ -48,9 +48,11 @@ import gc
 import ctypes
 import sys
 
+import json
 import logging
 import threading
 import inspect
+import collections
 import os.path		# until Backend is modified
 
 import lib.config
@@ -156,6 +158,33 @@ class Plugins():
 
         logger.info('Load of plugins finished')
         del(_conf)  # clean up
+
+
+        # Tests für logic-Parameter Metadaten
+        self.logic_parameters = {}
+
+        for i in range(0, len(self._plugins) - 1):
+
+            if self._plugins[i]._metadata.logic_parameters is not None:
+                for param in self._plugins[i]._metadata.logic_parameters:
+                    logger.warning("Plugins.__init__: Plugin '{}' logic_param '{}' = {}".format(self._plugins[i]._shortname, param, json.loads(json.dumps(self._plugins[i]._metadata.logic_parameters[param]))))
+                    self.logic_parameters[param] = json.loads(json.dumps(self._plugins[i]._metadata.logic_parameters[param]))
+                    self.logic_parameters[param]['plugin'] = self._plugins[i]._shortname
+
+        return
+
+
+    def get_logic_parameters(self):
+        """
+        Returns the list of all logic parameter definitions of all configured/loaded plugins
+
+        :return:
+        """
+        paramdict = collections.OrderedDict(sorted(self.logic_parameters.items()))
+        for p in paramdict:
+            logger.warning("Plugins.get_logic_parameters(): {} = {}".format(p, paramdict[p]))
+
+        return paramdict
 
 
     def _load_translations(self):

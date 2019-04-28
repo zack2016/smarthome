@@ -424,3 +424,32 @@ class PluginsAPIController(RESTResource):
     read.expose_resource = True
     read.authentication_needed = True
 
+
+
+class PluginsLogicParametersController(RESTResource):
+
+    def __init__(self, module):
+        self._sh = module._sh
+        self.module = module
+
+        self.base_dir = self._sh.get_basedir()
+        self.plugins_dir = os.path.join(self.base_dir, 'plugins')
+        self.logger = logging.getLogger(__name__)
+
+        self.plugins = Plugins.get_instance()
+
+        self.plugin_list = []
+        return
+
+    # ======================================================================
+    #  GET /api/plugins/logicparameters
+    #
+    def read(self, id=None):
+        """
+        return an object with data about the logic parameters of all configured plugins
+        """
+        self.plugins = Plugins.get_instance()
+        return json.dumps(self.plugins.get_logic_parameters())
+
+    read.expose_resource = True
+    read.authentication_needed = False
