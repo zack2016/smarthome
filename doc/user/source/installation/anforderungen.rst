@@ -4,7 +4,7 @@ Hard- u. Software Anforderungen
 Um SmartHomeNG nutzen zu können, braucht es nicht viel. Für jemanden,
 der erstmalig SmartHomeNG installiert bietet es sich an zum Kennenlernen
 eine virtuelle Maschine zu erstellen und dort als Betriebssystem ein
-aktuelles Debian Jessie (>= 8.3) oder Ubuntu (>= 15.x) zu verwenden.
+aktuelles Debian Stretch (>= 9.x) oder Ubuntu (>= 15.x) zu verwenden.
 
 Da SmartHomeNG in den meisten Fällen im Hintergrund laufen wird,
 benötigt das System keine grafische Benutzeroberfläche und kann
@@ -14,7 +14,7 @@ Hardware
 --------
 
 Ein beliebiger Rechner mit x86 or x64 CPU sollte funktionieren, genauso
-wie Rechner mit einer ARM CPU wie Raspberry.
+wie Rechner mit einer ARM CPU wie Raspberry Pi.
 
 Häufig verwendete Hardware ist:
 
@@ -24,7 +24,7 @@ Häufig verwendete Hardware ist:
    `Umfrage <https://knx-user-forum.de/forum/supportforen/smarthome-py/1112952-welche-hardware-nutzt-ihr-f%C3%BCr-euer-smarthomeng>`__
 -  Intel NUC (Empfohlen für Stabilität und Geschwindigkeit, auch wenn
    diese Rechner mehr Leistung haben, als benötigt wird. Unterstützt
-   normale SATA Festplatten, was ein Vorteil gegenüber den Raspberry Pis
+   normale SATA Festplatten, was ein Vorteil gegenüber den Raspberry Pi
    mit ihren SD-Karten ist)
 -  ODroid
 -  Banana Pi
@@ -43,7 +43,7 @@ Plattenplatz.
 Raspberry Pi 2 oder 3, jeweils Modell B oder B+
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-SmartHomeNG ist auf einem Rapberry Pi 1 zwar lauffähig, sollte dann aber nur in einer Minimalkonfiguration eingesetzt
+SmartHomeNG ist auf einem Raspberry Pi 1 zwar lauffähig, sollte dann aber nur in einer Minimalkonfiguration eingesetzt
 werden. Das
 Vorteile:
 ^^^^^^^^^
@@ -71,7 +71,7 @@ Nachteile:
 Intel NUC (z.B. DN2820FYKH0) oder vergleichbar
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Intel NUC Systeme mit Atom CPUs sind vollkommen ausreichend. Core i3 Prozzessoren oder höher werden nicht benötigt.
+Intel NUC Systeme mit Atom CPUs sind vollkommen ausreichend. Core i3 Prozessoren oder höher werden nicht benötigt.
 
 Vorteile:
 ^^^^^^^^^
@@ -115,7 +115,7 @@ Vorteile:
 ^^^^^^^^^
 
 -  recht günstig im Einstieg
--  teilweise mit SATA Anschluß für Festplatte/SSD
+-  teilweise mit SATA Anschluss für Festplatte/SSD
 
 Nachteile:
 ^^^^^^^^^^
@@ -129,10 +129,10 @@ Betriebssystem
 Ein beliebiges Linux oder Unix System (mit Shell Zugang um die Requirements und SmartHomeNG zu installieren) sollte
 funktionieren.
 
-SmartHomeNG ist mindestens getestet auf Raspbian und Debian Jessie (amd64)
+SmartHomeNG ist mindestens getestet auf Raspbian und Debian Stretch (amd64)
 
-Wenn eine Hardware ohne gepufferte Realtime Clock genutzt wird, ist der
-Einsatz eines NTP Deamons notwendig, um die Zeit über das Internet zu
+Wenn eine Hardware ohne gepufferte Echtzeituhr (Realtime Clock) genutzt wird, ist der
+Einsatz eines NTP Daemons notwendig, um die Zeit über das Internet zu
 beziehen. Sonst wird SmartHomeNG aufgrund der fehlenden Zeitinformation
 nicht starten.
 

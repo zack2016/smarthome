@@ -2,7 +2,7 @@
 .. index:: Funktionen; Items
 
 .. role:: bluesup
-.. role:: redesup
+.. role:: redsup
 
 
 Funktionen eines Items :bluesup:`update`

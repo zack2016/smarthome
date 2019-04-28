@@ -9,7 +9,7 @@ Auf dem Dienste Tab kann temporär die Sprache von SmartHomeNG umgeschaltet werd
 zu starten und Password-Hashes zu erzeugen (z.B. für das CLI Plugin).
 
 Weiterhin kann der Status einiger von Plugins genutzter Dienste angesehen werden, soweit diese Dienste auf dem selben
-Rechner laufen wie SmartHomeNG selbt.
+Rechner laufen wie SmartHomeNG selbst.
 
 
 .. index:: eval Syntax-Prüfer
@@ -33,7 +33,7 @@ Auf diesem Tab können folgende Funktionen ausgelöst werden:
   module.yaml, plugin.yaml, smarthome.yaml und struct.yaml). Weiterhin sind alle yaml Dateien der Verzeichnisse
   /items und /scenes enthalten. Außerdem enthält das Archiv den Python Code der Logiken aus dem Verzeichnis /logics.
 
-  Das heruntergeladene Archiv trögt den Namen shng_config_backup_<Jahr>-<Monat>-<Tag>.zip
+  Das heruntergeladene Archiv trägt den Namen shng_config_backup_<Jahr>-<Monat>-<Tag>.zip
 
 
 .. image:: assets/services.jpg
@@ -43,7 +43,7 @@ Auf diesem Tab können folgende Funktionen ausgelöst werden:
 In den folgenden Zeilen wird der Status diverser Dienste angezeigt, die optional benötigt werden (abhängig von den
 eingesetzten Plugins).
 
-Außerdem ist es möglich zu einem Passwort einen Hash Wert zu erzeugen, um diesen in der Konfiuration von Plugins zu
+Außerdem ist es möglich zu einem Passwort einen Hash Wert zu erzeugen, um diesen in der Konfiguration von Plugins zu
 speichern. Für die Passworte, die vom Core bzw. den Modulen verwendet werden ist das nicht notwendig, da hier der
 Hash bei der Konfiguration automatisch erzeugt wird.
 
@@ -72,7 +72,7 @@ Weiterhin wird der resultierende Wert des Ausdrucks und der Datentyp des Resulta
 YAML Syntax-Prüfer
 ==================
 
-Im YAML Syntax-Prüfer kann ein Snippet im YAML Format eingegeben und überprüft werden. Als Ergebnis wird der durch einen
+Im YAML Syntax-Prüfer kann ein Textausschnitt im YAML Format eingegeben und überprüft werden. Als Ergebnis wird der durch einen
 YAML Interpreter interpretierte und aufbereitete Ausdruck angezeigt.
 
 .. image:: assets/services-yamlchecker.jpg

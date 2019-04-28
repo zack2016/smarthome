@@ -234,7 +234,7 @@ SmartHomeNG Instanz zugegriffen werden kann.
 Die Konfiguration weiterer Plugins ist auskommentiert vorhanden, um die Nutzung
 dieser Plugins möglichst einfach zu gestalten.
 
-Wenn man jetzt bereits weiß, welche Plugins man benötigt, dann kann die default-Datei als Arbeitsgrundlage dienen 
+Wenn man jetzt bereits weiß, welche Plugins man benötigt, dann kann die default-Datei als Arbeitsgrundlage dienen
 und die benötigten Plugins können aktiviert werden.
 Alternativ kann die Konfiguration auch später über das Admin Interface stattfinden.
 
@@ -280,7 +280,7 @@ wann sie ausgeführt werden sollen und ob sie aktiv sind oder nicht.
        filename: example_persistance.py
 
 Da derzeit noch keine Logiken benötigt werden, ist auch hier kein Handlungsbedarf zum Editieren. SmartHomeNG erstellt auch hier aus der default-Datei eine logic.yaml.
-       
+
 module.yaml
 ~~~~~~~~~~~
 
@@ -306,14 +306,14 @@ Auf der Shell (Konsole, Kommandozeile) sollte jetzt nur eine Zeile erscheinen wi
 .. code-block:: bash
 
    Daemon PID ????
-   
+
 Das bedeutet, das SmartHomeNG nun im Hintergrund läuft und unter der Prozess ID ``????`` bekannt ist. Auch über den Shell Befehl
 
 .. code-block:: bash
 
    sudo ps ax | grep smarthome
 
-sollte eine Zeile augegeben werden mit 
+sollte eine Zeile augegeben werden mit
 
 .. code-block:: bash
 
@@ -326,14 +326,14 @@ sollte eine Zeile augegeben werden mit
    Ein solcher Fall kann schnell auftreten, wenn SmartHomeNG als Daemon eingerichtet wird und aber zusätzlich ein Start
    von der Kommandozeile erfolgt.
 
-   
+
 Admin Interface
 ~~~~~~~~~~~~~~~
    
-Viele Einstellungen in den Konfigurationsdateien, die manuell mit dem Editor ausgeführt werden, sind bereits über das 
+Viele Einstellungen in den Konfigurationsdateien, die manuell mit dem Editor ausgeführt werden, sind bereits über das
 Admin Interface möglich.
 
-Unter ``System --> Konfiguration --> Allgemein`` lassen sich die Inhalte der ``smarthome.yaml`` ändern sowie unter 
+Unter ``System --> Konfiguration --> Allgemein`` lassen sich die Inhalte der ``smarthome.yaml`` ändern sowie unter
 ``System --> Konfiguration --> Http Modul`` und ``System --> Konfiguration --> Admin Modul`` die Zugangsdaten und Parameter
 für Webserver und Admin Interface ändern. Die Änderungen müssen explizit gesichert werden und anschließend
 muß über ``Core neu starten`` ein Neustart von SmartHomeNG initiiert werden.
@@ -345,7 +345,7 @@ können sie auch ausgeschaltet oder gelöscht werden. Auch hier gilt das nach Ä
 Auch wichtig ist ``Logs --> Logs anzeigen`` denn hier lassen sich die letzten Logdateien bequem untersuchen auf Auffälligkeiten.
 Sollte es sein, das hier steht ``FILE NOT FOUND!`` so ist es sehr wahrscheinlich, das SmartHomeNG gerade neu startet oder aber
 wegen einer Fehlkonfiguration oder einer fehlenden Bibliothek nicht gestartet werden kann.
-In diesem Fall sollte man sich z.B. die letzten 50 Einträge der Logdatei unter ``/usr/local/smarthome/var/log/smarthome-warnings.log`` 
+In diesem Fall sollte man sich z.B. die letzten 50 Einträge der Logdatei unter ``/usr/local/smarthome/var/log/smarthome-warnings.log``
 auf der Shell anzeigen lassen mit ``tail -n 50 /usr/local/smarthome/var/log/smarthome-warnings.log``.
 
 

@@ -2,7 +2,7 @@ Plugins-API
 ===========
 
 There are two ways to access the API
-        
+
 1. Directly
 
    Use it the following way to access the api, if you have no access to the sh object in your method or function:
@@ -19,10 +19,10 @@ There are two ways to access the API
    This is the preferred method.
 
 
-2. Through the main SmartHome object 
-        
+2. Through the main SmartHome object
+
    If you have access to the sh object in your method or function, you can use the following way:
-           
+
    .. code-block:: python
 
        # to access a method (eg. return_plugins()):
@@ -41,7 +41,7 @@ lib.plugin
 
 .. module:: lib.plugin
 
-The API consists of two classes. 
+The API consists of two classes.
 
 
 class PluginWrapper
@@ -63,5 +63,5 @@ This class implements the loading and management of the plugins.
 .. autoclass:: Plugins
    :no-members:
 
-:doc:`class Plugins </lib/plugin_class_plugins>` 
+:doc:`class Plugins </lib/plugin_class_plugins>`
 

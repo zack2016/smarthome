@@ -48,7 +48,7 @@ oder im `Chat auf gitter.im <https://gitter.im/smarthomeNG/smarthome>`_ .
    installation/installation.rst
    konfiguration/konfiguration.rst
    plugins_all.rst
-   logiken/logiken.rst
+   logiken/logics.rst
    visualisierung/visualisierung.rst
    admin/admin.rst
    tools/tools.rst

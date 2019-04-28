@@ -47,7 +47,7 @@ ist.
    sh_now = sh.now()
    debug = False
 
-   # Funktionen                    
+   # Funktionen
 
    #def leap_year(year):
    #    if (year % 400 == 0) or ((year % 4 == 0) and not (year % 100 == 0)):
@@ -85,7 +85,7 @@ ist.
        print(sh_now.month) #Monat
        print(sh_now.isoweekday()) #Wochentag
        print(sh.now().isocalendar()[1]) #Kalenderwoche
-       
+
    # Sekunde/Minute
    sh.second.since.minute(sh_now.second)
    sh.second.until.minute(60 - sh_now.second - 1)
@@ -148,7 +148,7 @@ ist.
 
    # Stunde/Monat
    sh.hour.since.month((24 * sh.day.since.month()) + sh.hour.since.midnight())
-   sh.hour.until.month((24 * days_of_month(sh_now.month,sh_now.year)) - sh.hour.since.month() - 1) 
+   sh.hour.until.month((24 * days_of_month(sh_now.month,sh_now.year)) - sh.hour.since.month() - 1)
 
    # Stunde/Jahr
    sh.hour.since.year((24 * sh.day.since.year()) + sh.hour.since.midnight())
@@ -169,7 +169,7 @@ ist.
    # Sekunde/Jahr
    sh.second.since.year((60 * sh.minute.since.year()) + sh.second.since.minute())
    sh.second.until.year((60 * sh.minute.until.year()) + sh.second.until.minute())
-    
+
 
 /usr/local/smarthome/etc/logic.yaml
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -181,7 +181,7 @@ ist.
        crontab:
          - init
          - '* * * *'
-     
+
 
 Items
 -----
@@ -437,4 +437,4 @@ Items
 
            year:
                type: num
-           
+

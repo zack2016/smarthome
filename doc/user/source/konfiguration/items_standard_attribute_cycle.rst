@@ -13,7 +13,7 @@ der verknüpften Logik oder Eval-Funktion).
        cycle: 10
        enforce_updates: 'true'
 
-ruft das Itemm alle 10 Sekunden auf und sorgt dadurch für das triggern
+ruft das Item alle 10 Sekunden auf und sorgt dadurch für das triggern
 von verknüpften Logiken und/oder Eval-Funktionen. Dazu muss
 ``enforce_updates`` auf ``true``\ stehen, damit das Triggern erfolgt,
 auch wenn sich der Wert des Items nicht ändert.

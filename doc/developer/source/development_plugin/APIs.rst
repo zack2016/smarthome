@@ -1,11 +1,11 @@
 APIs of SmartHomeNG
 ===================
 
-Theare are some APIs for accessing different objects (or object hierarchies) of SmartHomeNG. They ca be usefull when 
-developing plugins. 
+There are some APIs for accessing different objects (or object hierarchies) of SmartHomeNG.
+They can be useful when developing plugins.
 
 The APIs are implemented als libraries stored in the ../lib folder. The description of their
-functionallaty is shown here:
+functionality is shown here:
 
 
 .. toctree::
@@ -22,5 +22,5 @@ functionallaty is shown here:
 
    /lib/shtime
    /lib/logic
-   /lib/scheduler  
+   /lib/scheduler
 

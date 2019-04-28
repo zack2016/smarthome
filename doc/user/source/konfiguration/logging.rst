@@ -21,13 +21,13 @@ Die Datei sieht so aus:
 
 
 
-In die Konfigurationsmöglichkeiten des Phyton Loggings kann sich hier eingelesen werden:
+In die Konfigurationsmöglichkeiten des Python Loggings kann sich hier eingelesen werden:
 https://docs.python.org/3.4/library/logging.html#module-logging
 
-Die Datei **../etc/logging.yaml** hat kein SmartHomeNG spezifisches Format. Sie wird mit der 
-Funktion `logging.config.dictConfig()` (Bestandteil der Python Standardbibliothek) eingelesen. 
+Die Datei **../etc/logging.yaml** hat kein SmartHomeNG spezifisches Format. Sie wird mit der
+Funktion `logging.config.dictConfig()` (Bestandteil der Python Standardbibliothek) eingelesen.
 
-Informationen zu dieser Python Funktion und den damit verbundenen Möglichkeiten gibt es hier: 
+Informationen zu dieser Python Funktion und den damit verbundenen Möglichkeiten gibt es hier:
 https://docs.python.org/3.4/library/logging.config.html#module-logging.config
 
 Kurzdoku der Einträge in der Konfigurationsdatei
@@ -57,26 +57,26 @@ Die einzelnen Konfigurationseinträge haben die folgende Bedeutung:
 |                 | Plugins oder Libs im Debug protokollieren zu lassen. Dazu sind in der Konfiguration                |
 |                 | bereits einige Beispiele.                                                                          |
 +-----------------+----------------------------------------------------------------------------------------------------+
-| **root:**       | Hier ist die Konfiguration des Root-Loggers der für die ganze Anwendung gilt. Dieser               |
-|                 | Root-Logger wird für alle Komponenten verwendet, auch die die nicht unter loggers: konfiguriert    |
+| **root:**       | Hier ist die Konfiguration des root Loggers der für die ganze Anwendung gilt. Dieser               |
+|                 | root Logger wird für alle Komponenten verwendet, auch die die nicht unter loggers: konfiguriert    |
 |                 | sind. Da der root Logger ALLE Logeinträge empfängt sollte der level: unbedingt auf WARNING stehen. |
 +-----------------+----------------------------------------------------------------------------------------------------+
 
-Wenn man **Logger** definiert, welche die Log-Einträge über zusätzliche **Handler** ausgeben ist 
-zu beachten, dass die Ausgabe zusätzlich IMMER durch den Standardhandler (**file:**) erfolgt. Dieses 
-führt dazu, dass die Einträge sowohl in der Standard Log-Datei von SmartHomeNG, als auch in der 
+Wenn man **Logger** definiert, welche die Log-Einträge über zusätzliche **Handler** ausgeben ist
+zu beachten, dass die Ausgabe zusätzlich IMMER durch den Standardhandler (**file:**) erfolgt. Dieses
+führt dazu, dass die Einträge sowohl in der Standard Log-Datei von SmartHomeNG, als auch in der
 zusätzlich definierten Log Datei erscheinen, falls der Level des Log Eintrages INFO oder höher ist.
 
-Wenn man möchte, dass im Standard Log nur WARNINGS und ERRORS erscheinen, muss ein zusätzlicher 
-Eintrag im Handler **file:** erfolgen. Der Eintrag `level: WARNING` führt dazu, dass über den 
-Handler **file:** nur Ausgaben für Fehler und Warnungen erfolgen. INFO und DEBUG Ausgaben erfolgen 
+Wenn man möchte, dass im Standard Log nur WARNINGS und ERRORS erscheinen, muss ein zusätzlicher
+Eintrag im Handler **file:** erfolgen. Der Eintrag `level: WARNING` führt dazu, dass über den
+Handler **file:** nur Ausgaben für Fehler und Warnungen erfolgen. INFO und DEBUG Ausgaben erfolgen
 dann nur noch über den zusätzlichen Handler.
 
 Plugin Entwicklung
 ==================
 
 Für die Entwickler von Plugins:
-Der Logger sollte nun nicht global mit logging.getLogger('') instanziert werden sondern innerhalb 
+Der Logger sollte nun nicht global mit logging.getLogger('') instanziert werden sondern innerhalb
 der `__init__` Methode mit:
 
 .. code-block:: python
@@ -105,7 +105,7 @@ muss in der config auch dieser Name verwendet werden. Ohne `plugin.`
    loggers:
        DWD:
            level: DEBUG
-       
+
 
 Auf den Logger kann dann so zugegriffen werden:
 
@@ -158,7 +158,7 @@ und
 Best Practices
 --------------
 
-Wer eine brauchbare leicht konfigurierbare Logging Konfiguration sucht, der wird hier 
+Wer eine brauchbare leicht konfigurierbare Logging Konfiguration sucht, der wird hier
 :doc:`Logging - Best Practices <logging_best_practices>` fündig.
 
 
@@ -166,6 +166,6 @@ Wer eine brauchbare leicht konfigurierbare Logging Konfiguration sucht, der wird
    :maxdepth: 4
    :hidden:
    :titlesonly:
-   
+
    logging_best_practices.md
-   
+

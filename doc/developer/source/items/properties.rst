@@ -2,7 +2,7 @@
 .. index:: properties; items
 
 .. role:: bluesup
-.. role:: redesup
+.. role:: redsup
 
 
 Properties of an item :redsup:`new`

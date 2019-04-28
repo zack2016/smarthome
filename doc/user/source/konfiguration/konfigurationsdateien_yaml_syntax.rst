@@ -81,7 +81,7 @@ Darstellung von ASCII- und Unicode-Zeichen.
 Sequenzen
 ~~~~~~~~~
 
-Hier ist eine einfache Sequenz, die Sie in SmatHomeNG finden können. Es ist eine einfache Liste,
+Hier ist eine einfache Sequenz, die Sie in SmartHomeNG finden können. Es ist eine einfache Liste,
 bei der jeder Eintrag in der Liste in einer eigenen Zeile steht und mit einem öffnenden Bindestrich
 beginnt.
 

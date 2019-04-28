@@ -35,7 +35,7 @@ vor dem Installieren `auf der Projektseite <http://www.smartvisu.de/>`__
 prüfen, welches der aktuelle Master ist.
 
 Eine alternative Installation der SmartVISU 2.9 ist möglich und auch empfohlen.
-Dazu muß der Branch von master auf develop gewechselt werden
+Dazu muß der Branch von **master** auf **develop** gewechselt werden
 Die Dateien der SmartVISU werden in einem Unterverzeichnis abgelegt,
 das für den Apache2 zugänglich ist:
 
@@ -92,14 +92,14 @@ eingeben, denn diese Adresse wird vom Client Browser benutzt
 (Javascripts) um aktuelle Daten über einen Websocket direkt von
 SmartHomeNG abzufragen.
 
-Im Tab **Interfaces** muß noch die anzuzeigende Visuseite eingestellt
+Im Tab **Interfaces** muß noch die anzuzeigende Visu Seite eingestellt
 werden. Dort kann unter anderem gewählt werden zwischen verschiedenen
 Demoseiten.
 
-Um die Einstellungen zu sichern bitte Save auswählen.
+Um die Einstellungen zu sichern bitte **Save** auswählen.
 
-Eigene Visuseiten anlegen
-^^^^^^^^^^^^^^^^^^^^^^^^^
+Eigene Visu Seiten anlegen
+^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Um mit der SmartVISU eine eigene Visu anzulegen, muß innerhalb des
 Ordners ``pages`` der SmartVISU ein neues Verzeichnis angelegt werden,
@@ -120,6 +120,6 @@ SmartHomeNG Plugin **visu\_smartvisu**
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Mit dem Plugin ***visu\_smartvisu*** können aus der Definition der Items
-in SmartHomeNG automatisch Visuseiten erstellt werden. Diese Visuseiten
+in SmartHomeNG automatisch Visuseiten erstellt werden. Diese Visu Seiten
 werden im Verzeichnis ``smarthome`` erstellt. Dazu bitte beim
 entsprechenden Plugin die Doku lesen.

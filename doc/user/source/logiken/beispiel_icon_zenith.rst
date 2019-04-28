@@ -35,7 +35,7 @@ Berechnungen für icon.zenith:
    zenith:
        filename: zenith.py
        cycle: 300
-       
+
 
 smartVISU
 ---------
@@ -46,4 +46,4 @@ Einbindung in der smartVISU:
 
     {% import "icon.html" as icon %}
     {{ icon.zenith('weather.sun.icon', '', 'weather.sun.icon') }}
-    
+

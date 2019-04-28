@@ -1,4 +1,4 @@
-Example for use of functions 
+Example for use of functions
 ============================
 
 This logic uses some of the functions described above.

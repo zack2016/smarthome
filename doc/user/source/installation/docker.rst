@@ -35,7 +35,7 @@ oder für den knxd
 Danach muss die jeweilige Applikation natürlich noch gestartet werden.
 Hierbei ist zu beachten, dass die jeweilige Applikation zunächst
 vollkommen abgeschottet ist. Nur wenn Ports (Netzwerk) oder
-Verzeichnisse (Massenspeicher) in den Container gemappt werden, sind
+Verzeichnisse (Massenspeicher) in den Container abgebildet werden, sind
 diese Ports vom Host-System im Container sichtbar.
 
 Dies geschieht über die Parameter ``-p`` und ``-v``

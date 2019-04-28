@@ -22,7 +22,7 @@ Anwendungen ermöglichen (z.B. ein REST Interface).
 Voraussetzungen
 ===============
 
-Dieses Modul läuft nur unter neueren SmmartHomeNG-Versionen. Mindestvoraussetzung ist SmartHomeNG v1.4.
+Dieses Modul läuft nur unter neueren SmartHomeNG-Versionen. Mindestvoraussetzung ist SmartHomeNG v1.4.
 Es benötigt Python >= 3.4, sowie das Python Package  **cherrypy**. Python-Module können
 folgendermaßen installiert werden:
 

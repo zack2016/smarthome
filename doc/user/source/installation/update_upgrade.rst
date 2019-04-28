@@ -16,12 +16,12 @@ die Systemdienste betrifft. Gab es bei älteren Systemen wie Debian 7
 (Wheezy) oder Ubuntu 14.x noch die init-Skripte, so ist bei neuen
 Systemen wie Debian 8 (Jessie) oder Ubuntu 15 ein neuer Ansatz gefunden
 worden: **systemd** Die Art und Weise wie Systemunterbauten für
-SmartHomeNG laufen haben sich also grundlegend angepaßt. Als **alter
+SmartHomeNG laufen haben sich also grundlegend angepasst. Als **alter
 Linuxhase** ist das sicher mit einem Distributionsupgrade schnell
 erledigt aber dann kommen noch solche Dinge wie Umstellung von **eibd**
 auf **knxd** dazu. Es kann also sinnvoll sein ein frisch installiertes
 System auf Basis SmartHomeNG einem aktualisierten System vorzuzuiehen.
-In diesem Fall müssen nur die Konfigurationen vom SmartHomeNG angepaßt
+In diesem Fall müssen nur die Konfigurationen vom SmartHomeNG angepasst
 und die smartVISU Dateien rüberkopiert werden. Zusätzlich sind noch die
 Dateien der SQLite zu migrieren.
 

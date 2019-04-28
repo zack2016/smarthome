@@ -33,7 +33,7 @@ else).
    #!/usr/bin/env python3
    # beaufort1.py
 
-    if sh.knx_global.weather.wind() < 0.3:  
+    if sh.knx_global.weather.wind() < 0.3:
         sh.knx_global.weather.wind.string("Windstille")
         sh.knx_global.weather.wind.beaufort(0)
     elif sh.knx_global.weather.wind() >= 0.3 and sh.knx_global.weather.wind() < 1.6:
@@ -72,7 +72,7 @@ else).
     else:
         sh.knx_global.weather.wind.string("Orkan")
         sh.knx_global.weather.wind.beaufort(12)
-        
+
 
 /usr/local/smarthome/etc/logic.yaml
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -82,7 +82,7 @@ else).
    beaufort1:
        filename: beaufort1.py
        watch_item: knx_global.weather.wind
-       
+
 
 Alternative Umsetzung mit einer Funktion
 ----------------------------------------
@@ -120,7 +120,7 @@ implementiert ist und aus dieser aufgerufen wird.
        elif speed >= 13.9 and speed < 17.2:
            return("steifer Wind",7)
        elif speed >= 17.2 and speed < 20.8:
-           return("stürmischer Wind",8)    
+           return("stürmischer Wind",8)
        elif speed >= 20.8 and speed < 24.5:
            return("Sturm",9)
        elif speed >= 24.5 and speed < 28.5:
@@ -129,11 +129,11 @@ implementiert ist und aus dieser aufgerufen wird.
            return("orkanartiger Sturm",11)
        else:
            return("Orkan",12)
-           
-   decription, bft = get_beaufort(sh.knx_global.weather.wind())
+
+   description, bft = get_beaufort(sh.knx_global.weather.wind())
    sh.knx_global.weather.wind.string(description)
    sh.knx_global.weather.wind.beaufort(bft)
-       
+
 
 .. _usrlocalsmarthomeetclogic.yaml-1:
 
@@ -145,7 +145,7 @@ implementiert ist und aus dieser aufgerufen wird.
    beaufort2:
        filename: beaufort2.py
        watch_item: knx_global.weather.wind
-       
+
 
 Alternative 2: Umsetzung als Funktion mit Lookup
 ------------------------------------------------
@@ -167,7 +167,7 @@ mittels Lookup ermittelt.
        :parameter speed: windspeed in meter per second
        :return: a tuple of a string with the (german) description and an integer with beaufort speed
        """
-       table = [ 
+       table = [
            (  0.3, "Windstille",0),
            (  1.6, "leiser Zug",1),
            (  3.4, "leichte Brise",2),
@@ -181,7 +181,7 @@ mittels Lookup ermittelt.
            ( 28.5, "schwerer Sturm",10),
            ( 32.7, "orkanartiger Sturm",11),
            ( 999,  "Orkan",12) ]
-       
+
        try:
            description = min(filter(lambda x: x[0] >= speed, table))[1]
            bft = min(filter(lambda x: x[0] >= speed, table))[2]
@@ -192,7 +192,7 @@ mittels Lookup ermittelt.
    description, bft = get_beaufort(sh.knx_global.weather.wind())
    sh.knx_global.weather.wind.string(description)
    sh.knx_global.weather.wind.beaufort(bft)
-       
+
 
 .. _usrlocalsmarthomeetclogic.yaml-2:
 
@@ -204,4 +204,3 @@ mittels Lookup ermittelt.
    beaufort2:
        filename: beaufort3.py
        watch_item: knx_global.weather.wind
-       

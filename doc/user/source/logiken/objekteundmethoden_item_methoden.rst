@@ -6,10 +6,10 @@ Item Methoden :bluesup:`update`
 ###########################################
 
 Die grundsätzlichen Methoden, die jedes Item hat, sind unter **Items** beschrieben. Darüber
-hinaus stehen folgende Methoden zum Handling von Items zur Verfügung:
+hinaus stehen die nachfolgend beschrieben Methoden zum Handling von Items zur Verfügung.
 
-Die Nutzung des SmartHomeNG Objektes ``sh`` ist dabei als veraltet anzusehen.
-Die richtige Methode ist die Nutzung des Item API. Das ``items` Objekt kann wie folgt
+Die Nutzung des SmartHomeNG Objektes ``sh`` ist dabei als veraltet anzusehen. Die richtige
+Methode ist die Nutzung des Item API. Das ``items`` Objekt kann wie folgt
 genutzt werden:
 
 .. code:: python
@@ -20,9 +20,9 @@ genutzt werden:
 Nun können folgende Funktionen aufgerufen werden:
 
 return_item(path)
-^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^
 
-Liefert das Item Objekt für den angegebenen Pfad zurück. 
+Liefert das Item Objekt für den angegebenen Pfad zurück.
 
 .. code:: python
 
@@ -30,7 +30,7 @@ Liefert das Item Objekt für den angegebenen Pfad zurück.
 
 
 return_items()
-^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^
 
 Liefert sämtliche definierten Item Objekte zurück.
 
@@ -43,16 +43,16 @@ Liefert sämtliche definierten Item Objekte zurück.
 match_items(regex)
 ^^^^^^^^^^^^^^^^^^
 
-Liefert alle Items zurück, die der Regular Expression, dem Pfad und dem optionalen Attribut entsprechen. 
+Liefert alle Items zurück, die der Regular Expression, dem Pfad und dem optionalen Attribut entsprechen.
 
 .. code:: python
 
    for item in items.match_items('*.licht'):
        # Selektiere alle Items, deren Pfad mit 'licht' endet
        logger.info(item.id())
-       
+
    for item in items.match_items('*.licht:special'):
-       # Selektiere alle Items, deren Pfad mit 'licht' endet und die das Attribut 'special' haben     
+       # Selektiere alle Items, deren Pfad mit 'licht' endet und die das Attribut 'special' haben
        logger.info(item.id())
 
 

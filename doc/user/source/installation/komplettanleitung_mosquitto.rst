@@ -37,7 +37,7 @@ Anschließend kann mit dem Befehl
        CGroup: /system.slice/mosquitto.service
                └─3548 /usr/sbin/mosquitto -c /etc/mosquitto/mosquitto.conf
 
-    Mai 30 13:39:47 SmartHomeNG systemd[1]: Starting LSB: mosquitto MQTT v3.1 messag
+    Mai 30 13:39:47 SmartHomeNG systemd[1]: Starting LSB: mosquitto MQTT v3.1 message
     Mai 30 13:39:47 SmartHomeNG mosquitto[3543]: Starting network daemon:: mosquitto
     Mai 30 13:39:47 SmartHomeNG systemd[1]: Started LSB: mosquitto MQTT v3.1 message
 
@@ -58,5 +58,3 @@ entsprechend der Dokumentation (https://mosquitto.org/man/mosquitto-conf-5.html)
 konfiguriert und neu gestartet werden.
 
 Gleiches gilt, wenn zusätzlich zum MQTT Protokoll (auf Port 1883) auch noch Websockets genutzt werden sollen.
-
-

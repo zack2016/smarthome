@@ -6,7 +6,7 @@ Items
 =====
 
 Unter **Items** können die in SmartHomeNG Eigenschaften der eingelesenen Items angezeigt werden. Außerdem können die zur
-Verfügung stehenden Itemstruktur-Teplates angezeigt werden.
+Verfügung stehenden Itemstruktur-Templates angezeigt werden.
 
 
 .. index:: Itemtree

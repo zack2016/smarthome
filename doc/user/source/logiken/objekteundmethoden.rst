@@ -6,7 +6,7 @@ Verfügbare Objekte und Methoden
    :maxdepth: 3
    :hidden:
    :titlesonly:
-   
+
    objekteundmethoden_logging
    objekteundmethoden_zeit_sonne_mond
    objekteundmethoden_item_methoden
@@ -20,9 +20,9 @@ Neben dem **sh** Objekt, gibt es andere wichtige vordefinierte Objekte:
 logic
 -----
 
-Dieses Objekt bietet Zugriff auf das aktuelle Logikobjekt. Es ist möglich, während der Laufzeit 
-logische Attribute (crontab, cycle, ...) abzufragen und ändern. Diese Änderungen gehen nach dem Neustart 
-von SmartHomeNG verloren. 
+Dieses Objekt bietet Zugriff auf das aktuelle Logikobjekt. Es ist möglich, während der Laufzeit
+logische Attribute (crontab, cycle, ...) abzufragen und ändern. Diese Änderungen gehen nach dem Neustart
+von SmartHomeNG verloren.
 
 Definierte Methoden des Logikobjekts:
 
@@ -65,10 +65,10 @@ Vordefinierte Attribute des Logikobjekts:
 trigger
 -------
 
-trigger ist ein Python-Dictionary, welches als Laufzeitumgebung einige Informationen über das 
+trigger ist ein Python-Dictionary, welches als Laufzeitumgebung einige Informationen über das
 Ereignis liefert, das die Logik ausgelöst hat.
 
-Das Dictionary enthält folgende Informationen: 
+Das Dictionary enthält folgende Informationen:
 
 +---------------------------+--------------------------------------------------------------------------------------------------------+
 | Attribut/Funktion         | Erläuterung                                                                                            |

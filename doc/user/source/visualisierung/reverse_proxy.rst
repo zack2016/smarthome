@@ -7,16 +7,16 @@ Basic Authentication oder Clientzertifikaten zu nutzen. Die folgende
 Dokumentation beschreibt eine Installation von NGINX als ReverseProxy
 auf eigenständiger Hardware unter Raspbian Stretch Lite. Dieser ist
 bspw. auch für das Alexa Plugin oder die Nutzung von SmartHomeNG mit
-“EgiGeoZone” / “Geofency” notwendig.
+**EgiGeoZone** / **Geofency** notwendig.
 
 Annahmen
 --------
 
 Diese Anleitung hat folgende Annahmen:
 
-* NGINX wird auf einem frisch aufgesetzten RaspberryPi mit
+* NGINX wird auf einem frisch aufgesetzten Raspberry Pi mit
   **Raspbian Stretch Lite** installiert.
-* Der RaspberryPi dient ausschliesslich der Funktion als ReverseProxy
+* Der Raspberry Pi dient ausschliesslich der Funktion als ReverseProxy
 * Der Standarduser heißt weiterhin **pi**
 * Eine DynDNS (o.ä.) Domain ist vorhanden und leitet auf die aktuelle Internet IP
 * SmartHomeNG und SmartVISU sind auf einem separaten Rechner im gleichen LAN installiert.

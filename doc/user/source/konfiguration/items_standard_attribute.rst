@@ -100,7 +100,7 @@ plugin-spezifischen Attribute ist in der Dokumentation des jeweiligen Plugins na
 |                 | Items getriggert werden.                                                     |
 |                 | Die Angabe des Bereichs erfolgt in Form von zwei numerischen Werten,         |
 |                 | die durch einen Doppelpunkt getrennt werden. (z.B. 21.4:25.0)                |
-|                 | ist. Es kann auch ein einzelner Wert notiert werden                          |
+|                 | ist. Es kann auch ein einzelner Wert notiert werden.                         |
 +-----------------+------------------------------------------------------------------------------+
 | type            | Um Werte zu speichern, muss ein Typ vorgegeben werden. Unterstützte Typen    |
 |                 | sind bool, num, str, list, dict, foo, scene                                  |

@@ -62,7 +62,7 @@ durch die Logik nachgedimmt.
 
    else:
        logger.info("Nachdimmen Logik: Licht wird ausgeschaltet")
-       
+
 
 Die Logik aktiviert man unter ``etc/logics.yaml`` mit dem Eintrag von:
 
@@ -74,7 +74,7 @@ Die Logik aktiviert man unter ``etc/logics.yaml`` mit dem Eintrag von:
    nachdimmen:
        filename: nachdimmen.py
        watch_item: '*:nachdimm_wert'
-       
+
 
 Items
 -----
@@ -96,7 +96,7 @@ Items
                uzsu_item: zentral.nachdimmen
                cache: True
                visu_acl: rw
-               
+
 
 /usr/local/smarthome/items/nachdimm_test.yaml
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -142,4 +142,3 @@ Items
                uzsu_item: test.testlicht.nachdimmen
                cache: True
                visu_acl: rw
-               

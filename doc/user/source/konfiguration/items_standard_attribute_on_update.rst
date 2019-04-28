@@ -22,7 +22,7 @@ Die Syntax ist wie folgt:
 |                         | eval-Attribut                                                        |
 +-------------------------+----------------------------------------------------------------------+
 |  <single expression>    | Wenn die zweite Form (ohne <item> = ) genutzt wird, muss die         |
-|                         | Zuweisung innerhalb der expression erfolgen:  |
+|                         | Zuweisung innerhalb der expression erfolgen:                         |
 |                         | Eine <single expression> der Form `sh.<item>(<expression>)` ist      |
 |                         | weitestgehend äquivalent zur ersten Syntax Form.                     |
 +-------------------------+----------------------------------------------------------------------+

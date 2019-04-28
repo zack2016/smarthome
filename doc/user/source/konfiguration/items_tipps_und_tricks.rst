@@ -188,7 +188,7 @@ Beispiele:
 Nutzung mit neuen (zusätzlichen) items:
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-::
+.. code-block:: yaml
 
    tag:
        type: num
@@ -205,7 +205,7 @@ Nutzung mit neuen (zusätzlichen) items:
        knx_reply: 0/0/104
        eval: sh.env.location.night()
        eval_trigger: env.location.night
-       
+
 
 Nutzung der SmarthomeNG internen Items:
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -213,7 +213,7 @@ Nutzung der SmarthomeNG internen Items:
 Dazu müssen die entsprechenden Items um die KNX Attribute erweitert
 werden:
 
-::
+.. code-block:: yaml
 
    env:
        location:
@@ -222,7 +222,6 @@ werden:
                knx_dpt: 1
                knx_send: 0/0/103
                knx_reply: 0/0/103
-               
            night:
                name: Nacht
                knx_dpt: 1
@@ -245,7 +244,7 @@ Flurlichtsteuerung o.ä. vielleicht schon 1h vor Sonnenuntergang die
 erreicht werden. Im folgenden Beispiel wird die Tag/Nacht Grenze bei
 einem Sonnenstand von 4° unter dem Horizont festgelegt:
 
-::
+.. code-block:: yaml
 
        berechnung:
            type = bool
@@ -260,7 +259,7 @@ einem Sonnenstand von 4° unter dem Horizont festgelegt:
            eval = sh.sun.rise(-4).day != sh.sun.set(-4).day
            eval_trigger = ..berechnung
            enforce_updates = true
-           
+
 
 Die Triggerung dieser Berechnung wird im *berechnung* - Item durch das
 Attribut *crontab* gesteuert. In diesem Beispiel erfolgt die Berechnung

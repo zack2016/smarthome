@@ -32,7 +32,7 @@ Verzeichnis **../plugins** gesucht.
        # time_ga: 1/1/1 # default none
        # date_ga: 1/1/2 # default none
 
-Es exisitert eine `README.md` Datei zu jedem Plugin. Diese Datei gibt ausführliche Informationen,
+Es existiert eine `README.md` Datei zu jedem Plugin. Diese Datei gibt ausführliche Informationen,
 wie das Plugin zu konfigurieren ist. Die `README`s sind unter :doc:`Plugins <../plugins>` in der
 Übersicht der Plugins zu finden. Wie die Konfiguration von Plugins grundsätzlich funktioniert ist
 im Abschnitt **Konfiguration/Plugins** zu finden.
@@ -52,7 +52,7 @@ Bis zu SmartHomeNG v1.3 wurde ein Plugin in der Konfiguration über zwei Paramet
 und ``class_path`` referenziert.
 
 Ab v1.4 ist es möglich, das Plugin über den einzigen Parameter ``plugin_name`` zu spezifizieren.
-Dabei ist der Wert der Wert des früheren Parameters ``class_path`` ohne den Präfix `plugins.``,
+Dabei ist der Wert der Wert des früheren Parameters ``class_path`` ohne den Präfix ``plugins.``,
 also der Name des Plugin Verzeichnisses. Da alle Plugins im Verzeichnis **../plugins** liegen, ist
 **plugins.** redundante Information.
 
@@ -76,7 +76,7 @@ Versionen. Um diese zu nutzen, muss in **../etc/plugin.yaml** in der Konfigurati
 
 Um herauszufinden, ob ein Plugin mit einer (oder mehreren) älteren Version(en) installiert ist,
 hilft ein Blick in das Plugin Verzeichnis. Falls es dort Unterverzeichnisses gibt, deren Name mit
-`_pv_` beginnt, sind ältere Versionen vorhanden. Der Rest des jeweiligen Verzeichnisnames gibt
+`_pv_` beginnt, sind ältere Versionen vorhanden. Der Rest des jeweiligen Verzeichnisnamens gibt
 an, welche Version sich in dem Verzeichnis befindet. Wenn Du ein Unterverzeichnis **_pv_1_3_0**
 findest, enthält es die Version v1.3.0 des Plugins. Um diese Version, statt der aktuellen Version
 zu laden, musst Du nur den Eintrag ``plugin_version: 1.3.0`` zur Plugin Konfiguration hinzufügen.

@@ -34,7 +34,7 @@ Logik:
    for child in source_item.return_children():
        if child.id() == search_id:
            has_zwang = True
-               
+
    if has_zwang:
        if prio == 0:
            source_item.zwangsstellung([0,0]) 
@@ -46,7 +46,7 @@ Logik:
            source_item.zwangsstellung([1,1])
    else:
        logger.debug("Kein Zwangsstellungsitem.")
-       
+
 
 /usr/local/smarthome/etc/logic.yaml
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -57,7 +57,7 @@ Logik:
        filename: prio.py
        watch_item: '*.zwangvalue'
        visu_acl: rw
-       
+
 
 Items
 -----
@@ -82,4 +82,4 @@ Items
                    knx_cache: 3/0/9
                    cache: False
                    enforce_updates: yes
-                   
+

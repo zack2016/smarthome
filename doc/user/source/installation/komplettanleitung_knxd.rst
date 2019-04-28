@@ -19,7 +19,7 @@ KNX Bus zu schreiben oder zu lesen.
 Wer keinen KNX-Bus einsetzt, kann diesen Installationsschritt
 überspringen. Für den Fall, das die knxd Installation ausgelassen wird,
 kann es sein, das für weitere Module wie SmartHomeNG einige Pakete
-fehlen. Diese müßten dann per **sudo apt-get install paketname**
+fehlen. Diese müssten dann per **sudo apt-get install paketname**
 nachinstalliert werden.
 
 Grundsätzlich findet sich auf der

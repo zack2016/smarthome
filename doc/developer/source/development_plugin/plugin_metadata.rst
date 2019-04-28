@@ -70,7 +70,9 @@ The **metadata** file is named ``/plugins/<name of the plugin>/plugin.yaml``. It
     - ALLOW_MULTIINSTANCE
     - PLUGIN_VERSION
 
-    The variable PLUGIN_VERSION should be set (even if it is not needed). If it is set, the version numbers defined in __init__.py and plugin.yaml are compared to ensure they match. If they don't match, an error is logged and the plugin is not loaded.
+    The variable PLUGIN_VERSION should be set (even if it is not needed).
+    If it is set, the version numbers defined in __init__.py and plugin.yaml are
+    compared to ensure they match. If they don't match, an error is logged and the plugin is not loaded.
 
 
 .. hint::

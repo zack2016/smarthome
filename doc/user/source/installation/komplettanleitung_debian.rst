@@ -14,7 +14,7 @@ Schritte der Installation:
 - `Systemaktualisierung <#systemaktualisierung>`__
 - `Restarbeiten am System <#restarbeiten-am-system>`__
 
-Die genaue Step-by-Step Installation des Betriebsystemes wird hier nicht
+Die genaue Schritt für Schritt  Installation des Betriebsystems wird hier nicht
 beschrieben, das hier ist der falsche Ort dafür. Jedoch werden als
 Referenz die Paketauswahlen während der Installation hier beschrieben.
 Am kompaktesten ist die Netinstall ISO-Datei. Zur Installation auf einem
@@ -258,7 +258,7 @@ Dort an am Ende anfügen oder wenn bereits vorhanden das Kommentarzeichen ``#`` 
 
 Der Benutzer **smarthome** muß nun abgemeldet und neu angemeldet werden,
 damit die Rechte neu eingelesen werden. Dies ist eine gute Gelegenheit
-um einen alternativen Snapshop zu erstellen. Dazu dann wiederum das
+um einen alternativen Snapshot zu erstellen. Dazu dann wiederum das
 System ausschalten mit:
 
 .. code-block:: bash

@@ -1,8 +1,7 @@
 Class Item
 ==========
 
-This class implements the following methods and propeties:
-        
+This class implements the following methods and properties:
 
 .. module:: lib.item
 

@@ -102,7 +102,7 @@ weitergehenden Interesse an YAML, bitte auf Wikipedia oder
 SmartHomeNG eingesetzte Parser unterstützt die YAML Version 1.1.
 
 Im YAML Format sehen die Beschreibungen für **Plugins** und **Logiken**
-dann folgdendermaßen aus:
+dann folgendermaßen aus:
 
 .. code-block:: yaml
 
@@ -182,10 +182,10 @@ gibt man jetzt folgendes an:
 
 .. code-block:: yaml
 
-       section:
-           key1:
-           - value1
-           - value2
+   section:
+      key1:
+         - value1
+         - value2
 
 Beispiel von Item Definitionen in YAML
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^

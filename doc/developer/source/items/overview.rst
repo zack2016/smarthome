@@ -44,7 +44,7 @@ In the example below are now the following items defined:
          daddy:
              kid:
 
-Within logics and also later in SmartVISU these itemnames will be used just like
+Within logics and also later in SmartVISU these item names will be used just like
 shown above, e.g. ``adam.grandfather.daddy``
 
 It is a good idea to build a tree representing your environment:
@@ -98,7 +98,7 @@ attribute               description
 
                         ``str``  regular string or unicode string.
 
-                        ``list``  list/array of values. Useful e.g. for some KNX dpts.
+                        ``list``  list/array of values. Useful e.g. for some KNX datapoint types.
 
                         ``dict``  python dictionary for generic purposes.
 
@@ -234,5 +234,3 @@ Eval keywords to use with the ``eval_trigger``:
            eval_trigger:
              - living.presence
              - kitchen.presence
-
-

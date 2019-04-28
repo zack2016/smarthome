@@ -1,7 +1,7 @@
 .. index:: struct
 
 .. role:: bluesup
-.. role:: redesup
+.. role:: redsup
 
 struct.yaml :redsup:`new`
 #########################

@@ -27,34 +27,34 @@ ausgeschaltet werden. Dazu braucht es zwei Schritte:
 2)  Die Lampe muß nun als **Item** im SmartHomeNG angelegt werden.
     Dazu wird eine Datei mit beliebigem Namen im Verzeichnis ``./items``
     mit der Endung ``.yaml`` angelegt. z.B. die Datei ``./items/Lampen.yaml``.
-    In dieser Datei wird das Item angelegt indem den Name des Items gefolgt von 
+    In dieser Datei wird das Item angelegt indem den Name des Items gefolgt von
     einem Doppelpunkt notiert wird. Der Inhalt der Datei wäre also:
 
     .. code-block:: yaml
-    
+
        Lampe:
 
-    Die Lampe soll an- und ausgeschaltet werden können und daher muß mit dem 
+    Die Lampe soll an- und ausgeschaltet werden können und daher muß mit dem
     Schlüsselwort **type** der Datentyp **bool** zugewiesen werden.
-    Zudem muß das Schlüsselwort um einige Zeichen eingerückt werden um dem 
-    yaml Parser von SmartHomeNG zu zeigen, das nun eine neue Ebene erfolgt. 
+    Zudem muß das Schlüsselwort um einige Zeichen eingerückt werden um dem
+    yaml Parser von SmartHomeNG zu zeigen, das nun eine neue Ebene erfolgt.
     Somit ergibt sich:
 
     .. code-block:: yaml
-    
+
        Lampe:
            type: bool
 
-    Nun muß dem KNX Plugin über das Schlüsselwort **knx_listen** signalisiert 
+    Nun muß dem KNX Plugin über das Schlüsselwort **knx_listen** signalisiert
     werden das Änderungen vom Bus an das Item weitergeleitet werden sollen und
-    weiterhin über das Schlüsselwort **knx_send** das alle Änderungen am Wert 
-    des Items die nicht vom KNX Plugin initiiert werden dann auf den Bus gesendet 
+    weiterhin über das Schlüsselwort **knx_send** das alle Änderungen am Wert
+    des Items die nicht vom KNX Plugin initiiert werden dann auf den Bus gesendet
     werden sollen. Zudem wird dem KNX Plugin noch der Datentyp vorgegeben,
-    mit dem die Daten vom KNX Bus codiert bzw. decodiert werden sollen. 
+    mit dem die Daten vom KNX Bus codiert bzw. decodiert werden sollen.
     Das Schlüsselwort hierzu ist **knx_dpt**
 
     .. code-block:: yaml
-    
+
        Lampe:
            type: bool
            knx_dpt: 1
@@ -62,7 +62,7 @@ ausgeschaltet werden. Dazu braucht es zwei Schritte:
            knx_send: 1/1/130
 
     Sollte die fiktive Lampe auch über einen Dimmer angesteuert werden können,
-    muß ein weiteres Item angelegt werden, da der Dimmwert ja nicht ein oder aus ist 
+    muß ein weiteres Item angelegt werden, da der Dimmwert ja nicht ein oder aus ist
     sondern einen Zahlenwert für die Dimmeinstellung vorsieht.
     Dazu benötigt man ein weiteres Item. Hierbei wird das Schlüsselwort **type** auf
     **num** gesetzt und der KNX Datentyp passend dazu **knx_dpt: 5**
@@ -130,7 +130,7 @@ beispielsweise um eine Logik auszulösen.
 
 Möchte man nun das Beispiel erweitern um z.B. mit der SmartVISU die Lampe zu schalten,
 muß man zunächst das Plugin **visu_websocket** in der ``./etc/plugin.yaml``
-durch folgenen Eintrag aktivieren:
+durch folgenden Eintrag aktivieren:
 
 .. code-block:: yaml
 
@@ -176,7 +176,7 @@ das Item einfach noch um das Dash-Button Attribut erweitert werden:
            knx_listen: 1/1/133
            knx_send: 1/1/130
            visu_acl: rw
-           dashbutton_mac:  AC:63:B0:02:CA:12
+           dashbutton_mac:  'AC:63:B0:02:CA:12'
            dashbutton_mode: 'flip'
 
 D.h. man kann die Lampe nun via KNX, SmartVisu oder Dashbutton ein- und

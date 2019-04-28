@@ -11,17 +11,17 @@ and below.
 Extending an existing plugin
 ----------------------------
 
-For extendding an existing smart-plugin with a webinterface, the following steps have to be followed:
+For extending an existing smart-plugin with a webinterface, the following steps have to be followed:
 
    1. Add the webif directory from the sample plugin to the plugin's directory
-   2. Change the import statement for **lib.smartplugin** from 
+   2. Change the import statement for **lib.smartplugin** from
       ``from lib.model.smartplugin import SmartPlugin`` to
       ``from lib.model.smartplugin import *``
    3. Add the following statement to the ``__init__`` method of the plugin: ``self.init_webinterface()``
    4. Ad the method ``init_webinterface`` to the plugin's class (copy from sample_plugin)
    5. Add the ``WebInterface`` class after the end of the plugin's class definition. Copy it from the sample plugin.
-   
-Now the plugin has a functional but empty webinterface: 
+
+Now the plugin has a functional but empty webinterface:
 
 .. image:: assets/sample_plugin_webIf.jpg
 
@@ -31,37 +31,37 @@ Filling the webinterface with content
 
 To bring the webinterface up to life, the following steps should be followed:
 
-   1. Modify the method ``index`` of the class ``WebInterface`` to hand over the needed data 
-      (here a list of items that have the attribute knx_dpt) to the template engine. 
+   1. Modify the method ``index`` of the class ``WebInterface`` to hand over the needed data
+      (here a list of items that have the attribute knx_dpt) to the template engine.
       Modify the sample code from:
-      
+
       .. code-block:: PYTHON
 
-	     @cherrypy.expose
+         @cherrypy.expose
          def index(self, reload=None):
              """
              Build index.html for cherrypy
-        
+
              Render the template and return the html file to be delivered to the browser
-            
-             :return: contents of the template after beeing rendered 
+
+             :return: contents of the template after beeing rendered
              """
              # add values to be passed to the Jinja2 template eg: tmpl.render(p=self.plugin, interface=interface, ...)
              tmpl = self.tplenv.get_template('index.html')
              return tmpl.render(p=self.plugin)
 
       to:
-      
+
       .. code-block:: PYTHON
 
-	          @cherrypy.expose
+              @cherrypy.expose
               def index(self, reload=None):
                   """
                   Build index.html for cherrypy
-        
+
                   Render the template and return the html file to be delivered to the browser
-            
-                  :return: contents of the template after beeing rendered 
+
+                  :return: contents of the template after beeing rendered
                   """
                   tmpl = self.tplenv.get_template('index.html')
                   # add values to be passed to the Jinja2 template eg: tmpl.render(p=self.plugin, interface=interface, ...)
@@ -80,7 +80,7 @@ To bring the webinterface up to life, the following steps should be followed:
                                     )
 
    2. Modify the template **webif/templates/index.html** to display the data you want.
-      To display a list of the items selected by the Python code above on the first tab of the 
+      To display a list of the items selected by the Python code above on the first tab of the
       body of the webinterface, insert the following code between ``{% block bodytab1 %}`` and
       ``{% endblock bodytab1 %}``:
 
@@ -109,9 +109,6 @@ To bring the webinterface up to life, the following steps should be followed:
              </div>
          </div>
 
-   3. The logo on the topleft is automatically replaced with the logo of the **plugin type**. 
+   3. The logo on the topleft is automatically replaced with the logo of the **plugin type**.
       If the webinterface should have an individaul logo, the file with the logo must be placed in
       the directory **webif/static/img** and has to be named **plugin_logo**. It may be of type **.png**, **.jpg** or **.svg**.
-      
- 
-   

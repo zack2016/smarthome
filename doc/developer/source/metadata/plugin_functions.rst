@@ -23,7 +23,7 @@ In the future the definitions will be used for a configuration tool for SmartHom
                     type: int
                     default: 1234
                     description:
-                        de: 'Deutsche Beschreibung des Parameters der Funktion'
+                        de: 'Deutsche Beschreibung des Funktionsparameters'
                         en: 'English description of the function's parameter'
                     valid_list:
                       - 1234
@@ -32,8 +32,8 @@ In the future the definitions will be used for a configuration tool for SmartHom
 
                 param2:
                     type: ...
-            
-        
+
+
 .. include:: /metadata/parameter_keys.rst
 
 if a plugin has no public functions, this is signaled by the following entry in the plugin.yaml file:

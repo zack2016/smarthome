@@ -11,7 +11,7 @@ The configuration file tells SmartHomeNG when to execute a certain logic script.
 
 The following sample configuration file defines four logic scripts for use by SmartHomeNG.
 
-* The first logic script is named ``InitSmartHomeNG`` and its sourcecode
+* The first logic script is named ``InitSmartHomeNG`` and its source code
   is configured to be found in ``logics/InitSmartHomeNG.py``.
   The attribute ``crontab: init`` tells SmartHomeNG to start the script just after
   SmartHomeNG has started.
@@ -20,7 +20,7 @@ The following sample configuration file defines four logic scripts for use by Sm
 * The third logic script named ``Gate`` resides in ``logics/gate.py`` and the attribute
   ``watch_item: gate.alarm`` tells SmartHomeNG to call the script when item
   value of gate.alarm changed.
-* The fourth logic thus is named ``disks`` and it's sourcecode ``logics/disks.py``
+* The fourth logic thus is named ``disks`` and it's source code ``logics/disks.py``
   will be executed every 5 minutes.
 
 .. code-block:: yaml
@@ -49,7 +49,7 @@ The following sample configuration file defines four logic scripts for use by Sm
 Configuration parameters
 ------------------------
 
-The following parameters can be used in `etc/logic.yaml` to configure the logic and it's behaviour.
+The following parameters can be used in `etc/logic.yaml` to configure the logic and it's behavior.
 
 watch_item
 ~~~~~~~~~~
@@ -382,7 +382,7 @@ Usage of Object ``sh`` for items is deprecated, it's better to use the Item API:
 
    from lib.item import Items
    items = Items.get_instance()
-   
+
 With ``items`` Object in place the following functions can be called:
 
 items.return_item(path)
@@ -420,14 +420,14 @@ Depending on ``configattribute`` the following items will be returned:
 
 .. table::
 
-   ======================  =========================================
-   attribute             Ergebnis
-   ======================  =========================================
+   ======================  ====================================================
+   attribute               Ergebnis
+   ======================  ====================================================
    ``attribute``           Only items having no instance id
    ``attribute@``          Items with or without instance id
    ``attribute@instance``  Items with exact match of attribute and instance id
    ``@instance``           Items having this instance id
-   ======================  =========================================
+   ======================  ====================================================
 
 
 .. code:: python

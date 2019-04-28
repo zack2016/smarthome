@@ -17,7 +17,7 @@ möglich.
 
 .. note::
 
-    Die Konfigurationsparameter des http Modules und des admin Mudules, die in dieser Datei konfiguriert werden, können
+    Die Konfigurationsparameter des http Modules und des admin Modules, die in dieser Datei konfiguriert werden, können
     auch über das graphische Administrations-Interface geändert werden.
 
 

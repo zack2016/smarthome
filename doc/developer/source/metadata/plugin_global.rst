@@ -29,7 +29,7 @@ The global metadata section ``plugin:`` has the following keys:
 Description of the keys in the section ``plugin:``
 
     - **type:** The plugin type (classification: gateway, interface, protocol, system, cloud, or *empty* for un-classified
-    - **description:** Multilanguage Text describing what the plugin does. It is used for generating the plugin pages within this documentation - The texts in the different languages are specified in sub-entries in the form <language>: <text>. Use the standard two letter codes for specifying the language (de, en, fr, pl, ..)
+    - **description:** Multi language Text describing what the plugin does. It is used for generating the plugin pages within this documentation - The texts in the different languages are specified in sub-entries in the form <language>: <text>. Use the standard two letter codes for specifying the language (de, en, fr, pl, ..)
     - **maintainer:** Who maintains the plugin?
     - **tester:** Optional: List of testers of the plugin
     - **state:** State of the plugin development (valid entries are: **develop**, ** **ready**, **qa-passed**)

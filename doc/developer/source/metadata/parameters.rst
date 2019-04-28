@@ -13,7 +13,7 @@ Metadata is supported in SmartHomeNG v1.4 and up.
 The ``parameters:`` section has a section for each parameter that is implemented. The name of that
 section is the name of the parameter.
 
-The definitions in the ``parameters:`` section are used for validity checking of the plugin/module configuration. 
+The definitions in the ``parameters:`` section are used for validity checking of the plugin/module configuration.
 In the future the definitions will be used for a configuration tool for SmartHomeNG.
 
 .. code:: yaml
@@ -29,11 +29,11 @@ In the future the definitions will be used for a configuration tool for SmartHom
               - 1234
               - 2222
               - 4321
-        
+
         param2:
             type: ...
-            
-        
+
+
 .. include:: /metadata/parameter_keys.rst
 
 if a plugin has no parameters, this is signaled by the following entry in the plugin.yaml file:
@@ -44,5 +44,5 @@ if a plugin has no parameters, this is signaled by the following entry in the pl
 
 .. hint::
 
-    Please note, that NONE has to be written in Uppercase.
+    Please note, that NONE has to be written in upper case.
 

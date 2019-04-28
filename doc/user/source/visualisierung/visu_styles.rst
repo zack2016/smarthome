@@ -23,10 +23,10 @@ generieren zu lassen (Style ‘Black’):
    Style Black
 
 Dieses ist eine Visu-weite Einstellung, die in der Datei
-/etc/plugin.conf vorgenommen wird. Dort kann **``visu_style = std``**
-oder **``visu_style = blk``** eingetragen werden.
+/etc/plugin.conf vorgenommen wird. Dort kann ``visu_style: std``
+oder ``visu_style: blk`` eingetragen werden.
 
-Eine vollständige Seite im Style ‘Black’ sieht z.B. folgendermaßen aus:
+Eine vollständige Seite im Style **Black** sieht z.B. folgendermaßen aus:
 
 .. figure:: assets/style_blk_visu.jpg
    :alt: Visu Black

@@ -11,7 +11,7 @@ In der System Konfiguration können der Core und die Core Module konfiguriert we
 Allgemein
 =========
 
-In diesem Tab werden die allgemeinen Einstellungen für SmatHomeNG konfiguriert. Es handelt sich hierbei um die Einstellungen,
+In diesem Tab werden die allgemeinen Einstellungen für SmartHomeNG konfiguriert. Es handelt sich hierbei um die Einstellungen,
 die in der Konfigurationsdatei ../etc/smarthome.yaml abgelegt sind.
 
 .. image:: assets/system-common.jpg
@@ -34,8 +34,8 @@ sind.
 Admin Modul
 ===========
 
-In diesem Tab werden die Einstellungen für das admin Modul konfiguriert. Es handelt sich hierbei um die Einstellungen,
-die in der Konfigurationsdatei ../etc/module.yaml im Abschnitt admin: abgelegt sind.
+In diesem Tab werden die Einstellungen für das Admin Modul konfiguriert. Es handelt sich hierbei um die Einstellungen,
+die in der Konfigurationsdatei ../etc/module.yaml im Abschnitt ``admin:`` abgelegt sind.
 
 .. image:: assets/system-admin.jpg
    :class: screenshot

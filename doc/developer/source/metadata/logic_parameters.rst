@@ -23,11 +23,11 @@ In the future the definitions will be used for a configuration tool for SmartHom
               - 1234
               - 2222
               - 4321
-        
+
         param2:
             type: ...
-            
-        
+
+
 .. include:: /metadata/parameter_keys.rst
 
 if a plugin has no logic_parameters, this is signaled by the following entry in the plugin.yaml file:

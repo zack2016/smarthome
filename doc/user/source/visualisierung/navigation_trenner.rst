@@ -31,9 +31,9 @@ wie Trenner konfiguriert werden:
             sv_page: category
             sv_img: measure_current.png
 
-        seperator_test:
+        separator_test:
             name: Tests
-            sv_page: cat_seperator
+            sv_page: cat_separator
 
         fritzboxen:
             name: Fritzboxen
@@ -42,6 +42,6 @@ wie Trenner konfiguriert werden:
 
 ``sv_page`` ist zum generieren eines Trenners auf einen speziellen
 Seitentyp einzustellen. - Wenn ein Trenner in die normale Raumnavigation
-eingefügt werden soll, so muss **``sv_page = seperator``** angegeben
+eingefügt werden soll, so muss **``sv_page = separator``** angegeben
 werden. - Wenn ein Trenner in die Konfigurationsnavigation eingefügt
-werden soll, so muss **``sv_page = cat_seperator``** angegeben werden.
+werden soll, so muss **``sv_page = cat_separator``** angegeben werden.
