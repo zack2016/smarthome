@@ -52,10 +52,15 @@ Updates im CORE
 * Items:
 
   * Funktionen des Python time-Packages können nun in eval genutzt werden.
-  * Werte der Items (z.B. ```var = item1()```) werden als Deep-Copy ausgeliefert, um bei dicts und lists bei Änderungen an ``var``` ungewünschte Änderungen innerhalb des Items zu verhindern.
-  * Wenn dict-Items ihren Wert als String zugewiesen bekommen (z.B. ```item1("{'k1': 'v1', 'k2: 'v2}")```) werden jetzt auch numerische Keys (z.B. ```item2("{1: 'v1', 2: 'v2}")```) richtig verarbeitet.
-  * Properties **enforce_updates** (r/w), **trigger** (r/w) und **eval** (r/w) implementiert (die ersten drei primär um dem Plugin stateengine (ehemals autoblind) den Verzicht des Zugriffs auf private Variablen zu ermöglichen)
-  * Public Properties für items implementiert. Sie sind über ```sh.<Item-Pfad>.property.<Property-Name>``` zugänglich. Folgende Properties sind bisher implementiert:
+  * Werte der Items (z.B. ```var = item1()```) werden als Deep-Copy ausgeliefert, um bei dicts und lists bei Änderungen
+    an ``var``` ungewünschte Änderungen innerhalb des Items zu verhindern.
+  * Wenn dict-Items ihren Wert als String zugewiesen bekommen (z.B. ```item1("{'k1': 'v1', 'k2: 'v2}")```) werden jetzt
+    auch numerische Keys (z.B. ```item2("{1: 'v1', 2: 'v2}")```) richtig verarbeitet.
+  * Properties **enforce_updates** (r/w), **trigger** (r/w) und **eval** (r/w) implementiert (die ersten drei primär um
+    dem Plugin stateengine (ehemals autoblind) den Verzicht des Zugriffs auf private Variablen zu ermöglichen)
+  * Public Properties für items implementiert. Sie sind über ```sh.<Item-Pfad>.property.<Property-Name>``` zugänglich.
+    Folgende Properties sind bisher implementiert:
+
     * enforce_updates (bool, r/w)
     * eval (str, r/w)
     * name (str, r/w)
@@ -63,13 +68,16 @@ Updates im CORE
     * trigger (list of str, r/w)
     * type (str, r/o)
     * weitere Properties -> siehe Doku
-  * Die public Properties **name** und **path** sollen längerfristig die Nutzung von **item** (zum Zugriff auf den Item-Namen) und **item.id()** sowie **item.path()** (zum Zugriff auf den Item--Pfad) in der Nutzung ersetzen.
-  * Logiken erhalten in trigger['source_details'] Informationen über den Ursprung (z.B. Device ID), falls sie von Items getriggert werden.
+  * Die public Properties **name** und **path** sollen längerfristig die Nutzung von **item** (zum Zugriff auf den
+    Item-Namen) und **item.id()** sowie **item.path()** (zum Zugriff auf den Item--Pfad) in der Nutzung ersetzen.
+  * Logiken erhalten in trigger['source_details'] Informationen über den Ursprung (z.B. Device ID), falls sie von Items
+    getriggert werden.
   * Templates für Item-Strukturen implementiert
+
     * können in Plugins definiert werden (Metadaten in plugin.yaml)
     * können individuell definiert werden (../etc/struct.yaml)
-  * sh.find_items(confattribute) und sh.find_children(parent, confattribute) erweitert
-    auf Berücksichtigung der eventuell vorhandenen Instanz Kennung.
+  * sh.find_items(confattribute) und sh.find_children(parent, confattribute) erweitert auf Berücksichtigung
+    der eventuell vorhandenen Instanz Kennung.
 
 
 * Logiken:
@@ -81,7 +89,8 @@ Updates im CORE
 
 * Module:
 
-  * Fehlgeschlagener Import von Python Packages in Modulen wird mit einer sinnvollen Fehlermeldung abgefangen und das Plugin wird nicht geladen
+  * Fehlgeschlagener Import von Python Packages in Modulen wird mit einer sinnvollen Fehlermeldung abgefangen und
+    das Plugin wird nicht geladen
   * http:
 
     * Wechsel auf WebFonts von Font Awesome, wegen Problemen in der Darstellung mit Bootstrap 4.1.2
@@ -92,8 +101,10 @@ Updates im CORE
 
 * Plugins:
 
-  * Fehlgeschlagener Import von Python Packages in Plugins wird mit einer sinnvollen Fehlermeldung abgefangen und das Plugin wird nicht geladen
-  * Bei Multi-Instanz Plugins wird der Name der Plugin-Instanz automatisch zum Logtext hinzugefügt (Voraussetzung: Im Smartplugin wird die Anweisung ```self.logger = logging.getLogger(__name__)``` weggelassen.
+  * Fehlgeschlagener Import von Python Packages in Plugins wird mit einer sinnvollen Fehlermeldung abgefangen und das
+    Plugin wird nicht geladen
+  * Bei Multi-Instanz Plugins wird der Name der Plugin-Instanz automatisch zum Logtext hinzugefügt (Voraussetzung:
+    Im Smartplugin wird die Anweisung ```self.logger = logging.getLogger(__name__)``` weggelassen.
   * Metadaten:
 
     * Tool zum Prüfen der Vollständigkeit der Metadaten von Plugins
@@ -101,12 +112,15 @@ Updates im CORE
 
       Hintergrund: Plugins im Status 'develop' sollen nicht in den Releases in den Master übernommen werden.
 
-      Wenn **state** auf deprecated gesetzt wird, ist das eine Vorwarnung, dass das Plugin in kommenden Releases nicht mehr enthalten sin wird. Hierzu wird auch eine Warnung im Admin-Interface angezeigt.
-    * Attribut **restartable** hinzugefügt (Hintergrund: Kennzeichnung der Plugins für die geplante Funktionalität zum Entladen und neu Laden von Plugins)
+      Wenn **state** auf deprecated gesetzt wird, ist das eine Vorwarnung, dass das Plugin in kommenden Releases nicht
+      mehr enthalten sin wird. Hierzu wird auch eine Warnung im Admin-Interface angezeigt.
+    * Attribut **restartable** hinzugefügt (Hintergrund: Kennzeichnung der Plugins für die geplante Funktionalität zum
+      Entladen und neu Laden von Plugins)
     * Abschnitt zur Definition der Funktionen hinzugefügt, die ein Plugin implementiert.
   * Allgemeiner Parameter **plugin_enabled** hinzugefügt, um das Laden von Plugins zu kontrollieren/verhindern
   * Beispiel Plugin unter dev/sample_plugin aktualisiert
-  * Exception Handling für run() und stop() Methode. Bisher wurden Exceptions, die nicht innerhalb der Methoden gehandled wurden ignoriert (unterdrückt).
+  * Exception Handling für run() und stop() Methode. Bisher wurden Exceptions, die nicht innerhalb der Methoden
+    gehandled wurden ignoriert (unterdrückt).
 
 
 
@@ -136,7 +150,8 @@ Für Details zu den inhaltlichen Änderungen der einzelnen Plugins, bitte die Do
 * slack:
 
   * neues Benachrichtigungs-Plugin hinzugefügt
-  * Slack steht für „Searchable Log of All Conversation and Knowledge“ (dt. durchsuchbares Protokoll aller Konversationen und des Wissens)
+  * Slack steht für „Searchable Log of All Conversation and Knowledge“ (dt. durchsuchbares Protokoll aller
+    Konversationen und des Wissens)
   * Sofort-Nachrichten mit programmierbarem Text an die Slack Arbeitsgruppen senden
   * Unterstützt bei der Überwachung definierter Ereignisse
 
@@ -154,10 +169,12 @@ Plugin Erweiterungen
 
   * CURL zum Test von AHA Devices als Codekommentar hinzugefügt
   * Plugin API in plugin.yaml beschrieben
-  * item mit name monitor.trigger aus dem README muss in monitor.trigger1 umbenannt werden, da es auf dem ITEM im 1.6er Core die Funktion "trigger()" gibt!
+  * item mit name monitor.trigger aus dem README muss in monitor.trigger1 umbenannt werden, da es auf dem ITEM
+    im 1.6er Core die Funktion "trigger()" gibt!
   * Englische Übersetzung via locale.yaml für das WebIf
   * Plugin API wird via WebIf ausgegeben
-  * Reconnect-Handling für den Callmonitor, Vermeidung von "Log-Error-Spam" im Fall, dass das AVM-Device nicht erreichbar ist.
+  * Reconnect-Handling für den Callmonitor, Vermeidung von "Log-Error-Spam" im Fall, dass das AVM-Device nicht
+    erreichbar ist.
   * Plugin "restartable" in plugin.yaml hinzugefügt
   * Reconnect (Internet) und Reboot (AVM Device) Buttons in WebIF hinzugefügt
   * Unterstützung für HKR Module (FritzDECT301)
@@ -177,7 +194,8 @@ Plugin Erweiterungen
 
 * darksky:
 
-  * Erweiterung um eine Methode map_icon, mit der die zurückgelieferten Icons auf SmartVisu Icons gemapped werden können (inkl. Beispiel im README)
+  * Erweiterung um eine Methode map_icon, mit der die zurückgelieferten Icons auf SmartVisu Icons gemapped werden
+    können (inkl. Beispiel im README)
   * Erweiterung der Beispiele im README, um die Wettervorhersage für die nächsten 3 Tage auszulesen.
   * Bietet Templates für Item-Strukturen
 
@@ -188,18 +206,22 @@ Plugin Erweiterungen
 * database
 
   * Anzeige der Anzahl der Datensätze pro Tag
-  * neue Funktion countall für item.db, die die Anzahl aller Datensätze zählt. Integration dieser in das WebInterface über neuen Button
+  * neue Funktion countall für item.db, die die Anzahl aller Datensätze zählt. Integration dieser in das WebInterface
+    über neuen Button
   * Plugin API wird via WebIf ausgegeben
   * Neue Einstellung `precision`: Gibt an wie viele Nachkommastellen bei Abfragen zurückgeliefert werden sollen
-  * Fix: Datenbankeinträge erhalten beim Starten von SHNG nun den aktuellen Zeitstempel anstatt den letzten aus der Datenbank (Wert wirkt sonst so, als wäre er während SHNG nicht lief gleich geblieben)
-  * Button für den Start eines Datenbank-Cleanups (löscht alle Einträge, für die es kein Item mehr gibt) in Web-GUI integriert
+  * Fix: Datenbankeinträge erhalten beim Starten von SHNG nun den aktuellen Zeitstempel anstatt den letzten aus der
+    Datenbank (Wert wirkt sonst so, als wäre er während SHNG nicht lief gleich geblieben)
+  * Button für den Start eines Datenbank-Cleanups (löscht alle Einträge, für die es kein Item mehr gibt) in Web-GUI
+    integriert
   * Neue `countall` Funktion (gibt die Gesamtanzahl der Logeinträge für ein Item zurück)
   * Neue `integrate` Funktion
 
 * datalog:
 
   * Initialisierung auf aktuelle API umgestellt (kwargs, args)
-  * Konfiguration der Dateien (`filepatterns`) und Patterns (`logpatterns`) nur noch via YAML-Format möglich (default funktioniert weiterhin)
+  * Konfiguration der Dateien (`filepatterns`) und Patterns (`logpatterns`) nur noch via YAML-Format möglich (default
+    funktioniert weiterhin)
 
 * dlms
 
@@ -268,12 +290,15 @@ Plugin Erweiterungen
 
 * webservices
 
-  * neuer Parameter für items und itemsets der mit "?mode=..." (val oder full) angehängt werden muss. Der Parameter sorgt dafür, dass die in dem Items konfigurierten Werte für webservices_data ignoriert werden und das zurückgeliefert wird, was in mode steht
+  * neuer Parameter für items und itemsets der mit "?mode=..." (val oder full) angehängt werden muss. Der Parameter
+    sorgt dafür, dass die in dem Items konfigurierten Werte für webservices_data ignoriert werden und das
+    zurückgeliefert wird, was in mode steht
 
 * withings_health (ehemals nokia_health)
 
   * Umbenennung des Plugins und der Parameter wegen Rückübernahme durch Withings
-  * Neuimplementierung für OAuth2, und Version 1.0.0-1.1.0 des Nokia Pypi Pakets. **Achtung:** es müssen 4 neue Items erstellt werden. withings_type: access_token, token_expiry, token_type, refresh_token. Diese müssen mit dem Attribut cache als File, oder in einer Datenbank (sqlite, database plugin) zwischengespeichert werden, da sonst das Plugin nach SHNG Neustart erneut OAuth2 durchlaufen muss!
+  * Neuimplementierung für OAuth2, und Version 1.0.0-1.1.0 des Nokia Pypi Pakets. **Achtung:** es müssen 4 neue Items
+    erstellt werden. withings_type: access_token, token_expiry, token_type, refresh_token. Diese müssen mit dem Attribut cache als File, oder in einer Datenbank (sqlite, database plugin) zwischengespeichert werden, da sonst das Plugin nach SHNG Neustart erneut OAuth2 durchlaufen muss!
   * Durchlauf des OAuth2 Prozesses von der WebGUI gegen (lokale) Callback-URL (ebenfalls via WebGUI)
   * Englische Version der WebGUI
 
@@ -284,7 +309,8 @@ Plugin Erweiterungen
 
 * xmpp:
 
-  * Einstellung `server` hinzugefügt mit der angegeben werden kann zu welchem Server die Verbindung aufgebaut werden soll (optional)
+  * Einstellung `server` hinzugefügt mit der angegeben werden kann zu welchem Server die Verbindung aufgebaut werden
+    soll (optional)
   * Einstellung `use_ipv6` hinzugefügt über die IPv6 deaktiviert werden kann (Default ist IPv6 aktiv)
   * Einstellung `plugins` hinzugefügt über die zusätzliche Plugins geladen werden können (z.B. Multi User Chat XEP-45)
   * Einstellung `join` hinzugefügt über die eingestellt werden kann in welche Gruppen-Chats automatisch beigetreten wird
