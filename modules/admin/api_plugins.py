@@ -452,4 +452,4 @@ class PluginsLogicParametersController(RESTResource):
         return json.dumps(self.plugins.get_logic_parameters())
 
     read.expose_resource = True
-    read.authentication_needed = False
+    read.authentication_needed = True
