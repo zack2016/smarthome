@@ -133,7 +133,15 @@ class PluginsInstalledController(RESTResource):
                                 self.plugin_data[p] = collections.OrderedDict()
                                 self.plugin_data[p]['type'] = plg_data.get('type', '')
                                 description = plg_data.get('description', {'de': '', 'en': ''})
-                                self.plugin_data[p]['description'] = description[default_language]
+
+                                # self.plugin_data[p]['description'] = description.get(default_language, '')
+                                # if self.plugin_data[p]['description'] == '':
+                                #     self.plugin_data[p]['description'] = description[self.fallback_language_order[0]]
+                                # if self.plugin_data[p]['description'] == '':
+                                #     self.plugin_data[p]['description'] = description[self.fallback_language_order[1]]
+
+                                self.plugin_data[p]['description'] = description
+
                                 self.plugin_data[p]['version'] = plg_data.get('version', '')
                                 self.plugin_data[p]['state'] = plg_data.get('state', '')
                                 self.plugin_data[p]['documentation'] = plg_data.get('documentation', '')
