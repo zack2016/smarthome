@@ -27,3 +27,15 @@ für die Logik konfiguriert werden.
 .. image:: assets/logics-parametereditor.jpg
    :class: screenshot
 
+
+Crontab
+-------
+
+Wenn mehrere Einträge als Liste eingegeben werden sollen, so sind die Einträge durch ein | Zeichen zu trennen.
+
+
+Watch Items
+-----------
+
+Eine Liste mit Vorschlägen zur Autovervollständigung wird nach Eingabe der ersten 3 Zeichen angezeigt.
+Mit den Pfeiltasten kann in der Liste navigiert werden. Mit ENTER wird die Auswahl als Watch-Item hinzugefügt.
