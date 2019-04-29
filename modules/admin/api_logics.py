@@ -25,6 +25,7 @@ import logging
 import json
 import cherrypy
 import time
+import copy
 
 import lib.shyaml as shyaml
 import lib.config
@@ -148,7 +149,7 @@ class LogicsController(RESTResource):
             if hasattr(loaded_logic, 'watch_item'):
                 # Attention: watch_items are always stored as a list in logic object
                 mylogic['watch_item'] = Utils.strip_quotes_fromlist(str(loaded_logic.watch_item))
-                mylogic['watch_item_list'] = loaded_logic.watch_item
+                mylogic['watch_item_list'] = list(loaded_logic.watch_item)
 
             mylogic['next_exec'] = ''
 
@@ -246,7 +247,14 @@ class LogicsController(RESTResource):
         """
         Get code of a logic from file
         """
+        config_filename = os.path.join(self.etc_dir, 'logic.yaml')
+        wrk = shyaml.yaml_load(config_filename)
+        logic_conf = wrk.get(logicname, {})
+        self.logger.warning("type = {}, logic_conf = {}".format(type(logic_conf), logic_conf))
+
         mylogic = self.fill_logicdict(logicname)
+        self.logger.warning("type = {}, mylogic = {}".format(type(mylogic), mylogic))
+
         self.logger.info("get_logic: logicname = '{}', mylogic = '{}'".format(logicname, mylogic))
 
         if 'pathname' in mylogic:
@@ -255,36 +263,37 @@ class LogicsController(RESTResource):
             self.logger.error('No pathname for logic given or pathname cannot be retrieved via logic name!')
             return
 
-        config_list = self.logics.read_config_section(logicname)
-        for config in config_list:
-            if config[0] == 'cycle':
-                mylogic['cycle'] = config[1]
-            if config[0] == 'crontab':
-                #                mylogic['crontab'] = config[1]
-                self.logger.debug("logics_view_html: crontab = >{}<".format(config[1]))
-                edit_string = self.list_to_editstring(config[1])
-                mylogic['crontab'] = Utils.strip_quotes_fromlist(edit_string)
-            if config[0] == 'watch_item':
-                # Attention: watch_items are always stored as a list in logic object
-                edit_string = self.list_to_editstring(config[1])
-                mylogic['watch'] = Utils.strip_quotes_fromlist(edit_string)
-                mylogic['watch_item'] = Utils.strip_quotes_fromlist(edit_string)
-                mylogic['watch_item_list'] = config[1]
-            if config[0] == 'visu_acl':
-                mylogic['visu_acl'] = config[1]
+        # config_list = self.logics.read_config_section(logicname)
+        # for config in config_list:
+        #     if config[0] == 'cycle':
+        #         mylogic['cycle'] = config[1]
+        #     if config[0] == 'crontab':
+        #         #                mylogic['crontab'] = config[1]
+        #         self.logger.debug("logics_view_html: crontab = >{}<".format(config[1]))
+        #         edit_string = self.list_to_editstring(config[1])
+        #         mylogic['crontab'] = Utils.strip_quotes_fromlist(edit_string)
+        #     elif config[0] == 'watch_item':
+        #         # Attention: watch_items are always stored as a list in logic object
+        #         edit_string = self.list_to_editstring(config[1])
+        #         # mylogic['watch'] = Utils.strip_quotes_fromlist(edit_string)
+        #         # mylogic['watch_item'] = Utils.strip_quotes_fromlist(edit_string)
+        #         # mylogic['watch_item_list'] = config[1]
+        #         self.logger.warning('watch_item_list = {}'.format(config[1]))
+        #     # elif config[0] == 'visu_acl':
+        #     #     mylogic['visu_acl'] = config[1]
+        #     else:
+        #         mylogic[config[0]] = config[1]
 
-        if os.path.splitext(file_path)[1] == '.blockly':
-            mode = 'xml'
-            updates = False
-        else:
-            mode = 'python'
-            # updates = self.updates_allowed
-            if not 'userlogic' in mylogic:
-                mylogic['userlogic'] = True
-            #if mylogic['userlogic'] == False:
-            #    updates = False
 
-        return json.dumps(mylogic)
+        self.logger.warning("type = {}, mylogic = {}".format(type(mylogic), mylogic))
+        self.logger.warning("type = {}, logic_conf = {}".format(type(logic_conf), logic_conf))
+
+        logic_conf['name'] = mylogic['name']
+        logic_conf['next_exec'] = mylogic['next_exec']
+        logic_conf['last_run'] = mylogic['last_run']
+
+        return json.dumps(logic_conf)
+
 
 
     # ======================================================================
@@ -388,15 +397,18 @@ class LogicsController(RESTResource):
         else:
             self.logger.info("LogicsController.save_logic_parameters: logic = {}, alte params = {}".format(logicname, dict(sect)))
             for param, value in params.items():
-                self.logger.info("- param = {}, value = {}, type(value) = {}".format(param, value, Utils.get_type(value)))
-                if (Utils.get_type(value) == 'str') and (value == ''):
-                    sect.pop(param, None)
-                elif (Utils.get_type(value) == 'list') and (value == []):
-                    sect.pop(param, None)
-                elif (Utils.get_type(value) == 'dict') and (value == {}):
+                if value == None:
                     sect.pop(param, None)
                 else:
-                    sect[param] = value
+                    self.logger.info("- param = {}, value = {}, type(value) = {}".format(param, value, Utils.get_type(value)))
+                    if (Utils.get_type(value) == 'str') and (value == ''):
+                        sect.pop(param, None)
+                    elif (Utils.get_type(value) == 'list') and (value == []):
+                        sect.pop(param, None)
+                    elif (Utils.get_type(value) == 'dict') and (value == {}):
+                        sect.pop(param, None)
+                    else:
+                        sect[param] = value
 
             self.logger.info("LogicsController.save_logic_parameters: logic = {}, neue params = {}".format(logicname, dict(sect)))
 
