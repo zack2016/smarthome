@@ -35,14 +35,6 @@ The **metadata** file is named ``/modules/<name of the module>/module.yaml``. It
 
 .. include:: metadata/parameters.rst
 
-xxxxxx
-
-.. toctree::
-   :maxdepth: 3
-   :titlesonly:
-
-   /modules_doc/module_metadata
-
 
 If a module has requirements for a Python package that is not met by the standard Python installation, it has to be added
 to the **requirements.txt** file in the modules' directory.

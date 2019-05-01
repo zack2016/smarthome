@@ -49,7 +49,7 @@ class PluginWrapper
 
 This class implements the Plugin itself:
 
-.. autoclass:: Plugin
+.. autoclass:: PluginWrapper
    :no-members:
 
 :doc:`class PluginWrapper </lib/plugin_class_pluginwrapper>`
