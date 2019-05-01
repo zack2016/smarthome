@@ -13,7 +13,7 @@ module:
 parameters:
     login_expiration:
         type: num
-        default: 168
+        default: 48
         description:
             de: 'Ablaufdauer des Logins in Stunden (ab Loginzeitpunkt)'
             en: 'Expiration time of the login in hours (counting from time of login)'

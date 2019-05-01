@@ -40,3 +40,15 @@ die in der Konfigurationsdatei ../etc/module.yaml im Abschnitt ``admin:`` abgele
 .. image:: assets/system-admin.jpg
    :class: screenshot
 
+Falls ein Username und ein Password konfiguriert sind, steuern die folgenden zwei Parameter die Gültigkeitsdauer der
+Anmeldung. Die Anmeldung wird über ein Token gesteuert, welches auch bei Beendigung des Browsers erhalen bleibt. Es
+wird bei Klick auf den Abmelden Button gelöscht oder es verfällt nach Ablauf der Gültigkeitsdauer.
+
+Der Parameter **login_experiation** legt die Gültigkeitsdauer (in Stunden) des bei der Anmeldung ausgestellten Tokens
+fest. Falls eine kurze Gültigkeit gewünscht ist, können auch Werte kleiner 1 angegeben werden. (0.5 bedeutet z.B. eine
+Gültigkeit von 30 Minuten).
+
+Der Parameter **login_autorenew** legt fest, ob bei Nutzung des Administrations-Interfaces die Gültigkeit des Tokens
+verlängert wird oder nicht. Wenn **login_autorenew** auf **true** gesetzt ist, wird bei einer Nutzung des
+Administrations-Interfaces nach Ablauf der halben Gültigkeits-Dauer das Token erneuert, so dass es wieder die volle
+mit **login_experiation** festgelegte Dauer gültig ist.
