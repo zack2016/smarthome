@@ -175,7 +175,7 @@ def remove_digits(ydata, filename=''):
     :type ydata: OrderedDict
 
     '''
-    remove_keys(ydata, lambda k: k[0] in digits, [REMOVE_ATTR, REMOVE_PATH], msg="Problem parsing '{}' in file '{}': item starts with digits")
+    remove_keys(ydata, lambda k: k[0] in digits, [REMOVE_ATTR, REMOVE_PATH], msg="Problem parsing '{}' in file '"+filename+"': item starts with digits")
 
 
 def remove_reserved(ydata, filename=''):
@@ -186,7 +186,7 @@ def remove_reserved(ydata, filename=''):
     :type ydata: OrderedDict
 
     '''
-    remove_keys(ydata, lambda k: k in reserved, [REMOVE_PATH], msg="Problem parsing '{}' in file '{}': item using reserved word set/get")
+    remove_keys(ydata, lambda k: k in reserved, [REMOVE_PATH], msg="Problem parsing '{}' in file '"+filename+"': item using reserved word set/get")
 
 
 def remove_keyword(ydata, filename=''):
@@ -197,7 +197,7 @@ def remove_keyword(ydata, filename=''):
     :type ydata: OrderedDict
 
     '''
-    remove_keys(ydata, lambda k: keyword.iskeyword(k), [REMOVE_PATH], msg="Problem parsing '{}' in file '{}': item using reserved Python keyword")
+    remove_keys(ydata, lambda k: keyword.iskeyword(k), [REMOVE_PATH], msg="Problem parsing '{}' in file '"+filename+"': item using reserved Python keyword")
 
 
 def remove_invalid(ydata, filename=''):
@@ -209,7 +209,7 @@ def remove_invalid(ydata, filename=''):
 
     '''
     valid_chars = valid_item_chars + valid_attr_chars
-    remove_keys(ydata, lambda k: True if True in [True for i in range(len(k)) if k[i] not in valid_chars] else False, [REMOVE_ATTR, REMOVE_PATH], msg="Problem parsing '{}' invalid character. Valid characters are: " + str(valid_chars))
+    remove_keys(ydata, lambda k: True if True in [True for i in range(len(k)) if k[i] not in valid_chars] else False, [REMOVE_ATTR, REMOVE_PATH], msg="Problem parsing '{}' in file '"+filename+"': Invalid character. Valid characters are: " + str(valid_chars))
 
 
 def merge(source, destination):
