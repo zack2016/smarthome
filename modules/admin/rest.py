@@ -156,14 +156,13 @@ class RESTResource:
         return
 
 
-    def REST_test_jwt_token(self):
+    def REST_get_jwt_token(self):
         """
-        test existance of jwt  (is to be moved to rest.py)
+        get the (decoded) token that was used to make the request
 
         :return: tuple
         """
-        error_text = 'Unauthorized'
-        self.logger.debug("REST_test_jwt_token(): cherrypy.request.headers = {}".format(cherrypy.request.headers))
+        # self.logger.debug("REST_get_jwt_token(): cherrypy.request.headers = {}".format(cherrypy.request.headers))
         token = cherrypy.request.headers.get('Authorization', '')
         decoded = {}
         # self.logger.debug("REST_test_jwt_token(): raw token = {}".format(token))
@@ -184,7 +183,41 @@ class RESTResource:
                 decoded = {}
         self.logger.debug("REST_test_jwt_token(): decoded jwt token = {}".format(decoded))
 
-        if len(token) == 0 or decoded == {}:
+        if len(token) == 0:
+            decoded = {}
+        return decoded
+
+
+    def REST_test_jwt_token(self):
+        """
+        test existance of jwt
+
+        :return: tuple
+        """
+        error_text = 'Unauthorized'
+        # self.logger.debug("REST_test_jwt_token(): cherrypy.request.headers = {}".format(cherrypy.request.headers))
+        # token = cherrypy.request.headers.get('Authorization', '')
+        # decoded = {}
+        # # self.logger.debug("REST_test_jwt_token(): raw token = {}".format(token))
+        # if token != '':
+        #     if token.startswith('Bearer '):
+        #         token = token[len('Bearer '):]
+        #
+        # # self.logger.debug("REST_test_jwt_token(): jwt token = {}".format(token))
+        # if self.jwt_secret and (len(token) > 0):
+        #     try:
+        #         decoded = jwt.decode(token, self.jwt_secret, verify=True, algorithms='HS256')
+        #     except Exception as e:
+        #         self.logger.debug("REST_test_jwt_token(): Exception = {}".format(e))
+        #         se = format(e)
+        #         if se.endswith('expired'):
+        #             error_text = format(e)
+        #         token = ''
+        #         decoded = {}
+        # self.logger.debug("REST_test_jwt_token(): decoded jwt token = {}".format(decoded))
+        decoded = self.REST_get_jwt_token()
+
+        if decoded == {}:
             return (False, error_text)
 
         return (True, '')

@@ -19,6 +19,14 @@ parameters:
             en: 'Expiration time of the login in hours (counting from time of login)'
             fr: "Temps d'expiration de l'identification en heures (à partir du moment de l'identification)"
 
+    login_autorenew:
+        type: bool
+        default: True
+        description:
+            de: 'Bestehendes Login-Token automatisch verlängern'
+            en: 'Automatically extend an existing login-token'
+#            fr: ""
+
     pypi_timeout:
         type: int
         default: 5

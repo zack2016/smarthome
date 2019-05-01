@@ -25,6 +25,7 @@ import logging
 import json
 import cherrypy
 from datetime import datetime, timedelta
+import time
 
 import jwt
 
@@ -73,7 +74,7 @@ class AuthController(RESTResource):
 
 
     # ======================================================================
-    #  /api/authenticate/user
+    #  /api/authenticate/user (POST)
     #
     def authenticate(self):
         self.logger.info("AuthController.authenticate(): cherrypy.request.headers = {}".format(cherrypy.request.headers))
@@ -98,6 +99,7 @@ class AuthController(RESTResource):
             url = cherrypy.url().split(':')[0] + ':' + cherrypy.url().split(':')[1]
             payload = {'iss': url, 'iat': self.module.shtime.now(), 'jti': self.module.shtime.now().timestamp()}
             payload['exp'] = self.module.shtime.now() + timedelta(days=7)
+            payload['ttl'] = 7*24
             payload['name'] = 'Autologin'
             payload['admin'] = True
             response['token'] = jwt.encode(payload, self.jwt_secret, algorithm='HS256').decode('utf-8')
@@ -112,6 +114,7 @@ class AuthController(RESTResource):
                     payload = {'iss': url, 'iat': self.module.shtime.now(), 'jti': self.module.shtime.now().timestamp()}
                     self.logger.info("AuthController.authenticate() login: login_expiration = {}".format(self.module.login_expiration))
                     payload['exp'] = self.module.shtime.now() + timedelta(hours=self.module.login_expiration)
+                    payload['ttl'] = self.module.login_expiration
                     payload['name'] = user.get('name', '?')
                     payload['admin'] = ('admin' in user.get('groups', []))
                     response['token'] = jwt.encode(payload, self.jwt_secret, algorithm='HS256').decode('utf-8')
@@ -121,6 +124,39 @@ class AuthController(RESTResource):
                     self.logger.info("AuthController.authenticate(): remote.ip    = {}".format(cherrypy.request.remote.ip))
         self.logger.info("AuthController.authenticate(): response = {}".format(response))
         return json.dumps(response)
+
+
+    # ======================================================================
+    #  /api/authenticate/renew (PUT)
+    #
+    def renew_token(self):
+
+        response = {}
+
+        old_token = self.REST_get_jwt_token()
+        self.logger.debug("- renew_token(): decoded old token = {}".format(old_token))
+        new_token = old_token
+
+        if self.module.login_autorenew:
+            new_token['iat'] = self.module.shtime.now()
+            new_token['exp'] = self.module.shtime.now() + timedelta(hours=self.module.login_expiration)
+            response['token'] = jwt.encode(new_token, self.jwt_secret, algorithm='HS256').decode('utf-8')
+            decoded = jwt.decode(response['token'], self.jwt_secret, verify=True, algorithms='HS256')
+            self.logger.debug("- renew_token(): re-decoded  token = {}".format(decoded))
+
+            # self.logger.info("AuthController.renew_token(): new_token = {}".format(new_token))
+            self.logger.info("AuthController.renew_token(): remote.ip = {}, user = {}".format(cherrypy.request.remote.ip, new_token['name']))
+
+            response['result'] = 'ok'
+            response['description'] = 'token renewed'
+        else:
+            response['token'] = jwt.encode(old_token, self.jwt_secret, algorithm='HS256').decode('utf-8')
+
+            response['result'] = 'ok'
+            response['description'] = 'token not renewed'
+
+        return json.dumps(response)
+
 
 
     # ======================================================================
@@ -169,6 +205,8 @@ class AuthController(RESTResource):
         if id == 'user':
             pass
             # return self.renew()
+        if id == 'renew':
+            return self.renew_token()
 
         self.logger.info("AuthController.update(): /{} - unhandled".format(id))
         return None

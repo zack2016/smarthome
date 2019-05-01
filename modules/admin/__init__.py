@@ -97,6 +97,7 @@ class Admin():
 
         try:
             self.login_expiration = self._parameters['login_expiration']
+            self.login_autorenew = self._parameters['login_autorenew']
             self.pypi_timeout = self._parameters['pypi_timeout']
             self.itemtree_fullpath = self._parameters['itemtree_fullpath']
             self.itemtree_searchstart = self._parameters['itemtree_searchstart']
