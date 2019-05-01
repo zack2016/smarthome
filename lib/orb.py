@@ -130,8 +130,7 @@ class Orb():
         Computes the rise of either sun or moon
         :param doff:    degrees offset for the observers horizon
         :param moff:    minutes offset from time of rise (either before or after)
-        :param center:  if True then the centerpoint of either sun or moon will be considered to make the transit
-                        otherwise the upper limb will be considered
+        :param center:  if True then the centerpoint of either sun or moon will be considered to make the transit otherwise the upper limb will be considered
         :param dt:      start time for the search for a rise, if not given the current time will be used
         :return:
         """
@@ -157,8 +156,7 @@ class Orb():
         Computes the setting of either sun or moon
         :param doff:    degrees offset for the observers horizon
         :param moff:    minutes offset from time of setting (either before or after)
-        :param center:  if True then the centerpoint of either sun or moon will be considered to make the transit
-                        otherwise the upper limb will be considered
+        :param center:  if True then the centerpoint of either sun or moon will be considered to make the transit otherwise the upper limb will be considered
         :param dt:      start time for the search for a setting, if not given the current time will be used
         :return:
         """
@@ -184,8 +182,7 @@ class Orb():
         """
         Calculates the position of either sun or moon
         :param offset:  given in minutesA, shifts the time of calculation by some minutes back or forth
-        :param degree:  if True: return the position of either sun or moon from the observer as degrees,
-                        otherwise as radians
+        :param degree:  if True: return the position of either sun or moon from the observer as degrees, otherwise as radians
         :param dt:      time for which the position needs to be calculated
         :return:        a tuple with azimuth and elevation
         """
