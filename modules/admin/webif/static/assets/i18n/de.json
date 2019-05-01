@@ -395,6 +395,7 @@
   },
 
   "BUTTON": {
+    "OK": "Ok",
     "CLOSE": "Schließen",
     "CHANGE": "Ändern",
     "SAVE": "Sichern",
@@ -455,8 +456,7 @@
     "CTRL-Q": "Zeile an der Cursorposition falten oder entfalten",
     "SHIFT-CTRL-Q": "Gesamtes Dokument entfalten",
     "CRONTAB": "Wenn mehrere Einträge als Liste eingegeben werden sollen, so sind die Einträge durch ein | Zeichen zu trennen.",
-    "AUTOCOMPLETE": "Eine Liste mit Vorschlägen zur Autovervollständigung wird nach Eingabe der ersten 3 Zeichen angezeigt.",
-    "xxAUTOCOMPLETExx": "Eine Hilfe mit Vorschlägen zur Autovervollständigung taucht nach den ersten 3 Zeichen auf - Mit den Pfeiltasten navigieren, TAB: Im Eingabefeld ergänzen, ENTER: Als Item Hinzufügen."
+    "AUTOCOMPLETE": "Eine Liste mit Vorschlägen zur Autovervollständigung wird nach Eingabe der ersten 3 Zeichen angezeigt."
   },
 
   "YES": "Ja",
