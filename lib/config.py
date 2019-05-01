@@ -156,7 +156,7 @@ def remove_keys(ydata, func, remove=[REMOVE_ATTR], level=0, msg=None, key_prefix
 
 
 
-def remove_comments(ydata):
+def remove_comments(ydata, filename=''):
     '''
     Removes comments from a dict or OrderedDict structure
 
@@ -167,7 +167,7 @@ def remove_comments(ydata):
     remove_keys(ydata, lambda k: k.startswith('comment'), [REMOVE_ATTR])
 
 
-def remove_digits(ydata):
+def remove_digits(ydata, filename=''):
     '''
     Removes keys starting with digits from a dict or OrderedDict structure
 
@@ -175,10 +175,10 @@ def remove_digits(ydata):
     :type ydata: OrderedDict
 
     '''
-    remove_keys(ydata, lambda k: k[0] in digits, [REMOVE_ATTR, REMOVE_PATH], msg="Problem parsing '{}': item starts with digits")
+    remove_keys(ydata, lambda k: k[0] in digits, [REMOVE_ATTR, REMOVE_PATH], msg="Problem parsing '{}' in file '{}': item starts with digits")
 
 
-def remove_reserved(ydata):
+def remove_reserved(ydata, filename=''):
     '''
     Removes keys that are reserved keywords from a dict or OrderedDict structure
 
@@ -186,10 +186,10 @@ def remove_reserved(ydata):
     :type ydata: OrderedDict
 
     '''
-    remove_keys(ydata, lambda k: k in reserved, [REMOVE_PATH], msg="Problem parsing '{}': item using reserved word set/get")
+    remove_keys(ydata, lambda k: k in reserved, [REMOVE_PATH], msg="Problem parsing '{}' in file '{}': item using reserved word set/get")
 
 
-def remove_keyword(ydata):
+def remove_keyword(ydata, filename=''):
     '''
     Removes keys that are reserved Python keywords from a dict or OrderedDict structure
 
@@ -197,10 +197,10 @@ def remove_keyword(ydata):
     :type ydata: OrderedDict
 
     '''
-    remove_keys(ydata, lambda k: keyword.iskeyword(k), [REMOVE_PATH], msg="Problem parsing '{}': item using reserved Python keyword")
+    remove_keys(ydata, lambda k: keyword.iskeyword(k), [REMOVE_PATH], msg="Problem parsing '{}' in file '{}': item using reserved Python keyword")
 
 
-def remove_invalid(ydata):
+def remove_invalid(ydata, filename=''):
     '''
     Removes invalid chars in item from a dict or OrderedDict structure
 
@@ -436,11 +436,11 @@ def parse_yaml(filename, config=None, addfilenames=False, parseitems=False, stru
 
     items = shyaml.yaml_load(filename, ordered=True)
     if items is not None:
-        remove_comments(items)
-        remove_digits(items)
-        remove_reserved(items)
-        remove_keyword(items)
-        remove_invalid(items)
+        remove_comments(items, filename)
+        remove_digits(items, filename)
+        remove_reserved(items, filename)
+        remove_keyword(items, filename)
+        remove_invalid(items, filename)
 
         if parseitems:
             # test if file contains 'struct' attribute
