@@ -250,47 +250,20 @@ class LogicsController(RESTResource):
         config_filename = os.path.join(self.etc_dir, 'logic.yaml')
         wrk = shyaml.yaml_load(config_filename)
         logic_conf = wrk.get(logicname, {})
-        self.logger.warning("type = {}, logic_conf = {}".format(type(logic_conf), logic_conf))
+
+        if Utils.get_type(logic_conf['watch_item']) == 'str':
+            self.logger.info("get_logic: logicname = '{}', converting watch_item = '{}' to list".format(logicname, logic_conf['watch_item']))
+            logic_conf['watch_item'] = [logic_conf['watch_item']]
+
+        self.logger.info("get_logic: logicname = '{}', logic_conf = '{}'".format(logicname, logic_conf))
 
         mylogic = self.fill_logicdict(logicname)
-        self.logger.warning("type = {}, mylogic = {}".format(type(mylogic), mylogic))
-
-        self.logger.info("get_logic: logicname = '{}', mylogic = '{}'".format(logicname, mylogic))
-
-        if 'pathname' in mylogic:
-            file_path = mylogic['pathname']
-        else:
-            self.logger.error('No pathname for logic given or pathname cannot be retrieved via logic name!')
-            return
-
-        # config_list = self.logics.read_config_section(logicname)
-        # for config in config_list:
-        #     if config[0] == 'cycle':
-        #         mylogic['cycle'] = config[1]
-        #     if config[0] == 'crontab':
-        #         #                mylogic['crontab'] = config[1]
-        #         self.logger.debug("logics_view_html: crontab = >{}<".format(config[1]))
-        #         edit_string = self.list_to_editstring(config[1])
-        #         mylogic['crontab'] = Utils.strip_quotes_fromlist(edit_string)
-        #     elif config[0] == 'watch_item':
-        #         # Attention: watch_items are always stored as a list in logic object
-        #         edit_string = self.list_to_editstring(config[1])
-        #         # mylogic['watch'] = Utils.strip_quotes_fromlist(edit_string)
-        #         # mylogic['watch_item'] = Utils.strip_quotes_fromlist(edit_string)
-        #         # mylogic['watch_item_list'] = config[1]
-        #         self.logger.warning('watch_item_list = {}'.format(config[1]))
-        #     # elif config[0] == 'visu_acl':
-        #     #     mylogic['visu_acl'] = config[1]
-        #     else:
-        #         mylogic[config[0]] = config[1]
-
-
-        self.logger.warning("type = {}, mylogic = {}".format(type(mylogic), mylogic))
-        self.logger.warning("type = {}, logic_conf = {}".format(type(logic_conf), logic_conf))
-
         logic_conf['name'] = mylogic['name']
         logic_conf['next_exec'] = mylogic['next_exec']
         logic_conf['last_run'] = mylogic['last_run']
+
+        # self.logger.warning("type = {}, mylogic = {}".format(type(mylogic), mylogic))
+        # self.logger.warning("type = {}, logic_conf = {}".format(type(logic_conf), logic_conf))
 
         return json.dumps(logic_conf)
 
