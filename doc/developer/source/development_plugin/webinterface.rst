@@ -1,9 +1,11 @@
 .. index:: New; Web Interface
 
 .. role:: redsup
+.. role:: bluesup
 
-Web Interface
-=============
+
+Web Interface :bluesup:`update`
+===============================
 
 This documentation is valid vor SmartHomeNG versions beyond v1.4.2. It does not work on v1.4.2
 and below.
@@ -112,3 +114,36 @@ To bring the webinterface up to life, the following steps should be followed:
    3. The logo on the topleft is automatically replaced with the logo of the **plugin type**.
       If the webinterface should have an individaul logo, the file with the logo must be placed in
       the directory **webif/static/img** and has to be named **plugin_logo**. It may be of type **.png**, **.jpg** or **.svg**.
+
+
+3rd Party Components for Web Interfaces
+---------------------------------------
+
+SmartHomeNG delivers a couple of 3rd party components with the http module, which can be used to build extended, more
+complex web interfaces:
+
+   * JQuery 3.4.1:
+     * JS: &lt;script src="/gstatic/js/jquery-3.4.1.min.js"&gt;&lt;/script&gt;
+   * Bootstrap :
+     * CSS: &lt;link rel="stylesheet" href="/gstatic/bootstrap/css/bootstrap.min.css" type="text/css"/&gt;
+     * JS: &lt;script src="/gstatic/bootstrap/js/bootstrap.min.js"&gt;&lt;/script&gt;
+   * Bootstrap Tree View:
+      * CSS: &lt;link rel="stylesheet" href="/gstatic/bootstrap-treeview/bootstrap-treeview.css" type="text/css"/&gt;
+      * JS: &lt;script src="/gstatic/bootstrap-treeview/bootstrap-treeview.min.js"&gt;&lt;/script&gt;
+   * Bootstrap Datepicker v1.8.0:
+      * CSS: &lt;link rel="stylesheet" href="/gstatic/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css" type="text/css"/&gt;
+      * JS:
+         * &lt;script src="/gstatic/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js"&gt;&lt;/script&gt;
+         * &lt;script src="/gstatic/bootstrap-datepicker/dist/locales/bootstrap-datepicker.de.min.js"&gt;&lt;/script&gt;
+   * popper.js:
+      * JS: &lt;script src="/gstatic/popper.js/popper.min.js"&gt;&lt;/script&gt;
+   * CodeMirror 5.46.0:
+      * CSS: &lt;link rel="stylesheet" href="/gstatic/codemirror/lib/codemirror.css"/&gt;
+      * JS: &lt;script src="/gstatic/codemirror/lib/codemirror.js"&gt;&lt;/script&gt;
+   * Font Awesome 5.8.1:
+      * CSS: &lt;link rel="stylesheet" href="/gstatic/fontawesome/css/all.css" type="text/css"/&gt;
+
+ For addons, etc. that are delivered with the components, see /modules/http/webif/gstatic folder!
+
+ If you are interested in additional "global" components, contact us. Otherwise feel free to use them in your plugin,
+ as long as the Open Source license is ok.

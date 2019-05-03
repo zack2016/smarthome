@@ -125,7 +125,7 @@ parameters:
 
     starturl:
         type: str
-        default: backend
+        default: admin
         description:
             de: Weiterleitungs-Url, wenn SmartHomeNG im Browser nur mit <DNS-Name>:<Portnummer> aufgerufen wird.
             en: Redirection-url, if SmartHomeNG is called in the browser only by <dns-name>:<portnumber>
