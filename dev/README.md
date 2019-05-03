@@ -159,7 +159,9 @@ For building a web interface for a plugin, we deliver the following 3rd party co
       * JS: &lt;script src="/gstatic/bootstrap-treeview/bootstrap-treeview.min.js"&gt;&lt;/script&gt;
    * Bootstrap Datepicker v1.8.0:
       * CSS: <link rel="stylesheet" href="/gstatic/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css" type="text/css"/>
-      * JS: 
+      * JS:
+         * &lt;script src="/gstatic/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js"&gt;&lt;/script&gt;
+         * &lt;script src="/gstatic/bootstrap-datepicker/dist/locales/bootstrap-datepicker.de.min.js"&gt;&lt;/script&gt;
    * popper.js: 
       * JS: &lt;script src="/gstatic/popper.js/popper.min.js"&gt;&lt;/script&gt;
    * CodeMirror 5.46.0: 
@@ -167,9 +169,7 @@ For building a web interface for a plugin, we deliver the following 3rd party co
       * JS: &lt;script src="/gstatic/codemirror/lib/codemirror.js"&gt;&lt;/script&gt;
    * Font Awesome 5.8.1:
       * CSS: &lt;link rel="stylesheet" href="/gstatic/fontawesome/css/all.css" type="text/css"/&gt;
-      * JS:
-         * &lt;script src="/gstatic/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js"&gt;&lt;/script&gt;
-         * &lt;script src="/gstatic/bootstrap-datepicker/dist/locales/bootstrap-datepicker.de.min.js"&gt;&lt;/script&gt;
+
  
  If you are interested in new "global" components, contact us. Otherwise feel free to use them in your plugin, as long as
  the Open Source license is ok.
