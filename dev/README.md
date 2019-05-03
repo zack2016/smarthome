@@ -170,6 +170,7 @@ For building a web interface for a plugin, we deliver the following 3rd party co
    * Font Awesome 5.8.1:
       * CSS: &lt;link rel="stylesheet" href="/gstatic/fontawesome/css/all.css" type="text/css"/&gt;
 
+ For addons, etc. that are delivered with the components, see /modules/http/webif/gstatic folder!
  
  If you are interested in new "global" components, contact us. Otherwise feel free to use them in your plugin, as long as
  the Open Source license is ok.
