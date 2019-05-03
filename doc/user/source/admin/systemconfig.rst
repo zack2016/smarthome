@@ -17,6 +17,8 @@ die in der Konfigurationsdatei ../etc/smarthome.yaml abgelegt sind.
 .. image:: assets/system-common.jpg
    :class: screenshot
 
+Der Button ```Core neu starten``` wir erst aktiv, wenn geänderte Einstellungen gesichert wurden.
+
 
 Http Modul
 ==========
