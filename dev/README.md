@@ -170,4 +170,6 @@ For building a web interface for a plugin, we deliver the following 3rd party co
       * JS:
          * &lt;script src="/gstatic/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js"&gt;&lt;/script&gt;
          * &lt;script src="/gstatic/bootstrap-datepicker/dist/locales/bootstrap-datepicker.de.min.js"&gt;&lt;/script&gt;
-   
+ 
+ If you are interested in new "global" components, contact us. Otherwise feel free to use them in your plugin, as long as
+ the Open Source license is ok.
