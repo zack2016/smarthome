@@ -178,9 +178,10 @@ class LogsController(RESTResource):
                                 # skip forward till last chunk is read
                                 loglines = []
                                 loglines.append(line.replace(" ", chr(160)))
+                                if chunk == 0:
+                                    lastchunk = True
 
                 chunk_read += 1
-
             # return content
             first_chunk_line = (chunk_read-1)*self.chunksize   # zero based
             result = {}
