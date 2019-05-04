@@ -167,7 +167,7 @@ class Plugins():
 
             if self._plugins[i]._metadata.logic_parameters is not None:
                 for param in self._plugins[i]._metadata.logic_parameters:
-                    logger.warning("Plugins.__init__: Plugin '{}' logic_param '{}' = {}".format(self._plugins[i]._shortname, param, json.loads(json.dumps(self._plugins[i]._metadata.logic_parameters[param]))))
+                    logger.debug("Plugins.__init__: Plugin '{}' logic_param '{}' = {}".format(self._plugins[i]._shortname, param, json.loads(json.dumps(self._plugins[i]._metadata.logic_parameters[param]))))
                     self.logic_parameters[param] = json.loads(json.dumps(self._plugins[i]._metadata.logic_parameters[param]))
                     self.logic_parameters[param]['plugin'] = self._plugins[i]._shortname
 
@@ -182,7 +182,7 @@ class Plugins():
         """
         paramdict = collections.OrderedDict(sorted(self.logic_parameters.items()))
         for p in paramdict:
-            logger.warning("Plugins.get_logic_parameters(): {} = {}".format(p, paramdict[p]))
+            logger.debug("Plugins.get_logic_parameters(): {} = {}".format(p, paramdict[p]))
 
         return paramdict
 
