@@ -3,7 +3,7 @@
 .. role:: bluesup
 
 Section `item_structs:` :redsup:`new`
--------------------------------------
+=====================================
 
 The ``item_structs:`` allows to define templates of item-structures (sub-trees) which can be included in the item
 definitions.

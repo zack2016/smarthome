@@ -81,17 +81,16 @@ The **metadata** file is named ``/plugins/<name of the plugin>/plugin.yaml``. It
     metadata is complete and free of errors.
 
 
-.. include:: /metadata/plugin_global.rst
+The metadata file has the following sections:
 
-.. include:: /metadata/parameters.rst
+- plugin
+- parameters
+- item_attributes
+- item_structs
+- logic_parameters
+- plugin_functions
 
-.. include:: /metadata/item_attributes.rst
-
-.. include:: /metadata/item_structs.rst
-
-.. include:: /metadata/logic_parameters.rst
-
-.. include:: /metadata/plugin_functions.rst
+If writing a core module, the metadata file has a section ``module`` instead of the sectio ``plugin:``
 
 .. toctree::
    :maxdepth: 3
@@ -103,4 +102,5 @@ The **metadata** file is named ``/plugins/<name of the plugin>/plugin.yaml``. It
    /metadata/item_structs
    /metadata/logic_parameters
    /metadata/plugin_functions
+   /metadata/module_global
 
