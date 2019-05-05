@@ -87,7 +87,20 @@ The **metadata** file is named ``/plugins/<name of the plugin>/plugin.yaml``. It
 
 .. include:: /metadata/item_attributes.rst
 
+.. include:: /metadata/item_structs.rst
+
 .. include:: /metadata/logic_parameters.rst
 
 .. include:: /metadata/plugin_functions.rst
+
+.. toctree::
+   :maxdepth: 3
+   :titlesonly:
+
+   /metadata/plugin_global
+   /metadata/parameters
+   /metadata/item_attributes
+   /metadata/item_structs
+   /metadata/logic_parameters
+   /metadata/plugin_functions
 
