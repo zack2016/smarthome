@@ -417,7 +417,7 @@ class PluginsAPIController(RESTResource):
 
         if self.plugins == None:
             self.plugins = Plugins.get_instance()
-
+        self.plugin_list = []
         for x in self.plugins.return_plugins():
             if isinstance(x, SmartPlugin):
                 plugin_config_name = x.get_configname()
