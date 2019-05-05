@@ -26,8 +26,8 @@
 #########################################################################
 #
 # TO DO:
-# - Isolate Logging (MemLog, etc.) to lib modile
-# - remove all remarks with old code (that has been moved to lib modules
+# - Isolate Logging (MemLog, etc.) to lib module
+# - remove all remarks with old code (that has been moved to lib modules)
 #
 #########################################################################
 
@@ -268,7 +268,7 @@ class SmartHome():
             lib.daemon.daemonize(PIDFILE)
 
         #############################################################
-        # Write startup maeeage to log(s)
+        # Write startup message to log(s)
         pid = lib.daemon.read_pidfile(PIDFILE)
         self._logger.warning("--------------------   Init SmartHomeNG {}   --------------------".format(VERSION))
         self._logger.warning("Running in Python interpreter 'v{}' (pid={}) on {} platform".format(PYTHON_VERSION, pid, sys.platform))
@@ -621,7 +621,7 @@ class SmartHome():
             for thread in threading.enumerate():
                 if thread.name != 'Main' and thread.name[0] !=  '_':
                     if not header_logged:
-                        self._logger.warning("The following threads have not been terminated propperly by their plugins (please report to the plugin's author):")
+                        self._logger.warning("The following threads have not been terminated properly by their plugins (please report to the plugin's author):")
                         header_logged = True
                     self._logger.warning("-Thread: {}, still alive".format(thread.name))
             if header_logged:

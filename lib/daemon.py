@@ -20,7 +20,7 @@
 #########################################################################
 
 """
-This file contains the functions needed to run SmartHomeNG as a deamon
+This file contains the functions needed to run SmartHomeNG as a daemon
 """
 
 import logging
@@ -35,8 +35,8 @@ logger = logging.getLogger(__name__)
 
 def daemonize(pidfile,stdin='/dev/null', stdout='/dev/null', stderr=None):
     """
-    This method domonizes the sh.py process and redirects standard file descriptors.
-    
+    This method daemonizes the sh.py process and redirects standard file descriptors.
+
     :param pidfile: Path to pidfile 
     :param stdin: Path to new stdin, default value is "/dev/null"
     :param stdout: Path to new stdout, default value is "/dev/null"
@@ -46,9 +46,9 @@ def daemonize(pidfile,stdin='/dev/null', stdout='/dev/null', stderr=None):
     :type stdout: string
     :type stderr: string
     """
-    
-    # use stdout file if stderr is none  
-    if (not stderr):    
+
+    # use stdout file if stderr is none
+    if (not stderr):
         stderr = stdout
 
     # do the UNIX double-fork magic, see Stevens' "Advanced 
@@ -137,10 +137,14 @@ def read_pidfile(pidfile):
     :rtype: int
     """
 
-    if os.path.isfile(pidfile):
-        fd = open(pidfile,'r')
-        line = fd.readline()
-        return int(line)
+    try:
+        if os.path.isfile(pidfile):
+            fd = open(pidfile,'r')
+            line = fd.readline()
+            pid = int(line)
+            return pid
+    except ValueError:
+        logger.warning("PID could not be read, maybe a false write or a corrupt filesystem? Please check the file system ASAP!")
     return 0
 
 
