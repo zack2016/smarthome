@@ -1,5 +1,5 @@
-Metadata section `logic_parameters:`
-------------------------------------
+Section `logic_parameters:`
+---------------------------
 
 Logic-parameter metadata is at the moment only used for generation of user documentation.
 If the configured data is not valid, warnings are logged in the logfile of SmartHomeNG.

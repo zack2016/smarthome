@@ -1,5 +1,5 @@
-Metadata section `plugin:`
---------------------------
+Section `plugin:`
+-----------------
 
 The global metadata section ``plugin:`` has the following keys:
 
@@ -36,7 +36,7 @@ Description of the keys in the section ``plugin:``
     - **keywords:** List of keywords (space separated)
     - **documentation:** url pointing to additional information/documentation (besides the README.md file)
     - **support:** url pointing to a support thread or forum
-    
+
     - **version:** Version number of the plugin. It is checked against the version number defined in the Python source code
     - **sh_minversion:** Minimum SmartHomeNG version this plugin is compatible with. If *sh_minversion* is left empty, SmartHomeNG assumes that the plugin is compatible with every version of SmartHomeNG [Test not yet implemented]
     - **sh_maxversion:** Maximum SmartHomeNG version this plugin is compatible with (or empty, if compatible with the actual version of SmartHomeNG) [Test not yet implemented]

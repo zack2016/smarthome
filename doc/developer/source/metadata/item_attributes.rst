@@ -1,5 +1,5 @@
-Metadata section `item_attributes:`
------------------------------------
+Section `item_attributes:`
+--------------------------
 
 The ``item_attributes:`` section has a section for each attribute that is additionally implemented for am item.
 The name of that section is the name of the attribute.
