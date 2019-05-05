@@ -147,7 +147,17 @@ class Items():
 
 
     def add_struct_definition(self, plugin_name, struct_name, struct):
+        """
+        Add a struct definition
 
+        called when reading in item structs from ../etc/struct.yaml
+        or from lib.plugin when reading in plugin-metadata
+
+        :param plugin_name:
+        :param struct_name:
+        :param struct:
+        :return:
+        """
         if plugin_name == '':
             name = struct_name
         else:
@@ -186,6 +196,11 @@ class Items():
         :type plugins_dir: str
         """
 
+        # --------------------------------------------------------------------
+        # Read in all struct definitions before reading item definitions
+        #
+        # structs are merged into the item tree in lib.config
+        #
         # Read in item structs from ../etc/struct.yaml
         struct_filename = os.path.join(etc_dir, 'struct.yaml')
         struct_definitions = shyaml.yaml_load(os.path.join(etc_dir, 'struct.yaml'), ordered=True, ignore_notfound=True)
@@ -199,6 +214,9 @@ class Items():
         logger.warning("load_itemdefinitions(): For testing the joined item structs are saved to {}".format(os.path.join(etc_dir, 'structs_joined.yaml')))
         shyaml.yaml_save(os.path.join(etc_dir, 'structs_joined.yaml'), self._struct_definitions)
 
+        # --------------------------------------------------------------------
+        # Read in item definitions
+        #
         item_conf = None
         item_conf = lib.config.parse_itemsdir(env_dir, item_conf)
         item_conf = lib.config.parse_itemsdir(items_dir, item_conf, addfilenames=True, struct_dict=self._struct_definitions)
@@ -218,6 +236,9 @@ class Items():
                     self._children.append(child)
         del(item_conf)  # clean up
 
+        # --------------------------------------------------------------------
+        # prepare loaded items for run phase of shng
+        #
         for item in self.return_items():
             item._init_prerun()
         # starting schedulers (for crontab and cycle attributes) moved to the end of the initialization in shng v1.6

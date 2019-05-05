@@ -103,7 +103,7 @@ class ItemData:
         if self.items == None:
             self.items = Items.get_instance()
 
-        self.logger.warning("item_detail_json_html: item_path = {}".format(item_path))
+        # self.logger.warning("item_detail_json_html: item_path = {}".format(item_path))
 
         item_data = []
         item = self.items.return_item(item_path)
@@ -224,7 +224,7 @@ class ItemData:
                 data_dict['previous_value'] = str(prev_value)
 
             item_data.append(data_dict)
-            self.logger.warning("details: item_data = {}".format(item_data))
+            # self.logger.warning("details: item_data = {}".format(item_data))
             return json.dumps(item_data)
         else:
             self.logger.error("Requested item '{}' is None, check if item really exists.".format(item_path))
@@ -237,7 +237,7 @@ class ItemData:
         """
         Is called by items.html when an item value has been changed
         """
-        self.logger.warning("item_change_value_html: item '{}' set to value '{}'".format(item_path, value))
+        self.logger.info("item_change_value_html: item '{}' set to value '{}'".format(item_path, value))
         item_data = []
         item = self.items.return_item(item_path)
         if 'num' in item.type():

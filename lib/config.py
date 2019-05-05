@@ -33,6 +33,8 @@ import logging
 import collections
 import keyword
 import os
+
+from lib.utils import Utils
 import lib.shyaml as shyaml
 from lib.constants import (YAML_FILE, CONF_FILE)
 logger = logging.getLogger(__name__)
@@ -292,7 +294,7 @@ def search_for_struct_in_items(items, template, struct_dict, config, nestlevel=0
     '''
     Test if the loaded file contains items with 'struct' attribute.
 
-    This function is called before merging the loaded file into the item tree
+    This function is (recursively) called before merging the loaded file into the item tree
 
     :param config: OrderedDict tree, into which the configuration should be merged
 
@@ -304,22 +306,32 @@ def search_for_struct_in_items(items, template, struct_dict, config, nestlevel=0
     for key in items:
         value = items[key]
         if key == 'struct':
+            # item is a struct
             struct_names = value
+            # ensure, struct_names is a list
             if isinstance(struct_names, str):
                 struct_names = [struct_names]
+
+            instance = items.get('instance', '')
             for struct_name in struct_names:
-                add_struct_to_template(parent, struct_name, template, struct_dict, items.get('instance', ''))
+                wrk = struct_name.find('@')
+                if wrk > -1:
+                    add_struct_to_template(parent, struct_name[:wrk], template, struct_dict, struct_name[wrk+1:])
+                else:
+                    add_struct_to_template(parent, struct_name, template, struct_dict, instance)
                 if template != {}:
                     config = merge(template, config)
                     template = collections.OrderedDict()
             result = True
         else:
+            #item is no struct
             if isinstance(value, collections.OrderedDict):
                 # treat value as node
                 if parent == '':
                     path = key
                 else:
                     path = parent+'.'+key
+                # test if a aub-item is a struct
                 if search_for_struct_in_items(value, template, struct_dict, config, nestlevel+1, parent=path):
                     result = True
 
@@ -360,7 +372,7 @@ def add_struct_to_template(path, struct_name, template, struct_dict, instance):
 
     :return:
     '''
-    logger.info("add_struct_to_template: 'struct' '{}' reference found in item '{}'".format(struct_name, path))
+    logger.info("add_struct_to_template: 'struct' '{}' reference found in item '{}', instance '{}'".format(struct_name, path, instance))
 
     struct = struct_dict.get(struct_name, None)
     if struct is None:
@@ -373,13 +385,41 @@ def add_struct_to_template(path, struct_name, template, struct_dict, instance):
     else:
         # add struct/template to temporary item(template) tree
         nested_put(template, path, copy.deepcopy(struct))
-        if instance != '':
+        if instance != '' or True:
             # add instance to items added by template struct
             subtree = nested_get(template, path)
-            logger.info("add_struct_to_template: Adding 'instance: {}' to template for subtree '{}'".format(instance, path))
-            set_attr_for_subtree(subtree, 'instance', instance)
+            # logger.info("add_struct_to_template: Adding 'instance: {}' to template for subtree '{}'".format(instance, path))
+            # add instance name to attributes which carry '@instance'
+            replace_struct_instance(path, subtree, instance)
         logger.debug("add_struct_to_template: struct_dict = {}".format(struct_dict))
 
+    return
+
+
+def replace_struct_instance(path, subtree, instance):
+    """
+    Replace the constant string '@instance' in attribute names with the real instance
+    (or remove the constant string '@instance', if the struct has no instace reference)
+
+    :param path:
+    :param subtree:
+    :param instance:
+    :return:
+    """
+    keys = list(subtree.keys())
+    # logger.info("replace_struct_instance: Setting  instance to {} for subtree {}".format(instance, subtree))
+    for key in keys:
+        # replace recursively
+        if Utils.get_type(subtree[key]) == 'collections.OrderedDict':
+            replace_struct_instance(path, subtree[key], instance)
+        if key.endswith('@instance'):
+            if instance == '':
+                newkey = key[:-9]
+            else:
+                newkey = key[:-9] + '@' + instance
+            logger.info("- path {}: key '{}' --> newkey '{}'".format(path, key, newkey))
+            subtree[newkey] = subtree.pop(key)
+    # logger.info("replace_struct_instance: Done set instance to {} for subtree {}".format(instance, subtree))
     return
 
 
