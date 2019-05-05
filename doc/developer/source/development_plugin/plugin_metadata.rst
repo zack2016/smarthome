@@ -81,16 +81,10 @@ The **metadata** file is named ``/plugins/<name of the plugin>/plugin.yaml``. It
     metadata is complete and free of errors.
 
 
+
+If writing a core module, the metadata file has a section ``module:`` instead of the sectio ``plugin:``
+
 The metadata file has the following sections:
-
-- plugin
-- parameters
-- item_attributes
-- item_structs
-- logic_parameters
-- plugin_functions
-
-If writing a core module, the metadata file has a section ``module`` instead of the sectio ``plugin:``
 
 .. toctree::
    :maxdepth: 3
