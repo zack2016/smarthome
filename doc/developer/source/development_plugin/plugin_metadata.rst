@@ -82,7 +82,7 @@ The **metadata** file is named ``/plugins/<name of the plugin>/plugin.yaml``. It
 
 
 
-If writing a core module, the metadata file has a section ``module:`` instead of the sectio ``plugin:``
+If writing a core module, the metadata file has a section ``module:`` instead of the section ``plugin:``
 
 The metadata file has the following sections:
 
