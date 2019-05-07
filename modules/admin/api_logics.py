@@ -251,7 +251,7 @@ class LogicsController(RESTResource):
         wrk = shyaml.yaml_load(config_filename)
         logic_conf = wrk.get(logicname, {})
 
-        if Utils.get_type(logic_conf['watch_item']) == 'str':
+        if Utils.get_type(logic_conf.get('watch_item', None)) == 'str':
             self.logger.info("get_logic: logicname = '{}', converting watch_item = '{}' to list".format(logicname, logic_conf['watch_item']))
             logic_conf['watch_item'] = [logic_conf['watch_item']]
 

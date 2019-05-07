@@ -113,7 +113,7 @@ obige Beispiel könnte so erweitert werden:
        # Formel (°F  -  32)  x  5/9 = °C
        type: num
        eval: (sh.TemperaturFahrenheit() - 32 ) * 5 / 9  # Aus 68°F werden somit 20°C
-       eval_trigger: = TemperaturFahrenheit
+       eval_trigger: TemperaturFahrenheit
 
 Hier gibt es nun ein Attribut **eval_trigger** mit dem Item Namen
 **TemperaturFahrenheit**. Sobald sich dieses Item ändert, wird auch der
