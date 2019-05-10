@@ -75,10 +75,14 @@ What other software or what hardware ist needed to use the plugin
 The file containing metadata of the plugin has the following sections:
 
 * `plugin`  -  global attributes of the plugin 
-* `plugin_parameters`  - definition of the parameters used in `etc/plugin.yaml`
+* `parameters`  - definition of the parameters used in `etc/plugin.yaml`
 * `item_attributes`  -  definition of the item-attributes that are defined by this plugin
+* `item_structs`  -  templates of item structures (sub-trees) for use with the plugin
+* `logic_parameters`  -  definition of parameters for logics, that are implemented in the plugin
+* `plugin_functions`  -  functions definied in the plugin to be used by logics
 
-At the moment only one definition is required. It is the type of the plugin. The type of the plugin can be one of the following:
+
+The type of the plugin is required an can be one of the following:
 
 * gateway
 * interface
@@ -95,12 +99,18 @@ plugin:
     # Global plugin attributes
     type: interface                # plugin type (gateway, interface, protocol, system, web)
 
-plugin_parameters:
+parameters:
     # Definition of parameters to be configured in etc/plugin.yaml
     
 item_attributes:
     # Definition of item attributes defined by this plugin
     
+item_structs: NONE
+
+logic_parameters: NONE
+
+plugin_functions: NONE
+
 ```
 
 ### Configuring the plugin in the configuration file `etc/plugin.yaml`
@@ -114,37 +124,22 @@ In the new configuration file format (yaml) the entry looks like this:
 ```yaml
 # etc/plugin.yaml
 myplugin_instance:
-    class_name: Myplugin
-    class_path: plugins.myplugin
-    Parameter1: 42
-```
-
-In the old configuration file format (conf) the entry looks like this:
-
-```
-# etc/plugin.conf
-[myplugin_instance]
-    class_name = Myplugin
-    class_path = plugins.myplugin
-    Parameter1 = 42
+    plugin_name: myplugin
+    parameter1: 42
 ```
 
 
 Let's look at the parameters:
 
-`myplugin_instance:` or `[myplugin_instance]`
+`myplugin_instance:`
 
 This is the name you give to actual loaded instance of the plugin. You can choose whatever you like. This is the name of the plugin instance when running SmartHomeNG. If you are running multiple instances of the plugin: This name you distinguishes the instances.
 
-`class_name:` or `class_name`
+`plugin_name:`
 
-The Parameter class_name is of course the class name you give to the new python class in the plugin. It has to match the class name in your python code as described in the following section. It is case-sensitive.
+The parameter plugin_name is of course the name you give to plugin as it's directory name (all lower case). 
 
-`class_path:` or `class_path`
-
-The class_path parameter tells SmartHomeNG where to find the python code of the plugin. The example in the box means that your code is in the file ``plugins/myplugin/__init__.py`` where ``plugins`` is a subdirectory of SmartHomeNG base folder and ``myplugin`` is the folder where all files of the plugin reside. It is also the name of the plugin. The name of the folder has to be lower case.
-
-`Parameter1`
+`parameter1`
 
 You can add several parameters to the init file that are passed to your plugin during initialization. You can use them to set it up in a proper way.
 
@@ -156,6 +151,8 @@ The name of the directory where the plugin files reside **in has to be in lower 
 
 In addition you need to write your own functions for the plugin. Normally those functions are executed by the SmartHomeNG scheduler.
 You can program the scheduler to call your functions at specified times or cycles. See chapter “The Scheduler” for more information.
+
+**!! Look at the sample plugin in /dev/sample_plugin for an actual template !!**
 
 ```python
 #!/usr/bin/env python3
@@ -259,6 +256,8 @@ def bla(self):
     logger.info("bla")
 ```
 
+**!! Look at the sample plugin in /dev/sample_plugin for an actual template !!**
+
 First you import certain things you need and get access to the logger. The logger allows you to log output of your plugin into the
 smarthome.log file. Then you start you class. The class name has to match the ``classname`` parameter in the plugin.conf file.
 Afterwards you define the required functions.
@@ -319,17 +318,8 @@ If the parameter ivalue is not in the item definition, nothing is done and a cha
 def parse_logic(self, logic):    # (version>=1.3)
 ```
 
-This function called for each logic during startup when SmartHomeNG reads the logic.conf file. You can access logic parameters and start according action here. For example you have the following logic defined in …/etc/logic.conf
+This function called for each logic during startup when SmartHomeNG reads the logic.conf file. You can access logic parameters and start according action here. For example you have the following logic defined in …/etc/logic.yaml
 
-```
-    etc/logic.conf
-    [jalousie_up]
-        filename = jalousie-up.py
-        crontab = sunrise+20m
-        some_plugin_setting = send-notify
-```
-
-Using the new configuration file format, the configuration looks like this:
 
 ```yaml
     etc/logic.yaml
@@ -383,14 +373,14 @@ The scheduler is one of the most important functions of SmartHomeNG It is the ma
 #### Add
 
 ```python
-    self._sh.scheduler.add('name',
-                           obj,
-                           prio=3,
-                           cron=None,
-                           cycle=None,
-                           value=None,
-                           offset=None,
-                           next=None)
+    self.scheduler.add('name',
+                       obj,
+                       prio=3,
+                       cron=None,
+                       cycle=None,
+                       value=None,
+                       offset=None,
+                       next=None)
 ```
 
 scheduler.add adds an entry to the scheduler. You need to call it with at least three parameters, the name, object and one timing parameter. 
@@ -425,10 +415,10 @@ _bla(self, **kwargs):
 In that case you should call the scheduler with a value list:
 
 ```python
-self._sh.scheduler.add('name',
-                        self._bla,
-                        value={'heinz': bla, 'tom': 10},
-                        next=_ndate)
+self.scheduler.add('name',
+                    self._bla,
+                    value={'heinz': bla, 'tom': 10},
+                    next=_ndate)
 ```
 
 > **Warning**: Passing values via the scheduler only works when the scheduler is called with one single trigger time using the “next” parameter. When the scheduler is called with cycle, no parameters are passed to the called function.
@@ -450,7 +440,7 @@ Important: It is important to include the time zone info in the object. Otherwis
 #### Remove
 
 ```python
-    self._sh.scheduler.remove(name)
+    self.scheduler.remove(name)
 ```
 
 The function remove removes an entry from the scheduler.

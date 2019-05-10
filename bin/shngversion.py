@@ -21,7 +21,13 @@
 #########################################################################
 
 import os
+import sys
 import subprocess
+
+sys.path.append('..')
+
+import plugins.__init__ as plugin_vers
+
 
 # Update auf 1.3d wg. neuer item features on_update, on_change
 # Update auf 1.3e wg. neuer logic features for visu_websocket
@@ -98,14 +104,21 @@ def get_shng_description():
     commit, commit_short, branch, describe = _get_git_data()
     return describe
 
+
 def get_plugins_version():
     commit, commit_short, branch, describe = _get_git_data('plugins')
     VERSION = get_shng_main_version()
+    try:
+        PLUGINS_VERSION = plugin_vers.plugin_release()
+    except:
+        PLUGINS_VERSION = VERSION
     if branch == 'master':
+        VERSION = PLUGINS_VERSION
         VERSION += '.'+branch+' ('+commit_short+')'
     else:
         VERSION += '.'+commit_short+'.'+branch
     return VERSION
+
 
 def get_plugins_branch():
     commit, commit_short, branch, describe = _get_git_data('plugins')
@@ -123,6 +136,7 @@ def get_shng_docversion():
     return VERSION
 
 if __name__ == '__main__':
+
     print()
     commit, commit_short, branch, describe = _get_git_data()
     print("get_shng_git         :", commit+'.'+branch)
@@ -135,4 +149,11 @@ if __name__ == '__main__':
     print("get_plugins_version  :", get_plugins_version())
     print(" - description       :", get_plugins_description())
     print()
+
+    VERSION = get_shng_main_version()
+    try:
+        PLUGINS_VERSION = plugin_vers.plugin_release()
+    except:
+        PLUGINS_VERSION = VERSION
+    print("PLUGINS_VERSION", PLUGINS_VERSION)
 
