@@ -48,6 +48,7 @@ import plugins.__init__ as plugin_vers
 # Update auf 1.5e wg. Einführung von Item Property 'attributes'
 
 shNG_version = '1.5e'
+shNG_branch = 'develop'
 
 # ---------------------------------------------------------------------------------
 FileBASE = None
@@ -92,6 +93,8 @@ def get_shng_version():
     VERSION = get_shng_main_version()
     if branch == 'master':
         VERSION += '.'+branch+' ('+commit_short+')'
+    elif branch == 'manual':
+        VERSION += '.'+shNG_branch+' ('+branch+')'
     else:
         VERSION += '.'+commit_short+'.'+branch
     return VERSION
@@ -112,10 +115,21 @@ def get_plugins_version():
         PLUGINS_VERSION = plugin_vers.plugin_release()
     except:
         PLUGINS_VERSION = VERSION
+    try:
+        PLUGINS_SOURCE_BRANCH = plugin_vers.plugin_branch()
+    except:
+        PLUGINS_SOURCE_BRANCH = ''
+
     if branch == 'master':
         VERSION = PLUGINS_VERSION
         VERSION += '.'+branch+' ('+commit_short+')'
+    elif branch == 'manual':
+        VERSION = PLUGINS_VERSION
+        if PLUGINS_SOURCE_BRANCH != '':
+            VERSION += '.'+PLUGINS_SOURCE_BRANCH
+        VERSION += ' ('+branch+')'
     else:
+        VERSION = PLUGINS_VERSION
         VERSION += '.'+commit_short+'.'+branch
     return VERSION
 
@@ -138,22 +152,16 @@ def get_shng_docversion():
 if __name__ == '__main__':
 
     print()
-    commit, commit_short, branch, describe = _get_git_data()
-    print("get_shng_git         :", commit+'.'+branch)
-    commit, commit_short, branch, describe = _get_git_data('plugins')
-    print("get_plugins_git      :", commit+'.'+branch)
-    print()
     print("get_shng_main_version:", get_shng_main_version())
+    print()
     print("get_shng_version     :", get_shng_version())
     print(" - description       :", get_shng_description())
+    commit, commit_short, branch, describe = _get_git_data()
+    # print(" - get_shng_git      :", commit+'.'+branch)
+    print()
     print("get_plugins_version  :", get_plugins_version())
     print(" - description       :", get_plugins_description())
+    commit, commit_short, branch, describe = _get_git_data('plugins')
+    # print(" - get_plugins_git   :", commit+'.'+branch)
     print()
-
-    VERSION = get_shng_main_version()
-    try:
-        PLUGINS_VERSION = plugin_vers.plugin_release()
-    except:
-        PLUGINS_VERSION = VERSION
-    print("PLUGINS_VERSION", PLUGINS_VERSION)
 
