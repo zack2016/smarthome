@@ -39,6 +39,7 @@ Bugfixes im CORE
 ----------------
 
 * Bugfix für den Interactive Mode
+* Catch an error in ``lib.daemon`` where PID read yields a malformed process id and warn about a possible file system problem (especially with Raspberry Pi and SD cards)
 
 
 
@@ -121,6 +122,7 @@ Updates im CORE
   * Beispiel Plugin unter dev/sample_plugin aktualisiert
   * Exception Handling für run() und stop() Methode. Bisher wurden Exceptions, die nicht innerhalb der Methoden
     gehandled wurden ignoriert (unterdrückt).
+  * Unabhängige Versionsnummer für das Plugin-Repositories eingeführt
 
 
 
@@ -147,6 +149,10 @@ Für Details zu den inhaltlichen Änderungen der einzelnen Plugins, bitte die Do
 
   * Neues Plugin zum senden von Mails. Ist Multi-Instance fähig
 
+* openweathermap
+
+  * Neues Plugin
+
 * slack:
 
   * neues Benachrichtigungs-Plugin hinzugefügt
@@ -157,7 +163,7 @@ Für Details zu den inhaltlichen Änderungen der einzelnen Plugins, bitte die Do
 
 * stateengine:
 
-  * Neues Plugin, das dem ehemeligen **autoblind** Plugin entspricht (siehe oben) welches einen besseren Namen bekommen hat
+  * Neues Plugin, das dem ehemaligen **autoblind** Plugin entspricht (siehe oben) welches einen besseren Namen bekommen hat
   * Bietet Templates für Item-Strukturen
 
 
@@ -257,11 +263,16 @@ Plugin Erweiterungen
   * dpt 18.001 hinzugefügt (Szenen-Kontrolle 1-64=abrufen, 129-192=speichern)
   * dpt 229 hinzugefügt für Smart Metering Anwendungen (z.B. Hager eHZ für Funkumsetzer auf KNX)
   * dpt 275.100 hinzugefügt (DPT_TempRoomSetpSetF16 4 Bytes)
+  * Fix for knx_cache and knx_init to allow mutlitple GAs to be defined (analog to knx_listen, to allow knx_listen with multiple GAs and initialisation of value
 
 * mail
 
   * Plugin aufgeteilt um dem SmartHomeNG Standard zu entsprechen (1 Plugin Klasse je Plugin).
   * Neue Plugins sind **mailrcv** und **mailsend**
+
+* mqtt
+
+  * Bugfix
 
 * nuki
 
@@ -275,15 +286,22 @@ Plugin Erweiterungen
   * Metadaten des Plugins angelegt
   * Einstellung `logger` hinzugefügt um in einen konfigurierten Standard-Logger zusätzlich zu loggen
 
-* openweathermap
-
-  * Neues Plugin
-
 * pushbullet
 
   * API Beschreibung in plugin.yaml ergänzt
 
-* visu_websocket:
+* telegram
+
+  * Added a plugin parameter pretty_thread_names that defaults to True for a clearer naming of the sub Threads
+
+    * updater --> Telegram Updater
+    * dispatcher --> Telegram Dispatcher
+    * cryptic-id_0 --> Telegram Worker 0
+    * cryptic-id_1 --> Telegram Worker 1
+    * cryptic-id_2 --> Telegram Worker 2
+    * cryptic-id_3 --> Telegram Worker 3
+
+* visu_websocket
 
   * Erweitert um ``.property.<attributname>`` Damit ist es möglich Attribute direkt in der SmartVISU anzuzeigen,
     also z.B. ``Schlafzimmer.Fernseher.property.last_change``
@@ -355,9 +373,11 @@ Dokumentation
 
   * Hinweis zum Neubau der Python Requiremments zur Installationsanleitung hinzugefügt
   * Beschreibung des neuen Administrations-Interface hinzugefügt
+  * Allgemeine Updates
 
 
 * Entwickler Dokumentation
 
   * Plugin-API Dokumentation erweitert
   * Item-API Dokumentation erweitert
+  * Allgemeine Updates
