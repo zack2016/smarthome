@@ -183,7 +183,7 @@ class PluginController(RESTResource):
             if sect is None:
                 response = {'result': 'error', 'description': "Configuration section '{}' does not exist".format(id)}
             else:
-                self.logger.warning("update: params = {}".format(params))
+                self.logger.debug("update: params = {}".format(params))
                 if params.get('config', {}).get('plugin_enabled', None) == True:
                     del params['config']['plugin_enabled']
                 plugin_conf[id] = params.get('config', {})

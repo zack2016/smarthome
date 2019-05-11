@@ -115,7 +115,7 @@ class SystemData:
         response['ip'] = ip
         response['ipv6'] = ipv6
 
-        self.logger.warning("admin: systeminfo_json: response = {}".format(response))
+        self.logger.debug("admin: systeminfo_json: response = {}".format(response))
         return json.dumps(response)
 
 
@@ -322,11 +322,11 @@ class SystemData:
             package_list.append(package)
 
         # self.logger.warning('installed_packages: {}'.format(installed_packages))
-        self.logger.warning('req_dict: {}'.format(req_dict))
+        self.logger.debug('req_dict: {}'.format(req_dict))
         inst_pkgname_list = []
         for pkg in package_list:
             inst_pkgname_list.append(pkg['name'])
-        self.logger.warning('pkgname_list: {}'.format(inst_pkgname_list))
+        self.logger.debug('pkgname_list: {}'.format(inst_pkgname_list))
         for req in req_dict:
             if not (req in inst_pkgname_list):
                 pkg = {}
@@ -371,7 +371,7 @@ class SystemData:
                     pkg['pypi_version_not_available_msg'] = pypi_unavailable_message
         ###
 
-        self.logger.warning('package_list: {}'.format(package_list))
+        self.logger.debug('package_list: {}'.format(package_list))
 
 
         # sorted_package_list = sorted([(i['name'], i['version_installed'], i['version_available']) for i in package_list])
