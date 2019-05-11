@@ -1,8 +1,6 @@
 ==========================
-Release 1.6 - tt. mmm 2019
+Release 1.6 - 11. Mai 2019
 ==========================
-
-**NOT YET RELEASED**
 
 Es gibt eine Menge neuer Features im Core von SmartHomeNG und den Plugins.
 
