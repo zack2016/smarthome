@@ -59,6 +59,23 @@ einen Pull durchführen:
     git pull
     cd ..
 
+   .. note::
+
+      Es kann durchaus vorkommen, das das ``git pull`` abgebrochen wird mit einer
+      Fehlermeldung der Art:
+
+      .. code-block: python
+
+         error: Ihre lokalen Änderungen in den folgenden Dateien würden durch den
+         Merge überschrieben werden:
+         requirements/all.txt
+         Bitte committen oder stashen Sie Ihre Änderungen, bevor sie mergen.
+         Abbruch
+
+      In diesem Fall würde ein ``git checkout -- requirements/all.txt`` aus dem
+      aktuellen Branch die fragliche Datei auschecken und damit für ``git pull``
+      wieder überschreibbar machen.
+
 Anschließend müssen noch benötigte Pakete aktualisiert werden.
 Diese werden von Pypi bereitgestellt. Bei SmartHomeNG gibt es zum einen den
 Programmkern und die Plugins. Die Abhängigkeiten von externen Bibliotheken
@@ -79,7 +96,6 @@ der Plugins ermittelt. Dies Skript wird aufgerufen mit:
    Dabei werden die Packages bestimmt, die vom Core und von den konfigurierten
    Plugins benötigt werden. Sind die Requirements
    nicht erfüllt, beendet sich SmartHomeNG mit einem entsprechenden Eintrag im Log.
-
 
 
 Vom Programmkern benötigte Bibliotheken herunterladen und installieren mit:
