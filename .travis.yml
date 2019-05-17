@@ -16,7 +16,8 @@ before_install:
     - sudo apt-get install libudev-dev
 install:
     - pip install tox-travis virtualenv
-    - pip install sphinx sphinx_rtd_theme recommonmark ruamel.yaml
+    - pip install sphinx sphinx_rtd_theme recommonmark  
+    - pip install ruamel.yaml<=0.15.74
 
 script:
     - sh .travis.sh
