@@ -1799,6 +1799,8 @@ class Item():
 
         :return: string with the absolute item path
         """
+        if not isinstance(relativepath, str):
+            return relativepath
         if (len(relativepath) == 0) or ((len(relativepath) > 0) and (relativepath[0] != '.')):
             return relativepath
         relpath = relativepath.rstrip()
@@ -1840,12 +1842,12 @@ class Item():
 
         The begintag and the endtag remain in the result string!
 
-        :param attr: Name of the attribute
-        :param begintag: string that signals the beginning of a relative path is following
-        :param endtag: string that signals the end of a relative path
+        :param attr: Name of the attribute. Use * as a wildcard at the end
+        :param begintag: string or list of strings that signals the beginning of a relative path is following
+        :param endtag: string or list of strings that signals the end of a relative path
 
         """
-        if attr in self.conf:
+        def __checkforentry(attr):
             if isinstance(self.conf[attr], str):
                 if (begintag != '') and (endtag != ''):
                     self.conf[attr] = self.get_stringwithabsolutepathes(self.conf[attr], begintag, endtag, attr)
@@ -1855,17 +1857,28 @@ class Item():
                 logger.debug("expand_relativepathes(1): to expand={}".format(self.conf[attr]))
                 new_attr = []
                 for a in self.conf[attr]:
-                    logger.debug("expand_relativepathes: vor : to expand={}".format(a))
+                    # Convert accidentally wrong dict entries to string
+                    if isinstance(a, dict):
+                        a = list("{!s}:{!s}".format(k,v) for (k,v) in a.items())[0]
+                    logger.debug("expand_relativepathes: before : to expand={}".format(a))
                     if (begintag != '') and (endtag != ''):
                         a = self.get_stringwithabsolutepathes(a, begintag, endtag, attr)
                     elif (begintag == '') and (endtag == ''):
                         a = self.get_absolutepath(a, attr)
-                    logger.debug("expand_relativepathes: nach: to expand={}".format(a))
+                    logger.debug("expand_relativepathes: after: to expand={}".format(a))
                     new_attr.append(a)
                 self.conf[attr] = new_attr
-                logger.debug("expand_relativepathes(2): to expand={}".format(self.conf[attr]))
+                logger.debug("expand_relativepathes(2): expanded={}".format(self.conf[attr]))
             else:
                 logger.warning("expand_relativepathes: attr={} can not expand for type(self.conf[attr])={}".format(attr, type(self.conf[attr])))
+
+        # Check if wildcard is used
+        if isinstance(attr, str) and attr[-1:] == "*":
+            for entry in self.conf:
+                if attr[:-1] in entry:
+                    __checkforentry(entry)
+        elif attr in self.conf:
+            __checkforentry(attr)
         return
 
 
@@ -1883,21 +1896,41 @@ class Item():
 
         :return: string with the statement containing absolute item pathes
         """
-        if evalstr.find(begintag+'.') == -1:
+        def __checkfortags(evalstr, begintag, endtag):
+            pref = ''
+            rest = evalstr
+            while (rest.find(begintag+'.') != -1):
+                pref += rest[:rest.find(begintag+'.')+len(begintag)]
+                rest = rest[rest.find(begintag+'.')+len(begintag):]
+                if endtag == '':
+                    rel = rest
+                    rest = ''
+                else:
+                    rel = rest[:rest.find(endtag)]
+                rest = rest[rest.find(endtag):]
+                pref += self.get_absolutepath(rel, attribute)
+
+            pref += rest
+            logger.debug("{}.get_stringwithabsolutepathes('{}') with begintag = '{}', endtag = '{}': result = '{}'".format(
+                self._path, evalstr, begintag, endtag, pref))
+            return pref
+
+        if not isinstance(evalstr, str):
             return evalstr
 
-#        logger.warning("{}.get_stringwithabsolutepathes('{}'): begintag = '{}', endtag = '{}'".format(self._path, evalstr, begintag, endtag))
-        pref = ''
-        rest = evalstr
-        while (rest.find(begintag+'.') != -1):
-            pref += rest[:rest.find(begintag+'.')+len(begintag)]
-            rest = rest[rest.find(begintag+'.')+len(begintag):]
-            rel = rest[:rest.find(endtag)]
-            rest = rest[rest.find(endtag):]
-            pref += self.get_absolutepath(rel, attribute)
-
-        pref += rest
-#        logger.warning("{}.get_stringwithabsolutepathes(): result = '{}'".format(self._path, pref))
+        if isinstance(begintag, list):
+            # Fill end or begintag with empty tags if list length is not equal
+            diff_len = len(begintag) - len(endtag)
+            begintag = begintag + [''] * abs(diff_len) if diff_len < 0 else begintag
+            endtag = endtag + [''] * diff_len if diff_len > 0 else endtag
+            for i, _ in enumerate(begintag):
+                if not evalstr.find(begintag[i]+'.') == -1:
+                    evalstr = __checkfortags(evalstr, begintag[i], endtag[i])
+            pref = evalstr
+        else:
+            if evalstr.find(begintag+'.') == -1:
+                return evalstr
+            pref = __checkfortags(evalstr, begintag, endtag)
         return pref
 
 
@@ -2606,5 +2639,3 @@ def _fadejob(item, dest, step, delta):
     if item._fading:
         item._fading = False
         item(dest, 'Fader')
-
-
