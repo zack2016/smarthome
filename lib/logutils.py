@@ -40,9 +40,32 @@ class Filter(logging.Filter):
     whereas False will include the record into further processing and eventual output
     """
     def __init__(self, name='', module='', msg='', invert=False):
+        self.logger = logging.getLogger(__name__)
         self.name = name if isinstance(name, list) else [] if len(name) == 0 else [name]
         self.module = module if isinstance(module, list) else [] if len(module) == 0 else [module]
         self.msg = msg if isinstance(msg, list) else [] if len(msg) == 0 else [msg]
+        compiled_name = []
+        compiled_module = []
+        compiled_msg = []
+        for n in self.name:
+            try:
+                compiled_name.append(re.compile(n))
+            except Exception as err:
+                self.logger.error("There is a problem with filter {}. Error: {}".format(n, err))
+        for m in self.module:
+            try:
+                compiled_module.append(re.compile(m))
+            except Exception as err:
+                self.logger.error("There is a problem with filter {}. Error: {}".format(m, err))
+        for msg in self.msg:
+            try:
+                compiled_msg.append(re.compile(msg))
+            except Exception as err:
+                self.logger.error("There is a problem with filter {}. Error: {}".format(msg, err))
+
+        self.name = compiled_name
+        self.module = compiled_module
+        self.msg = compiled_msg
         self.invert = invert
 
     def filter(self, record):
@@ -52,15 +75,12 @@ class Filter(logging.Filter):
         hits = hits + 1 if len(self.module) == 0 else hits
         hits = hits + 1 if len(self.msg) == 0 else hits
         for n in self.name:
-            n = re.compile(n)
             if n.match(record.name):
                 hits += 1
         for m in self.module:
-            m = re.compile(m)
             if m.match(record.module):
                 hits += 1
         for msg in self.msg:
-            msg = re.compile(msg)
             if msg.match(record.msg):
                 hits += 1
         #invert is False: hide record if all of the given parameters match
