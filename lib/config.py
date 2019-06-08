@@ -236,10 +236,8 @@ def merge(source, destination):
         True
 
     '''
-    problem = ''
     try:
         for key, value in source.items():
-            problem = destination
             if isinstance(value, collections.OrderedDict):
                 # get node or create one
                 node = destination.setdefault(key, collections.OrderedDict())
@@ -250,8 +248,8 @@ def merge(source, destination):
                 else:
                     # convert to string and remove newlines from multiline attributes
                     destination[key] = str(value).replace('\n','')
-    except Exception as err:
-        logger.error("Problem merging subtrees, probably invalid YAML file with entry {}. Error: {}".format(problem, err))
+    except:
+        logger.error("Problem merging subtrees, probably invalid YAML file")
 
     return destination
 
