@@ -4,7 +4,7 @@
 Logging
 #######
 
-Zur Konfiguration des Loggings mit SmartHomeNG wird seit der Version 1.2 eine Konfigurationsdatei 
+Zur Konfiguration des Loggings mit SmartHomeNG wird seit der Version 1.2 eine Konfigurationsdatei
 im YAML Format verwendet.
 
 
@@ -50,6 +50,17 @@ Die einzelnen Konfigurationseinträge haben die folgende Bedeutung:
 |                 | beschrieben sind. Als eigentliche Handler sind in der Konfigurationsdatei **etc/logging.yaml**     |
 |                 | die Handler **`console`** und **`file`** vordefiniert. Wenn Log-Einträge z.B. in eine andere       |
 |                 | Datei geschrieben werden sollen, muss ein weiterer Handler definiert werden.                       |
+|                 | Sollen Filter angewendet werden, so sind diese im entsprechenden Handler anzugeben (siehe filters) |
++-----------------+----------------------------------------------------------------------------------------------------+
+| **filters:**    | Filter bestimmen durch Angabe des Loggernamen, -moduls und -eintrags, welche Zeilen aus dem Log    |
+|                 | angezeigt bzw. versteckt werden sollen. Der Eintrag (z.B. loggerfilter) kann bei den Handlers      |
+|                 | mittels **`filters: [<filtername>]**` referenziert werden. Wichtig ist, den Filternamen in eckige  |
+|                 | Klammern zu setzen, auch wenn nur ein Filter zum Einsatz kommen soll.                              |
+|                 | Jeder Filter kann durch bis zu drei Parameter definiert werden, wobei diese nach AND Logik         |
+|                 | evaluiert werden:                                                                                  |
+|                 | - name: Loggername (z.B. lib.item)                                                                 |
+|                 | - module: Loggermodul, va. bei Plugins u.U. relevant (z.B. item)                                   |
+|                 | - msg: Der tatsächliche Logeintrag (z.B. Result = (.*) \(for attribute 'eval'\))                   |
 +-----------------+----------------------------------------------------------------------------------------------------+
 | **loggers:**    | Hier werden die einzelnen Logger definiert und was mit diesen Einträgen passiert,                  |
 |                 | welche Handler und formatter verwendet werden. Das Level konfiguriert dabei die                    |
@@ -62,8 +73,8 @@ Die einzelnen Konfigurationseinträge haben die folgende Bedeutung:
 |                 | sind. Da der root Logger ALLE Logeinträge empfängt sollte der level: unbedingt auf WARNING stehen. |
 +-----------------+----------------------------------------------------------------------------------------------------+
 
-Wenn man **Logger** definiert, welche die Log-Einträge über zusätzliche **Handler** ausgeben ist
-zu beachten, dass die Ausgabe zusätzlich IMMER durch den Standardhandler (**file:**) erfolgt. Dieses
+Wenn man **Logger** definiert, welche die Log-Einträge über zusätzliche **Handler** ausgeben, ist
+zu beachten, dass die Ausgabe zusätzlich IMMER durch den Standardhandler (**file:**) erfolgt. Dies
 führt dazu, dass die Einträge sowohl in der Standard Log-Datei von SmartHomeNG, als auch in der
 zusätzlich definierten Log Datei erscheinen, falls der Level des Log Eintrages INFO oder höher ist.
 
@@ -76,7 +87,7 @@ Plugin Entwicklung
 ==================
 
 Für die Entwickler von Plugins:
-Der Logger sollte nun nicht global mit logging.getLogger('') instanziert werden sondern innerhalb
+Der Logger sollte nun nicht global mit logging.getLogger('') instanziert werden, sondern innerhalb
 der `__init__` Methode mit:
 
 .. code-block:: python
@@ -97,7 +108,7 @@ Verwendet man zur Instanziierung einen eigenen Namen (nicht empfohlen), wie z.B.
    self.logger = logging.getLogger('DWD')
 
 
-muss in der config auch dieser Name verwendet werden. Ohne `plugin.`
+muss in der config auch dieser Name verwendet werden. Ohne `plugins.`
 
 .. code-block:: yaml
    :caption: ../etc/logging.yaml
@@ -168,4 +179,3 @@ Wer eine brauchbare leicht konfigurierbare Logging Konfiguration sucht, der wird
    :titlesonly:
 
    logging_best_practices.md
-
