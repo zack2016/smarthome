@@ -77,5 +77,12 @@ Beispiel setzt den Wert des Items täglich um Mitternacht auf 20:
 .. code-block:: yaml
 
    crontab:
-     - 0 0 \* \* = 20
+     - 0 0 * * = 20
      - sunrise
+
+Möchte man einen Wert im Minutentakt aktualisieren, ist es notwendig den Ausdruck ``* * * *`` unter Anführungszeichen zu setzen.
+
+
+.. code-block:: yaml
+
+  crontab: '* * * * = 1'
