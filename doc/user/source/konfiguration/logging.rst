@@ -45,22 +45,25 @@ Die einzelnen Konfigurationseinträge haben die folgende Bedeutung:
 |                 | hinzugefügt werden.                                                                                |
 +-----------------+----------------------------------------------------------------------------------------------------+
 | **handlers:**   | Handler definieren die Log-Behandlungsroutinen/Ausgabekanäle die verwendet werden.                 |
-|                 | In Python gibt es bereits mehrere vorimplementierte und mächtige Handler-Typen die                 |
-|                 | `hier <https://docs.python.org/3.4/library/logging.handlers.html#module-logging.handlers>`_        |
+|                 | In Python gibt es bereits mehrere vorimplementierte und mächtige Handler-Typen die in der          |
+|                 | `Python Doku <https://docs.python.org/3.4/library/logging.handlers.html#module-logging.handlers>`_ |
 |                 | beschrieben sind. Als eigentliche Handler sind in der Konfigurationsdatei **etc/logging.yaml**     |
 |                 | die Handler **`console`** und **`file`** vordefiniert. Wenn Log-Einträge z.B. in eine andere       |
 |                 | Datei geschrieben werden sollen, muss ein weiterer Handler definiert werden.                       |
-|                 | Sollen Filter angewendet werden, so sind diese im entsprechenden Handler anzugeben (siehe filters) |
+|                 | Sollen Filter angewendet werden, so sind diese im entsprechenden Handler durch                     |
+|                 | filters: [`filtername1`, `filtername2`] anzugeben (siehe filters)                                  |
 +-----------------+----------------------------------------------------------------------------------------------------+
 | **filters:**    | Filter bestimmen durch Angabe des Loggernamen, -moduls und -eintrags, welche Zeilen aus dem Log    |
 |                 | angezeigt bzw. versteckt werden sollen. Der Eintrag (z.B. loggerfilter) kann bei den Handlers      |
-|                 | mittels **`filters: [<filtername>]**` referenziert werden. Wichtig ist, den Filternamen in eckige  |
+|                 | mittels **`filters: [<filtername>]`** referenziert werden. Wichtig ist, den Filternamen in eckige  |
 |                 | Klammern zu setzen, auch wenn nur ein Filter zum Einsatz kommen soll.                              |
 |                 | Jeder Filter kann durch bis zu drei Parameter definiert werden, wobei diese nach AND Logik         |
 |                 | evaluiert werden:                                                                                  |
 |                 | - name: Loggername (z.B. lib.item)                                                                 |
 |                 | - module: Loggermodul, va. bei Plugins u.U. relevant (z.B. item)                                   |
-|                 | - msg: Der tatsächliche Logeintrag (z.B. Result = (.*) \(for attribute 'eval'\))                   |
+|                 | - msg: Der tatsächliche Logeintrag (z.B. Result = (.\*) \(for attribute 'eval'\))                  |
+|                 | Durch die Angabe von invert: True werden NUR die passenden Messages geloggt und sonst nichts.      |
+|                 | Ein Beispiel ist unter :doc:`Logging - Best Practices <logging_best_practices>` zu finden.         |  
 +-----------------+----------------------------------------------------------------------------------------------------+
 | **loggers:**    | Hier werden die einzelnen Logger definiert und was mit diesen Einträgen passiert,                  |
 |                 | welche Handler und formatter verwendet werden. Das Level konfiguriert dabei die                    |
