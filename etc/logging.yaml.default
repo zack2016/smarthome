@@ -35,6 +35,7 @@ filters:
     #
     knx_filter:
         # This filter must be enabled when busmonitor logging from the knx plugin should be used.
+        # It filters all log entries coming from the logger named knx_busmonitor (that is initialized in the KNX plugin)
         (): lib.logutils.Filter
         name: knx_busmonitor
 
