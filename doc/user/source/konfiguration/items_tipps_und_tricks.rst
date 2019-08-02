@@ -165,11 +165,14 @@ Einleitung
 Ein Tag- oder Nachtobjekt kann zur Ansteuerung von Status-LEDs,
 Präsenzmeldern oder ähnlichem genutzt werden.
 
-**Tag-Item:** Ist “true” (also 1) von Sonnenaufgang bis Sonnenuntergang,
-danach ist es “false” (also 0)
+**Tag-Item:** Ist “true” (also 1) von der bürgerlichen Dämmerung am Morgen bis
+zur Dämmerung am Abend, danach ist es “false” (also 0)
 
-**Nacht-Item:** Ist “true” (also 1) von Sonnenuntergang bis
-Sonnenaufgang, danach ist es “false” (also 0)
+**Nacht-Item:** Ist “true” (also 1) von der bürgerlichen Dämmerung am Abend bis
+zur Dämmerung am Morgen, danach ist es “false” (also 0)
+
+Bürgerliche Dämmerung bedeutet, dass sich die Sonne noch/schon unterhalb des
+Horizonts befindet, der Himmel aber dennoch leicht erhellt wird. 
 
 Welches der beiden Items man nutzen will, bleibt jedem selbst
 überlassen. Schließlich ist der Status des jeweiligen Items bereits
@@ -247,18 +250,18 @@ einem Sonnenstand von 4° unter dem Horizont festgelegt:
 .. code-block:: yaml
 
        berechnung:
-           type = bool
+           type: bool
            crontab:
-           - init = 1
-           - sunrise-4 = 1
-           - sunset-4 = 1
-           enforce_updates = true
+             - init = 1
+             - sunrise-4 = 1
+             - sunset-4 = 1
+           enforce_updates: true
 
        day:
-           type = bool
-           eval = sh.sun.rise(-4).day != sh.sun.set(-4).day
-           eval_trigger = ..berechnung
-           enforce_updates = true
+           type: bool
+           eval: sh.sun.rise(-4).day != sh.sun.set(-4).day
+           eval_trigger: ..berechnung
+           enforce_updates: true
 
 
 Die Triggerung dieser Berechnung wird im *berechnung* - Item durch das
