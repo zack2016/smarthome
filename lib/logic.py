@@ -1018,7 +1018,7 @@ class Logic():
         if self.enabled:
             self.scheduler.trigger(self._logicname_prefix+self.name, self, prio=self.prio, by=by, source=source, dest=dest, value=value, dt=dt)
         else:
-            logger.warning("trigger: Logic '{}' not triggered because it is disabled".format(self.name))
+            logger.info("trigger: Logic '{}' not triggered because it is disabled".format(self.name))
 
     def _generate_bytecode(self):
         if hasattr(self, 'pathname'):
