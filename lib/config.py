@@ -90,15 +90,16 @@ def parse_itemsdir(itemsdir, item_conf, addfilenames=False, struct_dict={}):
     '''
     logger.info("parse_itemsdir: Beginning to parse items directory {}".format(itemsdir))
     for item_file in sorted(os.listdir(itemsdir)):
-        if item_file.endswith(CONF_FILE) or item_file.endswith(YAML_FILE):
-            if item_file == 'logic'+YAML_FILE and itemsdir.find('lib/env/') > -1:
-                logger.info("parse_itemsdir: skipping logic definition file = {}".format( itemsdir+item_file ))
-            else:
-                try:
-                    item_conf = parse(itemsdir + item_file, item_conf, addfilenames, parseitems=True, struct_dict=struct_dict)
-                except Exception as e:
-                    logger.exception("Problem reading {0}: {1}".format(item_file, e))
-                    continue
+        if not item_file.startswith('.'):
+            if item_file.endswith(CONF_FILE) or item_file.endswith(YAML_FILE):
+                if item_file == 'logic'+YAML_FILE and itemsdir.find('lib/env/') > -1:
+                    logger.info("parse_itemsdir: skipping logic definition file = {}".format( itemsdir+item_file ))
+                else:
+                    try:
+                        item_conf = parse(itemsdir + item_file, item_conf, addfilenames, parseitems=True, struct_dict=struct_dict)
+                    except Exception as e:
+                        logger.exception("Problem reading {0}: {1}".format(item_file, e))
+                        continue
     logger.info("parse_itemsdir: Finished parsing items directory {}".format(itemsdir))
     return item_conf
 
@@ -117,10 +118,11 @@ def parse(filename, config=None, addfilenames=False, parseitems=False, struct_di
     :rtype: OrderedDict
 
     '''
-    if filename.endswith(YAML_FILE) and os.path.isfile(filename):
-         return parse_yaml(filename, config, addfilenames, parseitems, struct_dict)
-    elif filename.endswith(CONF_FILE) and os.path.isfile(filename):
-        return parse_conf(filename, config)
+    if not filename.startswith('.'):
+        if filename.endswith(YAML_FILE) and os.path.isfile(filename):
+             return parse_yaml(filename, config, addfilenames, parseitems, struct_dict)
+        elif filename.endswith(CONF_FILE) and os.path.isfile(filename):
+            return parse_conf(filename, config)
     return {}
 
 
