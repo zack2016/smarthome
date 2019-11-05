@@ -138,7 +138,7 @@ class Plugins():
                     logger.error("Plugins, section {}: class_path is not defined".format(plugin))
                 else:
                     args = self._get_conf_args(_conf[plugin])
-#                    logger.warning("Plugin '{}' from from section '{}': classname = {}, classpath = {}".format( str(classpath).split('.')[1], plugin, classname, classpath ) )
+#                    logger.warning("Plugin '{}' from section '{}': classname = {}, classpath = {}".format( str(classpath).split('.')[1], plugin, classname, classpath ) )
                     instance = self._get_instancename(_conf[plugin]).lower()
                     dummy = self._test_duplicate_pluginconfiguration(plugin, classname, instance)
                     try:
@@ -148,11 +148,11 @@ class Plugins():
                                 self._plugins.append(plugin_thread.plugin)
                                 self._threads.append(plugin_thread)
                                 if instance == '':
-                                    logger.info("Initialized plugin '{}' from from section '{}'".format( str(classpath).split('.')[1], plugin ) )
+                                    logger.info("Initialized plugin '{}' from section '{}'".format( str(classpath).split('.')[1], plugin ) )
                                 else:
-                                    logger.info("Initialized plugin '{}' instance '{}' from from section '{}'".format( str(classpath).split('.')[1], instance, plugin ) )
+                                    logger.info("Initialized plugin '{}' instance '{}' from section '{}'".format( str(classpath).split('.')[1], instance, plugin ) )
                             except:
-                                logger.warning("Plugin '{}' from from section '{}' not loaded".format( str(classpath).split('.')[1], plugin ) )
+                                logger.warning("Plugin '{}' from section '{}' not loaded".format( str(classpath).split('.')[1], plugin ) )
                     except Exception as e:
                         logger.exception("Plugin '{}' from section '{}' exception: {}".format(str(classpath).split('.')[1], plugin, e))
 
