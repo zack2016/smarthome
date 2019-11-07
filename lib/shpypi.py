@@ -3,7 +3,7 @@
 #########################################################################
 # Copyright 2018-       Martin Sinn                         m.sinn@gmx.de
 #########################################################################
-#  This file is part of SmartHomeNG.    
+#  This file is part of SmartHomeNG.
 #
 #  SmartHomeNG is free software: you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -995,7 +995,7 @@ class Requirements_files():
         ofile.write('#   |                 SmartHomeNG                   |\n')
         ofile.write('#   |            DON\'T EDIT THIS FILE               |\n')
         ofile.write('#   |           THIS FILE IS GENERATED              |\n')
-        ofile.write('#   |       BY tools/build_requirements.py          |\n')
+        ofile.write('#   |              BY lib/shpypi.py                 |\n')
         ofile.write('#   |            ON '+datetime.datetime.now().strftime('%d.%m.%Y %H:%M')+'                |\n')
         ofile.write('#   |                                               |\n')
         ofile.write('#   |               INSTALL WITH:                   |\n')
