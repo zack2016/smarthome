@@ -673,6 +673,9 @@ class Item():
                         # logger.warning("Item rel. from (grand)parent: fromitem = {}, fromattr = {}, self.conf[attr] = {}".format(fromitem, fromattr, self.conf[attr]))
                     else:
                         self.conf[attr] = value
+
+        self.property.init_dynamic_properties()
+
         #############################################################
         # Child Items
         #############################################################
@@ -752,6 +755,7 @@ class Item():
                     except:
                         pass
                     self.add_method_trigger(update)
+
 
 
     def _split_destitem_from_value(self, value):
@@ -981,6 +985,18 @@ class Item():
             :rtype: str
             """
             return list(self._item.conf.keys())
+
+
+        def init_dynamic_properties(self):
+            """
+            Initialize dynamic properties to get the values of pluin-specific attributes
+            """
+            for confattr in self._item.conf.keys():
+                setattr(self, confattr, self.get_config_attribute(confattr))
+            return
+
+        def get_config_attribute(self, attr):
+            return self._item.conf.get(attr, '')
 
 
         @property
