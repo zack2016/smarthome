@@ -27,7 +27,7 @@ This library implements items in SmartHomeNG.
 
 The main class ``Items`` implements the handling for all items. This class has a  static method to get a handle to the
 instance of the Items class, that is created during initialization of SmartHomeNG. This method implements a way to
-access the API for handling items without having to juggle through the object hirarchy of the running SmartHomeNG.
+access the API for handling items without having to juggle through the object hierarchy of the running SmartHomeNG.
 
 This API enables plugins and logics to access the details of the items initialized in SmartHomeNG.
 
@@ -93,13 +93,13 @@ class Items():
     Items loader class. (Item-methods from bin/smarthome.py are moved here.)
 
     - An instance is created during initialization by bin/smarthome.py
-    - There should be only one instance of this class. So: Don't create anther instance
+    - There should be only one instance of this class. So: Don't create another instance
 
     :param smarthome: Instance of the smarthome master-object
-    :type samrthome: object
+    :type smarthome: object
     """
 
-    __items = []                # list with the pathes of all items that are defined
+    __items = []                # list with the paths of all items that are defined
     __item_dict = {}            # dict with all the items that are defined in the form: {"<item-path>": "<item-object>", ...}
 
     _children = []              # List of top level items
@@ -120,9 +120,9 @@ class Items():
         _items_instance = self
 
 
-    # ------------------------------------------------------------------------------------
-    #   Following (static) method of the class Items implement the API for Items in shNG
-    # ------------------------------------------------------------------------------------
+    # -----------------------------------------------------------------------------------------
+    #   Following (static) method of the class Items implement the API for Items in SmartHomeNG
+    # -----------------------------------------------------------------------------------------
 
     @staticmethod
     def get_instance():
@@ -225,7 +225,7 @@ class Items():
             if isinstance(value, dict):
                 child_path = attr
                 try:
-#                              (smarthome, parent, path, config):
+                    # (smarthome, parent, path, config):
                     child = Item(self._sh, self, child_path, value)
                 except Exception as e:
                     logger.error("load_itemdefinitions: Item {}: problem creating: ()".format(child_path, e))
@@ -237,11 +237,11 @@ class Items():
         del(item_conf)  # clean up
 
         # --------------------------------------------------------------------
-        # prepare loaded items for run phase of shng
+        # prepare loaded items for run phase of SmartHomeNG
         #
         for item in self.return_items():
             item._init_prerun()
-        # starting schedulers (for crontab and cycle attributes) moved to the end of the initialization in shng v1.6
+        # starting schedulers (for crontab and cycle attributes) moved to the end of the initialization in SmartHomeNG v1.6
         for item in self.return_items():
             item._init_start_scheduler()
         for item in self.return_items():
@@ -317,7 +317,7 @@ class Items():
 
     def match_items(self, regex):
         """
-        Function to match items against a regular expresseion
+        Function to match items against a regular expression
 
         :param regex: Regular expression to match items against
         :type regex: str
@@ -459,7 +459,7 @@ class Item():
     of the class ``Item``. For an item to be valid and usable, it has to be part of the item tree, which is
     maintained by an object of class ``Items``.
 
-    This class is used by the method ```load_itendefinitions()`` of the **Items** object.
+    This class is used by the method ```load_itemdefinitions()`` of the **Items** object.
     """
 
     _itemname_prefix = 'items.'     # prefix for scheduler names
@@ -658,7 +658,7 @@ class Item():
                     # the following code is executed for plugin specific attributes:
                     #
                     # get value from attribute of other (relative addressed) item
-                    # at te moment only parent and grandparent item are supported
+                    # at the moment only parent and grandparent item are supported
                     if (type(value) is str) and (value.startswith('..:') or value.startswith('...:')):
                         fromitem = value.split(':')[0]
                         fromattr = value.split(':')[1]
@@ -735,7 +735,7 @@ class Item():
                 logger.warning("Item {}: Created cache for item: {}".format(self._cache, self._cache))
         #############################################################
         # Crontab/Cycle
-        # Moved to end of initialization in shng v1.6
+        # Moved to end of initialization in SmartHomeNG v1.6
         #############################################################
         # if self._crontab is not None or self._cycle is not None:
         #     cycle = self._cycle
@@ -793,7 +793,7 @@ class Item():
 
         :param value: value to be casted
         :param compat: compatibility attribute
-        :return: return casted valu3
+        :return: return casted value
         """
         # casting of value, if compat = latest
         if compat == ATTRIB_COMPAT_LATEST:
@@ -816,17 +816,17 @@ class Item():
 
     def _cast_duration(self, time):
         """
-        casts a time valuestring (e.g. '5m') to an duration integer
+        casts a time value string (e.g. '5m') to an duration integer
         used for autotimer, timer, cycle
 
         supported formats for time parameter:
         - seconds as integer (45)
         - seconds as a string ('45')
-        - seconds as a string, traild by 's' ('45s')
-        - minutes as a string, traild by 'm' ('5m'), is converted to seconds (300)
+        - seconds as a string, trailed by 's' ('45s')
+        - minutes as a string, trailed by 'm' ('5m'), is converted to seconds (300)
 
         :param time: string containing the duration
-        :param itempath: item path as aditional information for logging
+        :param itempath: item path as additional information for logging
         :return: number of seconds as an integer
         """
         if isinstance(time, str):
@@ -853,7 +853,7 @@ class Item():
         """
         builds a dict for a cycle parameter from a duration_value_string
 
-        This dict is to be passed to the scheduler to circumvemt the parameter
+        This dict is to be passed to the scheduler to circumvent the parameter
         parsing within the scheduler, which can't to casting
 
         :param value: raw attribute string containing duration, value (and compatibility)
@@ -922,10 +922,10 @@ class Item():
         dest_var_list = []
         dest_var_list_unexp = []
         for val in value:
-            # seperate destination item (if it exists)
+            # separate destination item (if it exists)
             dest_item, val = self._split_destitem_from_value(val)
             dest_var_list_unexp.append(dest_item)
-            # expand relative item pathes
+            # expand relative item paths
             dest_item = self.get_absolutepath(dest_item, KEY_ON_CHANGE).strip()
             #                        val = 'sh.'+dest_item+'( '+ self.get_stringwithabsolutepathes(val, 'sh.', '(', KEY_ON_CHANGE) +' )'
             val_list_unexpanded.append(val)
@@ -989,7 +989,7 @@ class Item():
 
         def init_dynamic_properties(self):
             """
-            Initialize dynamic properties to get the values of pluin-specific attributes
+            Initialize dynamic properties to get the values of plugin-specific attributes
             """
             for confattr in self._item.conf.keys():
                 setattr(self, confattr, self.get_config_attribute(confattr))
@@ -1768,7 +1768,8 @@ class Item():
 
     def prev_update_age(self):
         """
-        Update-age of the item's previous value. Returns the time in seconds the previous value existed since it had been updated (not necessarily changed)
+        Update-age of the item's previous value. Returns the time in seconds the previous value existed
+        since it had been updated (not necessarily changed)
 
         :return: Update-age of the previous value
         :rtype: int
@@ -1803,7 +1804,7 @@ class Item():
 
 
     """
-    Following are methods to handle relative item pathes
+    Following are methods to handle relative item paths
     """
 
     def get_absolutepath(self, relativepath, attribute=''):
@@ -1849,8 +1850,8 @@ class Item():
 
     def expand_relativepathes(self, attr, begintag, endtag):
         """
-        converts a configuration attribute containing relative item pathes
-        to absolute pathes
+        converts a configuration attribute containing relative item paths
+        to absolute paths
 
         The item's attribute can be of type str or list (of strings)
 
@@ -1887,17 +1888,17 @@ class Item():
 
     def get_stringwithabsolutepathes(self, evalstr, begintag, endtag, attribute=''):
         """
-        converts a string containing relative item pathes
-        to a string with absolute item pathes
+        converts a string containing relative item paths
+        to a string with absolute item paths
 
         The begintag and the endtag remain in the result string!
 
-        :param evalstr: string with the statement that may contain relative item pathes
+        :param evalstr: string with the statement that may contain relative item paths
         :param begintag: string that signals the beginning of a relative path is following
         :param endtag: string that signals the end of a relative path
         :param attribute: string with the name of the item's attribute, which contains the relative path
 
-        :return: string with the statement containing absolute item pathes
+        :return: string with the statement containing absolute item paths
         """
         if evalstr.find(begintag+'.') == -1:
             return evalstr
@@ -1974,7 +1975,7 @@ class Item():
                         if p != -1:
                             wrk = wrk[:p]+'False'+wrk[p+5:]
 
-                        # expand relative item pathes
+                        # expand relative item paths
                         wrk = self.get_stringwithabsolutepathes(wrk, 'sh.', '(', KEY_CONDITION)
 
                         and_cond.append(wrk)
@@ -2297,7 +2298,7 @@ class Item():
         Returns a list of logics to trigger, if the item gets changed
 
         :return: Logics to trigger
-        .rtype: list
+        :rtype: list
         """
         return self.__logics_to_trigger
 
@@ -2312,7 +2313,7 @@ class Item():
         Returns a list of item methods to trigger, if this item gets changed
 
         :return: methods to trigger
-        .rtype: list
+        :rtype: list
         """
         return self.__methods_to_trigger
 
@@ -2498,7 +2499,7 @@ def _cast_num(value):
 
 def _split_duration_value_string(value):
     """
-    splits a duration value string into its thre components
+    splits a duration value string into its three components
 
     components are:
     - time
@@ -2622,5 +2623,3 @@ def _fadejob(item, dest, step, delta):
     if item._fading:
         item._fading = False
         item(dest, 'Fader')
-
-
