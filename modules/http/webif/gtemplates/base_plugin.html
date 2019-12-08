@@ -4,6 +4,15 @@
 {{ p.get_shortname() }} Plugin
 {% endblock title %}
 
+<!--
+	set onload= attribute of <body> tag to periodically update data of web interface
+-->
+{%- block body_attribs %}
+	{%- if update_interval is defined and update_interval > 0 %} onload="setInterval(shngGetUpdatedData, {{ update_interval }})"
+	{%- endif %}
+{%- endblock body_attribs %}
+
+
 {% block content %}
 
 {% if scroll_heading is not defined %}
@@ -44,7 +53,7 @@
 		</div>
 
 		<div class="col-sm-7">
-	
+
 			{% block headtable %}
 			{% endblock %}
 
@@ -82,7 +91,7 @@
 {% if start_tab > tabcount %}
 	{% set start_tab = tabcount %}
 {% endif %}
-	
+
 {% if tabcount > 4 %}
 	{% set tabcount = 4 %}
 {% endif %}
