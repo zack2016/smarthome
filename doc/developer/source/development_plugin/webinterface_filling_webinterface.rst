@@ -1,40 +1,7 @@
-.. index:: New; Web Interface
+.. index:: Web Interface
 
 .. role:: redsup
 .. role:: bluesup
-
-
-Web Interface :bluesup:`update`
-===============================
-
-This documentation is valid vor SmartHomeNG versions beyond v1.4.2. It does not work on v1.4.2
-and below.
-
-A web interface of a plugin allows to implement the diepaly of plugins data or even the configuration of a plugin
-through a browser. To reach the web interface from the admin interface, a button is displayed in the list of plugins.
-
-SmartHomeNG allows to implement a web interface in a very simple fashion. The sample plugin has a full implementation
-of a webinterface, to which only the data display ha to be added to a template file. The template engine (Jinja2)
-includes the data from Python when rendering the html page from the template.
-
-
-
-Extending an existing plugin
-----------------------------
-
-For extending an existing smart-plugin with a webinterface, the following steps have to be followed:
-
-   1. Add the webif directory from the sample plugin to the plugin's directory
-   2. Change the import statement for **lib.smartplugin** from
-      ``from lib.model.smartplugin import SmartPlugin`` to
-      ``from lib.model.smartplugin import *``
-   3. Add the following statement to the ``__init__`` method of the plugin: ``self.init_webinterface()``
-   4. Ad the method ``init_webinterface`` to the plugin's class (copy from sample_plugin)
-   5. Add the ``WebInterface`` class after the end of the plugin's class definition. Copy it from the sample plugin.
-
-Now the plugin has a functional but empty webinterface:
-
-.. image:: assets/sample_plugin_webIf.jpg
 
 
 Filling the webinterface with content
@@ -125,56 +92,4 @@ To bring the webinterface up to life, the following steps should be followed:
       If the webinterface should have an individaul logo, the file with the logo must be placed in
       the directory **webif/static/img** and has to be named **plugin_logo**. It may be of type **.png**, **.jpg** or **.svg**.
 
-
-3rd Party Components for Web Interfaces
----------------------------------------
-
-SmartHomeNG delivers a couple of 3rd party components with the http module, which can be used to build extended, more
-complex web interfaces:
-
-   * JQuery 3.4.1:
-
-     * JS: <script src="/gstatic/js/jquery-3.4.1.min.js"></script>
-   * Bootstrap :
-
-     * CSS: <link rel="stylesheet" href="/gstatic/bootstrap/css/bootstrap.min.css" type="text/css"/>
-     * JS: <script src="/gstatic/bootstrap/js/bootstrap.min.js"></script>
-   * Bootstrap Tree View:
-
-      * CSS: <link rel="stylesheet" href="/gstatic/bootstrap-treeview/bootstrap-treeview.css" type="text/css"/>
-      * JS: <script src="/gstatic/bootstrap-treeview/bootstrap-treeview.min.js"></script>
-   * Bootstrap Datepicker v1.8.0:
-
-      * CSS: <link rel="stylesheet" href="/gstatic/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css" type="text/css"/>
-      * JS:
-         * <script src="/gstatic/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js"></script>
-         * <script src="/gstatic/bootstrap-datepicker/dist/locales/bootstrap-datepicker.de.min.js"></script>
-   * popper.js:
-
-      * JS: <script src="/gstatic/popper.js/popper.min.js"></script>
-   * CodeMirror 5.46.0:
-
-      * CSS: <link rel="stylesheet" href="/gstatic/codemirror/lib/codemirror.css"/>
-      * JS: <script src="/gstatic/codemirror/lib/codemirror.js"></script>
-   * Font Awesome 5.8.1:
-
-      * CSS: <link rel="stylesheet" href="/gstatic/fontawesome/css/all.css" type="text/css"/>
-
- For addons, etc. that are delivered with the components, see /modules/http/webif/gstatic folder!
-
- If you are interested in additional "global" components, contact us. Otherwise feel free to use them in your plugin,
- as long as the Open Source license is ok.
-
-
-
-Release notes for SmartHomeNG:
-
-.. toctree::
-   :maxdepth: 1
-   :titlesonly:
-
-   webinterface_extend_plugin
-   webinterface_filling_webinterface
-   webinterface_3rdparty_components
-   webinterface_automatic_update
 
