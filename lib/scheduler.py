@@ -566,7 +566,11 @@ class Scheduler(threading.Thread):
         :return: false or datetime
         """
         now = self.shtime.now()
-        minute, hour, day, wday = crontab.split(' ')
+        try:
+            minute, hour, day, wday = crontab.strip().split()
+        except:
+            logger.warning("crontab entry '{}' can not be split up into 4 parts for minute, hour, day and weekday".format(crontab))
+            return False
         # evaluate the crontab strings
         minute_range = self._range(minute, 00, 59)
         hour_range = self._range(hour, 00, 23)
