@@ -3,7 +3,7 @@
 #########################################################################
 #  Copyright 2018 <AUTHOR>                                        <EMAIL>
 #########################################################################
-#  This file is part of SmartHomeNG.   
+#  This file is part of SmartHomeNG.
 #
 #  Sample plugin for new plugins to run with SmartHomeNG version 1.4 and
 #  upwards.
@@ -262,9 +262,19 @@ class WebInterface(SmartPluginWebIf):
 
         Render the template and return the html file to be delivered to the browser
 
-        :return: contents of the template after beeing rendered 
+        :return: contents of the template after beeing rendered
         """
         tmpl = self.tplenv.get_template('index.html')
         # add values to be passed to the Jinja2 template eg: tmpl.render(p=self.plugin, interface=interface, ...)
         return tmpl.render(p=self.plugin)
 
+
+    @cherrypy.expose
+    def get_data_html(self, dataSet=None):
+        if dataSet is None:
+            # get the new data
+            #self.plugin.beodevices.update_devices_info()
+            # return it as json the the web page
+            #return json.dumps(self.plugin.beodevices.beodeviceinfo)
+
+        return

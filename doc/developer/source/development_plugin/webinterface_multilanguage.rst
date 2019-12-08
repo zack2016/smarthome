@@ -4,8 +4,8 @@
 .. role:: bluesup
 
 
-Multi-Langunage Support :redsup:`new`
-=====================================
+Multi-Language Support :redsup:`new`
+====================================
 
 In the template **webif/templates/index.html** text can be marked to be translated, if the used language of the
 admin interface is changed.
@@ -43,10 +43,10 @@ three column headings are marked as text to be translated if necessary. Usually 
 
          <th>Item</th>
          <th>Typ</th>
-         <th>'knx_dpt</th>
+         <th>knx_dpt</th>
 
-To be translated the Text has to be included as stings in the function **_()**. For the function to be executed it has
-to be declared a variable for the templating engine by including it in **{{  }}**. So you end up with **{{ _('text') }}**.
+To be translated the Text has to be included as stings in the function ``_( )``. For the function to be executed it has
+to be declared a variable for the templating engine by including it in ``{{  }}``. So you end up with ``{{ _('text') }}``.
 
       .. code-block:: HTML
 
