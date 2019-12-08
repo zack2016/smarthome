@@ -20,3 +20,11 @@ Now the plugin has a functional but empty webinterface:
 
 .. image:: assets/sample_plugin_webIf.jpg
 
+
+The Method **index** of the class WebInterface implements the page of the web interface. It renders the template and
+makes all data of the plugin public to the render engine (``return tmpl.render(p=self.plugin)``) as **p**. If further
+data is needed, it has to be added to **tmpl.render()**.
+
+Now the only thing left to do, is adding the data that shall be displayed to the template file (webif/templates/index.html).
+
+Details kan be found in the following section (**Filling the webinterface with content**)

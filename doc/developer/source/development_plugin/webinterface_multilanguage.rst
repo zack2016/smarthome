@@ -7,4 +7,70 @@
 Multi-Langunage Support :redsup:`new`
 =====================================
 
-...
+In the template **webif/templates/index.html** text can be marked to be translated, if the used language of the
+admin interface is changed.
+
+In the example in the section **Filling the webinterface with content**
+
+      .. code-block:: HTML
+
+         <div class="table-responsive" style="margin-left: 3px; margin-right: 3px;" class="row">
+             <div class="col-sm-12">
+                 <table class="table table-striped table-hover pluginList">
+                     <thead>
+                         <tr>
+                             <th>{{ _('Item') }}</th>
+                             <th>{{ _('Typ') }}</th>
+                             <th>{{ _('knx_dpt') }}</th>
+                         </tr>
+                     </thead>
+                     <tbody>
+                         {% for item in items %}
+                             <tr>
+                                 <td class="py-1">{{ item._path }}</td>
+                                 <td class="py-1">{{ item._type }}</td>
+                                 <td class="py-1">{{ item.conf['knx_dpt'] }}</td>
+                             </tr>
+                         {% endfor %}
+                     </tbody>
+                 </table>
+             </div>
+         </div>
+
+three column headings are marked as text to be translated if necessary. Usually the headings would look like this:
+
+      .. code-block:: HTML
+
+         <th>Item</th>
+         <th>Typ</th>
+         <th>'knx_dpt</th>
+
+To be translated the Text has to be included as stings in the function **_()**. For the function to be executed it has
+to be declared a variable for the templating engine by including it in **{{  }}**. So you end up with **{{ _('text') }}**.
+
+      .. code-block:: HTML
+
+         <th>{{ _('Item') }}</th>
+         <th>{{ _('Typ') }}</th>
+         <th>{{ _('knx_dpt') }}</th>
+
+If the text to be translated is not covered by the defined translations in SmartHomeNG, add it to the file
+**locale.yaml** in the plugin directory.
+
+.. code-block:: YAML
+
+    # translations for the web interface
+    plugin_translations:
+        # Translations for the plugin specially for the web interface
+        'Wert 2':         {'de': '=', 'en': 'Value 2'}
+        'Wert 4':         {'de': '=', 'en': 'Value 4'}
+
+        # Alternative format for translations of longer texts:
+        'Hier kommt der Inhalt des Webinterfaces hin.':
+            de: '='
+            en: 'Here goes the content of the web interface.'
+
+In the section **plugin_translations** add a line with the text to be translated as the key. The value to that key is
+a dict/object with the languages as key followed by the text in that language. If for a language the text should be
+the original text (no translation needed), enter ``'='`` as translated text.
+

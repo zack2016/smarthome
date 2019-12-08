@@ -8,7 +8,8 @@ Web Interface :bluesup:`update`
 ===============================
 
 This documentation is valid vor SmartHomeNG versions beyond v1.4.2. It does not work on v1.4.2
-and below.
+and below. Web interfaces are implemented trough the http module. The http module has to be configured and must be
+running for the web interfaces to work.
 
 A web interface of a plugin allows to implement the diepaly of plugins data or even the configuration of a plugin
 through a browser. To reach the web interface from the admin interface, a button is displayed in the list of plugins.
