@@ -182,7 +182,7 @@ The following example fills the data to the <td> element of **headdata** that ha
             if (dataSet === 'devices_info' || dataSet === null) {
                 var objResponse = JSON.parse(response);
 
-                shngInsertText ('fromip', objResponse['fromip']
+                shngInsertText ('fromip', objResponse['fromip'])
             }
         }
     </script>
@@ -200,9 +200,9 @@ The following example fills the data to the <td> elements of all rows of **bodyt
                 var objResponse = JSON.parse(response);
 
                 for (var item in objResponse) {
-                    shngInsertText (item+'_path', objResponse[item]['path']
-                    shngInsertText (item+'_type', objResponse['type']
-                    shngInsertText (item+'_conf', objResponse['conf']
+                    shngInsertText (item+'_path', objResponse[item]['path'])
+                    shngInsertText (item+'_type', objResponse['type'])
+                    shngInsertText (item+'_conf', objResponse['conf'])
                 }
             }
         }
@@ -219,14 +219,13 @@ At the top of the template file **webif/templates/index.html** you find the foll
 
    {% set update_interval = 0 %}
 
-Change it to the desired update interval in milli-seconds. Make sure, that the interval is not too short. It should be
-longer than the time needed to execute the Python method **get_data_html()**. If the method only returns data that
-has been updated/collected by other Python threads, you can go down to about 1000 msec. If the Python method
-**get_data_html()** needs to collect the data when beeing called, you probably should set the update interval not
-below 5000 msec.
+Change it to the desired update interval in milli-seconds. Make sure, that the interval is longer than the time needed
+to execute the Python method **get_data_html()**. If the method only returns data that has been updated/collected by
+other Python threads, you can go down to about 1000 msec. If the Python method **get_data_html()** needs to collect
+the data when beeing called, you probably should set the update interval not below 5000 msec.
 
 .. note::
 
-    Make sure, that the interval is not too short. It should be longer than the time needed to execute
+    Make sure, that the interval is not too short. It HAS TO BE be longer than the time needed to execute
     the Python method **get_data_html()**.
 

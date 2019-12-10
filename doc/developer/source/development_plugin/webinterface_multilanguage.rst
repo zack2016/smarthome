@@ -56,30 +56,3 @@ to be declared a variable for the templating engine by including it in ``{{  }}`
 
 Translations are covered in more detail on the page :doc:`Multi-Language Support </development_plugin/multilanguage>`
 
-
-...
-
-
-...
-
-
-If the text to be translated is not covered by the defined translations in SmartHomeNG, add it to the file
-**locale.yaml** in the plugin directory.
-
-.. code-block:: YAML
-
-    # translations for the web interface
-    plugin_translations:
-        # Translations for the plugin specially for the web interface
-        'Wert 2':         {'de': '=', 'en': 'Value 2'}
-        'Wert 4':         {'de': '=', 'en': 'Value 4'}
-
-        # Alternative format for translations of longer texts:
-        'Hier kommt der Inhalt des Webinterfaces hin.':
-            de: '='
-            en: 'Here goes the content of the web interface.'
-
-In the section **plugin_translations** add a line with the text to be translated as the key. The value to that key is
-a dict/object with the languages as key followed by the text in that language. If for a language the text should be
-the original text (no translation needed), enter ``'='`` as translated text.
-

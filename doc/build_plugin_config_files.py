@@ -354,6 +354,8 @@ def write_configfile(plg, configfile_dir, language='de'):
     Create a .rst file with configuration information for the passed plugin
     """
     lparameter_yaml = []
+    no_lparameters = (lparameter_yaml == 'NONE')
+
     plgname = plg['name']
 
     # ---------------------------------
