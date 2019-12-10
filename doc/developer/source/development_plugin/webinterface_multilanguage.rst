@@ -54,9 +54,13 @@ to be declared a variable for the templating engine by including it in ``{{  }}`
          <th>{{ _('Typ') }}</th>
          <th>{{ _('knx_dpt') }}</th>
 
-Translations are covered in more detail on the page :doc:`Multi-Language Support <development_plugin/multilanguage>`
+Translations are covered in more detail on the page :doc:`Multi-Language Support </development_plugin/multilanguage>`
 
 
+...
+
+
+...
 
 
 If the text to be translated is not covered by the defined translations in SmartHomeNG, add it to the file

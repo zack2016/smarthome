@@ -27,7 +27,7 @@ Extending the Python method get_data_html()
 The class **WebInterface** in the plugin code has to be extended to collect the data that is needed to update the web page
 and to return it as a dict:
 
-.. code-block: PYTHON
+.. code-block:: PYTHON
 
     class WebInterface(SmartPluginWebIf):
 
@@ -62,24 +62,24 @@ and to return it as a dict:
 Assign IDs to the DOM elements
 ------------------------------
 
-Usually the **headtable looks like this:
+Usually the **headtable** looks like this:
 
 .. code-block:: html+jinja
 
-{% block headtable %}
-    <table class="table table-striped table-hover">
-        <tbody>
-            <tr>
-                <td class="py-1"><strong>Scanne von IP</strong></td>
-                <td class="py-1">{{ p.fromip }}</td>
+    {% block headtable %}
+        <table class="table table-striped table-hover">
+            <tbody>
+                <tr>
+                    <td class="py-1"><strong>Scanne von IP</strong></td>
+                    <td class="py-1">{{ p.fromip }}</td>
+
+                    ...
+                </tr>
 
                 ...
-            </tr>
 
-            ...
-
-        </tbody>
-    </table>
+            </tbody>
+        </table>
     {% endblock headtable %}
 
 To enable setting the value of the second <td> element while the page is displayed, the td element has to be extended
@@ -87,23 +87,24 @@ with an id:
 
 .. code-block:: html+jinja
 
-{% block headtable %}
-    <table class="table table-striped table-hover">
-        <tbody>
-            <tr>
-                <td class="py-1"><strong>Scanne von IP</strong></td>
-                <td id="fromip" class="py-1">{{ p.fromip }}</td>
+    {% block headtable %}
+        <table class="table table-striped table-hover">
+            <tbody>
+                <tr>
+                    <td class="py-1"><strong>Scanne von IP</strong></td>
+                    <td id="fromip" class="py-1">{{ p.fromip }}</td>
+
+                    ...
+                </tr>
 
                 ...
-            </tr>
 
-            ...
-
-        </tbody>
-    </table>
+            </tbody>
+        </table>
     {% endblock headtable %}
 
 Now the DOM element can be accessed through the id **fromip**.
+
 
 For tables, it is essential to have an individual id for the <td> elements in every row of the table that is
 filled through the for loop during rendering:
@@ -170,7 +171,43 @@ The web interface calls the plugin periodically to get updated data. When new da
 function **handleUpdatedData()** of the web page is called. This function has to assign the updated data to the
 right DOM elements.
 
-...
+The function **handleUpdatedData()** is defined in the block **pluginscripts** of the html template of the web interface.
+The following example fills the data to the <td> element of **headdata** that has been mentioned above:
+
+.. code-block:: html+jinja
+
+    {% block pluginscripts %}
+    <script>
+        function handleUpdatedData(response, dataSet=null) {
+            if (dataSet === 'devices_info' || dataSet === null) {
+                var objResponse = JSON.parse(response);
+
+                shngInsertText ('fromip', objResponse['fromip']
+            }
+        }
+    </script>
+    {% endblock pluginscripts %}
+
+
+The following example fills the data to the <td> elements of all rows of **bodytab?** that has been mentioned above:
+
+.. code-block:: html+jinja
+
+    {% block pluginscripts %}
+    <script>
+        function handleUpdatedData(response, dataSet=null) {
+            if (dataSet === 'devices_info' || dataSet === null) {
+                var objResponse = JSON.parse(response);
+
+                for (var item in objResponse) {
+                    shngInsertText (item+'_path', objResponse[item]['path']
+                    shngInsertText (item+'_type', objResponse['type']
+                    shngInsertText (item+'_conf', objResponse['conf']
+                }
+            }
+        }
+    </script>
+    {% endblock pluginscripts %}
 
 
 Setting the update interval
@@ -187,4 +224,9 @@ longer than the time needed to execute the Python method **get_data_html()**. If
 has been updated/collected by other Python threads, you can go down to about 1000 msec. If the Python method
 **get_data_html()** needs to collect the data when beeing called, you probably should set the update interval not
 below 5000 msec.
+
+.. note::
+
+    Make sure, that the interval is not too short. It should be longer than the time needed to execute
+    the Python method **get_data_html()**.
 
