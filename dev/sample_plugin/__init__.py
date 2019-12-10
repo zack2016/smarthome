@@ -271,9 +271,18 @@ class WebInterface(SmartPluginWebIf):
 
     @cherrypy.expose
     def get_data_html(self, dataSet=None):
+        """
+        Return data to update the webpage
+
+        For the standard update mechanism of the web interface, the dataSet to return the data for is None
+
+        :param dataSet: Dataset for which the data should be returned (standard: None)
+        :return: dict with the data needed to update the web page.
+        """
         if dataSet is None:
             # get the new data
             #self.plugin.beodevices.update_devices_info()
+
             # return it as json the the web page
             #return json.dumps(self.plugin.beodevices.beodeviceinfo)
 

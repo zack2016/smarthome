@@ -15,6 +15,8 @@ To implement automatic updates, the following has to be added to the web interfa
 
   - In the class **WebInterface** of the plugin, the method **get_data_html()** has to be implemented/extended to deliver
     the needed data
+  - The DOM elements (e.g. <td> elements in the **headtable** block or in the **bodytab?** blocks that are to be updated,
+    have to have an id assigned to them
   - int the html template, the javascript function **handleUpdatedData()** has to be implemented/extended
   - The template variable **update_interval** has to be set to the desired interval (in milli-seconds)
 
@@ -22,11 +24,151 @@ To implement automatic updates, the following has to be added to the web interfa
 Extending the Python method get_data_html()
 -------------------------------------------
 
-...
+The class **WebInterface** in the plugin code has to be extended to collect the data that is needed to update the web page
+and to return it as a dict:
+
+.. code-block: PYTHON
+
+    class WebInterface(SmartPluginWebIf):
+
+        def __init__(self, webif_dir, plugin):
+
+            ...
+
+        @cherrypy.expose
+        def index(self, scan=None, test=None, reload=None):
+
+            ...
+
+        def get_data_html(self, dataSet=None):
+            """
+            Return data to update the webpage
+
+            For the standard update mechanism of the web interface, the dataSet to return the data for is None
+
+            :param dataSet: Dataset for which the data should be returned (standard: None)
+            :return: dict with the data needed to update the web page.
+            """
+            if dataSet is None:
+                # get the new data
+                #data = {'testdata': self.plugin.get_testdata()}
+
+                # return it as json the the web page
+                #return json.dumps(data)
+
+            return
+
+
+Assign IDs to the DOM elements
+------------------------------
+
+Usually the **headtable looks like this:
+
+.. code-block:: html+jinja
+
+{% block headtable %}
+    <table class="table table-striped table-hover">
+        <tbody>
+            <tr>
+                <td class="py-1"><strong>Scanne von IP</strong></td>
+                <td class="py-1">{{ p.fromip }}</td>
+
+                ...
+            </tr>
+
+            ...
+
+        </tbody>
+    </table>
+    {% endblock headtable %}
+
+To enable setting the value of the second <td> element while the page is displayed, the td element has to be extended
+with an id:
+
+.. code-block:: html+jinja
+
+{% block headtable %}
+    <table class="table table-striped table-hover">
+        <tbody>
+            <tr>
+                <td class="py-1"><strong>Scanne von IP</strong></td>
+                <td id="fromip" class="py-1">{{ p.fromip }}</td>
+
+                ...
+            </tr>
+
+            ...
+
+        </tbody>
+    </table>
+    {% endblock headtable %}
+
+Now the DOM element can be accessed through the id **fromip**.
+
+For tables, it is essential to have an individual id for the <td> elements in every row of the table that is
+filled through the for loop during rendering:
+
+.. code-block:: html+jinja
+
+    <div class="table-responsive" style="margin-left: 3px; margin-right: 3px;" class="row">
+        <div class="col-sm-12">
+            <table class="table table-striped table-hover pluginList">
+                <thead>
+                    <tr>
+                        <th>{{ _('Item') }}</th>
+                        <th>{{ _('Typ') }}</th>
+                        <th>{{ _('knx_dpt') }}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in items %}
+                        <tr>
+                            <td class="py-1">{{ item._path }}</td>
+                            <td class="py-1">{{ item._type }}</td>
+                            <td class="py-1">{{ item.conf['knx_dpt'] }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+To ensure this, the id has to include the variable (named item) from the for loop:
+
+.. code-block:: html+jinja
+
+    <div class="table-responsive" style="margin-left: 3px; margin-right: 3px;" class="row">
+        <div class="col-sm-12">
+            <table class="table table-striped table-hover pluginList">
+                <thead>
+                    <tr>
+                        <th>{{ _('Item') }}</th>
+                        <th>{{ _('Typ') }}</th>
+                        <th>{{ _('knx_dpt') }}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in items %}
+                        <tr>
+                            <td id="{{ item }}_path" class="py-1">{{ item._path }}</td>
+                            <td id="{{ item }}_type" class="py-1">{{ item._type }}</td>
+                            <td id="{{ item }}_conf" class="py-1">{{ item.conf['knx_dpt'] }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+Now the ids are <item name>_path, <item name>_type and <item name>_conf
 
 
 Extending the Javascript function handleUpdatedData()
 -----------------------------------------------------
+
+The web interface calls the plugin periodically to get updated data. When new data is received, the javascript
+function **handleUpdatedData()** of the web page is called. This function has to assign the updated data to the
+right DOM elements.
 
 ...
 
