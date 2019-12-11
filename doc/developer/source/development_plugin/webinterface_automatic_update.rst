@@ -51,10 +51,15 @@ and to return it as a dict:
             """
             if dataSet is None:
                 # get the new data
-                #data = {'testdata': self.plugin.get_testdata()}
+                data = {}
+                data['fromip'] = 'fromip': self.plugin.fromip)
+
+                data['item'] = {}
+                for i in plugin.items:
+                    data['item'][i]['value'] = self.plugin.getitemvalue(i)
 
                 # return it as json the the web page
-                #return json.dumps(data)
+                return json.dumps(data)
 
             return
 
@@ -72,7 +77,6 @@ Usually the **headtable** looks like this:
                 <tr>
                     <td class="py-1"><strong>Scanne von IP</strong></td>
                     <td class="py-1">{{ p.fromip }}</td>
-
                     ...
                 </tr>
 
@@ -82,8 +86,41 @@ Usually the **headtable** looks like this:
         </table>
     {% endblock headtable %}
 
-To enable setting the value of the second <td> element while the page is displayed, the td element has to be extended
-with an id:
+For tables, it is essential to have an individual id for the <td> elements in every row of the table that is
+filled through the for loop during rendering:
+
+.. code-block:: html+jinja
+
+    {% block **bodytab1** %}
+        <div class="table-responsive" style="margin-left: 3px; margin-right: 3px;" class="row">
+            <div class="col-sm-12">
+                <table class="table table-striped table-hover pluginList">
+                    <thead>
+                        <tr>
+                            <th>{{ _('Item') }}</th>
+                            <th>{{ _('Typ') }}</th>
+                            <th>{{ _('knx_dpt') }}</th>
+                            <th>{{ _('Wert') }}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in items %}
+                            <tr>
+                                <td class="py-1">{{ item._path }}</td>
+                                <td class="py-1">{{ item._type }}</td>
+                                <td class="py-1">{{ item.conf['knx_dpt'] }}</td>
+                                <td class="py-1">{{ item._value }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    {% endblock **bodytab1** %}
+
+
+To enable setting the values of the <td> elements while the page is displayed, the td elements have to be extended
+with an id. To ensure individual ids in data tables, the id has to include the variable (named item) from the for loop:
 
 .. code-block:: html+jinja
 
@@ -93,75 +130,43 @@ with an id:
                 <tr>
                     <td class="py-1"><strong>Scanne von IP</strong></td>
                     <td id="fromip" class="py-1">{{ p.fromip }}</td>
-
                     ...
                 </tr>
-
                 ...
-
             </tbody>
         </table>
     {% endblock headtable %}
 
-Now the DOM element can be accessed through the id **fromip**.
+    ...
 
-
-For tables, it is essential to have an individual id for the <td> elements in every row of the table that is
-filled through the for loop during rendering:
-
-.. code-block:: html+jinja
-
-    <div class="table-responsive" style="margin-left: 3px; margin-right: 3px;" class="row">
-        <div class="col-sm-12">
-            <table class="table table-striped table-hover pluginList">
-                <thead>
-                    <tr>
-                        <th>{{ _('Item') }}</th>
-                        <th>{{ _('Typ') }}</th>
-                        <th>{{ _('knx_dpt') }}</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for item in items %}
+    {% block **bodytab1** %}
+        <div class="table-responsive" style="margin-left: 3px; margin-right: 3px;" class="row">
+            <div class="col-sm-12">
+                <table class="table table-striped table-hover pluginList">
+                    <thead>
                         <tr>
-                            <td class="py-1">{{ item._path }}</td>
-                            <td class="py-1">{{ item._type }}</td>
-                            <td class="py-1">{{ item.conf['knx_dpt'] }}</td>
+                            <th>{{ _('Item') }}</th>
+                            <th>{{ _('Typ') }}</th>
+                            <th>{{ _('knx_dpt') }}</th>
+                            <th>{{ _('Wert') }}</th>
                         </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        {% for item in items %}
+                            <tr>
+                                <td class="py-1">{{ item._path }}</td>
+                                <td class="py-1">{{ item._type }}</td>
+                                <td class="py-1">{{ item.conf['knx_dpt'] }}</td>
+                                <td id="{{ item }}_value" class="py-1">{{ item._value }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
         </div>
-    </div>
+    {% endblock **bodytab1** %}
 
-To ensure this, the id has to include the variable (named item) from the for loop:
-
-.. code-block:: html+jinja
-
-    <div class="table-responsive" style="margin-left: 3px; margin-right: 3px;" class="row">
-        <div class="col-sm-12">
-            <table class="table table-striped table-hover pluginList">
-                <thead>
-                    <tr>
-                        <th>{{ _('Item') }}</th>
-                        <th>{{ _('Typ') }}</th>
-                        <th>{{ _('knx_dpt') }}</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for item in items %}
-                        <tr>
-                            <td id="{{ item }}_path" class="py-1">{{ item._path }}</td>
-                            <td id="{{ item }}_type" class="py-1">{{ item._type }}</td>
-                            <td id="{{ item }}_conf" class="py-1">{{ item.conf['knx_dpt'] }}</td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
-    </div>
-
-Now the ids are <item name>_path, <item name>_type and <item name>_conf
+Now the DOM element can be accessed through the ids **fromip** and **<item>_value**.
 
 
 Extending the Javascript function handleUpdatedData()
@@ -182,7 +187,7 @@ The following example fills the data to the <td> element of **headdata** that ha
             if (dataSet === 'devices_info' || dataSet === null) {
                 var objResponse = JSON.parse(response);
 
-                shngInsertText ('fromip', objResponse['fromip'])
+                shngInsertText('fromip', objResponse['fromip'])
             }
         }
     </script>
@@ -200,9 +205,7 @@ The following example fills the data to the <td> elements of all rows of **bodyt
                 var objResponse = JSON.parse(response);
 
                 for (var item in objResponse) {
-                    shngInsertText (item+'_path', objResponse[item]['path'])
-                    shngInsertText (item+'_type', objResponse['type'])
-                    shngInsertText (item+'_conf', objResponse['conf'])
+                    shngInsertText(item+'_value', objResponse['item'][item]['value'])
                 }
             }
         }
@@ -224,7 +227,7 @@ to execute the Python method **get_data_html()**. If the method only returns dat
 other Python threads, you can go down to about 1000 msec. If the Python method **get_data_html()** needs to collect
 the data when beeing called, you probably should set the update interval not below 5000 msec.
 
-.. note::
+.. warning::
 
     Make sure, that the interval is not too short. It HAS TO BE be longer than the time needed to execute
     the Python method **get_data_html()**.
