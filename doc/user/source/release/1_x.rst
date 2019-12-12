@@ -36,13 +36,14 @@ Bitte auch die Release Notes für Version 1.x unter `https://www.smarthomeNG.de/
 
     Diese Release Notes ind ein Arbeitsstand.
 
-    Berücksichtigt sind Commits im smarthome Repository bis incl. 10. Dez 2019
-    Berücksichtigt sind Commits im plugins Repository bis: 10. Aug 2019 (Merge pull request #270 from Tom-Bom-badil/patch-1) [letztes Commit im 1.6.1 Master]
+     - Berücksichtigt sind Commits im smarthome Repository bis incl. 10. Dez 2019
+     - Berücksichtigt sind Commits im plugins Repository bis: 10. Aug 2019 (Merge pull request #270 from Tom-Bom-badil/patch-1) [letztes Commit im 1.6.1 Master]
 
 
 Bugfixes im CORE
 ----------------
 
+* lib.scheduler: fixes part of issue 335
 * ...
 
 
@@ -63,7 +64,6 @@ Updates im CORE
 
 * lib.config: Ignoring files starting with a '.' that are created when accessing a folder from MacOS
 * lib.logic: Adjusted log level for triggered logics that are disabled
-* lib.scheduler: fixes part of issue 335
 
 * Module:
 

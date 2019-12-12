@@ -1,8 +1,7 @@
 #!/usr/bin/env python3
 # vim: set encoding=utf-8 tabstop=4 softtabstop=4 shiftwidth=4 expandtab
 #########################################################################
-# Copyright 2013 Marcus Popp                               marcus@popp.mx
-# Copyright 2016 The SmartHomeNG team
+#  Copyright 2019-     Martin Sinn                          m.sinn@gmx.de
 #########################################################################
 #  This file is part of SmartHomeNG.
 #
@@ -22,8 +21,6 @@
 
 """
 This library creates a zip file with the configuration of SmartHomeNG.
-
-
 """
 
 import copy
@@ -42,41 +39,70 @@ def get_backupdate():
     return year + '-' + month + '-' + day
 
 
+def get_backuptime():
+    hour = str(datetime.now().hour).zfill(2)
+    minute = str(datetime.now().minute).zfill(2)
+    second = str(datetime.now().second).zfill(2)
+    return hour + '-' + minute + '-' + second
 
-def create_backup(conf_base_dir, var_dir=''):
-    '''
-    Create a zip file containing the configuration of SmartHomeNG. The zip file is stored in var/backup
 
-    This function can be called without an existing sh object (backup via commandline option), so it may nor
-    use any references via 'sh.'
 
-    :param conf_base_dir: basedir for configuration
-                          (shold be 'extern_conf_dir' to reflect --config_dir option)
-    :param var_dir:       var-directory. If empty or ommited, conf_base_dir/var is used.
+def make_backup_directories(base_dir):
+    """
+    Create the backup-dirctory and the restore-directory, if the do not already exist
 
+    :param base_dir:
     :return:
-    '''
-
-
-    # backup_filename = 'shng_config_backup_' + get_backupdate() + '.zip'
-    backup_filename = 'shng_config_backup.zip'
-
-    etc_dir = os.path.join(conf_base_dir, 'etc')
-    items_dir = os.path.join(conf_base_dir, 'items')
-    logic_dir = os.path.join(conf_base_dir, 'logics')
-    scenes_dir = os.path.join(conf_base_dir, 'scenes')
-
-    if var_dir == '':
-        var_dir = os.path.join(conf_base_dir, 'var')
-    backup_dir = var_dir + os.path.sep + 'backup'
-
+    """
+    backup_dir = os.path.join(base_dir, 'var','backup')
+    restore_dir = os.path.join(base_dir, 'var','restore')
 
     if not os.path.isdir(backup_dir):
         try:
             os.makedirs(backup_dir)
         except OSError as e:
             logger.error("Cannot create directory - No backup was created - Error {}".format(e))
-            return
+            return False
+
+    if not os.path.isdir(restore_dir):
+        try:
+            os.makedirs(restore_dir)
+        except OSError as e:
+            logger.error("Cannot create directory - No restore was created - Error {}".format(e))
+            return False
+
+    return True
+
+
+
+def create_backup(conf_base_dir, base_dir, filename_with_timestamp=False):
+    """
+    Create a zip file containing the configuration of SmartHomeNG. The zip file is stored in var/backup
+
+    This function can be called without an existing sh object (backup via commandline option), so it may nor
+    use any references via 'sh.'
+
+    :param conf_base_dir: basedir for configuration
+                          (should be 'extern_conf_dir' to reflect --config_dir option)
+    :param base_dir:       var-directory. If empty or ommited, conf_base_dir/var is used.
+
+    :return:
+    """
+
+    make_backup_directories(base_dir)
+
+    backup_dir = os.path.join(base_dir, 'var','backup')
+    logger.warning("backup_dir = {}".format(backup_dir))
+
+    if filename_with_timestamp:
+        backup_filename = 'shng_config_backup_' + get_backupdate() + '_' + get_backuptime() + '.zip'
+    else:
+        backup_filename = 'shng_config_backup.zip'
+
+    etc_dir = os.path.join(conf_base_dir, 'etc')
+    items_dir = os.path.join(conf_base_dir, 'items')
+    logic_dir = os.path.join(conf_base_dir, 'logics')
+    scenes_dir = os.path.join(conf_base_dir, 'scenes')
 
 
     # create new zip file
@@ -116,14 +142,27 @@ def create_backup(conf_base_dir, var_dir=''):
 
 
 def backup_file(backupzip, source_dir, arc_dir, filename):
+    """
+    Backup one file to a zip-archive
 
+    :param backupzip: Name of the zip-archive (full pathname)
+    :param source_dir: Directory where the file to backup is located
+    :param arc_dir: Name of destination directory in the zip-archive
+    :param filename: Name of the file to backup
+    """
     if os.path.isfile(os.path.join(source_dir, filename)):
         backupzip.write(os.path.join(source_dir, filename), arcname=os.path.join(arc_dir, filename))
     return
 
 
 def backup_directory(backupzip, source_dir, extenstion='.yaml'):
+    """
+    Backup all files with a certain extension from the given directory to a zip-archive
 
+    :param backupzip: Name of the zip-archive (full pathname)
+    :param source_dir: Directory where the yaml-files to backup are located
+    :param extenstion: Extension of the files to backup (default is .yaml)
+    """
     path = source_dir.split(os.path.sep)
     dir = path[len(path)-1]
     arc_dir = dir + os.path.sep
@@ -133,3 +172,49 @@ def backup_directory(backupzip, source_dir, extenstion='.yaml'):
             backup_file(backupzip, source_dir, arc_dir, filename)
 
     return
+
+
+def restore_backup(conf_base_dir, base_dir):
+    """
+    Restore configuration from a zip-archive to the SmartHomeNG instance.
+
+    The zip-archive is read from var/restore. It has to be the only file in that directory
+
+    This function can be called without an existing sh object (backup via commandline option), so it may nor
+    use any references via 'sh.'
+
+    :param conf_base_dir: basedir for configuration
+                          (should be 'extern_conf_dir' to reflect --config_dir option)
+    :param base_dir:       var-directory. If empty or ommited, conf_base_dir/var is used.
+
+    :return:
+    """
+
+    make_backup_directories(base_dir)
+
+    restore_dir = os.path.join(base_dir, 'var','restore')
+    logger.warning("restore_dir = {}".format(restore_dir))
+
+    pass
+
+    logger.error("The restore function is not implemented yet - No configuration data was restored")
+
+    return
+
+
+def restore_file(backupzip, arc_dir, filename, dest_dir, overwrite=False):
+    """
+
+    :param backupzip: Name of the zip-archive (full pathname)
+    :param arc_dir: Name of source directory in the zip-archive
+    :param filename: Name of the file to restore
+    :param dest_dir: Destinaion directory where the file should be restored to
+    :param overwrite: Overwrite file in destination, if it already exists
+
+    :return:
+    """
+    pass
+
+    return
+
+

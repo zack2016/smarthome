@@ -40,6 +40,7 @@ and to return it as a dict:
 
             ...
 
+        @cherrypy.expose
         def get_data_html(self, dataSet=None):
             """
             Return data to update the webpage
@@ -62,6 +63,11 @@ and to return it as a dict:
                 return json.dumps(data)
 
             return
+
+
+Die optionale Möglichkeit einen **dataSet** anzugeben, ist für zukünftige Erweiterungen vorgesehen. Darüber soll es
+möglich werden, Daten in unteeschiedlichen Zyklen zu aktualisieren (z.B. für Daten deren Ermittlung eine längere
+Zeit in Anspruch nimmt).
 
 
 Assign IDs to the DOM elements

@@ -1,0 +1,62 @@
+.. index:: Konfiguration
+.. index:: Konfiguration; Sichern und Wiederherstellen
+
+.. role:: redsup
+.. role:: bluesup
+
+========================================================
+Konfiguration Sichern und Wiederherstellen :redsup:`neu`
+========================================================
+
+-------
+Sichern
+-------
+
+Die Konfiguration von SmartHomeNG kann in ein zip-Archiv gesichert werden und aus einem solchen Archiv wiederhergestellt
+werden. Dieses kann sowohl von der Kommandozeile aus, als auch über das Administrationsinterface erfolgen.
+
+Von der Kommandozeile wird ein Backup erstellt, indem SmartHomeNG mit der Option **-cb** bzw. **--create_backup**
+gestartet wird. Das zip-Archiv mit dem Backup wird im Verzeichnis **/var/backup** abgelegt und hat den Namen
+**shng_config_backup.zip**.
+
+Wenn bim Backup der Dateiname den Zeitpunkt des Backups enhalten soll, muss SmartHomeNG mit der Option **-cbt** bzw.
+**--create_backup_t** aufgerufen werden. Dann wird der Dateiname um Datum und Zeit der Erstellung des Backups ergänzt.
+
+Die Sicherung von der Kommandozeile aus kann durchgeführt werden, während eine Inzanz von SmartHomeNG läuft. Es ist
+nicht notwendig ein laufendes SmartHomeNG vorher zu beenden.
+
+.. note::
+
+   Es werden keine Konfigurationsdateien des alten :CONF Formats gesichert, sondern ausschließlich YAML Dateien.
+
+
+----------------
+Wiederherstellen
+----------------
+
+Zum Wiederherstellen eines Konfigurations-Backups von der Kommandozeile, muss das Backup-Archiv in das Verzeichnis
+**/var/restore** gelegt werden. Es darf einen beliebigen Namen tragen und muss die einzige Datei in diesem Verzeichnis
+sein. Anschließend muss SmartHomeNG mit der Option **-rb** bzw. **--restore_backup** gestartet werden.
+
+...
+
+
+--------------------
+Umfang der Sicherung
+--------------------
+
+Beim sichern werden folgende Daten in das zip-Archiv übernommen:
+
+  - /etc/logging.yaml
+  - /etc/logic.yaml
+  - /etc/module.yaml
+  - /etc/plugin.yaml
+  - /etc/smarthome.yaml
+  - /etc/struct.yaml
+  - /items - alle .yaml Dateien
+  - /logic - alle .yaml Dateien
+  - /scenes - alle .yaml Dateien
+
+Falls SmartHomeNG mit der Option **-c** bzw. **--config_dir** gestartet wurde, so wird dieses beim Sichern und
+Wiederherstellen berücksichtigt.
+

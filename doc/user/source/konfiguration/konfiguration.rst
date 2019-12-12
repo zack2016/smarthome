@@ -14,6 +14,7 @@ Konfiguration
    logiken.rst
    logging.rst
    szenen.rst
+   konfiguration_backup_restore
 
 
 =========
