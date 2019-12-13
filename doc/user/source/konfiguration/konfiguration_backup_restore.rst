@@ -28,7 +28,7 @@ nicht notwendig ein laufendes SmartHomeNG vorher zu beenden.
 
 .. note::
 
-   Es werden keine Konfigurationsdateien des alten :CONF Formats gesichert, sondern ausschließlich YAML Dateien.
+   Es werden keine Konfigurationsdateien des alten .CONF Formats gesichert, sondern ausschließlich YAML Dateien.
 
 
 ----------------

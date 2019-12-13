@@ -90,9 +90,7 @@ def create_backup(conf_base_dir, base_dir, filename_with_timestamp=False):
     """
 
     make_backup_directories(base_dir)
-
     backup_dir = os.path.join(base_dir, 'var','backup')
-    logger.warning("backup_dir = {}".format(backup_dir))
 
     if filename_with_timestamp:
         backup_filename = 'shng_config_backup_' + get_backupdate() + '_' + get_backuptime() + '.zip'
@@ -118,6 +116,11 @@ def create_backup(conf_base_dir, base_dir, filename_with_timestamp=False):
     backup_file(backupzip, source_dir, arc_dir, 'plugin.yaml')
     backup_file(backupzip, source_dir, arc_dir, 'smarthome.yaml')
     backup_file(backupzip, source_dir, arc_dir, 'struct.yaml')
+
+    # backup certificate files from /etc
+    #logger.warning("- etc_dir_dir = {}".format(etc_dir))
+    backup_directory(backupzip, etc_dir, '.cer')
+    backup_directory(backupzip, etc_dir, '.key')
 
     # backup files from /items
     #logger.warning("- items_dir = {}".format(items_dir))
@@ -191,15 +194,32 @@ def restore_backup(conf_base_dir, base_dir):
     """
 
     make_backup_directories(base_dir)
-
     restore_dir = os.path.join(base_dir, 'var','restore')
-    logger.warning("restore_dir = {}".format(restore_dir))
+
+    archive_file = ''
+    for filename in os.listdir(restore_dir):
+        if filename.endswith('.zip'):
+            if not filename.startswith('.'):
+                if archive_file == '':
+                    archive_file = filename
+                else:
+                    archive_file = 'MULTIPLE'
+                    break
+
+    if archive_file == '':
+        logger.error("No zip file found in restore directory - No configuration data was restored")
+        return
+    elif archive_file == 'MULTIPLE':
+        logger.error("Multiple zip files found - No configuration data was restored")
+        return
+
 
     pass
-
     logger.error("The restore function is not implemented yet - No configuration data was restored")
-
     return
+
+
+    return os.path.join(restore_dir, archive_file)
 
 
 def restore_file(backupzip, arc_dir, filename, dest_dir, overwrite=False):

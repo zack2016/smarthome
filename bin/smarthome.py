@@ -1237,11 +1237,13 @@ if __name__ == '__main__':
         pass
     elif args.create_backup:
         fn = lib.backup.create_backup(extern_conf_dir, BASE)
-        print("Backup of configuration created at: \n{}".format(fn))
+        if fn:
+            print("Backup of configuration created at: \n{}".format(fn))
         exit(0)
     elif args.create_backup_t:
         fn = lib.backup.create_backup(extern_conf_dir, BASE, filename_with_timestamp=True)
-        print("Backup of configuration created at: \n{}".format(fn))
+        if fn:
+            print("Backup of configuration created at: \n{}".format(fn))
         exit(0)
     elif args.restore_backup:
         fn = lib.backup.restore_backup(extern_conf_dir, BASE)
