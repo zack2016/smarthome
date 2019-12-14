@@ -1249,6 +1249,7 @@ if __name__ == '__main__':
         fn = lib.backup.restore_backup(extern_conf_dir, BASE)
         if fn is not None:
             print("Configuration has been restored from: \n{}".format(fn))
+            print("Restart SmartHomeNG to use the restored configuration")
         exit(0)
     # check for pid file
     if lib.daemon.check_sh_is_running(PIDFILE):

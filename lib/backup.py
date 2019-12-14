@@ -26,6 +26,8 @@ This library creates a zip file with the configuration of SmartHomeNG.
 import copy
 import logging
 import zipfile
+import shutil
+import time
 import os
 from datetime import datetime
 
@@ -75,7 +77,7 @@ def make_backup_directories(base_dir):
 
 
 
-def create_backup(conf_base_dir, base_dir, filename_with_timestamp=False):
+def create_backup(conf_base_dir, base_dir, filename_with_timestamp=False, before_restore=False):
     """
     Create a zip file containing the configuration of SmartHomeNG. The zip file is stored in var/backup
 
@@ -92,10 +94,12 @@ def create_backup(conf_base_dir, base_dir, filename_with_timestamp=False):
     make_backup_directories(base_dir)
     backup_dir = os.path.join(base_dir, 'var','backup')
 
+    backup_filename = 'shng_config_backup'
+    if before_restore:
+        backup_filename += '_before_restore'
     if filename_with_timestamp:
-        backup_filename = 'shng_config_backup_' + get_backupdate() + '_' + get_backuptime() + '.zip'
-    else:
-        backup_filename = 'shng_config_backup.zip'
+        backup_filename += '_' + get_backupdate() + '_' + get_backuptime()
+    backup_filename += '.zip'
 
     etc_dir = os.path.join(conf_base_dir, 'etc')
     items_dir = os.path.join(conf_base_dir, 'items')
@@ -104,7 +108,9 @@ def create_backup(conf_base_dir, base_dir, filename_with_timestamp=False):
 
 
     # create new zip file
-    backupzip = zipfile.ZipFile(backup_dir + os.path.sep + backup_filename, mode='w')
+    #backupzip = zipfile.ZipFile(backup_dir + os.path.sep + backup_filename, mode='w')
+    backupzip = zipfile.ZipFile(backup_dir + os.path.sep + backup_filename, mode='w', compression=zipfile.ZIP_DEFLATED)
+    #backupzip = zipfile.ZipFile(backup_dir + os.path.sep + backup_filename, mode='w', compression=zipfile.ZIP_STORED)
 
     # backup files from /etc
     #logger.warning("- etc_dir = {}".format(etc_dir))
@@ -118,7 +124,6 @@ def create_backup(conf_base_dir, base_dir, filename_with_timestamp=False):
     backup_file(backupzip, source_dir, arc_dir, 'struct.yaml')
 
     # backup certificate files from /etc
-    #logger.warning("- etc_dir_dir = {}".format(etc_dir))
     backup_directory(backupzip, etc_dir, '.cer')
     backup_directory(backupzip, etc_dir, '.key')
 
@@ -153,8 +158,9 @@ def backup_file(backupzip, source_dir, arc_dir, filename):
     :param arc_dir: Name of destination directory in the zip-archive
     :param filename: Name of the file to backup
     """
-    if os.path.isfile(os.path.join(source_dir, filename)):
-        backupzip.write(os.path.join(source_dir, filename), arcname=os.path.join(arc_dir, filename))
+    if not filename.startswith('.'):
+        if os.path.isfile(os.path.join(source_dir, filename)):
+            backupzip.write(os.path.join(source_dir, filename), arcname=os.path.join(arc_dir, filename))
     return
 
 
@@ -196,6 +202,11 @@ def restore_backup(conf_base_dir, base_dir):
     make_backup_directories(base_dir)
     restore_dir = os.path.join(base_dir, 'var','restore')
 
+    etc_dir = os.path.join(conf_base_dir, 'etc')
+    items_dir = os.path.join(conf_base_dir, 'items')
+    logic_dir = os.path.join(conf_base_dir, 'logics')
+    scenes_dir = os.path.join(conf_base_dir, 'scenes')
+
     archive_file = ''
     for filename in os.listdir(restore_dir):
         if filename.endswith('.zip'):
@@ -212,20 +223,34 @@ def restore_backup(conf_base_dir, base_dir):
     elif archive_file == 'MULTIPLE':
         logger.error("Multiple zip files found - No configuration data was restored")
         return
+    restorezip_filename = os.path.join(restore_dir, archive_file)
+
+    create_backup(conf_base_dir, base_dir, True, True)
+    overwrite = True
+
+    # open existing zip file
+    restorezip = zipfile.ZipFile(restorezip_filename, mode='r')
+    #restorezip = zipfile.ZipFile(restorezip_filename, mode='r', compression=zipfile.ZIP_STORED)
+
+    # restore files to /etc
+    restore_directory(restorezip, 'etc', etc_dir, overwrite)
+
+    # restore files to /items
+    restore_directory(restorezip, 'items', items_dir, overwrite)
+
+    # backup files from /logic
+    restore_directory(restorezip, 'logics', logic_dir, overwrite)
+
+    # backup files from /scenes
+    restore_directory(restorezip, 'scenes', scenes_dir, overwrite)
+
+    return restorezip_filename
 
 
-    pass
-    logger.error("The restore function is not implemented yet - No configuration data was restored")
-    return
-
-
-    return os.path.join(restore_dir, archive_file)
-
-
-def restore_file(backupzip, arc_dir, filename, dest_dir, overwrite=False):
+def restore_file(restorezip, arc_dir, filename, dest_dir, overwrite=False):
     """
 
-    :param backupzip: Name of the zip-archive (full pathname)
+    :param restorezip: Name of the zip-archive (full pathname)
     :param arc_dir: Name of source directory in the zip-archive
     :param filename: Name of the file to restore
     :param dest_dir: Destinaion directory where the file should be restored to
@@ -233,8 +258,38 @@ def restore_file(backupzip, arc_dir, filename, dest_dir, overwrite=False):
 
     :return:
     """
-    pass
+    dest_filename = os.path.join(dest_dir, filename)
+    if os.path.isfile(dest_filename) and not overwrite:
+        logger.error("File {} not restored - it already exists at destination {}".format(filename, dest_dir))
+        return False
+
+    logger.info("Restoring file {} to {} overwrite={}".format(filename, dest_dir, overwrite))
+
+    # copy file (taken from zipfile's extract)
+    zip_info = restorezip.getinfo(os.path.join(arc_dir, filename))
+    if not(zip_info.filename[-1] == '/'):
+        zip_info.filename = os.path.basename(zip_info.filename)
+    restorezip.extract(zip_info, path=dest_dir, pwd=None)
+
+    # restore original timestamp
+    date_time = time.mktime(zip_info.date_time + (0, 0, -1))
+    os.utime(os.path.join(dest_dir, filename), (date_time, date_time))
+
 
     return
 
 
+def restore_directory(restorezip, arc_dir, dest_dir, overwrite=False):
+    """
+    Restore all files from a certain archive directory to a given destination directory
+
+    :param restorezip: Name of the zip-archive (full pathname)
+    :param arc_dir: Name of source directory in the zip-archive
+    :param dest_dir: Destinaion directory where the file should be restored to
+    :param overwrite: Overwrite file in destination, if it already exists
+    """
+
+    for fn in restorezip.namelist():
+        if fn.startswith(arc_dir+'/'):
+            restore_file(restorezip, arc_dir, os.path.basename(fn), dest_dir, overwrite)
+    return

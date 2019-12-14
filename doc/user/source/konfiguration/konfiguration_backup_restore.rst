@@ -56,9 +56,17 @@ Beim sichern werden folgende Daten in das zip-Archiv übernommen:
   - /etc/plugin.yaml
   - /etc/smarthome.yaml
   - /etc/struct.yaml
+  - /etc/*.cer
+  - /etc/*.key
   - /items - alle .yaml Dateien
   - /logic - alle .yaml Dateien
   - /scenes - alle .yaml Dateien
+
+.. warning::
+
+    Zertifikats- und Key Dateien (*.cer, *.key) für tls/https werden in SmartHomeNG v1.6 und v1.6.1 NICHT gesichert.
+    Dieses erfolgt erst in höheren Releases.
+
 
 Falls SmartHomeNG mit der Option **-c** bzw. **--config_dir** gestartet wurde, so wird dieses beim Sichern und
 Wiederherstellen berücksichtigt.
