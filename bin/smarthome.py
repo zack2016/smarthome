@@ -437,7 +437,7 @@ class SmartHome():
         - logic.yaml / logic.conf
 
         """
-        configs = ['logging', 'smarthome', 'module', 'plugin', 'logic']
+        configs = ['holidays', 'logging', 'logic', 'module', 'plugin', 'smarthome']
 
         for c in configs:
             default = os.path.join(self._base_dir, 'etc', c + YAML_FILE + DEFAULT_FILE)

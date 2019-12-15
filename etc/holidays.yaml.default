@@ -1,0 +1,17 @@
+%YAML 1.1
+---
+# etc/holidays.yaml
+
+location:
+    country: DE
+    province: HH
+    #state: FL          # state is only used for United States and Brazil
+
+custom:
+    # custom holidays without a specified year repeat every year
+    - {'day': 2, 'month': 8, 'name': "Jon Doe's birthday"}
+    - {'day': 22, 'month': 11, 'name': "Jane Doe's birthday"}
+    - {'day': 2, 'month': 8, 'year': 2020, 'name': "Jon Doe's 100th birthday"}
+    - {'dow': 5, 'dow_week': 'last', 'month': 7, 'name': "Sysadmin day"}         # last friday in July
+    - {'dow': 2, 'dow_week': 2, 'month': 7, 'name': "second tuesday in July"}
+
