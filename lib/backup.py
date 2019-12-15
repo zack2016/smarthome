@@ -116,6 +116,7 @@ def create_backup(conf_base_dir, base_dir, filename_with_timestamp=False, before
     #logger.warning("- etc_dir = {}".format(etc_dir))
     source_dir = etc_dir
     arc_dir = 'etc'
+    backup_file(backupzip, source_dir, arc_dir, 'holidays.yaml')
     backup_file(backupzip, source_dir, arc_dir, 'logging.yaml')
     backup_file(backupzip, source_dir, arc_dir, 'logic.yaml')
     backup_file(backupzip, source_dir, arc_dir, 'module.yaml')

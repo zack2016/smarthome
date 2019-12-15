@@ -3,7 +3,7 @@
 #########################################################################
 # Copyright 2016-       Martin Sinn                         m.sinn@gmx.de
 #########################################################################
-#  This file is part of SmartHomeNG.    
+#  This file is part of SmartHomeNG.
 #
 #  SmartHomeNG is free software: you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -19,6 +19,12 @@
 #  along with SmartHomeNG. If not, see <http://www.gnu.org/licenses/>.
 #########################################################################
 
+try:
+    import holidays
+    HOLIDAYS_imported = True
+except:
+    HOLIDAYS_imported = False
+
 
 import datetime
 import dateutil
@@ -26,11 +32,13 @@ from dateutil.tz import tzlocal
 import logging
 import os
 
+import lib.shyaml as shyaml
+from lib.constants import (YAML_FILE)
+
 
 logger = logging.getLogger(__name__)
 
 _shtime_instance = None    # Pointer to the initialized instance of the shtime class (for use by static methods)
-
 
 class Shtime:
 
@@ -38,9 +46,11 @@ class Shtime:
     _utctz = None
     _starttime = None
     tz = ''
-    
-    
+    holidays = None
+
+
     def __init__(self, smarthome):
+        self._sh = smarthome
         global _shtime_instance
         if _shtime_instance is not None:
             import inspect
@@ -49,7 +59,7 @@ class Shtime:
             logger.critical("A second 'shtime' object has been created. There should only be ONE instance of class 'Shtime'!!! Called from: {} ({})".format(calframe[1][1], calframe[1][3]))
 
         _shtime_instance = self
-        
+
         self._starttime = datetime.datetime.now()
 
         # set default timezone to UTC
@@ -100,27 +110,27 @@ class Shtime:
         else:
             logger.warning("Problem parsing timezone: {}. Using UTC.".format(tz))
         return
-        
-        
+
+
     def set_tzinfo(self, tzinfo):
         """
         Set the timezone info
         """
         self._tzinfo = tzinfo
         return
-        
-        
+
+
     #################################################################
     # Time Methods
     #################################################################
     def now(self):
         """
         Returns the actual time in a timezone aware format
-        
+
         :return: Actual time for the local timezone
         :rtype: datetime
         """
-        
+
         if self._tzinfo is None:
             self._tzinfo = dateutil.tz.gettz('UTC')
         # tz aware 'localtime'
@@ -216,3 +226,195 @@ class Shtime:
         total_seconds = days * 24 * 3600 + hours * 3600 + minutes * 60 + seconds
 
         return {'days': days, 'hours': hours, 'minutes': minutes, 'seconds': seconds, 'total_seconds': total_seconds}
+
+
+    # -----------------------------------------------------------------------------------------------------
+    #   Following methods implement some date handling
+    # -----------------------------------------------------------------------------------------------------
+
+    def _datetransform(self, key):
+        if isinstance(key, datetime.datetime):
+            key = key.date()
+        elif isinstance(key, datetime.date):
+            key = key
+        elif isinstance(key, int) or isinstance(key, float):
+            key = datetime.utcfromtimestamp(key).date()
+        elif isinstance(key, str):
+            try:
+                key = dateutil.parser.parse(key).date()
+            except (ValueError, OverflowError):
+                raise ValueError("Cannot parse date from string '%s'" % key)
+        else:
+            raise TypeError("Cannot convert type '%s' to date." % type(key))
+        return key
+
+
+    def today(self):
+        """
+        Return today's date
+
+        :return: date of today
+        """
+        return datetime.datetime.now().date()
+
+
+    def tomorrow(self):
+        """
+        Return tomorrow's date
+
+        :return: date of tomorrow
+        """
+        return self.today() + datetime.timedelta(days=1)
+
+
+    def yesterday(self):
+        """
+        Return yesterday's date
+
+        :return: date of yesterday
+        """
+        return self.today() + datetime.timedelta(days=-1)
+
+
+    def current_year(self):
+        """
+        Return the current year
+
+        :return: year
+        """
+        return self.today().year
+
+
+    def weekday(self, date=None):
+        """
+        Returns the weekday of a given date (or of today, if date is None)
+
+        Return the day of the week as an integer, where Monday is 1 and Sunday is 7. (ISO weekday)
+
+        :param date: date for which the weekday should be returned. If not specified, today is used
+        :return: weekday (1=Monday .... 7=Sunday)
+        """
+
+        if date:
+            dt = self._datetransform(date)
+            return dt.isoweekday()
+        else:
+            return datetime.datetime.now().isoweekday()
+
+
+    def _add_custom_holidays(self):
+        """
+        Add custom holidays from etc/holidays.yaml to the initialized list of holidays
+
+        :return: Number of valid custom holiday definitions
+        """
+        custom = self.config.get('custom', [])
+        count = 0
+        if len(custom) > 0:
+            for cust_date in custom:
+                cust_dict = {}
+                # {'day': 2, 'month': 12, 'name': "Martin's Geburtstag"}
+                if cust_date.get('month', None) and cust_date.get('day', None):
+                    if cust_date.get('year', None):
+                        d = datetime.date(cust_date['year'], cust_date['month'], cust_date['day'])
+                        cust_dict[d] = cust_date.get('name', '')
+                        count += 1
+                    else:
+                        for year in self.years:
+                            d = datetime.date(year, cust_date['month'], cust_date['day'])
+                            cust_dict[d] = cust_date.get('name', '')
+                        count += 1
+                self.holidays.append(cust_dict)
+
+        return count
+
+
+    def _initialize_holidays(self):
+        """
+        Initialize the holidays according to etc/holidays.yaml for the current year and the two years to come
+        """
+
+        if self.holidays is None:
+            self._etc_dir = self._sh._etc_dir
+            conf_filename = os.path.join(self._sh._etc_dir, 'holidays'+YAML_FILE)
+            self.config = shyaml.yaml_load(conf_filename)
+            location = self.config.get('location', None)
+
+            # prepopulate holidays for following years
+            this_year=self.today().year
+            self.years=[this_year, this_year+1, this_year+2]
+
+            if location:
+                country=location.get('country', 'DE')
+                prov=location.get('province', None)
+                state=location.get('state', None)
+                self.holidays = holidays.CountryHoliday(country, years=self.years, prov=prov, state=state)
+            else:
+                self.holidays = holidays.CountryHoliday('US', years=self.years, prov=None, state=None)
+
+            c_logtext = 'not defined'
+            c_logcount = ''
+            count = self._add_custom_holidays()
+            if count > 0:
+                c_logcount = ' ' + str(count)
+                c_logtext = 'defined'
+            logger.warning("Using holidays for country '{}', province '{}', state '{}',{} custom holiday(s) {}".format(self.holidays.country, self.holidays.prov, self.holidays.state, c_logcount, c_logtext))
+
+            logger.info('Defined holidays:')
+            for ft in sorted(self.holidays):
+                logger.info(' - {}: {}'.format(ft, self.holidays[ft]))
+
+        return
+
+
+    def is_holiday(self, date=None):
+        """
+        Returns True, if the date is a holiday
+
+        Note: Easter sunday is not concidered a holiday (since it is a sunday already)!
+
+        :param date: date for which the weekday should be returned. If not specified, today is used
+        :return:
+        """
+
+        if date:
+            dt = self._datetransform(date)
+        else:
+            dt = self.today()
+
+        self._initialize_holidays()
+
+        return (dt in self.holidays)
+
+
+    def holiday_name(self, date=None):
+        """
+        Returns the name of the holiday, if date is a holiday
+
+        :param date:
+        :return:
+        """
+        if date:
+            dt = self._datetransform(date)
+        else:
+            dt = self.today()
+
+        self._initialize_holidays()
+
+        if self.holidays.get(dt):
+            return self.holidays.get(dt)
+        else:
+            return ''
+
+
+    def holiday_list(self, year=None):
+        """
+
+        :param year:
+        :return:
+        """
+        hl = []
+        for h in self.holidays:
+            if year is None or h.year == year:
+                hl.append({h, self.holidays[h]})
+        return hl

@@ -304,6 +304,10 @@ class SmartHome():
 
         self.shng_status = {'code': 2, 'text': 'Initalizing: Requirements checked'}
 
+
+        self.shtime._initialize_holidays()
+
+
         # Add Signal Handling
 #        signal.signal(signal.SIGHUP, self.reload_logics)
         signal.signal(signal.SIGINT, self.stop)
