@@ -312,9 +312,9 @@ class Shtime:
         count = 0
         if len(custom) > 0:
             for cust_date in custom:
-                cust_dict = {}
                 # {'day': 2, 'month': 12, 'name': "Martin's Geburtstag"}
                 if cust_date.get('month', None) and cust_date.get('day', None):
+                    cust_dict = {}
                     if cust_date.get('year', None):
                         d = datetime.date(cust_date['year'], cust_date['month'], cust_date['day'])
                         cust_dict[d] = cust_date.get('name', '')
@@ -324,7 +324,37 @@ class Shtime:
                             d = datetime.date(year, cust_date['month'], cust_date['day'])
                             cust_dict[d] = cust_date.get('name', '')
                         count += 1
-                self.holidays.append(cust_dict)
+                    self.holidays.append(cust_dict)
+                elif cust_date.get('month', None) and cust_date.get('dow', None) and cust_date.get('dow_week', None):
+                    cust_dict = {}
+                    logger.warning('dow: {}'.format(cust_date))
+                    month = cust_date.get('month', None)
+                    if 0 < cust_date.get('dow', None) < 8:
+                        for year in self.years:
+                            if cust_date.get('dow_week', None) == 'last':
+                                day_last = datetime.date(year, month+1, 1) + datetime.timedelta(days=-1)
+                                dow_last = self.weekday(datetime.date(year, month+1, 1) + datetime.timedelta(days=-1))
+
+                                if dow_last >= cust_date.get('dow', None):
+                                    d_diff = dow_last - cust_date.get('dow', None)
+                                else:
+                                    d_diff =  dow_last + 7 - cust_date.get('dow', None)
+                                date = day_last - datetime.timedelta(days=d_diff)
+                                logger.warning('dow_last: d_diff {} -> {}'.format(d_diff, date))
+                            else:
+                                day_1st = datetime.date(year, month, 1)
+                                dow_1st = self.weekday(datetime.date(year, month, 1))
+                                week = int(cust_date.get('dow_week', None))
+
+                                if dow_1st <= cust_date.get('dow', None):
+                                    d_diff = cust_date.get('dow', None) - dow_1st
+                                else:
+                                    d_diff =  7 - dow_1st + cust_date.get('dow', None)
+                                d_diff += (week-1) * 7
+                                date = day_1st + datetime.timedelta(days=d_diff)
+                                logger.warning('dow_1st: d_diff {} -> {}'.format(d_diff, date))
+                            cust_dict[date] = cust_date.get('name', '')
+                    self.holidays.append(cust_dict)
 
         return count
 
