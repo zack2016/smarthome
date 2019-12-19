@@ -543,8 +543,8 @@ class PluginWrapper(threading.Thread):
         try:
             exec("import {0}".format(classpath))
         except ImportError as e:
-            logger.error("Plugins: Plugin '{}' error importing Python package: {}".format(name, e))
-            logger.error("Plugins: Plugin '{}' initialization failed, plugin not loaded".format(name))
+            logger.error("Plugin '{}' error importing Python package: {}".format(name, e))
+            logger.error("Plugin '{}' initialization failed, plugin not loaded".format(name))
             return
         except Exception as e:
             logger.exception("Plugin '{}' exception during import of __init__.py: {}".format(name, e))
@@ -552,7 +552,9 @@ class PluginWrapper(threading.Thread):
         try:
             exec("self.plugin = {0}.{1}.__new__({0}.{1})".format(classpath, classname))
         except Exception as e:
-            logger.exception("Plugin '{}' exception during execution of plugin: {}".format(name, e))
+            logger.error("Plugin '{}' classs name '{}' defined in metadata, but not found in plugin code".format(name, classname))
+            logger.error("Plugin '{}' initialization failed, plugin not loaded".format(name))
+            return
 
         relative_filename = os.path.join( classpath.replace('.', '/'), 'locale'+YAML_FILE )
         filename = os.path.join( smarthome.get_basedir(), relative_filename )
