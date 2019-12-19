@@ -287,7 +287,7 @@ class Shtime:
 
     def weekday(self, date=None):
         """
-        Returns the weekday of a given date (or of today, if date is None)
+        Returns the ISO weekday of a given date (or of today, if date is None)
 
         Return the day of the week as an integer, where Monday is 1 and Sunday is 7. (ISO weekday)
 
@@ -300,6 +300,39 @@ class Shtime:
             return dt.isoweekday()
         else:
             return datetime.datetime.now().isoweekday()
+
+
+    def weekday_name(self, date=None):
+        """
+        Returns the name of the weekday for a given date
+
+        :param date: date for which the weekday should be returned. If not specified, today is used
+        :return: weekday name
+        """
+        if date:
+            dt = self._datetransform(date)
+        else:
+            dt = self.today()
+
+        wday = self.weekday(dt)
+        if wday == 1:
+            day = "Montag"
+        elif wday == 2:
+            day = "Dienstag"
+        elif wday == 3:
+            day = "Mittowch"
+        elif wday == 4:
+            day = "Donnerstag"
+        elif wday == 5:
+            day = "Freitag"
+        elif wday == 6:
+            day = "Samstag"
+        elif wday == 7:
+            day = "Sonntag"
+        else:
+            day = "?"
+
+        return day
 
 
     def _add_custom_holidays(self):
@@ -327,7 +360,7 @@ class Shtime:
                     self.holidays.append(cust_dict)
                 elif cust_date.get('month', None) and cust_date.get('dow', None) and cust_date.get('dow_week', None):
                     cust_dict = {}
-                    logger.warning('dow: {}'.format(cust_date))
+                    logger.info('dow: {}'.format(cust_date))
                     month = cust_date.get('month', None)
                     if 0 < cust_date.get('dow', None) < 8:
                         for year in self.years:
@@ -340,7 +373,7 @@ class Shtime:
                                 else:
                                     d_diff =  dow_last + 7 - cust_date.get('dow', None)
                                 date = day_last - datetime.timedelta(days=d_diff)
-                                logger.warning('dow_last: d_diff {} -> {}'.format(d_diff, date))
+                                logger.info('dow_last: d_diff {} -> {}'.format(d_diff, date))
                             else:
                                 day_1st = datetime.date(year, month, 1)
                                 dow_1st = self.weekday(datetime.date(year, month, 1))
@@ -352,7 +385,7 @@ class Shtime:
                                     d_diff =  7 - dow_1st + cust_date.get('dow', None)
                                 d_diff += (week-1) * 7
                                 date = day_1st + datetime.timedelta(days=d_diff)
-                                logger.warning('dow_1st: d_diff {} -> {}'.format(d_diff, date))
+                                logger.info('dow_1st: d_diff {} -> {}'.format(d_diff, date))
                             cust_dict[date] = cust_date.get('name', '')
                     self.holidays.append(cust_dict)
 
@@ -395,6 +428,26 @@ class Shtime:
                 logger.info(' - {}: {}'.format(ft, self.holidays[ft]))
 
         return
+
+
+    def is_weekend(self, date=None):
+        """
+        Returns True, if the date is a holiday
+
+        Note: Easter sunday is not concidered a holiday (since it is a sunday already)!
+
+        :param date: date for which the weekday should be returned. If not specified, today is used
+        :return:
+        """
+
+        if date:
+            dt = self._datetransform(date)
+        else:
+            dt = self.today()
+
+        self._initialize_holidays()
+
+        return self.weekday(dt) in [6,7]
 
 
     def is_holiday(self, date=None):

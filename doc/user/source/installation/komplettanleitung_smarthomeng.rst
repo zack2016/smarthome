@@ -81,6 +81,22 @@ In diesem Fall kann ``six`` aktualisiert werden durch
    cd /usr/local/smarthome
    sudo pip3 install six>=1.11.0 --upgrade
 
+.. note::
+
+    Falls mehrere Python3 Versionen installiert sind, kann es zu Problemen kommen, da pip die Bibliotheken immer nur
+    in eine der installierten Python 3 Versionen installiert.
+
+    Um sicherzustellen, dass die Bibliotheken in die Python3 Version installiert werden, muss pip3 aus genau dieser
+    Python3 Umgebung aufgerufen werden.
+
+    Um das sicherzustellen, ist statt
+
+                sudo pip3 install -r requirements/base.txt
+
+    der folgende Befehl auszuführen:
+
+                sudo <python used to start SmartHomeNG> -m pip3 install -r requirements/base.txt
+
 
 Erstmalige Konfiguration
 ------------------------
@@ -153,7 +169,7 @@ Die Koordinaten für einen Standort kann man z.B. auf http://www.mapcoordinates.
 
 Es bietet sich an die default-Datei zu kopieren nach smarthome.yaml und die Daten oben auf den eigenen Standort
 anzupassen. Alternativ kann diese Anpassung später über das Admin Interface durchgeführt werden.
-   
+
 logging.yaml
 ~~~~~~~~~~~~
 
@@ -252,7 +268,7 @@ Jedes Plugin kann weitere Abhängigkeiten von Bibliotheken mit sich bringen. Die
    Es kann allerdings dann zu einem Abbruch des Starts von SmartHomeNG kommen, da beim Start automatisch nur die beiden
    Requirements-Dateien erstellt werden. Die benötigten Python Packages werden dabei nicht automatisch installiert, da
    hierzu erweiterte Rechte (sudo) benötigt werden.
-   
+
    Es lassen sich über diese Datei zwar sämtliche benötigten Abhängigkeiten installieren, jedoch rät das Entwicklungsteam
    ausdrücklich davon ab alle Abhängigkeiten zu installieren.
 
@@ -329,7 +345,7 @@ sollte eine Zeile augegeben werden mit
 
 Admin Interface
 ~~~~~~~~~~~~~~~
-   
+
 Viele Einstellungen in den Konfigurationsdateien, die manuell mit dem Editor ausgeführt werden, sind bereits über das
 Admin Interface möglich.
 

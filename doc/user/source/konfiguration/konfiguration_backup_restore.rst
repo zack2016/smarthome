@@ -50,6 +50,7 @@ Umfang der Sicherung
 
 Beim sichern werden folgende Daten in das zip-Archiv übernommen:
 
+  - /etc/holidays.yaml
   - /etc/logging.yaml
   - /etc/logic.yaml
   - /etc/module.yaml
