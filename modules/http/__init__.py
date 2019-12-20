@@ -29,6 +29,7 @@ import cherrypy
 from jinja2 import Environment, FileSystemLoader
 
 from lib.utils import Utils
+from lib.model.module import Module
 
 
 class CherryPyFilter(logging.Filter):
@@ -57,7 +58,7 @@ class CherryPyFilter(logging.Filter):
         return True
 
 
-class Http():
+class Http(Module):
 
     version = '1.6.0'
     _shortname = ''
@@ -78,6 +79,7 @@ class Http():
     gstatic_dir = ''
 
 
+
     def __init__(self, sh, port=None, servicesport=None, ip='', threads=8, starturl='',
                        showpluginlist='True', showservicelist='False', showtraceback='False',
                        user='', password='', hashed_password=''):
@@ -90,9 +92,8 @@ class Http():
 
         self.logger = logging.getLogger(__name__)
         self._sh = sh
-        self.logger.debug("Module '{}': Initializing".format(self._shortname))
-
-        self.logger.debug("Module '{}': Parameters = '{}'".format(self._shortname, str(dict(self._parameters))))
+        self.logger.debug("Initializing...")
+        self.logger.debug("Parameters = '{}'".format(str(dict(self._parameters))))
 
 
         #================================================================================
@@ -124,7 +125,7 @@ class Http():
 
             self._starturl = self._parameters['starturl']
         except:
-            self.logger.critical("Inconsistent module (invalid metadata definition)".format(self._shortname))
+            self.logger.critical("Inconsistent module (invalid metadata definition)")
             self._init_complete = False
             return
 

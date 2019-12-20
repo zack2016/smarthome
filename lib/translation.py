@@ -22,13 +22,12 @@
 """
 This library implements the multi langugage support of SmartHomeNG.
 """
+
 import logging
 import os
 
 from lib.constants import (YAML_FILE)
 import lib.shyaml as shyaml
-
-#from lib.utils import Utils
 
 logger = logging.getLogger(__name__)
 
