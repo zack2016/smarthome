@@ -38,6 +38,7 @@ _default_language = ''
 _fallback_language_order = ''
 _global_translations = {}
 _translations = {}
+_translation_files = {}
 
 
 def initialize_translations(base_dir, default_language, fallback_language_order):
@@ -115,6 +116,9 @@ def load_translations(translation_type='global', from_dir='bin', translation_id=
             return trans
         logger.debug(" - translations = {}".format(trans))
         _translations[translation_id] = trans
+        _translation_files[translation_id] = {}
+        _translation_files[translation_id]['type'] = translation_type
+        _translation_files[translation_id]['filename'] = filename
     return trans
 
 
@@ -122,9 +126,15 @@ def reload_translations():
     """
     Reload translations for existing translation_ids - to test new translations without having to restart SmartHomeNG
     """
-
-    logger.error("reload_translations is not yet implemented")
-
+    logger.info("reload_translations")
+    for id in _translation_files:
+        translation_type = _translation_files[id]['type']
+        filename = _translation_files[id]['filename']
+        trans_dict = shyaml.yaml_load(filename, ordered=False, ignore_notfound=True)
+        if trans_dict != None:
+            trans = trans_dict.get(translation_type+'_translations', {})
+            logger.info("Reloading {} translations (id={}) from {}".format(translation_type, id, filename))
+            _translations[id] = trans
     return
 
 
