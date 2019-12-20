@@ -34,6 +34,7 @@ import os
 
 import lib.shyaml as shyaml
 from lib.constants import (YAML_FILE)
+from lib.translation import translate
 
 
 logger = logging.getLogger(__name__)
@@ -332,7 +333,7 @@ class Shtime:
         else:
             day = "?"
 
-        return day
+        return translate(day)
 
 
     def _add_custom_holidays(self):
@@ -348,6 +349,7 @@ class Shtime:
                 # {'day': 2, 'month': 12, 'name': "Martin's Geburtstag"}
                 if cust_date.get('month', None) and cust_date.get('day', None):
                     cust_dict = {}
+                    logger.info('custom holiday (date): {}'.format(cust_date))
                     if cust_date.get('year', None):
                         d = datetime.date(cust_date['year'], cust_date['month'], cust_date['day'])
                         cust_dict[d] = cust_date.get('name', '')
@@ -360,7 +362,7 @@ class Shtime:
                     self.holidays.append(cust_dict)
                 elif cust_date.get('month', None) and cust_date.get('dow', None) and cust_date.get('dow_week', None):
                     cust_dict = {}
-                    logger.info('dow: {}'.format(cust_date))
+                    logger.info('custom holiday (dow): {}'.format(cust_date))
                     month = cust_date.get('month', None)
                     if 0 < cust_date.get('dow', None) < 8:
                         for year in self.years:
@@ -373,7 +375,7 @@ class Shtime:
                                 else:
                                     d_diff =  dow_last + 7 - cust_date.get('dow', None)
                                 date = day_last - datetime.timedelta(days=d_diff)
-                                logger.info('dow_last: d_diff {} -> {}'.format(d_diff, date))
+                                logger.debug('dow_last: d_diff {} -> {}'.format(d_diff, date))
                             else:
                                 day_1st = datetime.date(year, month, 1)
                                 dow_1st = self.weekday(datetime.date(year, month, 1))
@@ -385,8 +387,9 @@ class Shtime:
                                     d_diff =  7 - dow_1st + cust_date.get('dow', None)
                                 d_diff += (week-1) * 7
                                 date = day_1st + datetime.timedelta(days=d_diff)
-                                logger.info('dow_1st: d_diff {} -> {}'.format(d_diff, date))
+                                logger.debug('dow_1st: d_diff {} -> {}'.format(d_diff, date))
                             cust_dict[date] = cust_date.get('name', '')
+                        count += 1
                     self.holidays.append(cust_dict)
 
         return count

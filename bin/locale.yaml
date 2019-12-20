@@ -24,7 +24,15 @@ global_translations:
     'Stunden':         {'de': '=', 'en': 'hours', 'fr': 'heures'}
     'Minuten':         {'de': '=', 'en': 'minutes', 'fr': 'minutes'}
     'Sekunden':        {'de': '=', 'en': 'seconds', 'fr': 'secondes'}
-    
+
+    'Montag':          {'de': '=', 'en': 'Monday', 'fr': 'Lundi'}
+    'Dienstag':        {'de': '=', 'en': 'Tuesday', 'fr': 'Mardi'}
+    'Mittwoch':        {'de': '=', 'en': 'Wednesday', 'fr': 'Mercredi'}
+    'Donnerstag':      {'de': '=', 'en': 'Thursday', 'fr': 'Jeudi'}
+    'Freitag':         {'de': '=', 'en': 'Friday', 'fr': 'Vendredi'}
+    'Samstag':         {'de': '=', 'en': 'Saturday', 'fr': 'Samedi'}
+    'Sonntag':         {'de': '=', 'en': 'Sunday', 'fr': 'Dimanche'}
+
     'Host':            {'de': '=', 'en': '=', 'fr': 'Hôte'}
     'Port':            {'de': '=', 'en': '=', 'fr': '='}
     'IP':              {'de': '=', 'en': '=', 'fr': '='}
@@ -66,4 +74,4 @@ global_translations:
 
     'Letztes Update':        {'de': '=', 'en': 'Last Update', 'fr': ''}
     'Letzter Change':        {'de': '=', 'en': 'Last Change', 'fr': ''}
-    
+
