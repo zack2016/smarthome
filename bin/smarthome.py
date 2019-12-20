@@ -100,6 +100,7 @@ import lib.tools
 import lib.utils
 import lib.orb
 import lib.backup
+import lib.translation
 from lib.shtime import Shtime
 from lib.shpypi import Shpypi
 import lib.shyaml
@@ -276,6 +277,9 @@ class SmartHome():
         if self._extern_conf_dir != BASE:
             self._logger.warning("Using config dir {}".format(self._extern_conf_dir))
 
+        #############################################################
+        # Initialize multi-language support
+        lib.translation.initialize_translations(self._base_dir, self._default_language, self._fallback_language_order)
 
         #############################################################
         # Test if plugins are installed
@@ -367,6 +371,7 @@ class SmartHome():
         Returns the configured default language of SmartHomeNG
         """
         self._default_language = language
+        lib.translation.set_default_language(language)
 
 
     def get_basedir(self):
