@@ -75,3 +75,14 @@ global_translations:
     'Letztes Update':        {'de': '=', 'en': 'Last Update', 'fr': ''}
     'Letzter Change':        {'de': '=', 'en': 'Last Change', 'fr': ''}
 
+lib.shtime_translations:
+    'defined':               {'de': 'definiert', 'en': '='}
+    'not defined':           {'de': 'nicht definiert', 'en': '='}
+    'Defined holidays':      {'de': 'Definierte Feiertage', 'en': '='}
+    'custom holiday':        {'de': 'benutzerdefinierter Feiertag', 'en': '='}
+    "Using holidays for country '{country}', province '{province}', state '{state}',{count} custom holiday(s) {defined}":
+        'de': "Nutze Feiertage für Land '{country}', Provinz '{province}', State '{state}',{count} benutzerdefinierte(r) Feiertag(e) {defined}"
+        'en': '='
+    'Holidays are not initialized, cannot add custom holidays':
+        'de': "Feiertage sind nicht initialisiert, benutzerdefinierte Feiertage können nicht hinzugefügt werden"
+        'en': '='

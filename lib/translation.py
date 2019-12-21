@@ -50,14 +50,12 @@ def initialize_translations(base_dir, default_language, fallback_language_order)
 
     """
     global _base_dir
-    global _global_translations
 
     _base_dir = base_dir
-    _global_translations = {}
 
     set_default_language(default_language)
     set_fallback_language_order(fallback_language_order)
-    _global_translations = load_translations('global', from_dir='bin', translation_id='global')
+    load_translations('global', from_dir='bin', translation_id='global')
     return
 
 
@@ -91,6 +89,10 @@ def set_fallback_language_order(language_order):
     return
 
 
+def load_translation_section(trans_dict, from_dir='bin', translation_id='global'):
+    return
+
+
 def load_translations(translation_type='global', from_dir='bin', translation_id='global'):
     """
     Load global or plugin-specific translations from a locale.yaml file
@@ -107,14 +109,23 @@ def load_translations(translation_type='global', from_dir='bin', translation_id=
     filename = os.path.join(_base_dir, relative_filename)
     trans_dict = shyaml.yaml_load(filename, ordered=False, ignore_notfound=True)
     if trans_dict != None:
-        trans = trans_dict.get(translation_type+'_translations', {})
+        if translation_type == 'global':
+            for translation_section in trans_dict.keys():
+                if translation_section.endswith('_translations'):
+                    trans_id = translation_section.split('_')[0].replace('.', '/')
+                    trans = trans_dict.get(translation_section, {})
+                    _translations[trans_id] = trans
+                    logger.info("Loading {} translations (id={}) from {}".format(translation_type, trans_id, relative_filename))
+                    logger.debug(" - translations = {}".format(trans))
+        else:
+            trans = trans_dict.get(translation_type+'_translations', {})
+            logger.info("Loading {} translations (id={}) from {}".format(translation_type, translation_id, relative_filename))
+            if _translations.get(translation_id, None) is not None:
+                logger.info("Duplicate identifier '{}' used for translation_type '{}' to load from '{}' - translations not loaded".format(translation_id, translation_type, from_dir))
+                return trans
+            _translations[translation_id] = trans
+            logger.debug(" - translations = {}".format(trans))
 
-        logger.info("Loading {} translations (id={}) from {}".format(translation_type, translation_id, relative_filename))
-        if _translations.get(translation_id, None) is not None:
-            logger.info("Duplicate identifier '{}' used for translation_type '{}' to load from '{}' - translations not loaded".format(translation_id, translation_type, from_dir))
-            return trans
-        logger.debug(" - translations = {}".format(trans))
-        _translations[translation_id] = trans
         _translation_files[translation_id] = {}
         _translation_files[translation_id]['type'] = translation_type
         _translation_files[translation_id]['filename'] = filename
@@ -146,7 +157,6 @@ def _get_translation(translation_lang, txt, additional_translations=None):
     :param additional_translations: Additional translation definitions (e.g. for plugins)
     :return: translated text or '' if translation is not found
     """
-    global _global_translations
 
     translations = {}
     if additional_translations is not None:

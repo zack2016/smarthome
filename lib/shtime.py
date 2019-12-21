@@ -35,6 +35,7 @@ import os
 import lib.shyaml as shyaml
 from lib.constants import (YAML_FILE)
 from lib.translation import translate
+from lib.translation import translate as lib_translate
 
 
 logger = logging.getLogger(__name__)
@@ -95,6 +96,15 @@ class Shtime:
             return None
         else:
             return _shtime_instance
+
+
+    def translate(self, txt):
+        """
+        Returns translated text
+        """
+        txt = str(txt)
+
+        return lib_translate(txt, additional_translations='lib/shtime')
 
 
     def set_tz(self, tz):
@@ -391,7 +401,7 @@ class Shtime:
 
         """
         cust_dict = {}
-        logger.info('custom holiday (date): {}'.format(cust_date))
+        logger.info(self.translate('custom holiday')+' (date): {}'.format(cust_date))
 
         for year in gen_for_years:
             d = datetime.date(year, cust_date['month'], cust_date['day'])
@@ -410,7 +420,7 @@ class Shtime:
 
         """
         cust_dict = {}
-        logger.info('custom holiday (dow): {}'.format(cust_date))
+        logger.info(self.translate('custom holiday')+' (dow): {}'.format(cust_date))
         month = cust_date.get('month', None)
         try:
             dow_week = int(cust_date.get('dow_week', 0))
@@ -454,7 +464,7 @@ class Shtime:
         :return: Number of valid custom holiday definitions
         """
         if self.holidays is None:
-            logger.info("add_custom_holidays: Holidays are not initialized, cannot add custom holidays")
+            logger.info("add_custom_holidays: "+self.translate("Holidays are not initialized, cannot add custom holidays"))
             return 0
 
         custom = self.config.get('custom', [])
@@ -507,15 +517,16 @@ class Shtime:
                 self.holidays = holidays.CountryHoliday('US', years=self.years, prov=None, state=None)
 
             if self.holidays is not None:
-                c_logtext = 'not defined'
+                c_logtext = self.translate('not defined')
                 c_logcount = ''
                 count = self._add_custom_holidays()
                 if count > 0:
                     c_logcount = ' ' + str(count)
-                    c_logtext = 'defined'
-                logger.warning("Using holidays for country '{}', province '{}', state '{}',{} custom holiday(s) {}".format(self.holidays.country, self.holidays.prov, self.holidays.state, c_logcount, c_logtext))
+                    c_logtext = self.translate('defined')
+                log_msg = self.translate("Using holidays for country '{country}', province '{province}', state '{state}',{count} custom holiday(s) {defined}")
+                logger.warning(log_msg.format(country=self.holidays.country, province=self.holidays.prov, state=self.holidays.state, count=c_logcount, defined=c_logtext))
 
-                logger.info('Defined holidays:')
+                logger.info(self.translate('Defined holidays') + ':')
                 for ft in sorted(self.holidays):
                     logger.info(' - {}: {}'.format(ft, self.holidays[ft]))
 
