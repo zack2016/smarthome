@@ -58,7 +58,7 @@ class Shtime:
             import inspect
             curframe = inspect.currentframe()
             calframe = inspect.getouterframes(curframe, 4)
-            logger.critical("A second 'shtime' object has been created. There should only be ONE instance of class 'Shtime'!!! Called from: {} ({})".format(calframe[1][1], calframe[1][3]))
+            logger.critical(self.translate("A second 'shtime' object has been created. There should only be ONE instance of class 'Shtime'!!! Called from: {callframe1} ({callframe3})").format(callframe1=calframe[1][1], callframe3=calframe[1][3]))
 
         _shtime_instance = self
 
@@ -119,7 +119,7 @@ class Shtime:
 #             self._tzinfo = TZ
             self.set_tzinfo(tzinfo)
         else:
-            logger.warning("Problem parsing timezone: {}. Using UTC.".format(tz))
+            logger.warning(self.translate("Problem parsing timezone '{tz}' - Using UTC").format(tz=tz))
         return
 
 
@@ -254,9 +254,9 @@ class Shtime:
             try:
                 key = dateutil.parser.parse(key).date()
             except (ValueError, OverflowError):
-                raise ValueError("Cannot parse date from string '{}'".format(key))
+                raise ValueError(self.translate("Cannot parse date from string '{key}'").format(key=key))
         else:
-            raise TypeError("Cannot convert type '{}' to date.".format(type(key)))
+            raise TypeError(self.translate("Cannot convert type '{key}' to date").format(key=type(key)))
         return key
 
 
@@ -523,7 +523,7 @@ class Shtime:
                 if count > 0:
                     c_logcount = ' ' + str(count)
                     c_logtext = self.translate('defined')
-                log_msg = self.translate("Using holidays for country '{country}', province '{province}', state '{state}',{count} custom holiday(s) {defined}")
+                log_msg = self.translate("Using holidays for country '{country}', province '{province}', state '{state}',{count} custom holiday definitions(s) {defined}")
                 logger.warning(log_msg.format(country=self.holidays.country, province=self.holidays.prov, state=self.holidays.state, count=c_logcount, defined=c_logtext))
 
                 logger.info(self.translate('Defined holidays') + ':')
