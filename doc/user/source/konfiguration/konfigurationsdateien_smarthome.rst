@@ -32,6 +32,13 @@ Die Datei sollte folgendermaßen aussehen:
    assign_compatibility: latest # Assign Kompatibilität für timer und autotimer (compat_1.2 oder latest)
 
 
+Die Datei sollte folgendermaßen aussehen:
+
+.. literalinclude:: ../../../../etc/smarthome.yaml.default
+   :caption: smarthome.yaml
+   :language: yaml
+
+
 
 Die Koordinaten können mit Hilfe von GPS eines Mobiltelefons oder über eine entsprechende
 (z.B. http://www.mapcoordinates.net/) bestimmt werden.

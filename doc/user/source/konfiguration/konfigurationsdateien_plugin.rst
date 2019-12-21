@@ -32,6 +32,12 @@ Verzeichnis **../plugins** gesucht.
        # time_ga: 1/1/1 # default none
        # date_ga: 1/1/2 # default none
 
+
+.. literalinclude:: ../../../../etc/plugin.yaml.default
+   :caption: plugin.yaml
+   :language: yaml
+
+
 Es existiert eine `README.md` Datei zu jedem Plugin. Diese Datei gibt ausführliche Informationen,
 wie das Plugin zu konfigurieren ist. Die `README`s sind unter :doc:`Plugins <../plugins>` in der
 Übersicht der Plugins zu finden. Wie die Konfiguration von Plugins grundsätzlich funktioniert ist

@@ -75,8 +75,12 @@ websocket:
 #     - db:smarthome
 #     - port:3306
 
-# sqlite:
-#     plugin_name: sqlite_visu2_8
+database_sqlite:
+#    plugin_name: database
+#    driver: sqlite3
+#    connect:
+#    -   database:/usr/local/shng_dev/var/db/smarthomeng.db
+#    -   check_same_thread:0
 
 # apcups:
 #     plugin_name: apcups
