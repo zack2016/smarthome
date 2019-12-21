@@ -244,9 +244,9 @@ class Shtime:
             try:
                 key = dateutil.parser.parse(key).date()
             except (ValueError, OverflowError):
-                raise ValueError("Cannot parse date from string '%s'" % key)
+                raise ValueError("Cannot parse date from string '{}'".format(key))
         else:
-            raise TypeError("Cannot convert type '%s' to date." % type(key))
+            raise TypeError("Cannot convert type '{}' to date.".format(type(key)))
         return key
 
 
@@ -336,61 +336,146 @@ class Shtime:
         return translate(day)
 
 
+    def _get_nth_dow_in_month(self, dow, dow_week, year, month):
+        """
+        get nth day of week for given month and year
+
+        :param dow:  day of week (1-7)
+        :param dow_week: n for nth week (1-4)
+        :param year: year to look into
+        :param month: month to look into
+
+        :return: date
+        """
+        day_1st = datetime.date(year, month, 1)
+        dow_1st = self.weekday(datetime.date(year, month, 1))
+        week = int(dow_week)
+
+        if dow_1st <= dow:
+            d_diff = dow - dow_1st
+        else:
+            d_diff = 7 - dow_1st + dow
+        d_diff += (week - 1) * 7
+        date = day_1st + datetime.timedelta(days=d_diff)
+        logger.debug('dow_1st: d_diff {} -> {}'.format(d_diff, date))
+        return date
+
+
+    def _get_last_dow_in_month(self, dow, year, month):
+        """
+        get last day of week for given month and year
+
+        :param dow: day of week (1-7)
+        :param year: year to look into
+        :param month: month to look into
+
+        :return: date
+        """
+        day_last = datetime.date(year, month + 1, 1) + datetime.timedelta(days=-1)
+        dow_last = self.weekday(datetime.date(year, month + 1, 1) + datetime.timedelta(days=-1))
+
+        if dow_last >= dow:
+            d_diff = dow_last - dow
+        else:
+            d_diff = dow_last + 7 - dow
+        date = day_last - datetime.timedelta(days=d_diff)
+        logger.debug('dow_last: d_diff {} -> {}'.format(d_diff, date))
+        return date
+
+
+    def _add_holiday_by_date(self, cust_date, gen_for_years):
+        """
+        Add a custom holiday for given day and month (and optionally year)
+
+        :param cust_date:
+
+        """
+        cust_dict = {}
+        logger.info('custom holiday (date): {}'.format(cust_date))
+
+        for year in gen_for_years:
+            d = datetime.date(year, cust_date['month'], cust_date['day'])
+
+            cust_dict[d] = cust_date.get('name', '')
+
+        self.holidays.append(cust_dict)
+        return
+
+
+    def _add_holiday_by_dow(self, cust_date, gen_for_years):
+        """
+        Add a custom holiday for given day-of-week
+
+        :param cust_date:
+
+        """
+        cust_dict = {}
+        logger.info('custom holiday (dow): {}'.format(cust_date))
+        month = cust_date.get('month', None)
+        try:
+            dow_week = int(cust_date.get('dow_week', 0))
+            if dow_week < 1:
+                return
+        except ValueError:
+            if str(cust_date.get('dow_week', None)).lower() == 'last':
+                dow_week = str(cust_date.get('dow_week', None)).lower()
+            else:
+                return
+
+        try:
+            dow_start_week = int(cust_date.get('dow_start_week', dow_week))
+        except ValueError:
+            dow_start_week = dow_week
+
+        for year in gen_for_years:
+            if month is None:
+                # get every nth day-of-week in a year
+                date = self._get_nth_dow_in_month(cust_date.get('dow', None), dow_start_week, year, 1)
+                while date.year == year:
+                    cust_dict[date] = cust_date.get('name', '')
+                    date = date + datetime.timedelta(7*dow_week)
+            else:
+                # get a day-of-week in a given month
+                if str(cust_date.get('dow_week', None)).lower() == 'last':
+                    date = self._get_last_dow_in_month(cust_date.get('dow', None), year, month)
+                else:
+                    date = self._get_nth_dow_in_month(cust_date.get('dow', None), cust_date.get('dow_week', None), year, month)
+
+                cust_dict[date] = cust_date.get('name', '')
+
+        self.holidays.append(cust_dict)
+        return
+
+
     def _add_custom_holidays(self):
         """
         Add custom holidays from etc/holidays.yaml to the initialized list of holidays
 
         :return: Number of valid custom holiday definitions
         """
+        if self.holidays is None:
+            logger.info("add_custom_holidays: Holidays are not initialized, cannot add custom holidays")
+            return 0
+
         custom = self.config.get('custom', [])
         count = 0
         if len(custom) > 0:
             for cust_date in custom:
+                # generate for range of years or a given year
+                if cust_date.get('year', None) is None:
+                    gen_for_years = self.years
+                else:
+                    gen_for_years = [cust_date['year']]
+
                 # {'day': 2, 'month': 12, 'name': "Martin's Geburtstag"}
                 if cust_date.get('month', None) and cust_date.get('day', None):
-                    cust_dict = {}
-                    logger.info('custom holiday (date): {}'.format(cust_date))
-                    if cust_date.get('year', None):
-                        d = datetime.date(cust_date['year'], cust_date['month'], cust_date['day'])
-                        cust_dict[d] = cust_date.get('name', '')
-                        count += 1
-                    else:
-                        for year in self.years:
-                            d = datetime.date(year, cust_date['month'], cust_date['day'])
-                            cust_dict[d] = cust_date.get('name', '')
-                        count += 1
-                    self.holidays.append(cust_dict)
-                elif cust_date.get('month', None) and cust_date.get('dow', None) and cust_date.get('dow_week', None):
-                    cust_dict = {}
-                    logger.info('custom holiday (dow): {}'.format(cust_date))
-                    month = cust_date.get('month', None)
-                    if 0 < cust_date.get('dow', None) < 8:
-                        for year in self.years:
-                            if cust_date.get('dow_week', None) == 'last':
-                                day_last = datetime.date(year, month+1, 1) + datetime.timedelta(days=-1)
-                                dow_last = self.weekday(datetime.date(year, month+1, 1) + datetime.timedelta(days=-1))
-
-                                if dow_last >= cust_date.get('dow', None):
-                                    d_diff = dow_last - cust_date.get('dow', None)
-                                else:
-                                    d_diff =  dow_last + 7 - cust_date.get('dow', None)
-                                date = day_last - datetime.timedelta(days=d_diff)
-                                logger.debug('dow_last: d_diff {} -> {}'.format(d_diff, date))
-                            else:
-                                day_1st = datetime.date(year, month, 1)
-                                dow_1st = self.weekday(datetime.date(year, month, 1))
-                                week = int(cust_date.get('dow_week', None))
-
-                                if dow_1st <= cust_date.get('dow', None):
-                                    d_diff = cust_date.get('dow', None) - dow_1st
-                                else:
-                                    d_diff =  7 - dow_1st + cust_date.get('dow', None)
-                                d_diff += (week-1) * 7
-                                date = day_1st + datetime.timedelta(days=d_diff)
-                                logger.debug('dow_1st: d_diff {} -> {}'.format(d_diff, date))
-                            cust_dict[date] = cust_date.get('name', '')
-                        count += 1
-                    self.holidays.append(cust_dict)
+                    # generate holiday(s) for a given date (day/month)
+                    self._add_holiday_by_date(cust_date, gen_for_years)
+                    count += 1
+                elif cust_date.get('dow', None) and cust_date.get('dow_week', None) and (0 < cust_date.get('dow', None) < 8):
+                    # generate holiday(s) for a given weekday (dow/dowweek/month)
+                    self._add_holiday_by_dow(cust_date, gen_for_years)
+                    count += 1
 
         return count
 
@@ -414,21 +499,25 @@ class Shtime:
                 country=location.get('country', 'DE')
                 prov=location.get('province', None)
                 state=location.get('state', None)
-                self.holidays = holidays.CountryHoliday(country, years=self.years, prov=prov, state=state)
+                try:
+                    self.holidays = holidays.CountryHoliday(country, years=self.years, prov=prov, state=state)
+                except KeyError as e:
+                    logger.error("initialize_holidays: {}".format(e))
             else:
                 self.holidays = holidays.CountryHoliday('US', years=self.years, prov=None, state=None)
 
-            c_logtext = 'not defined'
-            c_logcount = ''
-            count = self._add_custom_holidays()
-            if count > 0:
-                c_logcount = ' ' + str(count)
-                c_logtext = 'defined'
-            logger.warning("Using holidays for country '{}', province '{}', state '{}',{} custom holiday(s) {}".format(self.holidays.country, self.holidays.prov, self.holidays.state, c_logcount, c_logtext))
+            if self.holidays is not None:
+                c_logtext = 'not defined'
+                c_logcount = ''
+                count = self._add_custom_holidays()
+                if count > 0:
+                    c_logcount = ' ' + str(count)
+                    c_logtext = 'defined'
+                logger.warning("Using holidays for country '{}', province '{}', state '{}',{} custom holiday(s) {}".format(self.holidays.country, self.holidays.prov, self.holidays.state, c_logcount, c_logtext))
 
-            logger.info('Defined holidays:')
-            for ft in sorted(self.holidays):
-                logger.info(' - {}: {}'.format(ft, self.holidays[ft]))
+                logger.info('Defined holidays:')
+                for ft in sorted(self.holidays):
+                    logger.info(' - {}: {}'.format(ft, self.holidays[ft]))
 
         return
 
