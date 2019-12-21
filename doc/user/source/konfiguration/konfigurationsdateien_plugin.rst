@@ -18,21 +18,6 @@ In diesem Fall ist der Name der Plugin Instanz **knx** und das Plugin wird im Ve
 Verzeichnis **../plugins** gesucht.
 
 
-.. code-block:: yaml
-   :caption: plugin.yaml
-
-   # /usr/local/smarthome/etc/plugin.yaml
-   knx:
-       plugin_name: knx
-       # class_name: KNX           # old way of configuration
-       # class_path: plugins.knx   # old way of configuration
-       host: 127.0.0.1
-       port: 6720
-       # send_time; 600 # update date/time every 600 seconds, default none
-       # time_ga: 1/1/1 # default none
-       # date_ga: 1/1/2 # default none
-
-
 .. literalinclude:: ../../../../etc/plugin.yaml.default
    :caption: plugin.yaml
    :language: yaml

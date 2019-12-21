@@ -1,5 +1,5 @@
-Translation-API
-===============
+lib.translation
+---------------
 
 This library implements the translation support for the core and the plugins.
 
@@ -13,9 +13,6 @@ This library implements the translation support for the core and the plugins.
 
 The API is implemented through the following library:
 
-
-lib.shtime
-----------
 
 .. automodule:: lib.translation
     :members:

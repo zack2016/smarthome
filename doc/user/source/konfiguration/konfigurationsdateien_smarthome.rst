@@ -20,20 +20,6 @@ an.
 
 Die Datei sollte folgendermaßen aussehen:
 
-.. code-block:: yaml
-   :caption: smarthome.yaml
-
-   # /usr/local/smarthome/etc/smarthome.yaml
-   lat: 51.1633                 # latitude
-   lon: 10.4476                 # longitude
-   elev: 500                    # elevation
-   tz: Europe/Berlin            # timezone, the example will be fine for most parts of central Europe
-   default_language: de         # default language for use with the backend plugin and multi-language entries in metadata
-   assign_compatibility: latest # Assign Kompatibilität für timer und autotimer (compat_1.2 oder latest)
-
-
-Die Datei sollte folgendermaßen aussehen:
-
 .. literalinclude:: ../../../../etc/smarthome.yaml.default
    :caption: smarthome.yaml
    :language: yaml
