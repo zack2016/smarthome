@@ -630,11 +630,13 @@ class SmartPlugin(SmartObject, Utils):
         raise NotImplementedError("'Plugin' subclasses should have a 'stop()' method")
 
 
-    def translate(self, txt):
+    def translate(self, txt, block=None):
         """
         Returns translated text
         """
         txt = str(txt)
+        if block:
+            self.logger.warning("unsuported 2. parameter '{}' used in translation function _( ... )".format(block))
 
         return lib_translate(txt, additional_translations='plugin/'+self.get_shortname())
 
