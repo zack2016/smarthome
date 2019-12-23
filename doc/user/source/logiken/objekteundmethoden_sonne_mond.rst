@@ -2,16 +2,6 @@ Zeit, Sonne und Mond
 ====================
 
 
-sh.now und sh.utcnow
---------------------
-
-Diese beiden Funktionen geben din aktuellen Zeitpunkt in einem datetime-Objekt zurück. **sh.now** verwendet
-die lokale Zeitzone, während **sh.utcnow** den Zeitpunkt in GMT zurück liefert.
-
-Es ist möglich, mit verschiedenen Zeitzonen zu rechnen. Die Funktionen **sh.tzinfo()** und
-**sh.utcinfo()** liefern die Namen der jeweiligen Zeitzonen zurück.
-
-
 sh.sun
 ------
 

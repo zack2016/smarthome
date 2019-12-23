@@ -49,6 +49,7 @@ class Shtime:
     _starttime = None
     tz = ''
     holidays = None
+    public_holidays = None
 
 
     def __init__(self, smarthome):
@@ -296,6 +297,67 @@ class Shtime:
         return self.today().year
 
 
+    def current_month(self):
+        """
+        Return the current month
+
+        :return: month
+        """
+        return self.today().month
+
+
+    def current_day(self):
+        """
+        Return the current day
+
+        :return: day
+        """
+        return self.today().day
+
+
+    def length_of_year(self, year=None):
+        """
+        Returns the length of a given year
+
+        :return: Length of year in days
+        """
+        if year is None:
+            year = self.current_year()
+        return (datetime.datetime(year + 1, 1, 1) - datetime.datetime(year, 1, 1)).days
+
+
+    def length_of_month(self, month=None, year=None):
+        """
+        Returns the length of a given month for a given year
+
+        :return: Length of month in days
+        """
+        if month is None:
+            month = self.current_month()
+        if year is None:
+            year = self.current_year()
+
+        next_month = month
+        next_year = year
+        if next_month == 12:
+            next_year += 1
+            next_month = 0
+        return (datetime.datetime(next_year, next_month+1, 1) - datetime.datetime(year, month, 1)).days
+
+
+    def day_of_year(self, date=None):
+        """
+
+        :param date: date for which the day_of_year should be returned. If not specified, today is used
+        :return:
+        """
+        if date:
+            date = self._datetransform(date)
+        else:
+            date = self.today()
+        return (date - datetime.date(date.year, 1, 1)).days + 1
+
+
     def weekday(self, date=None):
         """
         Returns the ISO weekday of a given date (or of today, if date is None)
@@ -311,6 +373,20 @@ class Shtime:
             return dt.isoweekday()
         else:
             return datetime.datetime.now().isoweekday()
+
+
+    def calendar_week(self, date=None):
+        """
+        Returns the calendar week (according to ISO)
+
+        :param date:
+        :return: week (ISO)
+        """
+        if date:
+            dt = self._datetransform(date)
+            return dt.isocalendar()[1]
+        else:
+            return datetime.datetime.now().isocalendar()[1]
 
 
     def weekday_name(self, date=None):
@@ -512,9 +588,14 @@ class Shtime:
                 try:
                     self.holidays = holidays.CountryHoliday(country, years=self.years, prov=prov, state=state)
                 except KeyError as e:
-                    logger.error("initialize_holidays: {}".format(e))
+                    logger.error("Error initializing self.holidays: {}".format(e))
+                    try:
+                        self.public_holidays = holidays.CountryHoliday(country, years=self.years, prov=prov, state=state)
+                    except KeyError as e:
+                        logger.error("Error initializing self.public_holidays: {}".format(e))
             else:
                 self.holidays = holidays.CountryHoliday('US', years=self.years, prov=None, state=None)
+                self.public_holidays = holidays.CountryHoliday('US', years=self.years, prov=None, state=None)
 
             if self.holidays is not None:
                 c_logtext = self.translate('not defined')
@@ -573,6 +654,26 @@ class Shtime:
         return (dt in self.holidays)
 
 
+    def is_public_holiday(self, date=None):
+        """
+        Returns True, if the date is a public holiday
+
+        Note: Easter sunday is not concidered a public holiday (since it is a sunday already)!
+
+        :param date: date for which the weekday should be returned. If not specified, today is used
+        :return:
+        """
+
+        if date:
+            dt = self._datetransform(date)
+        else:
+            dt = self.today()
+
+        self._initialize_holidays()
+
+        return (dt in self.public_holidays)
+
+
     def holiday_name(self, date=None):
         """
         Returns the name of the holiday, if date is a holiday
@@ -595,6 +696,7 @@ class Shtime:
 
     def holiday_list(self, year=None):
         """
+        Returns a list with the defined holidays
 
         :param year:
         :return:
@@ -603,4 +705,18 @@ class Shtime:
         for h in self.holidays:
             if year is None or h.year == year:
                 hl.append({h, self.holidays[h]})
+        return hl
+
+
+    def public_holiday_list(self, year=None):
+        """
+        Returns a list with the defined public holidays
+
+        :param year:
+        :return:
+        """
+        hl = []
+        for h in self.public_holidays:
+            if year is None or h.year == year:
+                hl.append({h, self.public_holidays[h]})
         return hl
