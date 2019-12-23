@@ -1,5 +1,6 @@
-.. index:: holidays
-.. index:: Feiertage
+.. index:: Konfigurationsdateien; /etc/holidays.yaml
+.. index:: holidays; Konfiguration
+.. index:: Feiertage; Konfiguration
 
 .. role:: bluesup
 .. role:: redsup

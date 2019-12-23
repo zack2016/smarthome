@@ -1,8 +1,12 @@
 .. index:: Logiken; Datum und Zeit
 .. index:: Logiken; holidays
 .. index:: Logiken; Feiertage
+
 .. index:: holidays; Logiken
 .. index:: Feiertage; Logiken
+
+.. index:: holidays; Funktionen
+.. index:: Feiertage; Funktionen
 
 .. role:: bluesup
 .. role:: redsup
@@ -19,6 +23,8 @@ Weiterhin gibt es Funktionen, die den Umgang mit Datums und Zeitangaben vereinfa
 
    Diese Funktionen können außer in Logiken auch in **eval** Ausdrücken in Item Attributen verwendet werden.
 
+
+.. index:: Funktionen; Feiertage
 
 Die Funktionen für Feiertags- und Wochenend-Handling sind folgende:
 
@@ -42,6 +48,8 @@ Die Funktionen für Feiertags- und Wochenend-Handling sind folgende:
 | shtime.is_weekend(date)         | Liefert **True**, falls das Datum auf ein Wochenende fällt                         |
 +---------------------------------+------------------------------------------------------------------------------------+
 
+
+.. index:: Funktionen; Datum und Zeit
 
 Die Funktionen für das Datums-Handling sind folgende:
 

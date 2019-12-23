@@ -102,7 +102,8 @@ angegeben werden sondern können sich relative auf andere Items beziehen.
 .. tip::
 
    Im Abschnitt **Logiken** ist auf der Seite :doc:`Feiertage, Daten und Zeiten </logiken/objekteundmethoden_feiertage_datum_zeit>`
-   beschrieben, welche Feiertags- und Datums-Funktionen in Logiken und eval Attributen genutzt werden können.
+   beschrieben, welche Feiertags- und Datums-Funktionen in Logiken benutzt werden können. Diese Funktionen können auch
+   in eval Attributen genutzt werden können.
 
 
 Attribut *eval_trigger*
