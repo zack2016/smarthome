@@ -98,6 +98,13 @@ Referenzen <https://github.com/smarthomeNG/smarthome/wiki/Items:-Relative-Item-R
 genutzt werden. Dann müssen Bezüge auf andere Items nicht mehr absolut
 angegeben werden sondern können sich relative auf andere Items beziehen.
 
+
+.. tip::
+
+   Im Abschnitt **Logiken** ist auf der Seite :doc:`Feiertage, Daten und Zeiten </logiken/objekteundmethoden_feiertage_datum_zeit>`
+   beschrieben, welche Feiertags- und Datums-Funktionen in Logiken und eval Attributen genutzt werden können.
+
+
 Attribut *eval_trigger*
 -----------------------
 

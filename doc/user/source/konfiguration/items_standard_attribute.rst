@@ -32,7 +32,7 @@ plugin-spezifischen Attribute ist in der Dokumentation des jeweiligen Plugins na
 
 +-----------------+----------------------------------------------------------------------------------------+
 | **Attribut**    | **Beschreibung**                                                                       |
-+===========================+==============================================================================+
++=================+========================================================================================+
 | autotimer       | setzt den Wert des Items nach einer Zeitspanne auf einen bestimmten Wert.              |
 |                 | **Ab SmartHomeNG v1.3** werden die Konfigurationsmöglichkeiten erweitert               |
 |                 | (siehe :doc:`autotimer <./items_standard_attribute_autotimer>`).                       |
@@ -55,11 +55,6 @@ plugin-spezifischen Attribute ist in der Dokumentation des jeweiligen Plugins na
 | eval            | eval legt einen Ausdruck fest, nach dem der Wert des Items berechnet wird. Mit         |
 |                 | eval_trigger wird festgelegt, wann eine (Neu)berechnung erfolgt (siehe Beschreibung    |
 |                 | unten)                                                                                 |
-|                 |                                                                                        |
-|                 | Im Abschnitt **Logiken** ist auf der Seite                                             |
-|                 |  :doc:`Feiertage, Daten und Zeiten </logiken/objekteundmethoden_feiertage_datum_zeit>` |
-|                 | beschrieben, welche Feiertags- und Datums-Funktionen in Logiken und eval Attributen    |
-|                 | genutzt werden können.                                                                 |
 +-----------------+----------------------------------------------------------------------------------------+
 | eval_trigger    | Liste von Items, bei deren Veränderung eine Neuberechnung der in eval                  |
 |                 | definierten Formel erfolgen soll (siehe Beschreibung unten)                            |
