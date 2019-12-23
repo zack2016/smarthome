@@ -1,4 +1,8 @@
 .. index:: Logiken; Datum und Zeit
+.. index:: Logiken; holidays
+.. index:: Logiken; Feiertage
+.. index:: holidays; Logiken
+.. index:: Feiertage; Logiken
 
 .. role:: bluesup
 .. role:: redsup
@@ -75,7 +79,7 @@ Die Funktionen für das Datums-Handling sind folgende:
    werden. Dann wird eine Liste über alle vorberechneten Feiertage zurück geliefert.
 
 
-.. hint::
+.. tip::
 
    Die Funktionen wie **shtime.today()** sind im Zusammenhang mit den Feiertags-Funktionen nützlich. Um z.B. festzustellen,
    ob der folgende Tag ein Feiertag ist, kann einfach **shtime.is_holiday(shtime.tomorrow())** aufgerufen werden.

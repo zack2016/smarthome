@@ -1,4 +1,5 @@
 .. index:: holidays
+.. index:: Feiertage
 
 .. role:: bluesup
 .. role:: redsup
@@ -26,4 +27,7 @@ Die Konfiguration sollte in etwa so aussehen:
    :caption: holidays.yaml
    :language: yaml
 
+
+Im Abschnitt **Logiken** ist auf der Seite :doc:`Feiertage, Daten und Zeiten </logiken/objekteundmethoden_feiertage_datum_zeit>`
+beschrieben, wie die hier konfigurierten Feiertage in Logiken und **eval** Attributen genutzt werden können.
 
