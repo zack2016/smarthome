@@ -13,6 +13,12 @@ Dialoge zur Verfügung, die Erläuterungen zu den einzelnen Einstellungen geben 
 anzeigen. Für den Rest der Konfiguration stehen Editoren zur Verfügung, mit denen die jeweiligen YAML Dateien bearbeitet
 werden können.
 
+.. note::
+
+   Die Beschreibung der vollständigen Funktionalität der graphischen Administrationsoberfläche  befindet sich im
+   Abschnitt :doc:`/admin/admin`
+
+
 Konfigurations-Dialoge
 ======================
 
@@ -118,9 +124,4 @@ Konfiguration von Items
 
 ...
 
-
-
-------------------------------
-
-------------------------------
 

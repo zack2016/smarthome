@@ -189,7 +189,8 @@ Da bisher kein Password festgelegt ist, brauchen Benutzername und Password nicht
 auf anmelden geklickt werden.
 
 
-Anschließend erscheint die Startseite von SmartHomeNG:
+Anschließend erscheint die Startseite von SmartHomeNG (Da kein Password festgelegt ist, ist der Button **Abmelden**
+ausgegraut):
 
 .. image:: /admin/assets/system-info.jpg
    :class: screenshot
