@@ -1,9 +1,18 @@
-###########
+
+.. index:: Fehlersuche
+
+.. role:: bluesup
+.. role:: redsup
+
+===========
 Fehlersuche
-###########
+===========
 
 Die folgenden Informationen sollen bei der Fehlersuche helfen.
 
+
+
+.. index:: Fehlersuche; Checkliste
 
 Checkliste für die Fehlersuche
 ==============================
@@ -22,31 +31,39 @@ sollen, dann müsst ihr Informationen beisteuern:
 
 Davor bitte einmal durch diese Liste durcharbeiten.
 
+
+.. index:: Fehlersuche; Läuft SmartHomeNG?
+
 Läuft SmartHomeNG?
 ------------------
 
-Dazu öffnet ihr (per SSH) eine shell auf den Rechner auf dem alles laufen soll. Gebt an der Shell ein:
+Dazu (per SSH) eine shell auf den Rechner auf dem alles laufen soll öffnen. Um festzustellen ob SmartHomeNG läuft,
+kann der folgende Befehl genutzt werden:
 
-.. code::
+.. code-block:: bash
 
-   ps ax|grep bin/smarthome
+    ps -ef|grep smarthome|grep bin
+
+Es sollte eine Zeile augegeben werden, die etwa so aussieht:
+
+.. code-block:: bash
+
+    smartho+ 28373     1  1 12:45 ?        00:00:02 python3 bin/smarthome.py
+
+Die Zeile zeigt an, dass unter dem User **smarthome** (hier zu smartho+ abgekürzt) unter der PID **28373** seit **12:45**
+Uhr SmartHomeNG (**python3 bin/smarthome.py**) ausgeführt wird.
 
 
-In der Ausgabe darauf sollte in etwa folgendes zu finden sein:
-
-.. code::
-
-    1523 ?        Sl   411:36 python3.4 /usr/local/shng_dev/bin/smarthome.py -d
-   20079 pts/2    S+     0:00 grep bin/smarthome
+------
 
 
-Interessant ist die Zeile mit **smarthome.py**. Im Beispiel läuft smarthome.py bereits und zwar
-im Debug Modus. Sollte diese oder eine ähnliche Zeile nicht auftauchen, dann ist smarthome.py
-auch nicht gestartet.
+Für SmartHomeNG gilt wie beim Highlander:  Es kann nur Einen geben. Daher wird ein Versuch SmartHomeNG aus einer
+Installation heraus mehrfach zu starten durch SmartHomeNG verhindert.
 
-Für SmartHomeNG gilt wie beim Highlander:  Es kann nur Einen geben. Daher wird ein Versuch
-SmartHomeNG mehrfach zu starten immer mit Problemen bei der Bindung an die IP quittiert. Das
-läßt sich prima im Debuglog sehen:
+Falls sich mehrere SmartHomeNG Installationen auf dem Rechner befinden, können diese nur parallel betrieben werden, wenn
+bei der Konfiguration strikt darauf geachtet wird, dass alle IP Verbindungen der zweiten Instanz auf andere Ports
+konfiguriert sind. Sonst wird der Start mit Problemen bei der Bindung an die IP quittiert. Das läßt sich gut im Log
+von erkennen:
 
 .. code::
 
@@ -54,16 +71,19 @@ läßt sich prima im Debuglog sehen:
    <Datum + Uhrzeit> ERROR    Connections  CLI: problem binding 0.0.0.0:2323 (TCP): [Errno 98] Address already in use
 
 
-Wenn Fehler dieser Art gezeigt werden dann ist dies ein klares Indiz dafür, das SmartHomeNG
-bereits läuft. Um SmartHomeNG also im Debugmodus zu starten, muß die laufende Instanz erst
+Wenn Fehler dieser Art gezeigt werden dann ist dies ein klares Indiz dafür, das SmartHomeNG bereits läuft und die zwei
+Instanzen nicht sauber konfiguriert sind. Um SmartHomeNG also im Debugmodus zu starten, muß die laufende Instanz erst
 beendet werden. Das geht mit smarthome.py -s oder aber man startet auf der Shell
 
 .. code::
 
-   kill <Prozess-ID>
+   kill -9 <Prozess-ID>
+
++
+wobei die <Prozess-ID> aus dem Aufruf ps -ef ersichtlich wird, siehe oben.
 
 
-wobei die <Prozess-ID> aus dem Aufruf ps ax ersichtlich wird, siehe oben.
+.. index:: Fehlersuche; SmartHomeNG im Debugmodus starten
 
 SmartHomeNG im Debugmodus starten
 ---------------------------------
@@ -76,6 +96,9 @@ SmartHomeNG im Debugmodus starten
 
 Jetzt sollte eine Menge an Loggingdaten aufgelistet werden. Der Debugmodus ist die Grundlage
 für weitere Fehlersuche
+
+
+.. index:: Fehlersuche; Zugriff auf den KNX via eibd
 
 Zugriff auf den KNX via eibd
 ----------------------------
@@ -107,6 +130,8 @@ Ob der eibd auch schalten kann stellt man fest mit
 
 wobei hier 1/0/170 die Gruppenadresse eines Schaltaktors ist, der mit 1 eingeschaltet werden soll.
 
+
+.. index:: Fehlersuche; Zugriff auf den KNX via knxd
 
 Zugriff auf den KNX via knxd
 ----------------------------
@@ -234,6 +259,7 @@ dann **ls item** um ein bestimmten item abzufragen und schließlich **update ite
 Schaltaktor einer Lampe um das Licht anzuschalten.
 
 Wenn es bis hierher geklappt hat, dann ist das Grundsystem funktional.
+
 
 Kontakt mit SmartVISU
 ---------------------

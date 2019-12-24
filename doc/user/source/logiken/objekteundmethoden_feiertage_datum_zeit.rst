@@ -5,8 +5,6 @@
 .. index:: holidays; Logiken
 .. index:: Feiertage; Logiken
 
-.. index:: holidays; Funktionen
-.. index:: Feiertage; Funktionen
 
 .. role:: bluesup
 .. role:: redsup
@@ -25,6 +23,8 @@ Weiterhin gibt es Funktionen, die den Umgang mit Datums und Zeitangaben vereinfa
 
 
 .. index:: Funktionen; Feiertage
+.. index:: holidays; Funktionen
+.. index:: Feiertage; Funktionen
 
 Die Funktionen für Feiertags- und Wochenend-Handling sind folgende:
 

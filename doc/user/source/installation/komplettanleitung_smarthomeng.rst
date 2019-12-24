@@ -1,9 +1,13 @@
 
-.. role:: bluesup
 
-##########################################
+.. index:: Komplettanleitung
+
+.. role:: bluesup
+.. role:: redsup
+
+==========================================
 SmartHomeNG installieren :bluesup:`update`
-##########################################
+==========================================
 
 - Schritte der Installation:
     - zusätzliche Pakete installieren
@@ -16,7 +20,7 @@ SmartHomeNG installieren :bluesup:`update`
 
 
 zusätzliche Pakete installieren
--------------------------------
+===============================
 
 Zunächst müssen einige zusätzlichen Pakete erfüllt werden:
 
@@ -34,7 +38,7 @@ Dann noch Pythons Paketmanager PIP auf den neuesten Stand bringen:
 
 
 Quellcode laden
----------------
+===============
 
 SmartHomeNG Dateien vom github holen:
 
@@ -58,8 +62,9 @@ unter dem später SmartHomeNG laufen soll, **nicht als root**.
 
 Bitte auf den Punkt am Ende des ersten **git clone** Kommandos achten!
 
+
 Weitere Python Bibliotheken
----------------------------
+===========================
 
 Für den ersten Start müssen noch einige Python Packages nachgeladen werden.
 Im Unterordner ``requirements`` befindet sich dafür eine Datei ``base.txt``.
@@ -71,15 +76,19 @@ Diese können wie folgt installiert werden:
    cd /usr/local/smarthome
    sudo pip3 install -r requirements/base.txt
 
-Vermutlich wird es eine Warnung geben, das die Bibliothek ``six`` nicht installiert wurde oder
-eine zu alte Version. Das liegt an einer indirekten Abhängigkeit von
-``cherrypy -> cheroot --> six (>= 1.11.0``
-In diesem Fall kann ``six`` aktualisiert werden durch
 
-.. code-block:: bash
+.. hint::
 
-   cd /usr/local/smarthome
-   sudo pip3 install six>=1.11.0 --upgrade
+    Eventuell wird es eine Warnung geben, das die Bibliothek ``six`` nicht installiert wurde oder
+    eine zu alte Version. Das liegt an einer indirekten Abhängigkeit von
+    ``cherrypy -> cheroot --> six (>= 1.11.0``
+    In diesem Fall kann ``six`` aktualisiert werden durch
+
+    .. code-block:: bash
+
+       cd /usr/local/smarthome
+       sudo pip3 install six>=1.11.0 --upgrade
+
 
 .. note::
 
@@ -97,19 +106,110 @@ In diesem Fall kann ``six`` aktualisiert werden durch
 
                 sudo <python used to start SmartHomeNG> -m pip3 install -r requirements/base.txt
 
+Jetzt ist SmartHomeNG installiert und kann konfiguriert werden.
+
 
 Erstmalige Konfiguration
-------------------------
+========================
 
-Mit der Grundinstallation werden einige Konfigurationsdateien mitgeliefert die den gleichen Namen
-tragen wie die benötigten Dateien aber zusätzlich noch die Endung **.default**.
-Wenn SmartHomeNG beim Start eine benötigte Konfigurationsdatei sucht, aber noch keine vorhanden ist,
-so wird eine Kopie von der mitgelieferten **.default** Datei erstellt und diese weiter verwendet.
-Gelingt dies nicht, so bricht SmartHomeNG beim Start ab.
+Die erstmalige Konfiguration kann mit der graphischen Oberfläche (Administrations-Interface) oder durch Anpassung
+der Konfigurationdateien vorgenommen werden.
+
+Zur Konfiguration über die graphische Oberfläche, muss SmartHomeNG zunächst gestartet werden:
+
+
+SmartHomeNG starten
+-------------------
+
+Nachdem SmartHomeNG nun installiert ist, kann SmartHomeNG erstmalig gestartet werden:
+
+.. code-block:: bash
+
+   cd /usr/local/smarthome
+   python3 bin/smarthome.py
+
+Auf der Shell (Konsole, Kommandozeile) sollte jetzt nur eine Zeile erscheinen wie:
+
+.. code-block:: bash
+
+   Daemon PID <PID-ID>
+
+Das bedeutet, das SmartHomeNG nun im Hintergrund läuft und unter der Prozess ID ``<PID-ID>`` bekannt ist.
+
+
+Überprüfen, ob SmartHomeNG läuft
+--------------------------------
+
+Um festzustellen ob SmartHomeNG läuft, kann der folgende Befehl genutzt werden:
+
+.. code-block:: bash
+
+    ps -ef|grep smarthome|grep bin
+
+Es sollte eine Zeile augegeben werden, die etwa so aussieht:
+
+.. code-block:: bash
+
+    smartho+ 28373     1  1 12:45 ?        00:00:02 python3 bin/smarthome.py
+
+Die Zeile zeigt an, dass unter dem User **smarthome** (hier zu smartho+ abgekürzt) unter der PID **28373** seit **12:45**
+Uhr SmartHomeNG (**python3 bin/smarthome.py**) ausgeführt wird.
+
+Erfolgt keine Ausgabe, so läuft SmartHomeNG nicht. In diesem Fall bitte den Angaben im Abschnitt :doc:`../fehlersuche`
+nachlesen.
+
+
+.. note::
+
+   SmartHomeNG kann zur Zeit nur ein einziges Mal auf einem Rechner ausgeführt werden. Versucht man dies mehrfach,
+   so kann die Version die als letztes gestartet wurde oft keine Netzwerkverbindungen aufbauen.
+   Ein solcher Fall kann schnell auftreten, wenn SmartHomeNG als Daemon eingerichtet wird und aber zusätzlich ein Start
+   von der Kommandozeile erfolgt.
+
+
+.. attention::
+
+    SmartHomeNG ist jetzt noch nicht so eingerichtet, dass es beim Neustart des Rechners automatisch mit gestartet wird.
+    Diese Einrichtung als Dienst sollte erst vorgenommen werden, nachdem die Erstkonfiguration von SmartHomeNG
+    abgeschlossen ist.
+
+
+SmartHomeNG konfigurieren
+-------------------------
+
+Nachdem SmartHomeNG erfolgreich gestartet wurde, kann zur Konfiguration per Browser auf die Administrationsoberfläche
+zugegriffen werden. Dazu im Browser die url ```<ip des SmartHomeNG Rechners>:8383 eingeben.
+
+Beim ersten Start erscheint folgende Login Seite:
+
+.. image:: assets/login.jpg
+   :class: screenshot
+   :caption: Login Seite
+
+Da bisher kein Password festgelegt ist, brauchen Benutzername und Password nicht eingegeben zu werden. Es kann einfach
+auf anmelden geklickt werden.
+
+Anschließend erscheint die Startseite von SmartHomeNG:
+
+Nun kann mit der Konfiguration begonnen werden, wie sie unter :doc:`../konfiguration` beschrieben ist.
+
+
+
+Erstmalige Konfiguration für Fortgeschrittene
+=============================================
+
+Fortgeschrittene oder Experten können SmartHomeNG auch direkt über die Konfigurationsdateien konfigurieren. Dieses ist
+hier im folgenden kurz beschrieben. Eine ausführlichere Beschreibung findet sich im Abschnitt :doc:`../konfiguration` .
+
+Mit der Grundinstallation werden einige Konfigurationsdateien mitgeliefert die den gleichen Namen tragen wie die
+benötigten Dateien aber zusätzlich noch die Endung **.default**. Wenn SmartHomeNG beim Start eine benötigte
+Konfigurationsdatei sucht, aber noch keine vorhanden ist, so wird eine Kopie von der mitgelieferten **.default**
+Datei erstellt und diese weiter verwendet. Gelingt dies nicht, so bricht SmartHomeNG beim Start ab.
 
 Es werden für einen Systemstart folgende Konfigurationsdateien benötigt:
 
 - **smarthome.yaml**
+- **holidays.yaml**
 - **plugin.yaml**
 - **logging.yaml**
 - **logic.yaml**

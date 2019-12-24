@@ -1,20 +1,24 @@
 
-.. index:: Konfiguration
+.. index:: Konfiguration über die GUI
 
 .. role:: bluesup
 .. role:: redsup
 
-=============
-Konfiguration
-=============
+========================================
+Konfiguration über die GUI :redsup:`new`
+========================================
 
-.. toctree::
+...
+
+
+
+
+x.. toctree::
    :maxdepth: 5
    :hidden:
    :titlesonly:
 
-   konfiguration_admin_gui
-   konfigurationsdateien
+   konfigurationsdateien.rst
    items.rst
    module.rst
    plugins.rst
