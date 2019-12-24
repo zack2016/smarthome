@@ -182,7 +182,7 @@ zugegriffen werden. Dazu im Browser die url ``<ip des SmartHomeNG Rechners>:8383
 
 Beim ersten Start erscheint folgende Login Seite:
 
-.. image:: /installation/assets/admin_gui_login.jpg
+.. image:: /admin/assets/system-common.jpg
    :class: screenshot
 
 Da bisher kein Password festgelegt ist, brauchen Benutzername und Password nicht eingegeben zu werden. Es kann einfach
@@ -191,11 +191,11 @@ auf anmelden geklickt werden.
 
 Anschließend erscheint die Startseite von SmartHomeNG:
 
-.. image:: assets/admin_gui_startseite.jpg
+.. image:: /admin/assets/system-info.jpg
    :class: screenshot
 
 
-Nun kann mit der Konfiguration begonnen werden, wie sie unter :doc:`/konfiguration/konfiguration_admin_gui` beschrieben
+Nun kann mit der Konfiguration begonnen werden, wie sie unter :doc:`Konfiguration /konfiguration/konfiguration_admin_gui` beschrieben
 ist.
 
 

@@ -8,9 +8,58 @@
 Konfiguration über die GUI :redsup:`new`
 ========================================
 
+SmartHomeNG kann vollständig über die graphische Oberfläche konfiguriert werden. Für einen Teil der Konfiguration stehen
+Dialoge zur Verfügung, die Erläuterungen zu den einzelnen Einstellungen geben und evtl. vorhandene Standardwerte
+anzeigen. Für den Rest der Konfiguration stehen Editoren zur Verfügung, mit denen die jeweiligen YAML Dateien bearbeitet
+werden können.
+
+Konfigurations-Dialoge
+======================
+
+Konfigurations-Dialoge bestehen standardmäßig aus 4 Spalten:
+
+- Parameter: Name der Parameter
+- Wert: Zu konfigurierender Wert für die Parameter - Dieses können Freitext-Felder oder Drop-Down Listen sein.
+  Wenn in einem Dialogfeld kein Wert eingegeben ist, wird dort der in diesem Fall verwendete Standardwert angezeigt.
+  Inhalte von Feldern die als Drop-Down Liste dargestellt werden, können durch klicken auf das **x** neben dem Inhalt
+  gelöscht werden.
+- Typ: Datentyp der einzugebenden Werte
+- Beschreibung: Erläuterung der Parameter
+
+.. tip::
+
+   Wenn unter Dienste die Sprache der graphischen Oberfläche umgestellt wird, ändert sich auch die Sprache der
+   Beschreibungstexte.
+
+Die Dialoge können nach jeder der 4 Spalten sortiert werden. Dieses ist bei längeren Dialogen hilfreich, da es das
+auffinden eines gesuchten Parameters erleichtert.
+
+
+Systemkonfiguration
+===================
+
+Die Grundkonfiguration findet im Menü **System** durch Auswahl von **Konfiguration** statt.
+
+Essentiell ist die Konfiguration der ersten vier Parameter. Falls diese Parameter nicht richtig konfiguriert sind,
+liefern Funktionen zu Sonnensnatd, Monstand und Uhrzeit falsche ergebnisse.
+
+.. image:: /admin/assets/system-common.jpg
+   :class: screenshot
+
+Nachdem die Werte eingegeben wurden, müssen die Einstellungen gesichert werden (Button unten rechts im Dialog).
+Wirksam werden diese Änderungen jedoch erst bei einem Neustart von SmartHomeNG. Dieser kann bequem aus dem
+Konfigurationsdialog heraus veranlasst werden.
+
+Falls Daten verändert und gesichert wurden, wird der Button **Core neu starten** (unten links im Dialog) aktiviert.
+Wenn der Button geklickt wird, wird SmartHomeNG neu gestartet. Dieses nimmt einige Zeit in Anspruch. Der Fortschritt
+kann auf der Seite **Dienste** im Tab **Dienste** verfolgt werden.
+
 ...
 
 
+------------------------------
+
+------------------------------
 
 
 x.. toctree::
