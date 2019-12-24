@@ -182,16 +182,22 @@ zugegriffen werden. Dazu im Browser die url ```<ip des SmartHomeNG Rechners>:838
 
 Beim ersten Start erscheint folgende Login Seite:
 
-.. image:: assets/login.jpg
+.. image:: assets/admin_gui_login.jpg
    :class: screenshot
    :caption: Login Seite
 
 Da bisher kein Password festgelegt ist, brauchen Benutzername und Password nicht eingegeben zu werden. Es kann einfach
 auf anmelden geklickt werden.
 
+
 Anschließend erscheint die Startseite von SmartHomeNG:
 
-Nun kann mit der Konfiguration begonnen werden, wie sie unter :doc:`../konfiguration` beschrieben ist.
+.. image:: assets/admin_gui_startseite.jpg
+   :class: screenshot
+   :caption: Login Seite
+
+
+Nun kann mit der Konfiguration begonnen werden, wie sie unter :doc:`/konfiguration` beschrieben ist.
 
 
 
@@ -199,7 +205,7 @@ Erstmalige Konfiguration für Fortgeschrittene
 =============================================
 
 Fortgeschrittene oder Experten können SmartHomeNG auch direkt über die Konfigurationsdateien konfigurieren. Dieses ist
-hier im folgenden kurz beschrieben. Eine ausführlichere Beschreibung findet sich im Abschnitt :doc:`../konfiguration` .
+hier im folgenden kurz beschrieben. Eine ausführlichere Beschreibung findet sich im Abschnitt :doc:`../../konfiguration` .
 
 Mit der Grundinstallation werden einige Konfigurationsdateien mitgeliefert die den gleichen Namen tragen wie die
 benötigten Dateien aber zusätzlich noch die Endung **.default**. Wenn SmartHomeNG beim Start eine benötigte
