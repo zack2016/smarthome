@@ -57,7 +57,7 @@ Beim sichern werden folgende Daten in das zip-Archiv übernommen:
   - /etc/plugin.yaml
   - /etc/smarthome.yaml
   - /etc/struct.yaml
-  - /etc/*.cer
+  - /etc/\*.cer
   - /etc/*.key
   - /items - alle .yaml Dateien
   - /logic - alle .yaml Dateien
