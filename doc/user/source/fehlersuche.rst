@@ -79,7 +79,7 @@ beendet werden. Das geht mit smarthome.py -s oder aber man startet auf der Shell
 
    kill -9 <Prozess-ID>
 
-+
+
 wobei die <Prozess-ID> aus dem Aufruf ps -ef ersichtlich wird, siehe oben.
 
 

@@ -178,11 +178,11 @@ SmartHomeNG konfigurieren
 -------------------------
 
 Nachdem SmartHomeNG erfolgreich gestartet wurde, kann zur Konfiguration per Browser auf die Administrationsoberfläche
-zugegriffen werden. Dazu im Browser die url ```<ip des SmartHomeNG Rechners>:8383 eingeben.
+zugegriffen werden. Dazu im Browser die url ```<ip des SmartHomeNG Rechners>:8383`` eingeben.
 
 Beim ersten Start erscheint folgende Login Seite:
 
-.. image:: assets/admin_gui_login.jpg
+.. image:: /installation/assets/admin_gui_login.jpg
    :class: screenshot
    :caption: Login Seite
 
@@ -192,12 +192,12 @@ auf anmelden geklickt werden.
 
 Anschließend erscheint die Startseite von SmartHomeNG:
 
-.. image:: assets/admin_gui_startseite.jpg
+.. image:: ../assets/admin_gui_startseite.jpg
    :class: screenshot
    :caption: Login Seite
 
 
-Nun kann mit der Konfiguration begonnen werden, wie sie unter :doc:`/konfiguration` beschrieben ist.
+Nun kann mit der Konfiguration begonnen werden, wie sie unter :doc:`/konfiguration/konfiguration` beschrieben ist.
 
 
 
@@ -205,7 +205,7 @@ Erstmalige Konfiguration für Fortgeschrittene
 =============================================
 
 Fortgeschrittene oder Experten können SmartHomeNG auch direkt über die Konfigurationsdateien konfigurieren. Dieses ist
-hier im folgenden kurz beschrieben. Eine ausführlichere Beschreibung findet sich im Abschnitt :doc:`../../konfiguration` .
+hier im folgenden kurz beschrieben. Eine ausführlichere Beschreibung findet sich im Abschnitt :doc:`../../konfiguration/konfiguration` .
 
 Mit der Grundinstallation werden einige Konfigurationsdateien mitgeliefert die den gleichen Namen tragen wie die
 benötigten Dateien aber zusätzlich noch die Endung **.default**. Wenn SmartHomeNG beim Start eine benötigte
