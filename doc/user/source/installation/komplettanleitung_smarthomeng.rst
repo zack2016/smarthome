@@ -195,7 +195,8 @@ Anschließend erscheint die Startseite von SmartHomeNG:
    :class: screenshot
 
 
-Nun kann mit der Konfiguration begonnen werden, wie sie unter :doc:`/konfiguration/konfiguration` beschrieben ist.
+Nun kann mit der Konfiguration begonnen werden, wie sie unter :doc:`/konfiguration/konfiguration_admin_gui` beschrieben
+ist.
 
 
 
@@ -203,7 +204,8 @@ Erstmalige Konfiguration für Fortgeschrittene
 =============================================
 
 Fortgeschrittene oder Experten können SmartHomeNG auch direkt über die Konfigurationsdateien konfigurieren. Dieses ist
-hier im folgenden kurz beschrieben. Eine ausführlichere Beschreibung findet sich im Abschnitt :doc:`../../konfiguration/konfiguration` .
+hier im folgenden kurz beschrieben. Eine ausführlichere Beschreibung findet sich im Abschnitt
+:doc:`../../konfiguration/konfiguration` .
 
 Mit der Grundinstallation werden einige Konfigurationsdateien mitgeliefert die den gleichen Namen tragen wie die
 benötigten Dateien aber zusätzlich noch die Endung **.default**. Wenn SmartHomeNG beim Start eine benötigte
