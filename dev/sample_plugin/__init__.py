@@ -98,7 +98,7 @@ class SamplePlugin(SmartPlugin):
         Run method for the plugin
         """
         self.logger.debug("Run method called")
-        # setup scheduler for device poll loop   (disable the following line, if you don't need to poll the device. Rember to comment the self_cycle statement in __init__ as well
+        # setup scheduler for device poll loop   (disable the following line, if you don't need to poll the device. Rember to comment the self_cycle statement in __init__ as well)
         self.scheduler_add('poll_device', self.poll_device, cycle=self._cycle)
 
         self.alive = True
@@ -171,7 +171,7 @@ class SamplePlugin(SmartPlugin):
 
         This method is only needed, if the device (hardware/interface) does not propagate
         changes on it's own, but has to be polled to get the actual status.
-        It is called by the scheduler.
+        It is called by the scheduler which is set within run() method.
         """
         # # get the value from the device
         # device_value = ...
@@ -285,5 +285,5 @@ class WebInterface(SmartPluginWebIf):
 
             # return it as json the the web page
             #return json.dumps(self.plugin.beodevices.beodeviceinfo)
-
+            pass
         return
