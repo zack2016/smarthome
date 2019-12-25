@@ -580,15 +580,19 @@ class Scheduler(threading.Thread):
             mdays = calendar.monthrange(now.year + 1, 1)[1]
         else:
             mdays = calendar.monthrange(now.year, now.month + 1)[1]
+
         if wday == '*' and day == '*':
             day_range = self._day_range('0, 1, 2, 3, 4, 5, 6')
         elif wday != '*' and day == '*':
-            day_range = self._day_range(wday)
+            day_range = self._range(wday,0,6)
+            day_range = self._day_range(','.join(day_range))
         elif wday != '*' and day != '*':
-            day_range = self._day_range(wday)
+            day_range = self._range(wday,0,6)
+            day_range = self._day_range(','.join(day_range))
             day_range = day_range + self._range(day, 0o1, mdays)
         else:
             day_range = self._range(day, 0o1, mdays)
+
         # combine the different ranges
         event_range = sorted([str(day) + '-' + str(hour) + '-' + str(minute) for minute in minute_range for hour in hour_range for day in day_range])
         if next_month:  # next month

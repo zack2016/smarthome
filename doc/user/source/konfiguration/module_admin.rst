@@ -4,15 +4,15 @@
 .. role:: redsup
 .. role:: bluesup
 
-##########################
-Module admin :redsup:`neu`
-##########################
+============
+Module admin
+============
 
 Dieses Modul erlaubt es SmartHomeNG über einen Webbrowser zu konfigurieren. Voraussetzung ist, dass auch das Modul
 http geladen und konfiguriert ist.
 
 
-.. index:: Konfigurationsdateien; /etc/module.yaml
+.. index:: Konfigurationsdateien; /etc/module.yaml (admin)
 
 Konfiguration
 =============

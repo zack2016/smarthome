@@ -34,6 +34,8 @@ import os
 
 import lib.shyaml as shyaml
 from lib.constants import (YAML_FILE)
+from lib.translation import translate
+from lib.translation import translate as lib_translate
 
 
 logger = logging.getLogger(__name__)
@@ -47,6 +49,7 @@ class Shtime:
     _starttime = None
     tz = ''
     holidays = None
+    public_holidays = None
 
 
     def __init__(self, smarthome):
@@ -56,7 +59,7 @@ class Shtime:
             import inspect
             curframe = inspect.currentframe()
             calframe = inspect.getouterframes(curframe, 4)
-            logger.critical("A second 'shtime' object has been created. There should only be ONE instance of class 'Shtime'!!! Called from: {} ({})".format(calframe[1][1], calframe[1][3]))
+            logger.critical(self.translate("A second 'shtime' object has been created. There should only be ONE instance of class 'Shtime'!!! Called from: {callframe1} ({callframe3})").format(callframe1=calframe[1][1], callframe3=calframe[1][3]))
 
         _shtime_instance = self
 
@@ -96,6 +99,15 @@ class Shtime:
             return _shtime_instance
 
 
+    def translate(self, txt):
+        """
+        Returns translated text
+        """
+        txt = str(txt)
+
+        return lib_translate(txt, additional_translations='lib/shtime')
+
+
     def set_tz(self, tz):
         """
         set timezone info from name of timezone
@@ -108,7 +120,7 @@ class Shtime:
 #             self._tzinfo = TZ
             self.set_tzinfo(tzinfo)
         else:
-            logger.warning("Problem parsing timezone: {}. Using UTC.".format(tz))
+            logger.warning(self.translate("Problem parsing timezone '{tz}' - Using UTC").format(tz=tz))
         return
 
 
@@ -243,9 +255,9 @@ class Shtime:
             try:
                 key = dateutil.parser.parse(key).date()
             except (ValueError, OverflowError):
-                raise ValueError("Cannot parse date from string '%s'" % key)
+                raise ValueError(self.translate("Cannot parse date from string '{key}'").format(key=key))
         else:
-            raise TypeError("Cannot convert type '%s' to date." % type(key))
+            raise TypeError(self.translate("Cannot convert type '{key}' to date").format(key=type(key)))
         return key
 
 
@@ -285,9 +297,70 @@ class Shtime:
         return self.today().year
 
 
+    def current_month(self):
+        """
+        Return the current month
+
+        :return: month
+        """
+        return self.today().month
+
+
+    def current_day(self):
+        """
+        Return the current day
+
+        :return: day
+        """
+        return self.today().day
+
+
+    def length_of_year(self, year=None):
+        """
+        Returns the length of a given year
+
+        :return: Length of year in days
+        """
+        if year is None:
+            year = self.current_year()
+        return (datetime.datetime(year + 1, 1, 1) - datetime.datetime(year, 1, 1)).days
+
+
+    def length_of_month(self, month=None, year=None):
+        """
+        Returns the length of a given month for a given year
+
+        :return: Length of month in days
+        """
+        if month is None:
+            month = self.current_month()
+        if year is None:
+            year = self.current_year()
+
+        next_month = month
+        next_year = year
+        if next_month == 12:
+            next_year += 1
+            next_month = 0
+        return (datetime.datetime(next_year, next_month+1, 1) - datetime.datetime(year, month, 1)).days
+
+
+    def day_of_year(self, date=None):
+        """
+
+        :param date: date for which the day_of_year should be returned. If not specified, today is used
+        :return:
+        """
+        if date:
+            date = self._datetransform(date)
+        else:
+            date = self.today()
+        return (date - datetime.date(date.year, 1, 1)).days + 1
+
+
     def weekday(self, date=None):
         """
-        Returns the weekday of a given date (or of today, if date is None)
+        Returns the ISO weekday of a given date (or of today, if date is None)
 
         Return the day of the week as an integer, where Monday is 1 and Sunday is 7. (ISO weekday)
 
@@ -302,59 +375,193 @@ class Shtime:
             return datetime.datetime.now().isoweekday()
 
 
+    def calendar_week(self, date=None):
+        """
+        Returns the calendar week (according to ISO)
+
+        :param date:
+        :return: week (ISO)
+        """
+        if date:
+            dt = self._datetransform(date)
+            return dt.isocalendar()[1]
+        else:
+            return datetime.datetime.now().isocalendar()[1]
+
+
+    def weekday_name(self, date=None):
+        """
+        Returns the name of the weekday for a given date
+
+        :param date: date for which the weekday should be returned. If not specified, today is used
+        :return: weekday name
+        """
+        if date:
+            dt = self._datetransform(date)
+        else:
+            dt = self.today()
+
+        wday = self.weekday(dt)
+        if wday == 1:
+            day = "Montag"
+        elif wday == 2:
+            day = "Dienstag"
+        elif wday == 3:
+            day = "Mittowch"
+        elif wday == 4:
+            day = "Donnerstag"
+        elif wday == 5:
+            day = "Freitag"
+        elif wday == 6:
+            day = "Samstag"
+        elif wday == 7:
+            day = "Sonntag"
+        else:
+            day = "?"
+
+        return translate(day)
+
+
+    def _get_nth_dow_in_month(self, dow, dow_week, year, month):
+        """
+        get nth day of week for given month and year
+
+        :param dow:  day of week (1-7)
+        :param dow_week: n for nth week (1-4)
+        :param year: year to look into
+        :param month: month to look into
+
+        :return: date
+        """
+        day_1st = datetime.date(year, month, 1)
+        dow_1st = self.weekday(datetime.date(year, month, 1))
+        week = int(dow_week)
+
+        if dow_1st <= dow:
+            d_diff = dow - dow_1st
+        else:
+            d_diff = 7 - dow_1st + dow
+        d_diff += (week - 1) * 7
+        date = day_1st + datetime.timedelta(days=d_diff)
+        logger.debug('dow_1st: d_diff {} -> {}'.format(d_diff, date))
+        return date
+
+
+    def _get_last_dow_in_month(self, dow, year, month):
+        """
+        get last day of week for given month and year
+
+        :param dow: day of week (1-7)
+        :param year: year to look into
+        :param month: month to look into
+
+        :return: date
+        """
+        day_last = datetime.date(year, month + 1, 1) + datetime.timedelta(days=-1)
+        dow_last = self.weekday(datetime.date(year, month + 1, 1) + datetime.timedelta(days=-1))
+
+        if dow_last >= dow:
+            d_diff = dow_last - dow
+        else:
+            d_diff = dow_last + 7 - dow
+        date = day_last - datetime.timedelta(days=d_diff)
+        logger.debug('dow_last: d_diff {} -> {}'.format(d_diff, date))
+        return date
+
+
+    def _add_holiday_by_date(self, cust_date, gen_for_years):
+        """
+        Add a custom holiday for given day and month (and optionally year)
+
+        :param cust_date:
+
+        """
+        cust_dict = {}
+        logger.info(self.translate('custom holiday')+' (date): {}'.format(cust_date))
+
+        for year in gen_for_years:
+            d = datetime.date(year, cust_date['month'], cust_date['day'])
+
+            cust_dict[d] = cust_date.get('name', '')
+
+        self.holidays.append(cust_dict)
+        return
+
+
+    def _add_holiday_by_dow(self, cust_date, gen_for_years):
+        """
+        Add a custom holiday for given day-of-week
+
+        :param cust_date:
+
+        """
+        cust_dict = {}
+        logger.info(self.translate('custom holiday')+' (dow): {}'.format(cust_date))
+        month = cust_date.get('month', None)
+        try:
+            dow_week = int(cust_date.get('dow_week', 0))
+            if dow_week < 1:
+                return
+        except ValueError:
+            if str(cust_date.get('dow_week', None)).lower() == 'last':
+                dow_week = str(cust_date.get('dow_week', None)).lower()
+            else:
+                return
+
+        try:
+            dow_start_week = int(cust_date.get('dow_start_week', dow_week))
+        except ValueError:
+            dow_start_week = dow_week
+
+        for year in gen_for_years:
+            if month is None:
+                # get every nth day-of-week in a year
+                date = self._get_nth_dow_in_month(cust_date.get('dow', None), dow_start_week, year, 1)
+                while date.year == year:
+                    cust_dict[date] = cust_date.get('name', '')
+                    date = date + datetime.timedelta(7*dow_week)
+            else:
+                # get a day-of-week in a given month
+                if str(cust_date.get('dow_week', None)).lower() == 'last':
+                    date = self._get_last_dow_in_month(cust_date.get('dow', None), year, month)
+                else:
+                    date = self._get_nth_dow_in_month(cust_date.get('dow', None), cust_date.get('dow_week', None), year, month)
+
+                cust_dict[date] = cust_date.get('name', '')
+
+        self.holidays.append(cust_dict)
+        return
+
+
     def _add_custom_holidays(self):
         """
         Add custom holidays from etc/holidays.yaml to the initialized list of holidays
 
         :return: Number of valid custom holiday definitions
         """
+        if self.holidays is None:
+            logger.info("add_custom_holidays: "+self.translate("Holidays are not initialized, cannot add custom holidays"))
+            return 0
+
         custom = self.config.get('custom', [])
         count = 0
         if len(custom) > 0:
             for cust_date in custom:
+                # generate for range of years or a given year
+                if cust_date.get('year', None) is None:
+                    gen_for_years = self.years
+                else:
+                    gen_for_years = [cust_date['year']]
+
                 # {'day': 2, 'month': 12, 'name': "Martin's Geburtstag"}
                 if cust_date.get('month', None) and cust_date.get('day', None):
-                    cust_dict = {}
-                    if cust_date.get('year', None):
-                        d = datetime.date(cust_date['year'], cust_date['month'], cust_date['day'])
-                        cust_dict[d] = cust_date.get('name', '')
-                        count += 1
-                    else:
-                        for year in self.years:
-                            d = datetime.date(year, cust_date['month'], cust_date['day'])
-                            cust_dict[d] = cust_date.get('name', '')
-                        count += 1
-                    self.holidays.append(cust_dict)
-                elif cust_date.get('month', None) and cust_date.get('dow', None) and cust_date.get('dow_week', None):
-                    cust_dict = {}
-                    logger.warning('dow: {}'.format(cust_date))
-                    month = cust_date.get('month', None)
-                    if 0 < cust_date.get('dow', None) < 8:
-                        for year in self.years:
-                            if cust_date.get('dow_week', None) == 'last':
-                                day_last = datetime.date(year, month+1, 1) + datetime.timedelta(days=-1)
-                                dow_last = self.weekday(datetime.date(year, month+1, 1) + datetime.timedelta(days=-1))
-
-                                if dow_last >= cust_date.get('dow', None):
-                                    d_diff = dow_last - cust_date.get('dow', None)
-                                else:
-                                    d_diff =  dow_last + 7 - cust_date.get('dow', None)
-                                date = day_last - datetime.timedelta(days=d_diff)
-                                logger.warning('dow_last: d_diff {} -> {}'.format(d_diff, date))
-                            else:
-                                day_1st = datetime.date(year, month, 1)
-                                dow_1st = self.weekday(datetime.date(year, month, 1))
-                                week = int(cust_date.get('dow_week', None))
-
-                                if dow_1st <= cust_date.get('dow', None):
-                                    d_diff = cust_date.get('dow', None) - dow_1st
-                                else:
-                                    d_diff =  7 - dow_1st + cust_date.get('dow', None)
-                                d_diff += (week-1) * 7
-                                date = day_1st + datetime.timedelta(days=d_diff)
-                                logger.warning('dow_1st: d_diff {} -> {}'.format(d_diff, date))
-                            cust_dict[date] = cust_date.get('name', '')
-                    self.holidays.append(cust_dict)
+                    # generate holiday(s) for a given date (day/month)
+                    self._add_holiday_by_date(cust_date, gen_for_years)
+                    count += 1
+                elif cust_date.get('dow', None) and cust_date.get('dow_week', None) and (0 < cust_date.get('dow', None) < 8):
+                    # generate holiday(s) for a given weekday (dow/dowweek/month)
+                    self._add_holiday_by_dow(cust_date, gen_for_years)
+                    count += 1
 
         return count
 
@@ -378,23 +585,53 @@ class Shtime:
                 country=location.get('country', 'DE')
                 prov=location.get('province', None)
                 state=location.get('state', None)
-                self.holidays = holidays.CountryHoliday(country, years=self.years, prov=prov, state=state)
+                try:
+                    self.holidays = holidays.CountryHoliday(country, years=self.years, prov=prov, state=state)
+                except KeyError as e:
+                    logger.error("Error initializing self.holidays: {}".format(e))
+                    try:
+                        self.public_holidays = holidays.CountryHoliday(country, years=self.years, prov=prov, state=state)
+                    except KeyError as e:
+                        logger.error("Error initializing self.public_holidays: {}".format(e))
             else:
                 self.holidays = holidays.CountryHoliday('US', years=self.years, prov=None, state=None)
+                self.public_holidays = holidays.CountryHoliday('US', years=self.years, prov=None, state=None)
 
-            c_logtext = 'not defined'
-            c_logcount = ''
-            count = self._add_custom_holidays()
-            if count > 0:
-                c_logcount = ' ' + str(count)
-                c_logtext = 'defined'
-            logger.warning("Using holidays for country '{}', province '{}', state '{}',{} custom holiday(s) {}".format(self.holidays.country, self.holidays.prov, self.holidays.state, c_logcount, c_logtext))
+            if self.holidays is not None:
+                c_logtext = self.translate('not defined')
+                c_logcount = ''
+                count = self._add_custom_holidays()
+                if count > 0:
+                    c_logcount = ' ' + str(count)
+                    c_logtext = self.translate('defined')
+                log_msg = self.translate("Using holidays for country '{country}', province '{province}', state '{state}',{count} custom holiday definitions(s) {defined}")
+                logger.warning(log_msg.format(country=self.holidays.country, province=self.holidays.prov, state=self.holidays.state, count=c_logcount, defined=c_logtext))
 
-            logger.info('Defined holidays:')
-            for ft in sorted(self.holidays):
-                logger.info(' - {}: {}'.format(ft, self.holidays[ft]))
+                logger.info(self.translate('Defined holidays') + ':')
+                for ft in sorted(self.holidays):
+                    logger.info(' - {}: {}'.format(ft, self.holidays[ft]))
 
         return
+
+
+    def is_weekend(self, date=None):
+        """
+        Returns True, if the date is a holiday
+
+        Note: Easter sunday is not concidered a holiday (since it is a sunday already)!
+
+        :param date: date for which the weekday should be returned. If not specified, today is used
+        :return:
+        """
+
+        if date:
+            dt = self._datetransform(date)
+        else:
+            dt = self.today()
+
+        self._initialize_holidays()
+
+        return self.weekday(dt) in [6,7]
 
 
     def is_holiday(self, date=None):
@@ -415,6 +652,26 @@ class Shtime:
         self._initialize_holidays()
 
         return (dt in self.holidays)
+
+
+    def is_public_holiday(self, date=None):
+        """
+        Returns True, if the date is a public holiday
+
+        Note: Easter sunday is not concidered a public holiday (since it is a sunday already)!
+
+        :param date: date for which the weekday should be returned. If not specified, today is used
+        :return:
+        """
+
+        if date:
+            dt = self._datetransform(date)
+        else:
+            dt = self.today()
+
+        self._initialize_holidays()
+
+        return (dt in self.public_holidays)
 
 
     def holiday_name(self, date=None):
@@ -439,6 +696,7 @@ class Shtime:
 
     def holiday_list(self, year=None):
         """
+        Returns a list with the defined holidays
 
         :param year:
         :return:
@@ -447,4 +705,18 @@ class Shtime:
         for h in self.holidays:
             if year is None or h.year == year:
                 hl.append({h, self.holidays[h]})
+        return hl
+
+
+    def public_holiday_list(self, year=None):
+        """
+        Returns a list with the defined public holidays
+
+        :param year:
+        :return:
+        """
+        hl = []
+        for h in self.public_holidays:
+            if year is None or h.year == year:
+                hl.append({h, self.public_holidays[h]})
         return hl

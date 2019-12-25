@@ -53,14 +53,15 @@ They can be used the following way: To call eg. **get_toplevel_items()**, use th
 import copy
 import datetime
 import dateutil.parser
-import time     # for calls to time in eval
+import time             # for calls to time in eval
 import logging
 import collections
 import os
 import re
 import pickle
 import threading
-import math
+import math             # for calls to math in eval
+from math import *
 import json
 from ast import literal_eval
 import inspect
@@ -565,8 +566,6 @@ class Item():
                         attr = KEY_VALUE
                     setattr(self, '_' + attr, value)
                 elif attr in [KEY_EVAL]:
-#                     value = self.get_stringwithabsolutepathes(value, 'sh.', '(', KEY_EVAL)
-#                     setattr(self, '_' + attr, value)
                     self._process_eval(value)
                 elif attr in [KEY_CACHE, KEY_ENFORCE_UPDATES]:  # cast to bool
                     try:
@@ -579,13 +578,6 @@ class Item():
                         value = [value, ]
                     setattr(self, '_' + attr, value)
                 elif attr in [KEY_EVAL_TRIGGER] or (self._use_conditional_triggers and attr in [KEY_TRIGGER]):  # cast to list
-#                     if isinstance(value, str):
-#                         value = [value, ]
-#                     self._trigger_unexpanded = value
-#                     expandedvalue = []
-#                     for path in value:
-#                         expandedvalue.append(self.get_absolutepath(path, attr))
-#                     self._trigger = expandedvalue
                     self._process_trigger_list(attr, value)
                 elif (attr in [KEY_CONDITION]) and self._use_conditional_triggers:  # cast to list
                     if isinstance(value, list):
@@ -597,28 +589,6 @@ class Item():
                     else:
                         logger.warning("Item __init__: {}: Invalid trigger_condition specified! Must be a list".format(self._path))
                 elif attr in [KEY_ON_CHANGE, KEY_ON_UPDATE]:
-#                     if isinstance(value, str):
-#                         value = [ value ]
-#                     val_list = []
-#                     val_list_unexpanded = []
-#                     dest_var_list = []
-#                     dest_var_list_unexp = []
-#                     for val in value:
-#                         # seperate destination item (if it exists)
-#                         dest_item, val = self._split_destitem_from_value(val)
-#                         dest_var_list_unexp.append(dest_item)
-#                         # expand relative item pathes
-#                         dest_item = self.get_absolutepath(dest_item, KEY_ON_CHANGE).strip()
-# #                        val = 'sh.'+dest_item+'( '+ self.get_stringwithabsolutepathes(val, 'sh.', '(', KEY_ON_CHANGE) +' )'
-#                         val_list_unexpanded.append(val)
-#                         val = self.get_stringwithabsolutepathes(val, 'sh.', '(', KEY_ON_CHANGE)
-# #                        logger.warning("Item __init__: {}: for attr '{}', dest_item '{}', val '{}'".format(self._path, attr, dest_item, val))
-#                         val_list.append(val)
-#                         dest_var_list.append(dest_item)
-#                     setattr(self, '_' + attr + '_unexpanded', val_list_unexpanded)
-#                     setattr(self, '_' + attr, val_list)
-#                     setattr(self, '_' + attr + '_dest_var', dest_var_list)
-#                     setattr(self, '_' + attr + '_dest_var_unexp', dest_var_list_unexp)
                     self._process_on_xx_list(attr, value)
                 elif attr in [KEY_LOG_CHANGE]:
                     if value != '':
@@ -733,15 +703,6 @@ class Item():
             if not os.path.isfile(self._cache):
                 _cache_write(self._cache, self._value)
                 logger.warning("Item {}: Created cache for item: {}".format(self._cache, self._cache))
-        #############################################################
-        # Crontab/Cycle
-        # Moved to end of initialization in SmartHomeNG v1.6
-        #############################################################
-        # if self._crontab is not None or self._cycle is not None:
-        #     cycle = self._cycle
-        #     if cycle is not None:
-        #         cycle = self._build_cycledict(cycle)
-        #     self._sh.scheduler.add(self._itemname_prefix+self._path, self, cron=self._crontab, cycle=cycle)
         #############################################################
         # Plugins
         #############################################################
@@ -2113,6 +2074,8 @@ class Item():
     #                logger.info("__run_eval: item = {}, value = {}, self._eval = {}".format(self._path, value, self._eval))
                 sh = self._sh  # noqa
                 shtime = self.shtime
+
+                import math as mymath
                 try:
                     value = eval(self._eval)
                 except Exception as e:
@@ -2155,7 +2118,7 @@ class Item():
                         dest_item.__update(dest_value, caller=attr, source=self._path)
                         logger.debug(" - : '{}' finally evaluating {} = {}, result={}".format(attr, on_dest, on_eval, dest_value))
                     else:
-                        logger.error(" - : '{}' has not found dest_item {} = {}, result={}".format(attr, on_dest, on_eval, dest_value))
+                        logger.error("Item {}: '{}' has not found dest_item '{}' = {}, result={}".format(self._path, attr, on_dest, on_eval, dest_value))
                 else:
                     dummy = eval(on_eval)
                     logger.debug(" - : '{}' finally evaluating {}, result={}".format(attr, on_eval, dest_value))
