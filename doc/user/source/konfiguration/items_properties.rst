@@ -5,8 +5,8 @@
 .. role:: redsup
 
 
-Properties eines Items :redsup:`new`
-====================================
+Properties eines Items :bluesup:`update`
+========================================
 
 Jedes definierte Item bietet die folgenden Properties an, die unter anderem in **eval** Ausdrücken
 genutzt werden können. Alle Properties sind zumindest lesend (r/o) zugreifbar. Einige Properties können
@@ -38,6 +38,10 @@ Werte für Properties, die auch geschrieben werden können (z.B. in Logiken), we
 +----------------------+------------+----------+------------------------------------------------------------------------------+
 | **Property**         | **Access** | **Type** | **Beschreibung**                                                             |
 +======================+============+==========+==============================================================================+
+| attributes           | r/o        | list     | Liefert die Namen der plugin-spezfischen Attribute als Liste                 |
+|                      |            |          | Auf die Werte dieser Attribute kann über dynamische Properties zugegriffen   |
+|                      |            |          | werde. (Siehe Ende dieser Tabelle)                                           |
++----------------------+------------+----------+------------------------------------------------------------------------------+
 | defined_in           | r/o        | str      | Liefert den Dateinamen in dem das Item definiert wurde zurück                |
 +----------------------+------------+----------+------------------------------------------------------------------------------+
 | enforce_updates      | r/w        | bool     | Setzt oder löscht den **enforce_updates** Status                             |
@@ -120,4 +124,8 @@ Werte für Properties, die auch geschrieben werden können (z.B. in Logiken), we
 | value                | r/w        | str      | Das Property value stellt eine Alternative zur Abfrage/Zuweisung durch       |
 |                      |            |          | var= **item()** / **item(** value **)** dar.                                 |
 +----------------------+------------+----------+------------------------------------------------------------------------------+
-
+| <dynamic property>   | r/o        | str      | Als dynamische Properties werden die plugin-spezifischen Attribute unter-    |
+|                      |            |          | stützt. So kann z.B. aus der smartVISU auf die KNX Sendeadresse eines Items  |
+|                      |            |          | **schaltaktor** zugegriffen werden: **schaltaktor.property.knx_send**        |
+|                      |            |          | Dyn. Properties sind erst in SmartHomeNG Releases nach v1.6.1 implementiert. |
++----------------------+------------+----------+------------------------------------------------------------------------------+

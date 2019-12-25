@@ -38,8 +38,8 @@ Beispiele für Kürzel, die kennzeichnen zu welchem Plugin die jeweiligen Attrib
 .. index:: Vererbung von Attributen
 .. role:: redsup
 
-Vererbung von Attributen :redsup:`neu`
---------------------------------------
+Vererbung von Attributen :bluesup:`update`
+------------------------------------------
 
 Bei einigen Plugins ist es notwendig, bei jedem Item einen Identifier anzugeben. Beispiele sind das
 homematic Plugin und das hue Plugin. Hier ist es hilfreich, den Identifier (z.B. die **hm_address**
@@ -50,10 +50,19 @@ indem das Plugin immer prüft, ob das Attribut in übergeordneten Items definier
 
 Ab der Version 1.5 von SmartHomeNG gibt es einen Standardmechanismus der es möglich macht, selektiv
 den Wert aus einem übergeordneten Item zu erben. Dieser Mechanismus funktioniert **nur** bei
-plugin-spezifischen Attributen.
+plugin-spezifischen Attributen. Hierbei kann ein Attribut mit dem Wert eines Attributes eines
+übergeordneten Items belegt werden.
 
-Um den Wert eines Attributes von dem übergeordnetem Item (Parent-Item) zu erben, muss in der
-Konfiguration das Attribut mit dem Wert :code:`..` konfiguriert werden:
+Es kann die übergeordete Ebene (Eltern / Großeltern) das Attribut der Ebene angebeben werden. Dabei wird
+als Wert eines Attributes folgender Platzhalter eingetragen: :code:`<Ebene>:<Attribut>`
+
+Die :code:`<Ebene>` kann die Werte :code:`..` und :code:`...` für Eltern- bzw. Großeltern Item.
+Für :code:`<Attribut>` kann der Name des Attributes aus der übergeordenten Ebene angebeben werden oder
+:code:`.` um aus der übergeordenten Ebene das Attribut mit dem Selben Namen zu referenzieren.
+
+
+Um den Wert eines Attributes (mit gleichem Namen) von dem übergeordnetem Item (Parent-Item) zu erben, muss
+in der Konfiguration das Attribut mit dem Wert :code:`..:.` konfiguriert werden:
 
 .. code-block:: yaml
 
@@ -63,12 +72,12 @@ Konfiguration das Attribut mit dem Wert :code:`..` konfiguriert werden:
 
        sabotage:
           type: bool
-          hm_address: ..
+          hm_address: ..:.
           hm_function: SABOTAGE
 
        low_battery:
           type: bool
-          hm_address: ..
+          hm_address: ..:.
           hm_function: LOW_BAT
 
 
@@ -78,8 +87,8 @@ einfach kopieren und muss nur dem Item einen neuen Namen geben (z.B. fenstergrif
 **hm_adress** an einer Stelle abzuändern.
 
 Um direkt den Wert eines Attributes von dem übergeordnetem Item des Parent-Items (Grandparent-Item)
-zu erben, kann in der Konfiguration das Attribut mit dem Wert :code:`...` konfiguriert werden.
+zu erben, kann in der Konfiguration das Attribut mit dem Wert :code:`...:.` konfiguriert werden.
 
 Die Vererbung ist so implementiert, dass der Attribut Wert während der Initialisierung der Items beim
 Start von SmartHomeNG kopiert wird. Im Backend wird in den Item Details des Child-Items also nicht
-:code:`..` oder :code:`...` angezeigt, sondern der kopierte Wert.
+:code:`..:.` oder :code:`...:.` angezeigt, sondern der kopierte Wert.

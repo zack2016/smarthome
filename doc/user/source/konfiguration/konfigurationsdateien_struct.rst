@@ -3,8 +3,8 @@
 .. role:: bluesup
 .. role:: redsup
 
-struct.yaml :redsup:`new`
-#########################
+struct.yaml
+###########
 
 In dieser Konfigurationsdatei können eigene Item-Strukturen angelegt werden, die über das **struct** Attribut als Template
 verwendet werden können.

@@ -3,7 +3,7 @@
 #########################################################################
 # Copyright 2018-       Martin Sinn                         m.sinn@gmx.de
 #########################################################################
-#  This file is part of SmartHomeNG.    
+#  This file is part of SmartHomeNG.
 #
 #  SmartHomeNG is free software: you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -36,9 +36,7 @@ import sys
 import fnmatch
 import datetime
 import re
-import operator
 
-import pprint
 
 from lib.utils import Utils
 from lib.constants import (YAML_FILE)
@@ -109,6 +107,18 @@ class Shpypi:
         """
         Returns a dict with the versions of the installed packages
 
+        When problems with requirements occur, it probably has to do with multiple Python 3 versions beeing installed
+        Make sure, the packages are installed into the Python version you are using to start SmartHomeNG
+
+            instead of using
+                [sudo] pip[3] install [--upgrade] <package(s)>,
+            use
+                [sudo] <python used to start SmartHomeNG> -m pip[3] install [--upgrade] <package(s)>
+
+        How to change from default to alternative Python version on Debian Linux:
+
+            https://linuxconfig.org/how-to-change-from-default-to-alternative-python-version-on-debian-linux
+
         :return: dict of package and version
         :rtype: dict
         """
@@ -123,6 +133,27 @@ class Shpypi:
         return installed_packages_dict
 
 
+    # def get_installed_packages(self):
+    #     """
+    #     Returns a dict with the versions of the installed packages
+    #
+    #     :return: dict of package and version
+    #     :rtype: dict
+    #     """
+    #     import subprocess
+    #
+    #     test = subprocess.check_output(['pip3', 'freeze'])
+    #     test_list = test.decode().split('\n')
+    #     test_dict = {}
+    #     self.logger.info("shpypi: Installed Python packages:")
+    #     for pkg in test_list:
+    #         if '==' in pkg:
+    #             p,v = pkg.split('==')
+    #             self.logger.info(" - {}: v{}".format(p, v))
+    #             test_dict[p.lower()] = v
+    #     return test_dict
+
+
     def test_requirements(self, filepath, logging=True, hard_requirement=True):
         if logging:
             self.logger.info("test_requirements: filepath '{}' is checked".format(filepath))
@@ -132,7 +163,7 @@ class Shpypi:
 
         requirements_met = True
         for req_pkg in req_dict:
-            inst_vers = inst_dict.get(req_pkg, '-')
+            inst_vers = inst_dict.get(req_pkg.lower(), '-')
             min = req_dict[req_pkg].get('min', '*')
             max = req_dict[req_pkg].get('max', '*')
             if min == '*':
@@ -148,8 +179,10 @@ class Shpypi:
                 requirements_met = False
                 if logging:
                     if hard_requirement:
-                        if inst_vers == '-':
-                            self.logger.error("test_requirements: package '{}' is not installed".format(req_pkg))
+                        if inst_vers == '-' and min == '*':
+                            self.logger.error("test_requirements: package '{}' is not installed, any version is needed".format(req_pkg))
+                        elif inst_vers == '-':
+                            self.logger.error("test_requirements: package '{}' is not installed. Minimum v{} is needed".format(req_pkg, min))
                         elif not min_met:
                             self.logger.error("test_requirements: package '{}' v{} is too old. Minimum v{} is needed".format(req_pkg, inst_vers, min))
                         else:
@@ -158,8 +191,10 @@ class Shpypi:
                     if not self._error:
                         print()
                         self._error = True
-                    if inst_vers == '-':
-                        print("test_requirements: package '{}' is not installed".format(req_pkg))
+                    if inst_vers == '-' and min == '*':
+                        print("test_requirements: package '{}' is not installed, any version is needed".format(req_pkg))
+                    elif inst_vers == '-':
+                        print("test_requirements: package '{}' is not installed. Minimum v{} is needed".format(req_pkg, min))
                     elif not min_met:
                         print("test_requirements: package '{}' v{} is too old. Minimum v{} is needed".format(req_pkg, inst_vers, min))
                     else:
@@ -995,7 +1030,7 @@ class Requirements_files():
         ofile.write('#   |                 SmartHomeNG                   |\n')
         ofile.write('#   |            DON\'T EDIT THIS FILE               |\n')
         ofile.write('#   |           THIS FILE IS GENERATED              |\n')
-        ofile.write('#   |       BY tools/build_requirements.py          |\n')
+        ofile.write('#   |              BY lib/shpypi.py                 |\n')
         ofile.write('#   |            ON '+datetime.datetime.now().strftime('%d.%m.%Y %H:%M')+'                |\n')
         ofile.write('#   |                                               |\n')
         ofile.write('#   |               INSTALL WITH:                   |\n')

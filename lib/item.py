@@ -27,7 +27,7 @@ This library implements items in SmartHomeNG.
 
 The main class ``Items`` implements the handling for all items. This class has a  static method to get a handle to the
 instance of the Items class, that is created during initialization of SmartHomeNG. This method implements a way to
-access the API for handling items without having to juggle through the object hirarchy of the running SmartHomeNG.
+access the API for handling items without having to juggle through the object hierarchy of the running SmartHomeNG.
 
 This API enables plugins and logics to access the details of the items initialized in SmartHomeNG.
 
@@ -53,14 +53,15 @@ They can be used the following way: To call eg. **get_toplevel_items()**, use th
 import copy
 import datetime
 import dateutil.parser
-import time     # for calls to time in eval
+import time             # for calls to time in eval
 import logging
 import collections
 import os
 import re
 import pickle
 import threading
-import math
+import math             # for calls to math in eval
+from math import *
 import json
 from ast import literal_eval
 import inspect
@@ -93,13 +94,13 @@ class Items():
     Items loader class. (Item-methods from bin/smarthome.py are moved here.)
 
     - An instance is created during initialization by bin/smarthome.py
-    - There should be only one instance of this class. So: Don't create anther instance
+    - There should be only one instance of this class. So: Don't create another instance
 
     :param smarthome: Instance of the smarthome master-object
-    :type samrthome: object
+    :type smarthome: object
     """
 
-    __items = []                # list with the pathes of all items that are defined
+    __items = []                # list with the paths of all items that are defined
     __item_dict = {}            # dict with all the items that are defined in the form: {"<item-path>": "<item-object>", ...}
 
     _children = []              # List of top level items
@@ -120,9 +121,9 @@ class Items():
         _items_instance = self
 
 
-    # ------------------------------------------------------------------------------------
-    #   Following (static) method of the class Items implement the API for Items in shNG
-    # ------------------------------------------------------------------------------------
+    # -----------------------------------------------------------------------------------------
+    #   Following (static) method of the class Items implement the API for Items in SmartHomeNG
+    # -----------------------------------------------------------------------------------------
 
     @staticmethod
     def get_instance():
@@ -225,7 +226,7 @@ class Items():
             if isinstance(value, dict):
                 child_path = attr
                 try:
-#                              (smarthome, parent, path, config):
+                    # (smarthome, parent, path, config):
                     child = Item(self._sh, self, child_path, value)
                 except Exception as e:
                     logger.error("load_itemdefinitions: Item {}: problem creating: ()".format(child_path, e))
@@ -237,11 +238,11 @@ class Items():
         del(item_conf)  # clean up
 
         # --------------------------------------------------------------------
-        # prepare loaded items for run phase of shng
+        # prepare loaded items for run phase of SmartHomeNG
         #
         for item in self.return_items():
             item._init_prerun()
-        # starting schedulers (for crontab and cycle attributes) moved to the end of the initialization in shng v1.6
+        # starting schedulers (for crontab and cycle attributes) moved to the end of the initialization in SmartHomeNG v1.6
         for item in self.return_items():
             item._init_start_scheduler()
         for item in self.return_items():
@@ -317,7 +318,7 @@ class Items():
 
     def match_items(self, regex):
         """
-        Function to match items against a regular expresseion
+        Function to match items against a regular expression
 
         :param regex: Regular expression to match items against
         :type regex: str
@@ -459,7 +460,7 @@ class Item():
     of the class ``Item``. For an item to be valid and usable, it has to be part of the item tree, which is
     maintained by an object of class ``Items``.
 
-    This class is used by the method ```load_itendefinitions()`` of the **Items** object.
+    This class is used by the method ```load_itemdefinitions()`` of the **Items** object.
     """
 
     _itemname_prefix = 'items.'     # prefix for scheduler names
@@ -565,8 +566,6 @@ class Item():
                         attr = KEY_VALUE
                     setattr(self, '_' + attr, value)
                 elif attr in [KEY_EVAL]:
-#                     value = self.get_stringwithabsolutepathes(value, 'sh.', '(', KEY_EVAL)
-#                     setattr(self, '_' + attr, value)
                     self._process_eval(value)
                 elif attr in [KEY_CACHE, KEY_ENFORCE_UPDATES]:  # cast to bool
                     try:
@@ -579,13 +578,6 @@ class Item():
                         value = [value, ]
                     setattr(self, '_' + attr, value)
                 elif attr in [KEY_EVAL_TRIGGER] or (self._use_conditional_triggers and attr in [KEY_TRIGGER]):  # cast to list
-#                     if isinstance(value, str):
-#                         value = [value, ]
-#                     self._trigger_unexpanded = value
-#                     expandedvalue = []
-#                     for path in value:
-#                         expandedvalue.append(self.get_absolutepath(path, attr))
-#                     self._trigger = expandedvalue
                     self._process_trigger_list(attr, value)
                 elif (attr in [KEY_CONDITION]) and self._use_conditional_triggers:  # cast to list
                     if isinstance(value, list):
@@ -597,28 +589,6 @@ class Item():
                     else:
                         logger.warning("Item __init__: {}: Invalid trigger_condition specified! Must be a list".format(self._path))
                 elif attr in [KEY_ON_CHANGE, KEY_ON_UPDATE]:
-#                     if isinstance(value, str):
-#                         value = [ value ]
-#                     val_list = []
-#                     val_list_unexpanded = []
-#                     dest_var_list = []
-#                     dest_var_list_unexp = []
-#                     for val in value:
-#                         # seperate destination item (if it exists)
-#                         dest_item, val = self._split_destitem_from_value(val)
-#                         dest_var_list_unexp.append(dest_item)
-#                         # expand relative item pathes
-#                         dest_item = self.get_absolutepath(dest_item, KEY_ON_CHANGE).strip()
-# #                        val = 'sh.'+dest_item+'( '+ self.get_stringwithabsolutepathes(val, 'sh.', '(', KEY_ON_CHANGE) +' )'
-#                         val_list_unexpanded.append(val)
-#                         val = self.get_stringwithabsolutepathes(val, 'sh.', '(', KEY_ON_CHANGE)
-# #                        logger.warning("Item __init__: {}: for attr '{}', dest_item '{}', val '{}'".format(self._path, attr, dest_item, val))
-#                         val_list.append(val)
-#                         dest_var_list.append(dest_item)
-#                     setattr(self, '_' + attr + '_unexpanded', val_list_unexpanded)
-#                     setattr(self, '_' + attr, val_list)
-#                     setattr(self, '_' + attr + '_dest_var', dest_var_list)
-#                     setattr(self, '_' + attr + '_dest_var_unexp', dest_var_list_unexp)
                     self._process_on_xx_list(attr, value)
                 elif attr in [KEY_LOG_CHANGE]:
                     if value != '':
@@ -658,7 +628,7 @@ class Item():
                     # the following code is executed for plugin specific attributes:
                     #
                     # get value from attribute of other (relative addressed) item
-                    # at te moment only parent and grandparent item are supported
+                    # at the moment only parent and grandparent item are supported
                     if (type(value) is str) and (value.startswith('..:') or value.startswith('...:')):
                         fromitem = value.split(':')[0]
                         fromattr = value.split(':')[1]
@@ -673,6 +643,9 @@ class Item():
                         # logger.warning("Item rel. from (grand)parent: fromitem = {}, fromattr = {}, self.conf[attr] = {}".format(fromitem, fromattr, self.conf[attr]))
                     else:
                         self.conf[attr] = value
+
+        self.property.init_dynamic_properties()
+
         #############################################################
         # Child Items
         #############################################################
@@ -731,15 +704,6 @@ class Item():
                 _cache_write(self._cache, self._value)
                 logger.warning("Item {}: Created cache for item: {}".format(self._cache, self._cache))
         #############################################################
-        # Crontab/Cycle
-        # Moved to end of initialization in shng v1.6
-        #############################################################
-        # if self._crontab is not None or self._cycle is not None:
-        #     cycle = self._cycle
-        #     if cycle is not None:
-        #         cycle = self._build_cycledict(cycle)
-        #     self._sh.scheduler.add(self._itemname_prefix+self._path, self, cron=self._crontab, cycle=cycle)
-        #############################################################
         # Plugins
         #############################################################
         for plugin in self.plugins.return_plugins():
@@ -752,6 +716,7 @@ class Item():
                     except:
                         pass
                     self.add_method_trigger(update)
+
 
 
     def _split_destitem_from_value(self, value):
@@ -789,7 +754,7 @@ class Item():
 
         :param value: value to be casted
         :param compat: compatibility attribute
-        :return: return casted valu3
+        :return: return casted value
         """
         # casting of value, if compat = latest
         if compat == ATTRIB_COMPAT_LATEST:
@@ -812,17 +777,17 @@ class Item():
 
     def _cast_duration(self, time):
         """
-        casts a time valuestring (e.g. '5m') to an duration integer
+        casts a time value string (e.g. '5m') to an duration integer
         used for autotimer, timer, cycle
 
         supported formats for time parameter:
         - seconds as integer (45)
         - seconds as a string ('45')
-        - seconds as a string, traild by 's' ('45s')
-        - minutes as a string, traild by 'm' ('5m'), is converted to seconds (300)
+        - seconds as a string, trailed by 's' ('45s')
+        - minutes as a string, trailed by 'm' ('5m'), is converted to seconds (300)
 
         :param time: string containing the duration
-        :param itempath: item path as aditional information for logging
+        :param itempath: item path as additional information for logging
         :return: number of seconds as an integer
         """
         if isinstance(time, str):
@@ -849,7 +814,7 @@ class Item():
         """
         builds a dict for a cycle parameter from a duration_value_string
 
-        This dict is to be passed to the scheduler to circumvemt the parameter
+        This dict is to be passed to the scheduler to circumvent the parameter
         parsing within the scheduler, which can't to casting
 
         :param value: raw attribute string containing duration, value (and compatibility)
@@ -918,10 +883,10 @@ class Item():
         dest_var_list = []
         dest_var_list_unexp = []
         for val in value:
-            # seperate destination item (if it exists)
+            # separate destination item (if it exists)
             dest_item, val = self._split_destitem_from_value(val)
             dest_var_list_unexp.append(dest_item)
-            # expand relative item pathes
+            # expand relative item paths
             dest_item = self.get_absolutepath(dest_item, KEY_ON_CHANGE).strip()
             #                        val = 'sh.'+dest_item+'( '+ self.get_stringwithabsolutepathes(val, 'sh.', '(', KEY_ON_CHANGE) +' )'
             val_list_unexpanded.append(val)
@@ -981,6 +946,18 @@ class Item():
             :rtype: str
             """
             return list(self._item.conf.keys())
+
+
+        def init_dynamic_properties(self):
+            """
+            Initialize dynamic properties to get the values of plugin-specific attributes
+            """
+            for confattr in self._item.conf.keys():
+                setattr(self, confattr, self.get_config_attribute(confattr))
+            return
+
+        def get_config_attribute(self, attr):
+            return self._item.conf.get(attr, '')
 
 
         @property
@@ -1752,7 +1729,8 @@ class Item():
 
     def prev_update_age(self):
         """
-        Update-age of the item's previous value. Returns the time in seconds the previous value existed since it had been updated (not necessarily changed)
+        Update-age of the item's previous value. Returns the time in seconds the previous value existed
+        since it had been updated (not necessarily changed)
 
         :return: Update-age of the previous value
         :rtype: int
@@ -1787,7 +1765,7 @@ class Item():
 
 
     """
-    Following are methods to handle relative item pathes
+    Following are methods to handle relative item paths
     """
 
     def get_absolutepath(self, relativepath, attribute=''):
@@ -1835,8 +1813,8 @@ class Item():
 
     def expand_relativepathes(self, attr, begintag, endtag):
         """
-        converts a configuration attribute containing relative item pathes
-        to absolute pathes
+        converts a configuration attribute containing relative item paths
+        to absolute paths
 
         The item's attribute can be of type str or list (of strings)
 
@@ -1884,17 +1862,17 @@ class Item():
 
     def get_stringwithabsolutepathes(self, evalstr, begintag, endtag, attribute=''):
         """
-        converts a string containing relative item pathes
-        to a string with absolute item pathes
+        converts a string containing relative item paths
+        to a string with absolute item paths
 
         The begintag and the endtag remain in the result string!
 
-        :param evalstr: string with the statement that may contain relative item pathes
+        :param evalstr: string with the statement that may contain relative item paths
         :param begintag: string that signals the beginning of a relative path is following
         :param endtag: string that signals the end of a relative path
         :param attribute: string with the name of the item's attribute, which contains the relative path
 
-        :return: string with the statement containing absolute item pathes
+        :return: string with the statement containing absolute item paths
         """
         def __checkfortags(evalstr, begintag, endtag):
             pref = ''
@@ -1991,7 +1969,7 @@ class Item():
                         if p != -1:
                             wrk = wrk[:p]+'False'+wrk[p+5:]
 
-                        # expand relative item pathes
+                        # expand relative item paths
                         wrk = self.get_stringwithabsolutepathes(wrk, 'sh.', '(', KEY_CONDITION)
 
                         and_cond.append(wrk)
@@ -2129,6 +2107,8 @@ class Item():
     #                logger.info("__run_eval: item = {}, value = {}, self._eval = {}".format(self._path, value, self._eval))
                 sh = self._sh  # noqa
                 shtime = self.shtime
+
+                import math as mymath
                 try:
                     value = eval(self._eval)
                 except Exception as e:
@@ -2171,7 +2151,7 @@ class Item():
                         dest_item.__update(dest_value, caller=attr, source=self._path)
                         logger.debug(" - : '{}' finally evaluating {} = {}, result={}".format(attr, on_dest, on_eval, dest_value))
                     else:
-                        logger.error(" - : '{}' has not found dest_item {} = {}, result={}".format(attr, on_dest, on_eval, dest_value))
+                        logger.error("Item {}: '{}' has not found dest_item '{}' = {}, result={}".format(self._path, attr, on_dest, on_eval, dest_value))
                 else:
                     dummy = eval(on_eval)
                     logger.debug(" - : '{}' finally evaluating {}, result={}".format(attr, on_eval, dest_value))
@@ -2314,7 +2294,7 @@ class Item():
         Returns a list of logics to trigger, if the item gets changed
 
         :return: Logics to trigger
-        .rtype: list
+        :rtype: list
         """
         return self.__logics_to_trigger
 
@@ -2329,7 +2309,7 @@ class Item():
         Returns a list of item methods to trigger, if this item gets changed
 
         :return: methods to trigger
-        .rtype: list
+        :rtype: list
         """
         return self.__methods_to_trigger
 
@@ -2515,7 +2495,7 @@ def _cast_num(value):
 
 def _split_duration_value_string(value):
     """
-    splits a duration value string into its thre components
+    splits a duration value string into its three components
 
     components are:
     - time

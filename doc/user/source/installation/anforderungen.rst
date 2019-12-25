@@ -145,7 +145,7 @@ Ab SmartHomeNG v1.6 sollte eine Installation unter MacOS möglich sein.
 weitere Software
 ----------------
 
-Die aktuelle Version 1.6 von SmartHomeNG setzt Python der Version 3.5
+Die aktuelle Version von SmartHomeNG setzt Python der Version 3.5
 oder neuer voraus.
 
 Die Grundregel nach der sich der Support für Python Versionen richten
@@ -163,6 +163,7 @@ Version aktuelle Python Version und die zwei Vorgängerversionen.**
   "v1.5",            "Python 3.6",  "Python 3.4, 3.5, 3.6"
   "v1.6",            "Python 3.7",  "Python 3.5, 3.6, 3.7"
   "v1.7",            "Python 3.7",  "Python 3.5, 3.6, 3.7"
+  "v1.8",            "Python 3.8",  "Python 3.6, 3.7, 3.8"
 
 Das bedeutet nicht automatisch, dass SmartHomeNG auf älteren Versionen
 von Python nicht mehr funktioniert. Die Entwicklung wird nur nicht mehr

@@ -100,6 +100,7 @@ import lib.tools
 import lib.utils
 import lib.orb
 import lib.backup
+import lib.translation
 from lib.shtime import Shtime
 from lib.shpypi import Shpypi
 import lib.shyaml
@@ -276,6 +277,9 @@ class SmartHome():
         if self._extern_conf_dir != BASE:
             self._logger.warning("Using config dir {}".format(self._extern_conf_dir))
 
+        #############################################################
+        # Initialize multi-language support
+        lib.translation.initialize_translations(self._base_dir, self._default_language, self._fallback_language_order)
 
         #############################################################
         # Test if plugins are installed
@@ -303,6 +307,10 @@ class SmartHome():
             exit(1)
 
         self.shng_status = {'code': 2, 'text': 'Initalizing: Requirements checked'}
+
+
+        self.shtime._initialize_holidays()
+
 
         # Add Signal Handling
 #        signal.signal(signal.SIGHUP, self.reload_logics)
@@ -363,6 +371,7 @@ class SmartHome():
         Returns the configured default language of SmartHomeNG
         """
         self._default_language = language
+        lib.translation.set_default_language(language)
 
 
     def get_basedir(self):
@@ -433,7 +442,7 @@ class SmartHome():
         - logic.yaml / logic.conf
 
         """
-        configs = ['logging', 'smarthome', 'module', 'plugin', 'logic']
+        configs = ['holidays', 'logging', 'logic', 'module', 'plugin', 'smarthome']
 
         for c in configs:
             default = os.path.join(self._base_dir, 'etc', c + YAML_FILE + DEFAULT_FILE)
@@ -1172,6 +1181,8 @@ if __name__ == '__main__':
     arggroup.add_argument('-V', '--version', help='show SmartHomeNG version', action='store_true')
     arggroup.add_argument('--start', help='start SmartHomeNG and detach from console (default)', default=True, action='store_true')
     arggroup.add_argument('-cb', '--create_backup', help='create backup of SmartHomeNG configuration (yaml configuration only)', action='store_true')
+    arggroup.add_argument('-cbt', '--create_backup_t', help='create backup of SmartHomeNG configuration with a timestamp in the filename', action='store_true')
+    arggroup.add_argument('-rb', '--restore_backup', help='restore backup of configuration to SmartHomeNG installation (yaml configuration only). CAUTION: Existing configuration is overwritten!', action='store_true')
     argparser.add_argument('-c', '--config_dir', help='use external config dir (should contain "etc", "logics" and "items" subdirectories)')
 
     arggroup.add_argument('-v', '--verbose', help='verbose (info output) logging to the logfile - DEPRECATED use logging-configuration', action='store_true')
@@ -1183,6 +1194,8 @@ if __name__ == '__main__':
     extern_conf_dir = BASE
     if args.config_dir is not None:
         extern_conf_dir = os.path.normpath(args.config_dir)
+
+    lib.backup.make_backup_directories(BASE)
 
     if args.interactive:
         MODE = 'interactive'
@@ -1232,8 +1245,20 @@ if __name__ == '__main__':
         MODE = 'foreground'
         pass
     elif args.create_backup:
-        fn = lib.backup.create_backup(extern_conf_dir)
-        print("Backup of configuration created: {}".format(fn))
+        fn = lib.backup.create_backup(extern_conf_dir, BASE)
+        if fn:
+            print("Backup of configuration created at: \n{}".format(fn))
+        exit(0)
+    elif args.create_backup_t:
+        fn = lib.backup.create_backup(extern_conf_dir, BASE, filename_with_timestamp=True)
+        if fn:
+            print("Backup of configuration created at: \n{}".format(fn))
+        exit(0)
+    elif args.restore_backup:
+        fn = lib.backup.restore_backup(extern_conf_dir, BASE)
+        if fn is not None:
+            print("Configuration has been restored from: \n{}".format(fn))
+            print("Restart SmartHomeNG to use the restored configuration")
         exit(0)
     # check for pid file
     if lib.daemon.check_sh_is_running(PIDFILE):

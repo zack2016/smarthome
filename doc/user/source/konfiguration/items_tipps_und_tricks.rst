@@ -4,8 +4,8 @@ Tipps und Tricks
 Invertieren eines Item Wertes
 -----------------------------
 
-Aufgabenstellung
-~~~~~~~~~~~~~~~~
+Erste Aufgabenstellung
+~~~~~~~~~~~~~~~~~~~~~~
 
 Es geht um einen Reed-Kontakt am Fenster, der über einen 1-Wire
 Multi-I/O-Sensor per 1-Wire-Plugin abgefragt und auf den KNX-Bus
@@ -35,6 +35,38 @@ invertierte Wert auf den KNX Bus geschrieben.
                knx_send: 2/1/82
                knx_reply: 2/1/82
                eval: not value
+
+
+
+Zweite Aufgabenstellung
+~~~~~~~~~~~~~~~~~~~~~~~
+
+Es geht um einen Lausprecher, der über einen GPIO Kontakt des Raspberry
+geschaltet werden soll. Der Wert kommt von einem Item das per knx bedient
+wird und dessen Item Wert nicht verfälscht werden soll.
+
+Leider sind auch hier die Werte vertauscht, 0 soll 1 sein und umgekehrt.
+
+Lösung
+~~~~~~
+
+Ein Hilfsitem hinzufügen und diesem mit relativer Adressierung auf das Elternelement
+ein ``eval_trigger`` und ein ``eval`` zufügen.
+
+.. code-block:: yaml
+
+   Gaestezimmer_Lautsprecher:
+       type: bool
+       knx_dpt: 1
+       knx_listen: 5/0/5
+       visu_acl: rw
+       GPIO_Ausgabe:
+           type: bool
+           gpio_out: 38
+           eval: not sh...()
+           eval_trigger: ..
+
+
 
 Item Strukturen bequem kopieren mit Hilfe relativer Item Adressierung
 ---------------------------------------------------------------------
@@ -153,7 +185,7 @@ im ``eval`` Attribut) dann drei statt der erwarteten zwei Punkte stehen.
 
 Ausführliche Informationen zur relativen Item Adressierung sind auf der
 Wiki Seite `Relative Item
-Referenzen <https://github.com/smarthomeNG/smarthome/wiki/Items:-Relative-Item-Referenzen>`__
+Referenzen <items_attributes_relative_referenzen>`__
 zu finden.
 
 Nutzung der Tag-/Nacht-Items in KNX
@@ -165,11 +197,14 @@ Einleitung
 Ein Tag- oder Nachtobjekt kann zur Ansteuerung von Status-LEDs,
 Präsenzmeldern oder ähnlichem genutzt werden.
 
-**Tag-Item:** Ist “true” (also 1) von Sonnenaufgang bis Sonnenuntergang,
-danach ist es “false” (also 0)
+**Tag-Item:** Ist “true” (also 1) von der bürgerlichen Dämmerung am Morgen bis
+zur Dämmerung am Abend, danach ist es “false” (also 0)
 
-**Nacht-Item:** Ist “true” (also 1) von Sonnenuntergang bis
-Sonnenaufgang, danach ist es “false” (also 0)
+**Nacht-Item:** Ist “true” (also 1) von der bürgerlichen Dämmerung am Abend bis
+zur Dämmerung am Morgen, danach ist es “false” (also 0)
+
+Bürgerliche Dämmerung bedeutet, dass sich die Sonne noch/schon unterhalb des
+Horizonts befindet, der Himmel aber dennoch leicht erhellt wird. 
 
 Welches der beiden Items man nutzen will, bleibt jedem selbst
 überlassen. Schließlich ist der Status des jeweiligen Items bereits
@@ -247,18 +282,18 @@ einem Sonnenstand von 4° unter dem Horizont festgelegt:
 .. code-block:: yaml
 
        berechnung:
-           type = bool
+           type: bool
            crontab:
-           - init = 1
-           - sunrise-4 = 1
-           - sunset-4 = 1
-           enforce_updates = true
+             - init = 1
+             - sunrise-4 = 1
+             - sunset-4 = 1
+           enforce_updates: true
 
        day:
-           type = bool
-           eval = sh.sun.rise(-4).day != sh.sun.set(-4).day
-           eval_trigger = ..berechnung
-           enforce_updates = true
+           type: bool
+           eval: sh.sun.rise(-4).day != sh.sun.set(-4).day
+           eval_trigger: ..berechnung
+           enforce_updates: true
 
 
 Die Triggerung dieser Berechnung wird im *berechnung* - Item durch das
