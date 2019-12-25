@@ -26,7 +26,6 @@ import json
 import cherrypy
 
 
-from lib.model.module import Module
 from lib.module import Modules
 from lib.shtime import Shtime
 
@@ -58,7 +57,7 @@ from .api_plugin import *
 suburl = 'admin'
 
 
-class Admin(Module):
+class Admin():
     version = '1.6.0'
     longname = 'Admin module for SmartHomeNG'
     port = 0

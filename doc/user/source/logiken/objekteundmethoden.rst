@@ -8,8 +8,7 @@ Verfügbare Objekte und Methoden
    :titlesonly:
 
    objekteundmethoden_logging
-   objekteundmethoden_feiertage_datum_zeit
-   objekteundmethoden_sonne_mond
+   objekteundmethoden_zeit_sonne_mond
    objekteundmethoden_item_methoden
    objekteundmethoden_scheduler
    objekteundmethoden_tools

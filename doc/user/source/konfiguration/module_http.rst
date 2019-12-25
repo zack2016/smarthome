@@ -35,7 +35,7 @@ welches wahrscheinlich auch auf dem System installiert ist. Deshalb unbedingt `p
 verwenden.
 
 
-.. index:: Konfigurationsdateien; /etc/module.yaml (http)
+.. index:: Konfigurationsdateien; /etc/module.yaml
 
 Konfiguration
 =============

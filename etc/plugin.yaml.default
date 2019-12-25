@@ -1,5 +1,9 @@
 %YAML 1.1
 ---
+BackendServer:
+    plugin_name: backend
+    #updates_allowed: False
+
 cli:
     plugin_name: cli
     ip: 0.0.0.0
@@ -71,12 +75,8 @@ websocket:
 #     - db:smarthome
 #     - port:3306
 
-database_sqlite:
-#    plugin_name: database
-#    driver: sqlite3
-#    connect:
-#    -   database:/usr/local/shng_dev/var/db/smarthomeng.db
-#    -   check_same_thread:0
+# sqlite:
+#     plugin_name: sqlite_visu2_8
 
 # apcups:
 #     plugin_name: apcups
@@ -110,6 +110,11 @@ database_sqlite:
 #     call_monitor: 'True'
 #     call_monitor_incoming_filter: "...    ## optional, don't set if you don't want to watch only one specific number with your call monitor"
 #     avm_identifier: fritzbox_1
+
+# boxcar:
+#     plugin_name: boxcar
+#     apikey: abcdefghij123456    # Get it from your Boxcar Account
+#     email: your@mail.org    # Registered with Boxcar
 
 # comfoair:
 #     plugin_name: comfoair
@@ -181,8 +186,3 @@ database_sqlite:
 #     plugin_name: homematic
 #     host: 192.168.50.250
 #     port: 2001
-
-# BackendServer:
-#     plugin_name: backend
-#     #updates_allowed: False
-

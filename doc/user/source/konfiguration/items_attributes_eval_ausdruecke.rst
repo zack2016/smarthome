@@ -32,13 +32,6 @@ Damit werden on_change bzw. on_update Trigger nur ausgelöst, wenn der Wert vorh
 werden keine Trigger ausgelöst.
 
 
-.. tip::
-
-   Im Abschnitt **Logiken** ist auf der Seite :doc:`Feiertage, Daten und Zeiten </logiken/objekteundmethoden_feiertage_datum_zeit>`
-   beschrieben, welche Feiertags- und Datums-Funktionen in Logiken benutzt werden können. Diese Funktionen können auch
-   in eval Attributen genutzt werden können.
-
-
 
 Gemeinsame Verwendung von eval und on\_\.\.\. Item Attributen
 -------------------------------------------------------------

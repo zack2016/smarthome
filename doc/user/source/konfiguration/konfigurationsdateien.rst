@@ -1,6 +1,6 @@
-=====================
+#####################
 Konfigurationsdateien
-=====================
+#####################
 
 Für die Konfiguration sind die Verzeichnisse ***../etc***, ***../items***, ***../scenes*** und ***../logics*** wichtig.
 In diesen Verzeichnissen wird die Konfiguration gespeichert und gepflegt. Im folgenden sind
@@ -24,13 +24,11 @@ oder beide konvertiert werden sollen.
 
 Genaueres bitte unter :doc:`../tools/tools` nachlesen.
 
-
 ---------------------------------------------
 Konfigurationsdateien im Verzeichnis *../etc*
 ---------------------------------------------
 
 - smarthome.yaml
-- holidays.yaml
 - module.yaml
 - plugin.yaml
 - logic.yaml
@@ -67,7 +65,6 @@ Logik Code im Verzeichnis *../logics*
    konfigurationsdateien_aufbau.md
    konfigurationsdateien_yaml_syntax.rst
    konfigurationsdateien_smarthome.rst
-   konfigurationsdateien_holidays.rst
    konfigurationsdateien_module.rst
    konfigurationsdateien_plugin.rst
    konfigurationsdateien_logic.rst

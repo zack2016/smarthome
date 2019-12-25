@@ -27,14 +27,14 @@
 """
 This library implements loading and starting of core modules of SmartHomeNG.
 
-The methods of the class Modules implement the API for modules.
+The methods of the class Modules implement the API for modules. 
 They can be used the following way: To call eg. **xxx()**, use the following syntax:
 
 .. code-block:: python
 
         from lib.module import Modules
         modules = Modules.get_instance()
-
+        
         # to access a method (eg. enable_logic()):
         moddules.xxx()
 
@@ -47,7 +47,7 @@ import inspect
 import os
 
 import lib.config
-import lib.translation as translation
+#from lib.model.smartplugin import SmartPlugin
 from lib.constants import (KEY_CLASS_NAME, KEY_CLASS_PATH, KEY_INSTANCE,CONF_FILE)
 #from lib.utils import Utils
 from lib.metadata import Metadata
@@ -62,16 +62,16 @@ class Modules():
     """
     Module loader class. Parses config file and creates an instance for each module.
     To start the modules, the start() method has to be called.
-
+    
     :param smarthome: Instance of the smarthome master-object
     :param configfile: Basename of the module configuration file
     :type samrthome: object
     :type configfile: str
     """
-
+    
     _modules = []
     _moduledict = {}
-
+    
     def __init__(self, smarthome, configfile):
         self._sh = smarthome
 #        self._sh._moduledict = {}
@@ -89,7 +89,7 @@ class Modules():
         _conf = lib.config.parse_basename(configfile, configtype='module')
         if _conf == {}:
             return
-
+            
         for module in _conf:
             logger.debug("Modules, section: {}".format(module))
             module_name, self.meta = self._get_modulename_and_metadata(module, _conf[module])
@@ -106,17 +106,17 @@ class Modules():
 
         # clean up (module configuration from module.yaml)
         del(_conf)  # clean up
-
+        
         return
 
 
     def _get_modulename_and_metadata(self, module, mod_conf):
         """
         Return the actual module name and the metadata instance
-
+        
         :param mod_conf: loaded section of the module.yaml for the actual module
         :type mod_conf: dict
-
+        
         :return: module_name and metadata_instance
         :rtype: string, object
         """
@@ -132,15 +132,15 @@ class Modules():
                 logger.error("Module '{}': No module_name found in configuration".format(module))
             meta = Metadata(self._sh, module_name, 'module', classpath)
         return (module_name, meta)
-
+        
 
     def _get_conf_args(self, mod_conf):
         """
         Return the parameters/values for the actual module as args-dict
-
+        
         :param mod_conf: loaded section of the module.yaml for the actual module
         :type mod_conf: dict
-
+        
         :return: args = specified parameters and their values
         :rtype: dict
         """
@@ -157,12 +157,12 @@ class Modules():
     def _get_classname_and_classpath(self, mod_conf, module_name):
         """
         Returns the classname and the classpath for the actual module
-
+        
         :param mod_conf: loaded section of the module.yaml for the actual module
         :param module_name: Module name (to be used, for building classpass, if it is not specified in the configuration
         :type mod_conf: dict
         :type module_name: str
-
+        
         :return: classname, classpass
         :rtype: str, str
         """
@@ -174,17 +174,17 @@ class Modules():
         except:
             classpath = 'modules.' + module_name
         return (classname, classpath)
-
+        
 
     def _test_duplicate_configuration(self, module, classname):
         """
         Returns True, if a module instance of the classname is already loaded by another configuration section
-
+        
         :param module: Name of the configuration
         :param classname: Name of the class to check
         :type module: str
         :type classname: str
-
+        
         :return: True, if module is already loaded
         :rtype: bool
         """
@@ -195,13 +195,13 @@ class Modules():
                 duplicate = True
                 logger.warning("Modules, section '{}': Multiple module instances of class '{}' detected, additional instance not initialized".format(module, classname))
         return duplicate
-
-
+        
+        
     def _load_module(self, name, classname, classpath, args):
         """
         Module Loader. Loads one module defined by the parameters classname and classpath.
         Parameters defined in the configuration file are passed to this function as 'args'
-
+        
         :param name: Section name in module configuration file (etc/module.yaml)
         :param classname: Name of the (main) class in the module
         :param classpath: Path to the Python file containing the class
@@ -210,13 +210,13 @@ class Modules():
         :type classname: str
         :type classpath: str
         :type args: dict
-
+        
         :return: loaded module
         :rtype: object
         """
         logger.debug('_load_module: Section {}, Module {}, classpath {}'.format( name, classname, classpath ))
         logger.info("Loading module '{}': args = '{}'".format(name, args))
-
+        
         # Load an instance of the module
         try:
             exec("import {0}".format(classpath))
@@ -224,10 +224,7 @@ class Modules():
             logger.critical("Module '{}' ({}) exception during import of __init__.py: {}".format(name, classpath, e))
             return None
         exec("self.loadedmodule = {0}.{1}.__new__({0}.{1})".format(classpath, classname))
-
-        # load module-specific translations
-        translation.load_translations('module', classpath.replace('.', '/'), 'module/'+classpath.split('.')[1])
-
+                
         # get arguments defined in __init__ of module's class to self.args
         exec("self.args = inspect.getargspec({0}.{1}.__init__)[0][1:]".format(classpath, classname))
 
@@ -249,7 +246,7 @@ class Modules():
             # initialize the loaded instance of the module
             self.loadedmodule._init_complete = True   # set to false by module, if an initalization error occurs
             exec("self.loadedmodule.__init__(self._sh{0}{1})".format("," if len(arglist) else "", argstring))
-
+            
         if self.loadedmodule._init_complete == True:
             try:
                 code_version = self.loadedmodule.version
@@ -266,7 +263,7 @@ class Modules():
             logger.error("Modules: Module '{}' initialization failed, module not loaded".format(classpath.split('.')[1]))
             return None
 
-
+        
     # ------------------------------------------------------------------------------------
     #   Following (static) methods of the class Modules implement the API for modules in shNG
     # ------------------------------------------------------------------------------------
@@ -275,18 +272,18 @@ class Modules():
     def get_instance():
         """
         Returns the instance of the Modules class, to be used to access the modules-api
-
+        
         Use it the following way to access the api:
-
+        
         .. code-block:: python
 
             from lib.module import Modules
             modules = Modules.get_instance()
-
+            
             # to access a method (eg. xxx()):
             modules.xxx()
 
-
+        
         :return: modules instance
         :rtype: object of None
         """
@@ -316,7 +313,7 @@ class Modules():
 
         :param name: Name of the module to return
         :type name: str
-
+        
         :return: list of module names
         :rtype: object
         """
@@ -340,11 +337,11 @@ class Modules():
     def stop(self):
         """
         Stop all modules
-
+        
         Call stop routine of module to clean up in case the module has started any threads
         """
         logger.info('Stop Modules')
-
+    
         for module in self.return_modules():
             logger.debug('Stopping {} Module'.format(module))
             self.m = self.get_module(module)

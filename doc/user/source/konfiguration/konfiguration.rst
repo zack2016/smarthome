@@ -1,20 +1,13 @@
-
-.. index:: Konfiguration
-
-.. role:: bluesup
-.. role:: redsup
-
-=============
+#############
 Konfiguration
-=============
+#############
 
 .. toctree::
    :maxdepth: 5
    :hidden:
    :titlesonly:
 
-   konfiguration_admin_gui
-   konfigurationsdateien
+   konfigurationsdateien.rst
    items.rst
    module.rst
    plugins.rst
@@ -24,13 +17,7 @@ Konfiguration
    konfiguration_backup_restore
 
 
-
-Für Einsteiger ist auf jeden Fall die Konfiguration über die GUI zu empfehlen.
-
-Die nachfolgende Beschreibung richtet sich an Anwender, welche die Konfiguration direkt in den Konfigurationsdateien
-vornehmen möchten
-
-
+=========
 Überblick
 =========
 
@@ -85,9 +72,8 @@ Ein guter Editor unterstützt dann auch mit der richtigen Syntaxeinfärbung.
 Eine Liste guter Einführungen zu Python sind hier: `Python <https://github.com/smarthomeNG/smarthome/wiki/Python>`_ zu finden.
 
 
-----------------------------
 Verzeichnisse in SmartHomeNG
-----------------------------
+============================
 
 Die Verzeichnisse sind im Hauptverzeichnis von smarthome zu finden, für gewöhnlich im Verzeichnis **"/usr/local/smarthome"**.
 

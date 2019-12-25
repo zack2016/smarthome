@@ -66,9 +66,6 @@ def get_local_pluginlist():
     plglist = os.listdir('.')
 
     for entry in plglist:
-        if os.path.isfile(entry):
-            plglist.remove(entry)
-    for entry in plglist:
         if entry[0] in ['.' ,'_'] or entry == 'deprecated_plugins':
             plglist.remove(entry)
     for entry in plglist:
@@ -153,7 +150,6 @@ def list_plugins(option):
             return
         if metadata.get('plugin', None) == None:
             sectionPlg = MISSING_TEXT
-            plgstate = 'NOMETA'
         else:
             sectionPlg = 'Ok'
             version = metadata['plugin'].get('version', '-')

@@ -3,8 +3,8 @@
 #   |                 SmartHomeNG                   |
 #   |            DON'T EDIT THIS FILE               |
 #   |           THIS FILE IS GENERATED              |
-#   |              BY lib/shpypi.py                 |
-#   |            ON 23.12.2019 21:01                |
+#   |       BY tools/build_requirements.py          |
+#   |            ON 03.11.2019 20:04                |
 #   |                                               |
 #   |               INSTALL WITH:                   |
 #   | sudo pip3 install -r requirements/all.txt     |
@@ -21,9 +21,6 @@ cherrypy>=8.1.2
 
 # SmartHomeNG-lib
 ephem>=3.7
-
-# SmartHomeNG-lib
-holidays>=0.9.11
 
 # SmartHomeNG-module http
 jinja2>=2.9
@@ -94,7 +91,6 @@ pyusb>=1.0.2
 # plugin withings_health
 # SmartHomeNG-lib
 # plugin neato
-# plugin yamahayxc
 requests>=2.20.1
 
 # plugin jsonread
