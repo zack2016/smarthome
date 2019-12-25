@@ -24,6 +24,13 @@ Konfiguration
    konfiguration_backup_restore
 
 
+
+Für Einsteiger ist auf jeden Fall die Konfiguration über die GUI zu empfehlen.
+
+Die nachfolgende Beschreibung richtet sich an Anwender, welche die Konfiguration direkt in den Konfigurationsdateien
+vornehmen möchten
+
+
 Überblick
 =========
 

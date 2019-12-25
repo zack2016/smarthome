@@ -182,20 +182,22 @@ zugegriffen werden. Dazu im Browser die url ``<ip des SmartHomeNG Rechners>:8383
 
 Beim ersten Start erscheint folgende Login Seite:
 
-.. image:: /installation/assets/admin_gui_login.jpg
+.. image:: /admin/assets/login.jpg
    :class: screenshot
 
 Da bisher kein Password festgelegt ist, brauchen Benutzername und Password nicht eingegeben zu werden. Es kann einfach
 auf anmelden geklickt werden.
 
 
-Anschließend erscheint die Startseite von SmartHomeNG:
+Anschließend erscheint die Startseite von SmartHomeNG (Da kein Password festgelegt ist, ist der Button **Abmelden**
+ausgegraut):
 
-.. image:: assets/admin_gui_startseite.jpg
+.. image:: /admin/assets/system-info.jpg
    :class: screenshot
 
 
-Nun kann mit der Konfiguration begonnen werden, wie sie unter :doc:`/konfiguration/konfiguration` beschrieben ist.
+Nun kann mit der Konfiguration begonnen werden, wie sie unter :doc:`Konfiguration </konfiguration/konfiguration_admin_gui>` beschrieben
+ist.
 
 
 
@@ -203,7 +205,8 @@ Erstmalige Konfiguration für Fortgeschrittene
 =============================================
 
 Fortgeschrittene oder Experten können SmartHomeNG auch direkt über die Konfigurationsdateien konfigurieren. Dieses ist
-hier im folgenden kurz beschrieben. Eine ausführlichere Beschreibung findet sich im Abschnitt :doc:`../../konfiguration/konfiguration` .
+hier im folgenden kurz beschrieben. Eine ausführlichere Beschreibung findet sich im Abschnitt
+:doc:`../../konfiguration/konfiguration` .
 
 Mit der Grundinstallation werden einige Konfigurationsdateien mitgeliefert die den gleichen Namen tragen wie die
 benötigten Dateien aber zusätzlich noch die Endung **.default**. Wenn SmartHomeNG beim Start eine benötigte
@@ -236,7 +239,7 @@ und bestimmten die Position eines Elementes in der Objekthierarchie.
 Im folgenden werden diese Dateien und deren Inhalt genauer beschrieben.
 
 smarthome.yaml
-~~~~~~~~~~~~~~
+--------------
 
 In der **smarthome.yaml** stehen die allgemeinen Konfigurationseinstellungen der SmartHomeNG Installation, wie z.B. die
 Koordinaten des Standortes. Die Koordinaten werden benötigt um unter anderem Sonnenaufgang / -untergang zu berechnen.
@@ -274,8 +277,9 @@ Die Koordinaten für einen Standort kann man z.B. auf http://www.mapcoordinates.
 Es bietet sich an die default-Datei zu kopieren nach smarthome.yaml und die Daten oben auf den eigenen Standort
 anzupassen. Alternativ kann diese Anpassung später über das Admin Interface durchgeführt werden.
 
+
 logging.yaml
-~~~~~~~~~~~~
+------------
 
 In der **logging.yaml** finden sich die Anweisungen, wie Ereignisse die während des Programmablaufes von
 SmartHomeNG auftreten geloggt also notiert werden sollen.
@@ -316,8 +320,9 @@ In der Zweiten Datei finden sich zusätzliche Informationen die für die Erstkon
 
 Da nach dem ersten Start von SmartHomeNG ohnehin die default Datei übernommen wird, ist hier kein Handlungsbedarf etwas anzupassen.
 
+
 plugin.yaml
-~~~~~~~~~~~
+-----------
 
 In der **plugin.yaml** stehen die Plugins die verwendet werden sollen, sowie ihre Konfigurationsparameter.
 
@@ -378,7 +383,7 @@ Jedes Plugin kann weitere Abhängigkeiten von Bibliotheken mit sich bringen. Die
 
 
 logic.yaml
-~~~~~~~~~~
+----------
 
 SmartHomeNG kann benutzerdefinierte Python-Anweisungen ausführen.
 Diese werden in eigenen Python Dateien im Verzeichnis **logics** abgelegt.
@@ -402,7 +407,7 @@ wann sie ausgeführt werden sollen und ob sie aktiv sind oder nicht.
 Da derzeit noch keine Logiken benötigt werden, ist auch hier kein Handlungsbedarf zum Editieren. SmartHomeNG erstellt auch hier aus der default-Datei eine logic.yaml.
 
 module.yaml
-~~~~~~~~~~~
+-----------
 
 In dieser Datei sind Module konfiguriert, die von Plugins benötigt werden aber dennoch nicht zur Kernfunktionalität von SmartHomeNG gehören.
 Für die Grundkonfiguration ist dies das http Modul, das z.B. vom backend oder dem admin Interface genutzt wird.
@@ -410,6 +415,7 @@ Für die Grundkonfiguration ist dies das http Modul, das z.B. vom backend oder d
 Auch hier ist kein Handlungsbedarf, die Beschreibung ist ebenfalls der Vollständigkeit halber enthalten.
 
 
+-------------------
 SmartHomeNG starten
 -------------------
 
@@ -448,7 +454,7 @@ sollte eine Zeile augegeben werden mit
 
 
 Admin Interface
-~~~~~~~~~~~~~~~
+---------------
 
 Viele Einstellungen in den Konfigurationsdateien, die manuell mit dem Editor ausgeführt werden, sind bereits über das
 Admin Interface möglich.
