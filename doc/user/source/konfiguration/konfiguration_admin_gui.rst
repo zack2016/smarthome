@@ -21,9 +21,9 @@ werden können.
 Um eine SmartHomeNG Installation zu erhalten die etwas sinnvolles tun kann, müssen mindestens folgende Konfigurationen
 durchgeführt werden:
 
-- Systemkonfiguration
-- Konfiguration von Plugins
-- Konfiguration von Items
+- :doc:`Systemkonfiguration </konfiguration/konfiguration_admin_gui_system>`
+- :doc:`Konfiguration von Plugins </konfiguration/konfiguration_admin_gui_plugins>`
+- :doc:`Konfiguration von Items </konfiguration/konfiguration_admin_gui_items>`
 
 
 Konfigurations-Dialoge
