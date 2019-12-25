@@ -539,7 +539,7 @@ class PluginWrapper(threading.Thread):
         try:
             exec("self.plugin = {0}.{1}.__new__({0}.{1})".format(classpath, classname))
         except Exception as e:
-            logger.error("Plugin '{}' classs name '{}' defined in metadata, but not found in plugin code".format(name, classname))
+            logger.error("Plugin '{}' class name '{}' defined in metadata, but not found in plugin code".format(name, classname))
             logger.error("Plugin '{}' initialization failed, plugin not loaded".format(name))
             return
 
