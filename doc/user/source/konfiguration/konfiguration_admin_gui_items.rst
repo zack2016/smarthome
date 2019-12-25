@@ -13,7 +13,7 @@ Die Konfiguration der Items findet im Menü **Items** durch Auswahl von **Konfig
 Die Item Definitionen können zur besseren Übersichtlichkeit über mehrere Konfigurationsdateien verteilt werden. Bei einer
 neuen Installation gibt es keine Konfigurationsdatei für Items und die Konfigurationsseite sieht so aus:
 
-.. image:: /admin/assets/plugin-configuration-leer.jpg
+.. image:: /admin/assets/item-configuration-leer.jpg
    :class: screenshot
 
 
@@ -22,7 +22,7 @@ aufnimmt. Anschließend kann im Editor Feld die Konfiguration eingetragen werden
 
 In einer bestehenden umfangreicheren Konfiguration sieht das dann so aus:
 
-.. image:: /admin/assets/plugin-configuration.jpg
+.. image:: /admin/assets/item-configuration.jpg
    :class: screenshot
 
 
