@@ -26,7 +26,7 @@ In einer bestehenden umfangreicheren Konfiguration sieht das dann so aus:
    :class: screenshot
 
 
-Was Items tun und Wie sie zu konfigurieren sind, ist im Abschnitt :doc:`Konfiguration - Items </konfiguration/items>`
+Was Items tun und wie sie zu konfigurieren sind, ist im Abschnitt :doc:`Konfiguration - Items </konfiguration/items>`
 beschrieben.
 
 
