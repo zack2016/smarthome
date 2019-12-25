@@ -74,6 +74,10 @@ class Filter(logging.Filter):
         hits = hits + 1 if len(self.name) == 0 else hits
         hits = hits + 1 if len(self.module) == 0 else hits
         hits = hits + 1 if len(self.msg) == 0 else hits
+        if isinstance(record.msg, dict):
+            record.msg = ['{}: {}'.format(i, record.msg[i]) for i in record.msg]
+        if isinstance(record.msg, list):
+            record.msg = ', '.join(record.msg)
         for n in self.name:
             if n.match(record.name):
                 hits += 1
