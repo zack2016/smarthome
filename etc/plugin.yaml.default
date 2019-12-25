@@ -1,9 +1,5 @@
 %YAML 1.1
 ---
-BackendServer:
-    plugin_name: backend
-    #updates_allowed: False
-
 cli:
     plugin_name: cli
     ip: 0.0.0.0
