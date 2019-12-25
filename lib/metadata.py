@@ -412,7 +412,7 @@ class Metadata():
         :rtype: bool
         """
         self._version = self.get_string('version')
-        if code_version == None:
+        if code_version is None:
             logger.info("{} '{}' version not defined in Python code, metadata version is {}".format(self._addon_type, self._addon_name, self._version))
             return True
         else:
