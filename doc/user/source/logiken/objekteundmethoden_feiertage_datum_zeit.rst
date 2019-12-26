@@ -63,7 +63,7 @@ Die Funktionen für Feiertags- und Wochenend-Handling sind folgende:
 |                                           | Struktur, wie in der Definition in /etc/holidays.yaml                     |
 +-------------------------------------------+---------------------------------------------------------------------------+
 | shtime.add_custom_holiday_range(from_date,| Markiert jeden Tag, beginnend mit **fromdate** bis inklusive **to_date**  |
-| to_date=None, holiday_name=\'\')          | als Ferientag mit dem angegebenen Namen                                   |
+| to_date=None, holiday_name='')            | als Ferientag mit dem angegebenen Namen                                   |
 +-------------------------------------------+---------------------------------------------------------------------------+
 
 
