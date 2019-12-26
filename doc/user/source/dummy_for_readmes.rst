@@ -30,3 +30,5 @@
    /plugins/knx/pv_1_3_4/README.md
    /plugins/kodi/user_doc_en.rst
    /plugins/uzsu/user_doc_en.rst
+   /plugins/blockly/How_to_Update_Blockly_Components.rst
+   /plugins/wunderground/README_OLD.md

@@ -116,15 +116,15 @@ Die Funktionen für das Datums-Handling sind folgende:
 | shtime.time_since(dt, resulttype='s') | Liefert die vergangene Zeit von der angegeben Datums/Zeitangabe bis jetzt.      |
 |                                       | über den Parameter **resulttype** kann festgelegt warden, in welcher Form       |
 |                                       | das Ergebnis zurück geliefert werden soll:                                      |
-|                                       |  - s           -> Anzahl Sekunden                                               |
-|                                       |  - m           -> Minuten (mit Nachkommastellen)                                |
-|                                       |  - h           -> Stunden (mit Nachkommastellen)                                |
-|                                       |  - d           -> Tage (mit Nachkommastellen)                                   |
-|                                       |  - im          -> Anzahl Minuten (Ganzzahl)                                     |
-|                                       |  - ih          -> Anzahl Stunden (Ganzzahl)                                     |
-|                                       |  - id          -> Anzahl Tage (Ganzzahl)                                        |
-|                                       |  - dhms        -> Tuple (<Tage>, <Stunden>, <Minuten>, <Sekunden>)              |
-|                                       |  - ds          -> Tuple (<Tage>, <Sekunden>)                                    |
+|                                       | - s           -> Anzahl Sekunden                                                |
+|                                       | - m           -> Minuten (mit Nachkommastellen)                                 |
+|                                       | - h           -> Stunden (mit Nachkommastellen)                                 |
+|                                       | - d           -> Tage (mit Nachkommastellen)                                    |
+|                                       | - im          -> Anzahl Minuten (Ganzzahl)                                      |
+|                                       | - ih          -> Anzahl Stunden (Ganzzahl)                                      |
+|                                       | - id          -> Anzahl Tage (Ganzzahl)                                         |
+|                                       | - dhms        -> Tuple (<Tage>, <Stunden>, <Minuten>, <Sekunden>)               |
+|                                       | - ds          -> Tuple (<Tage>, <Sekunden>)                                     |
 +---------------------------------------+---------------------------------------------------------------------------------+
 | shtime.time_until(dt, resulttype='s') | Liefert die vergehende Zeit von jetzt bis zur angegeben Datums/Zeitangabe.      |
 |                                       | Der Parameter **resulttype** ist bei der Funktion **shtime.time_since()**       |
