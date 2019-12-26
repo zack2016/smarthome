@@ -114,7 +114,7 @@ gettext_compact = True
 # directories to ignore when looking for source files.
 #exclude_patterns = ['plugins/backend_shng_1_3', 'plugins/backend/static', '._*']
 #exclude_patterns = ['plugins/deprecated_plugins', 'plugins/backend_shng_1_3/static', 'plugins/backend/static', '**/._*md']
-exclude_patterns = ['**/._*', '**/priv_*', 'plugins/deprecated_plugins', 'modules/http/webif/gstatic', 'plugins/blockly/webif/static', '**/_pv_*', '**/pv_*', '**/._*md', '**/developer_doc.*']
+exclude_patterns = ['**/._*', '**/priv_*', '**/user_doc_en.rst', 'plugins/deprecated_plugins', 'modules/http/webif/gstatic', 'plugins/blockly/webif/static', '**/_pv_*', '**/pv_*', '**/._*md', '**/developer_doc.*']
 
 # The reST default role (used for this markup: `text`) to use for all documents.
 #default_role = None
