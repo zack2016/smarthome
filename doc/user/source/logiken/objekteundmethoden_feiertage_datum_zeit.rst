@@ -24,7 +24,7 @@ folgenden Formate angegeben werden:
   Uhrzeit 0 Uhr, 0 Minuten und 0 Sekunden angenommen
 - **datetime** Objekt  -  Wenn ein datetime Objekt an eine Funktion übergeben wird, welche ein date Objekt erwartet, wird
   die Zeitangabe ignoriert
-- **string** mit Datum in der Form "yyyy-mm-ddd", "yy-mm-dd", "dd.mm.yyyy" oder "dd.mm.yy"
+- **string** mit Datum in der Form \"yyyy-mm-ddd\", "yy-mm-dd", "dd.mm.yyyy" oder "dd.mm.yy"
 - **string** mit einer Datum/Zeit Angabe wie z.B. "dd.mm.yyyy hh:mm" oder "dd.mm.yyyy hh:mm:ss"
 
 
@@ -113,12 +113,12 @@ Die Funktionen für das Datums-Handling sind folgende:
 | shtime.datetime_transform(date)       | Wandelt eine Datums/Zeitangabe welche als **date**, **datetime** oder **sting** |
 |                                       | angegeben wurde, in ein eine Datums/Zeitangabe vom Typ **datetime**             |
 +---------------------------------------+---------------------------------------------------------------------------------+
-| shtime.time_since(dt, resulttype='s') | | Liefert die vergangene Zeit von der angegeben Datums/Zeitangabe bis jetzt.    |
-|                                       | über den Parameter **resulttype** kann festgelegt warden, in welcher Form       |
+| shtime.time_since(dt, resulttype='s') | Liefert die vergangene Zeit von der angegeben Datums/Zeitangabe bis jetzt.      |
+|                                       | Über den Parameter **resulttype** kann festgelegt warden, in welcher Form       |
 |                                       | das Ergebnis zurück geliefert werden soll:                                      |
-|                                       | |                                                                               |
-|                                       | - s           -> Anzahl Sekunden                                                |
-|                                       | - m           -> Minuten (mit Nachkommastellen)                                 |
+|                                       |                                                                                 |
+|                                       |   - s           -> Anzahl Sekunden                                              |
+|                                       |   - m           -> Minuten (mit Nachkommastellen)                               |
 |                                       | - h           -> Stunden (mit Nachkommastellen)                                 |
 |                                       | - d           -> Tage (mit Nachkommastellen)                                    |
 |                                       | - im          -> Anzahl Minuten (Ganzzahl)                                      |
