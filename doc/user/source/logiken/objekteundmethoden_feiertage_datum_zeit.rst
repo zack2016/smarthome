@@ -20,12 +20,12 @@ Weiterhin gibt es Funktionen, die den Umgang mit Datums und Zeitangaben vereinfa
 Wenn eine Funktion als Parameter ein Datum oder einen Datum/Zeit Wert erwartet, kann der Parameter in einer der
 folgenden Formate angegeben werden:
 
-- date Objekt  -  Wenn ein date Objekt an eine Funktion übergeben wird, welche ein datetime Objekt erwartet, wird als
+- **date** Objekt  -  Wenn ein date Objekt an eine Funktion übergeben wird, welche ein datetime Objekt erwartet, wird als
   Uhrzeit 0 Uhr, 0 Minuten und 0 Sekunden angenommen
-- datetime objekt  -  Wenn ein datetime Objekt an eine Funktion übergeben wird, welche ein date Objekt erwartet, wird
+- **datetime** Objekt  -  Wenn ein datetime Objekt an eine Funktion übergeben wird, welche ein date Objekt erwartet, wird
   die Zeitangabe ignoriert
-- String mit Datum in der Form "yyyy-mm-ddd", "yy-mm-dd", "dd.mm.yyyy" oder "dd.mm.yy"
-- String mit einer Datum/Zeit Angabe wie z.B. "dd.mm.yyyy hh:mm" oder "dd.mm.yyyy hh:mm:ss"
+- **string** mit Datum in der Form "yyyy-mm-ddd", "yy-mm-dd", "dd.mm.yyyy" oder "dd.mm.yy"
+- **string** mit einer Datum/Zeit Angabe wie z.B. "dd.mm.yyyy hh:mm" oder "dd.mm.yyyy hh:mm:ss"
 
 
 .. note::
@@ -39,32 +39,32 @@ folgenden Formate angegeben werden:
 
 Die Funktionen für Feiertags- und Wochenend-Handling sind folgende:
 
-+------------------------------------------+---------------------------------------------------------------------------+
-| Funktion                                 | Erläuterung                                                               |
-+==========================================+===========================================================================+
-| shtime.is_holiday(date)                  | Liefert **True**, falls das Datum ein Feiertag (gesetzlich oder           |
-|                                          | benutzerdefiniert) ist                                                    |
-+------------------------------------------+---------------------------------------------------------------------------+
-| shtime.is_public_holiday(date)           | Liefert **True**, falls das Datum ein gesetzlicher Feiertag ist           |
-+------------------------------------------+---------------------------------------------------------------------------+
-| shtime.holiday_name(date, as_list=False) | Liefert den Namen des Feiertags, falls das Datum ein Feriertag ist.       |
-|                                          | Wenn mehrere Feiertage auf das selbe Datum fallen, werden sie Komma-      |
-|                                          | getrennt zurück geleifert. Falls **as_list** auf **True** gesetzt wird,   |
-|                                          | ist das Ergebnis kein String, sondern eine Liste mit den Feiertagsnamen.  |
-+------------------------------------------+---------------------------------------------------------------------------+
-| shtime.holiday_list(year)                | Liefert eine Liste aller Feiertage für ein Jahr                           |
-+------------------------------------------+---------------------------------------------------------------------------+
-| shtime.public_holiday_list(year)         | Liefert eine Liste aller gesetzlichen Feiertage für ein Jahr              |
-+------------------------------------------+---------------------------------------------------------------------------+
-| shtime.is_weekend(date)                  | Liefert **True**, falls das Datum auf ein Wochenende (Sa, So) fällt       |
-+------------------------------------------+---------------------------------------------------------------------------+
-| shtime.add_custom_holiday(cust_date)     | Trägt benutzerdefinierte Feiertage ein, die den Bedingungen des           |
-|                                          | übergebenen **dict** cust_date entsprechen. Das **dict** hat die selbe    |
-|                                          | Struktur, wie in der Definition in /etc/holidays.yaml                     |
-+------------------------------------------+---------------------------------------------------------------------------+
-| shtime.add_custom_holiday_range(         | Markiert jeden Tag, beginnend mit **fromdate** bis inklusive **to_date**  |
-| from_date, to_date=None, holiday_name='')| als Ferientag mit dem angegebenen Namen                                   |
-+------------------------------------------+---------------------------------------------------------------------------+
++-------------------------------------------+---------------------------------------------------------------------------+
+| Funktion                                  | Erläuterung                                                               |
++===========================================+===========================================================================+
+| shtime.is_holiday(date)                   | Liefert **True**, falls das Datum ein Feiertag (gesetzlich oder           |
+|                                           | benutzerdefiniert) ist                                                    |
++-------------------------------------------+---------------------------------------------------------------------------+
+| shtime.is_public_holiday(date)            | Liefert **True**, falls das Datum ein gesetzlicher Feiertag ist           |
++-------------------------------------------+---------------------------------------------------------------------------+
+| shtime.holiday_name(date, as_list=False)  | Liefert den Namen des Feiertags, falls das Datum ein Feriertag ist.       |
+|                                           | Wenn mehrere Feiertage auf das selbe Datum fallen, werden sie Komma-      |
+|                                           | getrennt zurück geleifert. Falls **as_list** auf **True** gesetzt wird,   |
+|                                           | ist das Ergebnis kein String, sondern eine Liste mit den Feiertagsnamen.  |
++-------------------------------------------+---------------------------------------------------------------------------+
+| shtime.holiday_list(year)                 | Liefert eine Liste aller Feiertage für ein Jahr                           |
++-------------------------------------------+---------------------------------------------------------------------------+
+| shtime.public_holiday_list(year)          | Liefert eine Liste aller gesetzlichen Feiertage für ein Jahr              |
++-------------------------------------------+---------------------------------------------------------------------------+
+| shtime.is_weekend(date)                   | Liefert **True**, falls das Datum auf ein Wochenende (Sa, So) fällt       |
++-------------------------------------------+---------------------------------------------------------------------------+
+| shtime.add_custom_holiday(cust_date)      | Trägt benutzerdefinierte Feiertage ein, die den Bedingungen des           |
+|                                           | übergebenen **dict** cust_date entsprechen. Das **dict** hat die selbe    |
+|                                           | Struktur, wie in der Definition in /etc/holidays.yaml                     |
++-------------------------------------------+---------------------------------------------------------------------------+
+| shtime.add_custom_holiday_range(from_date,| Markiert jeden Tag, beginnend mit **fromdate** bis inklusive **to_date**  |
+| to_date=None, holiday_name=\'\')          | als Ferientag mit dem angegebenen Namen                                   |
++-------------------------------------------+---------------------------------------------------------------------------+
 
 
 
