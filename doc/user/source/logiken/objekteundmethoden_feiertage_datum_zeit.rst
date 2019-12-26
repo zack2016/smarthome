@@ -63,7 +63,7 @@ Die Funktionen für Feiertags- und Wochenend-Handling sind folgende:
 |                                           | Struktur, wie in der Definition in /etc/holidays.yaml                     |
 +-------------------------------------------+---------------------------------------------------------------------------+
 | shtime.add_custom_holiday_range(from_date,| Markiert jeden Tag, beginnend mit **fromdate** bis inklusive **to_date**  |
-| to_date=None, holiday_name='')            | als Ferientag mit dem angegebenen Namen                                   |
+| to_date=None, holiday_name=' ')           | als Ferientag mit dem angegebenen Namen                                   |
 +-------------------------------------------+---------------------------------------------------------------------------+
 
 
@@ -113,9 +113,10 @@ Die Funktionen für das Datums-Handling sind folgende:
 | shtime.datetime_transform(date)       | Wandelt eine Datums/Zeitangabe welche als **date**, **datetime** oder **sting** |
 |                                       | angegeben wurde, in ein eine Datums/Zeitangabe vom Typ **datetime**             |
 +---------------------------------------+---------------------------------------------------------------------------------+
-| shtime.time_since(dt, resulttype='s') | Liefert die vergangene Zeit von der angegeben Datums/Zeitangabe bis jetzt.      |
+| shtime.time_since(dt, resulttype='s') | | Liefert die vergangene Zeit von der angegeben Datums/Zeitangabe bis jetzt.    |
 |                                       | über den Parameter **resulttype** kann festgelegt warden, in welcher Form       |
 |                                       | das Ergebnis zurück geliefert werden soll:                                      |
+|                                       | |                                                                               |
 |                                       | - s           -> Anzahl Sekunden                                                |
 |                                       | - m           -> Minuten (mit Nachkommastellen)                                 |
 |                                       | - h           -> Stunden (mit Nachkommastellen)                                 |
