@@ -117,8 +117,8 @@ Die Funktionen für das Datums-Handling sind folgende:
 |                                       | Über den Parameter **resulttype** kann festgelegt warden, in welcher Form       |
 |                                       | das Ergebnis zurück geliefert werden soll:                                      |
 |                                       |                                                                                 |
-|                                       |   - s           -> Anzahl Sekunden                                              |
-|                                       |   - m           -> Minuten (mit Nachkommastellen)                               |
+|                                       | - s           -> Anzahl Sekunden                                                |
+|                                       | - m           -> Minuten (mit Nachkommastellen)                                 |
 |                                       | - h           -> Stunden (mit Nachkommastellen)                                 |
 |                                       | - d           -> Tage (mit Nachkommastellen)                                    |
 |                                       | - im          -> Anzahl Minuten (Ganzzahl)                                      |
