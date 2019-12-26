@@ -162,6 +162,7 @@ if [ "${DOC,,}" == "developer" ] || [ "${DOC,,}" == "all" ]; then
   echo
   echo Bau der Entwickler-Dokumentation:
   cd $DEVELOPDOC
+  rm -r build
   make clean || exit
   make html || exit
   echo
@@ -175,6 +176,7 @@ if [ "${DOC,,}" == "user" ] || [ "${DOC,,}" == "all" ]; then
   echo
   echo Bau der Anwender-Dokumentation:
   cd $USERDOC
+  rm -r build
   make clean || exit
   make html || exit
   echo

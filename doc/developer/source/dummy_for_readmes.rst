@@ -17,6 +17,10 @@
    :hidden:
 
    /plugins/alexa/nginx.md
+   /plugins/backend/user_doc/items.rst
+   /plugins/backend/user_doc/logiken.rst
+   /plugins/blockly/How_to_Update_Blockly_Components.rst
    /plugins/buderus/TODO.md
    /plugins/buderus/URLs.md
+   /plugins/wunderground/README_OLD.md
 
