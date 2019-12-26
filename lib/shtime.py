@@ -29,6 +29,7 @@ except:
 import datetime
 import dateutil
 from dateutil.tz import tzlocal
+from dateutil import parser
 import logging
 import os
 
@@ -241,24 +242,146 @@ class Shtime:
 
 
     # -----------------------------------------------------------------------------------------------------
+    #   Following methods implement some time handling
+    # -----------------------------------------------------------------------------------------------------
+
+    def _build_timediff_resulttype(self, delta, resulttype):
+        if resulttype == 's':
+            return delta.days * 24 * 3600 + delta.seconds
+        if resulttype == 'm':
+            return delta.days * 24 * 60 + delta.seconds / 60
+        if resulttype == 'h':
+            return delta.days * 24 + delta.seconds / 3600
+        if resulttype == 'd':
+            return delta.days + delta.seconds / (3600 * 24)
+        if resulttype == 'im':
+            return delta.days * 24 * 60 + delta.seconds // 60
+        if resulttype == 'ih':
+            return delta.days * 24 + delta.seconds // 3600
+        if resulttype == 'id':
+            return delta.days
+        if resulttype == 'dhms':
+            return delta.days, delta.seconds // 3600, (delta.seconds // 60 - (delta.seconds // 3600) * 60), (
+                    delta.seconds % 60)
+        if resulttype == 'dhms2':
+            return delta.days, delta.seconds // 3600, (delta.seconds // 60), (delta.seconds % 60)
+        if resulttype == 'ds':
+            return delta.days, delta.seconds
+        logger.error("_build_timediff_resulttype: Called with invalid resulttype parameter: {resulttype}".format(resulttype=resulttype))
+        return -1
+
+
+    def time_since(self, dt, resulttype='s'):
+        dt = self._datetime_transform(dt)
+        if type(dt) is datetime:
+            delta = self.now() - dt
+            if delta.days < 0:
+                logger.error("time_since called with point in time that is later than now: {dt}".format(dt=dt))
+                return (0, 0)
+            return self._build_timediff_resulttype(delta, resulttype)
+        else:
+            logger.error("time_since: Called with parameter that is not of type 'datetime': {dt}".format(dt=dt))
+            return -1
+
+
+    def time_until(self, dt, resulttype='s'):
+        dt = self._datetime_transform(dt)
+        if type(dt) is datetime:
+            delta = dt - self.now()
+            if delta.days < 0:
+                logger.error("time_until called with point in time that is earlier than now: {dt}".format(dt=dt))
+                return (0, 0)
+            return self._build_timediff_resulttype(delta, resulttype)
+        else:
+            logger.error("time_since: Called with parameter that is not of type 'datetime': {dt}".format(dt=dt))
+            return -1
+
+
+    def time_diff(self, dt1, dt2, resulttype='s'):
+        dt1 = self._datetime_transform(dt1)
+        dt2 = self._datetime_transform(dt2)
+        if type(dt1) is datetime and type(dt2) is datetime:
+            delta = dt2 - dt1
+            if delta.days < 0:
+                delta = dt1 - dt2
+            return self._build_timediff_resulttype(delta, resulttype)
+        else:
+            logger.error("time_since: Called with parameter that is not of type 'datetime': {dt1}, {dt2}".format(dt1=dt2, dt2=dt2))
+            return -1
+
+
+    # -----------------------------------------------------------------------------------------------------
     #   Following methods implement some date handling
     # -----------------------------------------------------------------------------------------------------
 
-    def _datetransform(self, key):
+    def datetime_transform(self, key):
         if isinstance(key, datetime.datetime):
-            key = key.date()
-        elif isinstance(key, datetime.date):
             key = key
+        elif isinstance(key, datetime.date):
+            key = datetime.datetime(key.year, key.month, key.day, 0, 0, 0)
         elif isinstance(key, int) or isinstance(key, float):
-            key = datetime.utcfromtimestamp(key).date()
+            key = datetime.utcfromtimestamp(key)
         elif isinstance(key, str):
             try:
-                key = dateutil.parser.parse(key).date()
+                key = dateutil.parser.parse(key)
             except (ValueError, OverflowError):
-                raise ValueError(self.translate("Cannot parse date from string '{key}'").format(key=key))
+                raise ValueError(self.translate("Cannot parse datetime from string '{key}'").format(key=key))
         else:
-            raise TypeError(self.translate("Cannot convert type '{key}' to date").format(key=type(key)))
+            raise TypeError(self.translate("Cannot convert type '{key}' to datetime").format(key=type(key)))
         return key
+
+
+    def date_transform(self, key):
+        try:
+            key = self.datetime_transform(key).date()
+        except (ValueError, OverflowError):
+            raise ValueError(self.translate("Cannot parse date from string '{key}'").format(key=key))
+        return key
+
+
+    # def date_transform(self, key):
+    #     if isinstance(key, datetime.datetime):
+    #         key = key.date()
+    #     elif isinstance(key, datetime.date):
+    #         key = key
+    #     elif isinstance(key, int) or isinstance(key, float):
+    #         key = datetime.utcfromtimestamp(key).date()
+    #     elif isinstance(key, str):
+    #         try:
+    #             key = dateutil.parser.parse(key).date()
+    #         except (ValueError, OverflowError):
+    #             raise ValueError(self.translate("Cannot parse date from string '{key}'").format(key=key))
+    #     else:
+    #         raise TypeError(self.translate("Cannot convert type '{key}' to date").format(key=type(key)))
+    #     return key
+
+
+    def beginning_of_week(self, week=None, year=None):
+        if week is None and year is None:
+            week = self.calendar_week(self.today())
+            year = self.current_year()
+        else:
+            if year is None:
+                year = self.current_year()
+            if week is None:
+                logger.error("beginning_of_week: week not specified")
+                return self.today()
+
+        #monday = datetime.datetime.strptime(f'{year}-{week}-1', "%Y-%W-%w")  # geht erst ab Python 3.6
+        monday = datetime.datetime.strptime('{year}-{week}-1'.format(year=year, week=week), "%Y-%W-%w")
+        return monday.date()
+
+
+    def beginning_of_month(self, month=None, year=None):
+        if month is None:
+            month = self.current_month()
+        if year is None:
+            year = self.current_year()
+        return datetime.date(year, month, 1)
+
+
+    def beginning_of_year(self, year=None):
+        return self.beginning_of_month(1, year)
 
 
     def today(self):
@@ -321,9 +444,10 @@ class Shtime:
 
         :return: Length of year in days
         """
-        if year is None:
-            year = self.current_year()
-        return (datetime.datetime(year + 1, 1, 1) - datetime.datetime(year, 1, 1)).days
+        #if year is None:
+        #    year = self.current_year()
+        #return (datetime.datetime(year + 1, 1, 1) - datetime.datetime(year, 1, 1)).days
+        return self.length_of_month(1, year)
 
 
     def length_of_month(self, month=None, year=None):
@@ -352,7 +476,7 @@ class Shtime:
         :return:
         """
         if date:
-            date = self._datetransform(date)
+            date = self.date_transform(date)
         else:
             date = self.today()
         return (date - datetime.date(date.year, 1, 1)).days + 1
@@ -369,7 +493,7 @@ class Shtime:
         """
 
         if date:
-            dt = self._datetransform(date)
+            dt = self.date_transform(date)
             return dt.isoweekday()
         else:
             return datetime.datetime.now().isoweekday()
@@ -383,7 +507,7 @@ class Shtime:
         :return: week (ISO)
         """
         if date:
-            dt = self._datetransform(date)
+            dt = self.date_transform(date)
             return dt.isocalendar()[1]
         else:
             return datetime.datetime.now().isocalendar()[1]
@@ -397,7 +521,7 @@ class Shtime:
         :return: weekday name
         """
         if date:
-            dt = self._datetransform(date)
+            dt = self.date_transform(date)
         else:
             dt = self.today()
 
@@ -467,6 +591,11 @@ class Shtime:
         date = day_last - datetime.timedelta(days=d_diff)
         logger.debug('dow_last: d_diff {} -> {}'.format(d_diff, date))
         return date
+
+
+    # -----------------------------------------------------------------------------------------------------
+    #   Following methods implement some holiday handling
+    # -----------------------------------------------------------------------------------------------------
 
 
     def _add_holiday_by_date(self, cust_date, gen_for_years):
@@ -540,7 +669,7 @@ class Shtime:
         :return: Number of valid custom holiday definitions
         """
         if self.holidays is None:
-            logger.info("add_custom_holidays: "+self.translate("Holidays are not initialized, cannot add custom holidays"))
+            logger.info("_add_custom_holidays: "+self.translate("Holidays are not initialized, cannot add custom holidays"))
             return 0
 
         custom = self.config.get('custom', [])
@@ -564,6 +693,53 @@ class Shtime:
                     count += 1
 
         return count
+
+
+    def add_custom_holiday(self, cust_date):
+        """
+        Add a custom holiday from etc/holidays.yaml to the initialized list of holidays
+
+        :return: Number of valid custom holiday definitions
+        """
+        if self.holidays is None:
+            logger.info("add_custom_holiday: "+self.translate("Holidays are not initialized, cannot add custom holidays"))
+            return
+
+        # generate for range of years or a given year
+        if cust_date.get('year', None) is None:
+            gen_for_years = self.years
+        else:
+            gen_for_years = [cust_date['year']]
+
+        # {'day': 2, 'month': 12, 'name': "Martin's Geburtstag"}
+        if cust_date.get('month', None) and cust_date.get('day', None):
+            # generate holiday(s) for a given date (day/month)
+            self._add_holiday_by_date(cust_date, gen_for_years)
+        elif cust_date.get('dow', None) and cust_date.get('dow_week', None) and (0 < cust_date.get('dow', None) < 8):
+            # generate holiday(s) for a given weekday (dow/dowweek/month)
+            self._add_holiday_by_dow(cust_date, gen_for_years)
+
+        log_msg = self.translate("Custom holiday definitions defined during runtime: {cust_date}")
+        logger.warning(log_msg.format(cust_date=cust_date))
+
+        return
+
+
+    def add_custom_holiday_range(self, from_date, to_date=None, holiday_name=''):
+        from_date = self.date_transform(from_date)
+        if to_date is None:
+            to_date = from_date
+        else:
+            to_date = self.date_transform(to_date)
+
+        num_days = (to_date-from_date).days + 1
+        holiday_list = [from_date+datetime.timedelta(days=x) for x in range(num_days)]
+
+        cust_dict = {}
+        for holiday in holiday_list:
+            cust_dict[holiday] = holiday_name
+        self.holidays.append(cust_dict)
+        return
 
 
     def _initialize_holidays(self):
@@ -625,7 +801,7 @@ class Shtime:
         """
 
         if date:
-            dt = self._datetransform(date)
+            dt = self.date_transform(date)
         else:
             dt = self.today()
 
@@ -645,7 +821,7 @@ class Shtime:
         """
 
         if date:
-            dt = self._datetransform(date)
+            dt = self.date_transform(date)
         else:
             dt = self.today()
 
@@ -665,7 +841,7 @@ class Shtime:
         """
 
         if date:
-            dt = self._datetransform(date)
+            dt = self.date_transform(date)
         else:
             dt = self.today()
 
@@ -674,7 +850,7 @@ class Shtime:
         return (dt in self.public_holidays)
 
 
-    def holiday_name(self, date=None):
+    def holiday_name(self, date=None, as_list=False):
         """
         Returns the name of the holiday, if date is a holiday
 
@@ -682,16 +858,19 @@ class Shtime:
         :return:
         """
         if date:
-            dt = self._datetransform(date)
+            dt = self.date_transform(date)
         else:
             dt = self.today()
 
         self._initialize_holidays()
 
-        if self.holidays.get(dt):
-            return self.holidays.get(dt)
+        if as_list:
+            if self.holidays.get_list(dt):
+                return self.holidays.get(dt)
         else:
-            return ''
+            if self.holidays.get(dt):
+                return self.holidays.get(dt)
+        return ''
 
 
     def holiday_list(self, year=None):

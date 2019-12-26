@@ -17,6 +17,17 @@ Feiertag ist (und welcher). Dazu muss die Verwendung von Feiertagen in **/etc/ho
 
 Weiterhin gibt es Funktionen, die den Umgang mit Datums und Zeitangaben vereinfachen.
 
+Wenn eine Funktion als Parameter ein Datum oder einen Datum/Zeit Wert erwartet, kann der Parameter in einer der
+folgenden Formate angegeben werden:
+
+- date Objekt  -  Wenn ein date Objekt an eine Funktion übergeben wird, welche ein datetime Objekt erwartet, wird als
+  Uhrzeit 0 Uhr, 0 Minuten und 0 Sekunden angenommen
+- datetime objekt  -  Wenn ein datetime Objekt an eine Funktion übergeben wird, welche ein date Objekt erwartet, wird
+  die Zeitangabe ignoriert
+- String mit Datum in der Form "yyyy-mm-ddd", "yy-mm-dd", "dd.mm.yyyy" oder "dd.mm.yy"
+- String mit einer Datum/Zeit Angabe wie z.B. "dd.mm.yyyy hh:mm" oder "dd.mm.yyyy hh:mm:ss"
+
+
 .. note::
 
    Diese Funktionen können außer in Logiken auch in **eval** Ausdrücken in Item Attributen verwendet werden.
@@ -28,54 +39,101 @@ Weiterhin gibt es Funktionen, die den Umgang mit Datums und Zeitangaben vereinfa
 
 Die Funktionen für Feiertags- und Wochenend-Handling sind folgende:
 
-+---------------------------------+------------------------------------------------------------------------------------+
-| Funktion                        | Erläuterung                                                                        |
-+=================================+====================================================================================+
-| shtime.is_holiday(date)         | Liefert **True**, falls das Datum ein Feiertag ist                                 |
-+---------------------------------+------------------------------------------------------------------------------------+
-| is_public_holiday(date)         | Liefert **True**, falls das Datum ein gesetzlicher Feiertag ist                    |
-+---------------------------------+------------------------------------------------------------------------------------+
-| shtime.holiday_name(date)       | Liefert den Namen des Feiertags, falls das Datum ein Feriertag ist                 |
-+---------------------------------+------------------------------------------------------------------------------------+
-| shtime.holiday_list(year)       | Liefert eine Liste aller Feiertage für ein Jahr                                    |
-+---------------------------------+------------------------------------------------------------------------------------+
-| shtime.public_holiday_list(year)| Liefert eine Liste aller gesetzlichen Feiertage für ein Jahr                       |
-+---------------------------------+------------------------------------------------------------------------------------+
-| shtime.weekday(date)            | Liefert den Wochentag nach ISO (1=Montag - 7=Sonntag) für das angegebene Datum     |
-+---------------------------------+------------------------------------------------------------------------------------+
-| shtime.weekday_name(date)       | Liefert den Namen des Wochentags für das angegebene Datum                          |
-+---------------------------------+------------------------------------------------------------------------------------+
-| shtime.is_weekend(date)         | Liefert **True**, falls das Datum auf ein Wochenende fällt                         |
-+---------------------------------+------------------------------------------------------------------------------------+
++------------------------------------------+---------------------------------------------------------------------------+
+| Funktion                                 | Erläuterung                                                               |
++==========================================+===========================================================================+
+| shtime.is_holiday(date)                  | Liefert **True**, falls das Datum ein Feiertag (gesetzlich oder           |
+|                                          | benutzerdefiniert) ist                                                    |
++------------------------------------------+---------------------------------------------------------------------------+
+| shtime.is_public_holiday(date)           | Liefert **True**, falls das Datum ein gesetzlicher Feiertag ist           |
++------------------------------------------+---------------------------------------------------------------------------+
+| shtime.holiday_name(date, as_list=False) | Liefert den Namen des Feiertags, falls das Datum ein Feriertag ist.       |
+|                                          | Wenn mehrere Feiertage auf das selbe Datum fallen, werden sie Komma-      |
+|                                          | getrennt zurück geleifert. Falls **as_list** auf **True** gesetzt wird,   |
+|                                          | ist das Ergebnis kein String, sondern eine Liste mit den Feiertagsnamen.  |
++------------------------------------------+---------------------------------------------------------------------------+
+| shtime.holiday_list(year)                | Liefert eine Liste aller Feiertage für ein Jahr                           |
++------------------------------------------+---------------------------------------------------------------------------+
+| shtime.public_holiday_list(year)         | Liefert eine Liste aller gesetzlichen Feiertage für ein Jahr              |
++------------------------------------------+---------------------------------------------------------------------------+
+| shtime.is_weekend(date)                  | Liefert **True**, falls das Datum auf ein Wochenende (Sa, So) fällt       |
++------------------------------------------+---------------------------------------------------------------------------+
+| shtime.add_custom_holiday(cust_date)     | Trägt benutzerdefinierte Feiertage ein, die den Bedingungen des           |
+|                                          | übergebenen **dict** cust_date entsprechen. Das **dict** hat die selbe    |
+|                                          | Struktur, wie in der Definition in /etc/holidays.yaml                     |
++------------------------------------------+---------------------------------------------------------------------------+
+| shtime.add_custom_holiday_range(         | Markiert jeden Tag, beginnend mit **fromdate** bis inklusive **to_date**  |
+| from_date, to_date=None, holiday_name='')| als Ferientag mit dem angegebenen Namen                                   |
++------------------------------------------+---------------------------------------------------------------------------+
+
 
 
 .. index:: Funktionen; Datum und Zeit
 
 Die Funktionen für das Datums-Handling sind folgende:
 
-+------------------------------------+---------------------------------------------------------------------------------+
-| Funktion                           | Erläuterung                                                                     |
-+====================================+=================================================================================+
-| shtime.today()                     | Liefert das aktuelle Datum                                                      |
-+------------------------------------+---------------------------------------------------------------------------------+
-| shtime.tomorrow()                  | Liefert das Datum des folgenden Tages                                           |
-+------------------------------------+---------------------------------------------------------------------------------+
-| shtime.yesterday()                 | Liefert das Datum des zurück liegenden Tages                                    |
-+------------------------------------+---------------------------------------------------------------------------------+
-| shtime.current_year()              | Liefert das aktuelle Jahr                                                       |
-+------------------------------------+---------------------------------------------------------------------------------+
-| shtime.current_month()             | Liefert den aktuellen Monat                                                     |
-+------------------------------------+---------------------------------------------------------------------------------+
-| shtime.current_day()               | Liefert den aktuellen Tag                                                       |
-+------------------------------------+---------------------------------------------------------------------------------+
-| shtime.day_of_year(date)           | Liefert als Ergebnis, der wievielte Tag im Jahr das angegebene Datum ist        |
-+------------------------------------+---------------------------------------------------------------------------------+
-| shtime.length_of_year(year)        | Liefert die Anzahl Tage, die das angegebene Jahr hat                            |
-+------------------------------------+---------------------------------------------------------------------------------+
-| shtime.length_of_month(month, year)| Liefert die Anzahl Tage, die der angegebene Monat im angegebenen Jahr hat       |
-+------------------------------------+---------------------------------------------------------------------------------+
-| shtime.calendar_week(date)         | Liefert die Kalenderwoche (nach ISO), in der das angegebe Datum liegt           |
-+------------------------------------+---------------------------------------------------------------------------------+
++---------------------------------------+---------------------------------------------------------------------------------+
+| Funktion                              | Erläuterung                                                                     |
++=======================================+=================================================================================+
+| shtime.today()                        | Liefert das aktuelle Datum als **date**                                         |
++---------------------------------------+---------------------------------------------------------------------------------+
+| shtime.tomorrow()                     | Liefert das Datum des folgenden Tages als **date**                              |
++---------------------------------------+---------------------------------------------------------------------------------+
+| shtime.yesterday()                    | Liefert das Datum des zurück liegenden Tages als **date**                       |
++---------------------------------------+---------------------------------------------------------------------------------+
+| shtime.beginning_of_week(week=None,   | Liefert das Datum des Montags der Woche als **date**                            |
+| year=None)                            |                                                                                 |
++---------------------------------------+---------------------------------------------------------------------------------+
+| shtime.beginning_of_month(month=None, | Liefert das Datum des 1. des angegebenen Monats als **date**                    |
+| year=None)                            |                                                                                 |
++---------------------------------------+---------------------------------------------------------------------------------+
+| shtime.beginning_of_year(year=None)   | Liefert das Datum des 1. Januar des angegebenen Jahres als **date**             |
++---------------------------------------+---------------------------------------------------------------------------------+
+| shtime.current_year()                 | Liefert das aktuelle Jahr                                                       |
++---------------------------------------+---------------------------------------------------------------------------------+
+| shtime.current_month()                | Liefert den aktuellen Monat                                                     |
++---------------------------------------+---------------------------------------------------------------------------------+
+| shtime.current_day()                  | Liefert den aktuellen Tag                                                       |
++---------------------------------------+---------------------------------------------------------------------------------+
+| shtime.day_of_year(date)              | Liefert als Ergebnis, der wievielte Tag im Jahr das angegebene Datum ist        |
++---------------------------------------+---------------------------------------------------------------------------------+
+| shtime.length_of_year(year)           | Liefert die Anzahl Tage, die das angegebene Jahr hat                            |
++---------------------------------------+---------------------------------------------------------------------------------+
+| shtime.length_of_month(month, year)   | Liefert die Anzahl Tage, die der angegebene Monat im angegebenen Jahr hat       |
++---------------------------------------+---------------------------------------------------------------------------------+
+| shtime.calendar_week(date)            | Liefert die Kalenderwoche (nach ISO), in der das angegebene Datum liegt         |
++---------------------------------------+---------------------------------------------------------------------------------+
+| shtime.weekday(date)                  | Liefert den Wochentag nach ISO (1=Montag - 7=Sonntag) für das angegebene Datum  |
++---------------------------------------+---------------------------------------------------------------------------------+
+| shtime.weekday_name(date)             | Liefert den Namen des Wochentags für das angegebene Datum                       |
++---------------------------------------+---------------------------------------------------------------------------------+
+| shtime.date_transform(date)           | Wandelt ein Datum welches als **date**, **datetime** oder **sting** angegeben   |
+|                                       | wurde, in ein Datum vom Typ **date**                                            |
++---------------------------------------+---------------------------------------------------------------------------------+
+| shtime.datetime_transform(date)       | Wandelt eine Datums/Zeitangabe welche als **date**, **datetime** oder **sting** |
+|                                       | angegeben wurde, in ein eine Datums/Zeitangabe vom Typ **datetime**             |
++---------------------------------------+---------------------------------------------------------------------------------+
+| shtime.time_since(dt, resulttype='s') | Liefert die vergangene Zeit von der angegeben Datums/Zeitangabe bis jetzt.      |
+|                                       | über den Parameter **resulttype** kann festgelegt warden, in welcher Form       |
+|                                       | das Ergebnis zurück geliefert werden soll:                                      |
+|                                       |  - s           -> Anzahl Sekunden                                               |
+|                                       |  - m           -> Minuten (mit Nachkommastellen)                                |
+|                                       |  - h           -> Stunden (mit Nachkommastellen)                                |
+|                                       |  - d           -> Tage (mit Nachkommastellen)                                   |
+|                                       |  - im          -> Anzahl Minuten (Ganzzahl)                                     |
+|                                       |  - ih          -> Anzahl Stunden (Ganzzahl)                                     |
+|                                       |  - id          -> Anzahl Tage (Ganzzahl)                                        |
+|                                       |  - dhms        -> Tuple (<Tage>, <Stunden>, <Minuten>, <Sekunden>)              |
+|                                       |  - ds          -> Tuple (<Tage>, <Sekunden>)                                    |
++---------------------------------------+---------------------------------------------------------------------------------+
+| shtime.time_until(dt, resulttype='s') | Liefert die vergehende Zeit von jetzt bis zur angegeben Datums/Zeitangabe.      |
+|                                       | Der Parameter **resulttype** ist bei der Funktion **shtime.time_since()**       |
+|                                       | beschrieben.                                                                    |
++---------------------------------------+---------------------------------------------------------------------------------+
+| shtime.time_diff(dt1, dt2,            | Liefert die vergehende Zeit von jetzt bis zur angegeben Datums/Zeitangabe.      |
+| resulttype='s')                       | Der Parameter **resulttype** ist bei der Funktion **shtime.time_since()**       |
+|                                       | beschrieben.                                                                    |
++---------------------------------------+---------------------------------------------------------------------------------+
 
 
 .. note::
