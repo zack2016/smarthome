@@ -28,6 +28,7 @@ except:
 
 import datetime
 import dateutil
+import pytz
 from dateutil.tz import tzlocal
 from dateutil import parser
 import logging
@@ -46,9 +47,10 @@ _shtime_instance = None    # Pointer to the initialized instance of the shtime c
 class Shtime:
 
     _tzinfo = None
+    _timezone = None
     _utctz = None
     _starttime = None
-    tz = ''
+    _tz = ''
     holidays = None
     public_holidays = None
 
@@ -68,8 +70,8 @@ class Shtime:
 
         # set default timezone to UTC
 #        global TZ
-        self.tz = 'UTC'
-        os.environ['TZ'] = self.tz
+        self._tz = 'UTC'
+        os.environ['TZ'] = self._tz
         self.set_tzinfo(dateutil.tz.gettz('UTC'))
 
 
@@ -103,6 +105,12 @@ class Shtime:
     def translate(self, txt):
         """
         Returns translated text
+
+        :param txt: text to translate
+        :type txt: str
+
+        :return: translated text
+        :rtype: str
         """
         txt = str(txt)
 
@@ -116,12 +124,14 @@ class Shtime:
         tzinfo = dateutil.tz.gettz(tz)
         if tzinfo is not None:
 #            TZ = tzinfo
-            self.tz = tz
-            os.environ['TZ'] = self.tz
+            self._tz = tz
+            os.environ['TZ'] = self._tz
 #             self._tzinfo = TZ
             self.set_tzinfo(tzinfo)
+            self._timezone = pytz.timezone(tz)
         else:
             logger.warning(self.translate("Problem parsing timezone '{tz}' - Using UTC").format(tz=tz))
+            self._timezone = pytz.timezone("UTC")
         return
 
 
@@ -141,7 +151,7 @@ class Shtime:
         Returns the actual time in a timezone aware format
 
         :return: Actual time for the local timezone
-        :rtype: datetime
+        :rtype: datetime.datetime
         """
 
         if self._tzinfo is None:
@@ -158,7 +168,7 @@ class Shtime:
         :rtype: str
         """
 
-        return self.tz
+        return self._tz
 
 
     def tzinfo(self):
@@ -166,7 +176,7 @@ class Shtime:
         Returns the info about the actual local timezone
 
         :return: Timezone info
-        :rtype: object
+        :rtype: dateutil.tz.tz.tzfile
         """
 
         return self._tzinfo
@@ -177,7 +187,7 @@ class Shtime:
         Returns the name about the actual local timezone (e.g. CET)
 
         :return: Timezone info
-        :rtype: object
+        :rtype: str
         """
 
         return datetime.datetime.now(tzlocal()).tzname()
@@ -188,7 +198,7 @@ class Shtime:
         Returns the actual time in GMT
 
         :return: Actual time in GMT
-        :rtype: datetime
+        :rtype: datetime.datetime
         """
 
         # tz aware utc time
@@ -202,7 +212,7 @@ class Shtime:
         Returns the info about the GMT timezone
 
         :return: Timezone info
-        :rtype: str
+        :rtype: dateutil.tz.tz.tzfile
         """
 
         return self._utctz
@@ -213,7 +223,7 @@ class Shtime:
         Returns the uptime of SmartHomeNG
 
         :return: Uptime in days, hours, minutes and seconds
-        :rtype: str
+        :rtype: datetime.timedelta
         """
 
         return datetime.datetime.now() - self._starttime
@@ -272,8 +282,18 @@ class Shtime:
 
 
     def time_since(self, dt, resulttype='s'):
-        dt = self._datetime_transform(dt)
-        if type(dt) is datetime:
+        """
+        Calculates the time that has elapsed since the given datetime parameter
+        :param dt: point in time (in the past)
+        :param resulttype: type in which the result should be returned
+        :type: dt: date
+        :type: str
+
+        :return: Elapsed time
+        :rtype: integer|tuple
+        """
+        dt = self.datetime_transform(dt)
+        if type(dt) is datetime.datetime:
             delta = self.now() - dt
             if delta.days < 0:
                 logger.error("time_since called with point in time that is later than now: {dt}".format(dt=dt))
@@ -285,7 +305,7 @@ class Shtime:
 
 
     def time_until(self, dt, resulttype='s'):
-        dt = self._datetime_transform(dt)
+        dt = self.datetime_transform(dt)
         if type(dt) is datetime:
             delta = dt - self.now()
             if delta.days < 0:
@@ -298,9 +318,9 @@ class Shtime:
 
 
     def time_diff(self, dt1, dt2, resulttype='s'):
-        dt1 = self._datetime_transform(dt1)
-        dt2 = self._datetime_transform(dt2)
-        if type(dt1) is datetime and type(dt2) is datetime:
+        dt1 = self.datetime_transform(dt1)
+        dt2 = self.datetime_transform(dt2)
+        if type(dt1) is datetime.datetime and type(dt2) is datetime.datetime:
             delta = dt2 - dt1
             if delta.days < 0:
                 delta = dt1 - dt2
@@ -328,6 +348,9 @@ class Shtime:
                 raise ValueError(self.translate("Cannot parse datetime from string '{key}'").format(key=key))
         else:
             raise TypeError(self.translate("Cannot convert type '{key}' to datetime").format(key=type(key)))
+        logger.info("datetime_transform: key: {}, type(key) = {} - {}".format(key, type(key), 'ret'))
+        if isinstance(key, datetime.datetime) and key.tzinfo is None:
+            key =  self._timezone.localize(key)
         return key
 
 

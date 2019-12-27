@@ -108,7 +108,7 @@ class ServerController(RESTResource):
         response['client_ip'] = client_ip
         response['itemtree_fullpath'] = self.module.itemtree_fullpath
         response['itemtree_searchstart'] = self.module.itemtree_searchstart
-        response['tz'] = self.module.shtime.tz
+        response['tz'] = self.module.shtime.tz()
         response['tzname'] = str(self.module.shtime.tzname())
         response['core_branch'] = bin.shngversion.get_shng_branch()
         response['plugins_branch'] = bin.shngversion.get_plugins_branch()
