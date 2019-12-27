@@ -24,7 +24,7 @@ folgenden Formate angegeben werden:
   Uhrzeit 0 Uhr, 0 Minuten und 0 Sekunden angenommen
 - **datetime** Objekt  -  Wenn ein datetime Objekt an eine Funktion übergeben wird, welche ein date Objekt erwartet, wird
   die Zeitangabe ignoriert
-- **string** mit Datum in der Form \"yyyy-mm-ddd\", "yy-mm-dd", "dd.mm.yyyy" oder "dd.mm.yy"
+- **string** mit Datum in der Form "yyyy-mm-dd", "yy-mm-dd", "dd.mm.yyyy", "dd.mm.yy", "mm/dd/yy" oder "mm/dd/yyyy"
 - **string** mit einer Datum/Zeit Angabe wie z.B. "dd.mm.yyyy hh:mm" oder "dd.mm.yyyy hh:mm:ss"
 
 

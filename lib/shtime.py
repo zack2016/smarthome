@@ -342,13 +342,19 @@ class Shtime:
         elif isinstance(key, int) or isinstance(key, float):
             key = datetime.utcfromtimestamp(key)
         elif isinstance(key, str):
+            dayfirst = True
+            yearfirst = False
+            if key.count('/') > 1:
+                dayfirst = False
+            if key.count('-') > 1:
+                yearfirst = True
+                dayfirst = False
             try:
-                key = dateutil.parser.parse(key)
+                key = dateutil.parser.parse(key, dayfirst=dayfirst, yearfirst=yearfirst)
             except (ValueError, OverflowError):
                 raise ValueError(self.translate("Cannot parse datetime from string '{key}'").format(key=key))
         else:
             raise TypeError(self.translate("Cannot convert type '{key}' to datetime").format(key=type(key)))
-        logger.info("datetime_transform: key: {}, type(key) = {} - {}".format(key, type(key), 'ret'))
         if isinstance(key, datetime.datetime) and key.tzinfo is None:
             key =  self._timezone.localize(key)
         return key
