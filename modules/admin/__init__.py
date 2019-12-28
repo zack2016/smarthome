@@ -83,8 +83,7 @@ class Admin(Module):
         self.jwt_secret = 'SmartHomeNG$0815'
 
         try:
-            self.mod_http = Modules.get_instance().get_module(
-                'http')  # try/except to handle running in a core version that does not support modules
+            self.mod_http = Modules.get_instance().get_module('http')  # try/except to handle running in a core version that does not support modules
         except:
             self.mod_http = None
         if self.mod_http == None:
@@ -107,7 +106,7 @@ class Admin(Module):
             self.log_chunksize = self._parameters['log_chunksize']
         except:
             self.logger.critical(
-                "Module '{}': Inconsistent module (invalid metadata definition)".format(self.shortname))
+                "Module '{}': Inconsistent module (invalid metadata definition)".format(self._shortname))
             self._init_complete = False
             return
 
