@@ -1040,7 +1040,7 @@ class SmartHome():
         DEPRECATED - Use the Logics-API instead
         """
         self._deprecated_warning('Logics-API')
-        self.logics.reload_logics()
+        self.logics.reload_logics(signum, frame)
 
 
     def return_logic(self, name):
@@ -1056,7 +1056,7 @@ class SmartHome():
         :rtype: object
         """
         self._deprecated_warning('Logics-API')
-        self.logics.return_logic()
+        self.logics.return_logic(name)
 
 
     def return_logics(self):
