@@ -453,7 +453,7 @@ class Logics():
         return mylogic.enabled
 
 
-    def trigger_logic(self, name, by='unknown'):
+    def trigger_logic(self, name, by='unknown', source=None, value=None):
         """
         Trigger a logic
         """
@@ -461,7 +461,7 @@ class Logics():
         if name in self.return_loaded_logics():
             if by == 'unknown':
                 by = 'Backend'
-            self.scheduler.trigger(self._logicname_prefix+name, by=by)
+            self.scheduler.trigger(self._logicname_prefix+name, by=by, source=source, value=value)
         else:
             logger.warning("trigger_logic: Logic '{}' not found/loaded".format(name))
 

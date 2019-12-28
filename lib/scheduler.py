@@ -21,7 +21,6 @@
 #  along with SmartHomeNG.  If not, see <http://www.gnu.org/licenses/>.
 ##########################################################################
 
-import gc  # noqa
 import logging
 import time
 import datetime
@@ -29,11 +28,18 @@ import calendar
 import sys
 import traceback
 import threading
-import os  # noqa
 import random
-import types  # noqa
-import subprocess  # noqa
 import inspect
+
+# following modules) are imported to have those functions available during logic execution
+import gc  # noqa
+import os
+import math
+import types
+import subprocess
+
+
+
 
 from lib.shtime import Shtime
 from lib.item import Items
@@ -314,7 +320,7 @@ class Scheduler(threading.Thread):
         :param next:
         :param from_smartplugin: Only to set to True, if called from the internal method in SmartPlugin class
         """
-        # Todo: Why the following 4 lines? self.shtime is set within __init__ 
+        # Todo: Why the following 4 lines? self.shtime is set within __init__
         if self.shtime == None:
             self.shtime = Shtime.get_instance()
         if self.shtime == None:
@@ -499,6 +505,7 @@ class Scheduler(threading.Thread):
             trigger = {'by': by, 'source': source, 'source_details': source_details, 'dest': dest, 'value': value}  # noqa
             logic = obj  # noqa
             logics = obj._logics
+            #following variables are assigned to be available during logic execution
             sh = self._sh  # noqa
             shtime = self.shtime
             items = self.items
