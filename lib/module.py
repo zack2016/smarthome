@@ -223,13 +223,22 @@ class Modules():
         except Exception as e:
             logger.critical("Module '{}' ({}) exception during import of __init__.py: {}".format(name, classpath, e))
             return None
-        exec("self.loadedmodule = {0}.{1}.__new__({0}.{1})".format(classpath, classname))
+
+        try:
+            exec("self.loadedmodule = {0}.{1}.__new__({0}.{1})".format(classpath, classname))
+        except Exception as e:
+            #logger.error("Module '{}' ({}) exception during initialization: {}".format(name, classpath, e))
+            pass
 
         # load module-specific translations
         translation.load_translations('module', classpath.replace('.', '/'), 'module/'+classpath.split('.')[1])
 
         # get arguments defined in __init__ of module's class to self.args
-        exec("self.args = inspect.getargspec({0}.{1}.__init__)[0][1:]".format(classpath, classname))
+        try:
+            exec("self.args = inspect.getargspec({0}.{1}.__init__)[0][1:]".format(classpath, classname))
+        except Exception as e:
+            logger.critical("Module '{}' ({}) exception during call to __init__.py: {}".format(name, classpath, e))
+            return None
 
         # get list of argument used names, if they are defined in the module's class
         logger.debug("Module '{}': args = '{}'".format(classname, str(args)))
