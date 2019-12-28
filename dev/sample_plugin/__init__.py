@@ -69,7 +69,14 @@ class SamplePlugin(SmartPlugin):
         #     return
 
         # get the parameters for the plugin (as defined in metadata plugin.yaml):
-        #   self.param1 = self.get_parameter_value('param1')
+        try:
+        #     self.param1 = self.get_parameter_value('param1')
+            pass
+        except KeyError as e:
+            self.logger.critical(
+                "Plugin '{}': Inconsistent plugin (invalid metadata definition: {} not defined)".format(self.get_shortname(), e))
+            self._init_complete = False
+            return
 
         # cycle time in seconds, only needed, if hardware/interface needs to be
         # polled for value changes by adding a scheduler entry in the run method of this plugin
