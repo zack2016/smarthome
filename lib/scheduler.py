@@ -31,16 +31,6 @@ import threading
 import random
 import inspect
 
-# following modules) are imported to have those functions available during logic execution
-import gc  # noqa
-import os
-import math
-import types
-import subprocess
-
-
-
-
 from lib.shtime import Shtime
 from lib.item import Items
 from lib.model.smartplugin import SmartPlugin
@@ -48,6 +38,21 @@ from lib.model.smartplugin import SmartPlugin
 import dateutil.relativedelta
 from dateutil.relativedelta import MO, TU, WE, TH, FR, SA, SU
 from dateutil.tz import tzutc
+
+
+# following modules) are imported to have those functions available during logic execution
+import gc  # noqa
+import os
+import math
+import types
+import subprocess
+
+try:
+    from lib.module import Modules
+    _lib_modules_found = True
+except:
+    _lib_modules_found = False
+
 
 logger = logging.getLogger(__name__)
 
@@ -129,6 +134,7 @@ class Scheduler(threading.Thread):
 
         self.shtime = Shtime.get_instance()
         self.items = Items.get_instance()
+        self.mqtt = None
 
 
     # --------------------------------------------------------------------------------------------------
@@ -505,10 +511,17 @@ class Scheduler(threading.Thread):
             trigger = {'by': by, 'source': source, 'source_details': source_details, 'dest': dest, 'value': value}  # noqa
             logic = obj  # noqa
             logics = obj._logics
+
             #following variables are assigned to be available during logic execution
             sh = self._sh  # noqa
             shtime = self.shtime
             items = self.items
+
+            if not self.mqtt:
+                if _lib_modules_found:
+                    self.mqtt = Modules.get_instance().get_module('mqtt')
+            mqtt = self.mqtt
+
             try:
                 if logic.enabled:
                     exec(obj.bytecode)

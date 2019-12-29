@@ -25,6 +25,7 @@
 #########################################################################
 
 
+import threading
 import logging
 import json
 import os
@@ -117,6 +118,33 @@ class Mqtt(Module):
         # tls ...
         # ca_certs ...
 
+        # _subscribed_topics is a datastructure to keep track of subscribed topics
+        # and the needed additional information
+        #  - who subscribed to the topic
+        #  - kind of subscriber (logic, plugin, ...)
+        #  - datatype of payload
+        #
+        # <topic1>:
+        #     <subscriber1_name>:
+        #         subsciber_type: 'logic'
+        #         callback: 'logic1name'
+        #         payload_type: 'str'
+        #     <subscriber2_name>:
+        #         subsciber_type: 'logic'
+        #         callback: 'logic2name'
+        #         payload_type: 'dict'
+        # <topic2>:
+        #     <subscriber3_name>:
+        #         subsciber_type: 'plugin'
+        #         callback: obj_callback3
+        #         payload_type: 'str'
+        #     <subscriber4_name>:
+        #
+
+        self._subscribed_topics_lock = threading.Lock()
+        self._subscribed_topics = {}
+
+
         self.topics = {}  # subscribed topics
         self.logictopics = {}  # subscribed topics for triggering logics
         self.logicpayloadtypes = {}  # payload types for subscribed topics for triggering logics
@@ -136,7 +164,7 @@ class Mqtt(Module):
         # tls ...
         # ca_certs ...
 
-        if not self.ConnectToBroker():
+        if not self._connect_to_broker():
             self._init_complete = False
             return
 
@@ -155,6 +183,7 @@ class Mqtt(Module):
         if (self.birth_topic != '') and (self.birth_payload != ''):
             self._client.publish(self.birth_topic, self.birth_payload, self.qos, retain=True)
         self._client.loop_start()
+        self.logger.debug("MQTT client loop started")
         # set the name of the paho thread for this plugin instance
         try:
             self._client._thread.name = "paho_" + self.longname
@@ -171,12 +200,13 @@ class Mqtt(Module):
         """
         #        self.logger.debug("Module '{}': Shutting down".format(self.shortname))
         self._client.loop_stop()
+        self.logger.debug("MQTT client loop stopped")
         self.DisconnectFromBroker()
         # self.alive = False
 
 
-
-
+# ----------------------------------------------------------------------------------------
+#  common methods
 # ----------------------------------------------------------------------------------------
 
     def cast_from_mqtt(self, datatype, raw_data):
@@ -185,7 +215,11 @@ class Mqtt(Module):
 
         :param datatype:  datatype to which the data should be casted to
         :param raw_data:  data as received from the mqtt broker
+        :type datatype:   str
+        :type raw_data:   str
+
         :return:          data casted to the datatype of the item it should be written to
+        :rtype:           str | bool | list | dict
         """
         str_data = raw_data.decode('utf-8')
         if datatype == 'str':
@@ -225,9 +259,11 @@ class Mqtt(Module):
         """
         Cast SmartHomeNG datatypes to payload data
 
-        :param datatype:  datatype to which the data should be casted to
-        :param raw_data:  data as received from the mqtt broker
-        :return:          data casted to the datatype of the item it should be written to
+        :param data:  data which should be casted to a payload compatible format
+        :type data:   str | bool | int | float | list | dict
+
+        :return:      data casted from the SmartHomeNG datatype to str to be written to payload
+        :rtype:       str
         """
         if isinstance(data, str):
             payload_data = data
@@ -247,25 +283,11 @@ class Mqtt(Module):
         return payload_data
 
 
-    def get_qos_forTopic(self, item):
-        """
-        Return the configured QoS for a topic/item as an integer
+    # ----------------------------------------------------------------------------------------
+    #  methods to handle mqtt
+    # ----------------------------------------------------------------------------------------
 
-        :param item:      item to get the QoS for
-        :return:          Quality of Service (0..2)
-        """
-        qos = self.get_iattr_value(item.conf, 'mqtt_qos')
-        if qos == None:
-            qos = self.qos
-        return int(qos)
-
-
-    def on_mqtt_log(self, client, userdata, level, buf):
-        # self.logger.info("on_log: {}".format(buf))
-        return
-
-
-    def ConnectToBroker(self):
+    def _connect_to_broker(self):
         """
         Establish connection to MQTT broker
         """
@@ -297,6 +319,290 @@ class Mqtt(Module):
         return True
 
 
+    def _add_subscription_definition(self, topic, subscription_source, subscriber_type, callback, payload_type):
+        """
+        Add a subscription definition to a defined topic in the _subscribed_topics data
+
+        :param topic:
+        :param subscription_source:
+        :param subscriber_type:
+        :param callback:
+        :param payload_type:
+        """
+        if self._subscribed_topics[topic].get(subscription_source, None):
+            self.logger.info("_add_subscription_definition: Subscription to topic '{}' for logic '{}' already exists, overwriting it".format(topic, subscription_source))
+        self._subscribed_topics[topic][subscription_source] = {}
+        self._subscribed_topics[topic][subscription_source]['subscriber_type'] = subscriber_type
+        self._subscribed_topics[topic][subscription_source]['callback'] = callback
+        self._subscribed_topics[topic][subscription_source]['payload_type'] = payload_type
+        self.logger.info("_add_subscription_definition: {} '{}' is subscribing to topic '{}'".format(subscriber_type, subscription_source, topic))
+        return
+
+
+    def subscribe_topic(self, source, topic, qos=None, payload_type='str', logic=None):
+        """
+        method to subscribe to a topic
+
+        this function is to be called from plugins, which are utilizing the mqtt module
+
+        :param source:       name of logic which want's to publish a topic
+        :param topic:        topic to subscribe to
+        :param qos:          quality of service (optional) otherwise the default of the mqtt plugin will be used
+        :param payload_type:
+        :param logic:
+        """
+        self.logger.info("Function '{}()' - called by '{}()'".format(inspect.stack()[0][3], inspect.stack()[1][3]))
+        self.logger.debug("subscribe_topic: inspect.stack()[2][3] = '{}', inspect.stack()[3][3] = '{}'".format(inspect.stack()[2][3], inspect.stack()[3][3]))
+        if qos == None:
+            qos = self.qos
+
+        if not payload_type.lower() in ['str', 'num', 'bool', 'list', 'dict', 'scene']:
+            payload_type = 'str'
+            self.logger.warning("Invalid payload-datatype specified for logic '{}', ignored".format(logic))
+
+        if not self._subscribed_topics.get(topic, None):
+            # lock
+#            self._subscribed_topics_lock.acquire()
+
+            # add topic
+            self.logger.info("subscribe_topic: NO MQTT Subscription to topic '{}' exists yet, adding topic".format(topic))
+            self._subscribed_topics[topic] = {}
+
+            # add subscription definition
+            self._add_subscription_definition(topic, source, 'logic', logic, payload_type)
+
+            # unlock
+#            self._subscribed_topics_lock.release()
+
+            # subscribe to topic
+            result, mid = self._client.subscribe(topic, qos=qos)
+            self.logger.info("subscribe_topic: mqtt module is subscribing to topic '{}' with qos={} at broker (result={}, mid={})".format(topic, qos, result, mid))
+        else:
+            self.logger.info("subscribe_topic: A MQTT Subscription to topic '{}' already exists".format(topic))
+            # lock
+#            self._subscribed_topics_lock.acquire()
+
+            # add subscription definition
+            self._add_subscription_definition(topic, source, 'logic', logic, payload_type)
+
+            # unlock
+#            self._subscribed_topics_lock.release()
+        return
+
+
+    def unsubscribe_topic(self, source, topic):
+        """
+        method to unsubscribe from a topic
+
+        this function is to be called from plugins, which are utilizing the mqtt module
+
+        :param source:       name of logic which want's to publish a topic
+        :param topic:        topic to unsubscribe from
+        """
+        self.logger.info("Function '{}()' - called by '{}()'".format(inspect.stack()[0][3], inspect.stack()[1][3]))
+        self.logger.debug("subscribe_topic: inspect.stack()[2][3] = '{}', inspect.stack()[3][3] = '{}'".format(
+            inspect.stack()[2][3], inspect.stack()[3][3]))
+
+
+        if not self._subscribed_topics.get(topic, None):
+            # the topic is not subscribed
+            self.logger.info("unsubscribe_topic: NO MQTT Subscription to topic '{}' exists".format(topic))
+            return
+
+        if not self._subscribed_topics[topic].get(source, None):
+            # the topic is not subscribed by this source
+            self.logger.info("unsubscribe_topic: Topic '{}' is not subscribed by '{}'".format(topic, source))
+            return
+
+        # lock
+        # self._subscribed_topics_lock.acquire()
+
+
+        # delete source for this topic
+        del self._subscribed_topics[topic][source]
+        self.logger.debug("unsubscribe_topic: Subscription to topic '{}' for '{}' is removed".format(topic, source))
+
+        if self._subscribed_topics[topic] == {}:
+            # unsubscribe on broker, if no source is subscribing the topic any more
+            del self._subscribed_topics[topic]
+            self._client.unsubscribe(topic)
+
+        # unlock
+        # self._subscribed_topics_lock.release()
+
+        return
+
+
+    def _trigger_logic(self, subscription_dict, topic, payload):
+        """
+        This method is called by on_mqtt_message to trigger a logic
+
+        :return:
+        """
+        datatype = subscription_dict.get('payload_type', 'foo')
+        payload = self.cast_from_mqtt(datatype, payload)
+        logic = subscription_dict.get('callback', None)
+        if logic:
+            self.logger.info(
+                "on_mqtt_message: Using topic '{}', payload '{} (type {})' for triggering logic '{}'".format(topic,
+                                                                                                             payload,
+                                                                                                             datatype,
+                                                                                                             logic))
+            self._sh.logics.trigger_logic(logic, source='mqtt', by=topic, value=payload)
+            subscription_found = True
+
+        return subscription_found
+
+
+    def on_mqtt_message(self, client, userdata, message):
+        """
+        Callback function to handle received messages for items and logics
+
+        :param client:    the client instance for this callback
+        :param userdata:  the private user data as set in Client() or userdata_set()
+        :param message:   an instance of MQTTMessage.
+                          This is a class with members topic, payload, qos, retain.
+        """
+        self.logger.info( "on_mqtt_message: RECEIVED topic '{}', payload '{}, QoS '{}', retain '{}'".format(message.topic, message.payload, message.qos, message.retain))
+
+        # lock
+        try:
+            pass
+            # self._subscribed_topics_lock.acquire()
+        except Exception as e:
+            self.logger.error("on_mqtt_message: Lock exception'{}'".format(e))
+
+        # look for subscriptions to the received topic
+        subscription_found = False
+        for topic in self._subscribed_topics:
+            if topic == message.topic:
+                topic_dict = self._subscribed_topics[topic]
+
+                for subscription in topic_dict:
+                    self.logger.info(
+                        "on_mqtt_message: subscription '{}': {}".format(subscription, topic_dict[subscription]))
+                    if topic_dict[subscription].get('subscriber_type', None) == 'logic':
+                        subscription_found = self._trigger_logic(topic_dict[subscription], message.topic, message.payload)
+
+        # unlock
+        try:
+            pass
+            # self._subscribed_topics_lock.release()
+        except Exception as e:
+            self.logger.error("on_mqtt_message: Unlock exception'{}'".format(e))
+
+        item = self.topics.get(message.topic, None)
+        if item != None:
+            payload = self.cast_from_mqtt(item.type(), message.payload)
+            self.logger.info(
+                "Received topic '{}', payload '{}' (type {}), QoS '{}', retain '{}' for item '{}'".format(message.topic, payload, item.type(), message.qos, message.retain, item.id()))
+            item(payload, 'MQTT')
+
+        if (not subscription_found) and (item == None):
+            if not self._handle_broker_infos(message):
+                self.logger.error("on_mqtt_message: Received topic '{}', payload '{}', QoS '{}', retain '{}' WITHOUT matching item/logic".format( message.topic, message.payload, message.qos, message.retain))
+
+    # ----------------------------------------------------------------------------------------
+
+
+    def get_qos_forTopic(self, item):
+        """
+        Return the configured QoS for a topic/item as an integer
+
+        :param item:      item to get the QoS for
+        :return:          Quality of Service (0..2)
+        """
+        qos = self.get_iattr_value(item.conf, 'mqtt_qos')
+        if qos == None:
+            qos = self.qos
+        return int(qos)
+
+
+    def on_mqtt_log(self, client, userdata, level, buf):
+        # self.logger.info("on_log: {}".format(buf))
+        return
+
+
+    def _subscribe_broker_infos(self):
+        """
+        Subscribe to broker's infos
+
+        This method is called from on_connect
+        """
+        self._client.subscribe('$SYS/broker/version', qos=0)
+        self._client.subscribe('$SYS/broker/clients/active', qos=0)
+        self._client.subscribe('$SYS/broker/subscriptions/count', qos=0)
+        self._client.subscribe('$SYS/broker/messages/stored', qos=0)
+
+        if self.broker_monitoring:
+            self._client.subscribe('$SYS/broker/uptime', qos=0)
+            self._client.subscribe('$SYS/broker/retained messages/count', qos=0)
+            self._client.subscribe('$SYS/broker/load/messages/received/1min', qos=0)
+            self._client.subscribe('$SYS/broker/load/messages/received/5min', qos=0)
+            self._client.subscribe('$SYS/broker/load/messages/received/15min', qos=0)
+            self._client.subscribe('$SYS/broker/load/messages/sent/1min', qos=0)
+            self._client.subscribe('$SYS/broker/load/messages/sent/5min', qos=0)
+            self._client.subscribe('$SYS/broker/load/messages/sent/15min', qos=0)
+        return
+
+
+    def _handle_broker_infos(self, message):
+
+        if message.topic == '$SYS/broker/clients/active':
+            self._broker['active_clients'] = message.payload.decode('utf-8')
+        elif message.topic == '$SYS/broker/subscriptions/count':
+            self._broker['subscriptions'] = message.payload.decode('utf-8')
+        elif message.topic == '$SYS/broker/messages/stored':
+            self._broker['stored_messages'] = message.payload.decode('utf-8')
+        elif message.topic == '$SYS/broker/retained messages/count':
+            self._broker['retained_messages'] = message.payload.decode('utf-8')
+        elif message.topic == '$SYS/broker/uptime':
+            self._broker['uptime'] = message.payload.decode('utf-8').split(' ')[0]
+        elif message.topic == '$SYS/broker/load/messages/received/1min':
+            self._broker['msg_rcv_1min'] = message.payload.decode('utf-8')
+        elif message.topic == '$SYS/broker/load/messages/received/5min':
+            self._broker['msg_rcv_5min'] = message.payload.decode('utf-8')
+        elif message.topic == '$SYS/broker/load/messages/received/15min':
+            self._broker['msg_rcv_15min'] = message.payload.decode('utf-8')
+        elif message.topic == '$SYS/broker/load/messages/sent/1min':
+            self._broker['msg_snt_1min'] = message.payload.decode('utf-8')
+        elif message.topic == '$SYS/broker/load/messages/sent/5min':
+            self._broker['msg_snt_5min'] = message.payload.decode('utf-8')
+        elif message.topic == '$SYS/broker/load/messages/sent/15min':
+            self._broker['msg_snt_15min'] = message.payload.decode('utf-8')
+        elif message.topic == '$SYS/broker/version':
+            self.log_brokerinfo(message.payload)
+            self._broker['version'] = message.payload.decode('utf-8')
+            # self._client.unsubscribe('$SYS/broker/version')
+        else:
+            return False
+
+        self.logger.debug("_handle_broker_infos: $SYS/broker info = '{}'".format(self._broker))
+        return True
+
+    def _unsubscribe_broker_infos(self):
+        """
+        Unsubscribe from broker's infos
+
+        This method is called from DisconnectFromBroker
+        """
+        self._client.unsubscribe('$SYS/broker/version')
+        self._client.unsubscribe('$SYS/broker/clients/active')
+        self._client.unsubscribe('$SYS/broker/subscriptions/count')
+        self._client.unsubscribe('$SYS/broker/messages/stored')
+
+        if self.broker_monitoring:
+            self._client.unsubscribe('$SYS/broker/uptime')
+            self._client.unsubscribe('$SYS/broker/retained messages/count')
+            self._client.unsubscribe('$SYS/broker/load/messages/received/1min')
+            self._client.unsubscribe('$SYS/broker/load/messages/received/5min')
+            self._client.unsubscribe('$SYS/broker/load/messages/received/15min')
+            self._client.unsubscribe('$SYS/broker/load/messages/sent/1min')
+            self._client.unsubscribe('$SYS/broker/load/messages/sent/5min')
+            self._client.unsubscribe('$SYS/broker/load/messages/sent/15min')
+        return
+
+
     def on_connect(self, client, userdata, flags, rc):
         """
         Callback function called on connect
@@ -307,20 +613,7 @@ class Mqtt(Module):
             self.logger.info("Connection returned result '{}' (userdata={}) ".format(mqtt.connack_string(rc), userdata))
             self._connected = True
 
-            self._client.subscribe('$SYS/broker/version', qos=0)
-            self._client.subscribe('$SYS/broker/clients/active', qos=0)
-            self._client.subscribe('$SYS/broker/subscriptions/count', qos=0)
-            self._client.subscribe('$SYS/broker/messages/stored', qos=0)
-
-            if self.broker_monitoring:
-                self._client.subscribe('$SYS/broker/uptime', qos=0)
-                self._client.subscribe('$SYS/broker/retained messages/count', qos=0)
-                self._client.subscribe('$SYS/broker/load/messages/received/1min', qos=0)
-                self._client.subscribe('$SYS/broker/load/messages/received/5min', qos=0)
-                self._client.subscribe('$SYS/broker/load/messages/received/15min', qos=0)
-                self._client.subscribe('$SYS/broker/load/messages/sent/1min', qos=0)
-                self._client.subscribe('$SYS/broker/load/messages/sent/5min', qos=0)
-                self._client.subscribe('$SYS/broker/load/messages/sent/15min', qos=0)
+            self._subscribe_broker_infos()
 
             # subscribe to topics to listen for items
             for topic in self.topics:
@@ -359,20 +652,7 @@ class Mqtt(Module):
         """
         Stop all communication with MQTT broker
         """
-        self._client.unsubscribe('$SYS/broker/version')
-        self._client.unsubscribe('$SYS/broker/clients/active')
-        self._client.unsubscribe('$SYS/broker/subscriptions/count')
-        self._client.unsubscribe('$SYS/broker/messages/stored')
-
-        if self.broker_monitoring:
-            self._client.unsubscribe('$SYS/broker/uptime')
-            self._client.unsubscribe('$SYS/broker/retained messages/count')
-            self._client.unsubscribe('$SYS/broker/load/messages/received/1min')
-            self._client.unsubscribe('$SYS/broker/load/messages/received/5min')
-            self._client.unsubscribe('$SYS/broker/load/messages/received/15min')
-            self._client.unsubscribe('$SYS/broker/load/messages/sent/1min')
-            self._client.unsubscribe('$SYS/broker/load/messages/sent/5min')
-            self._client.unsubscribe('$SYS/broker/load/messages/sent/15min')
+        self._unsubscribe_broker_infos()
 
         for topic in self.topics:
             item = self.topics[topic]
@@ -436,59 +716,6 @@ class Mqtt(Module):
             return '-'
 
 
-    def on_mqtt_message(self, client, userdata, message):
-        """
-        Callback function to handle received messages for items and logics
-
-        :param client:    the client instance for this callback
-        :param userdata:  the private user data as set in Client() or userdata_set()
-        :param message:   an instance of MQTTMessage.
-                          This is a class with members topic, payload, qos, retain.
-        """
-        item = self.topics.get(message.topic, None)
-        if item != None:
-            payload = self.cast_from_mqtt(item.type(), message.payload)
-            self.logger.info("Received topic '{}', payload '{}' (type {}), QoS '{}', retain '{}' for item '{}'".format( message.topic, str(payload), item.type(), str(message.qos), str(message.retain), str(item.id()) ))
-            item(payload, 'MQTT')
-
-        logic = self.logictopics.get(message.topic, None)
-        if logic != None:
-            datatype = self.logicpayloadtypes.get(message.topic, 'foo')
-            payload = self.cast_from_mqtt(datatype, message.payload)
-            self.logger.info("Received topic '{}', payload '{} (type {})', QoS '{}', retain '{}' for logic '{}'".format( message.topic, str(payload), datatype, str(message.qos), str(message.retain), str(logic) ))
-            self._sh.logics.trigger_logic(logic, source='MQTT', by=message.topic, value=payload)
-
-        if (item == None) and (logic == None):
-            if message.topic == '$SYS/broker/clients/active':
-                self._broker['active_clients'] = message.payload.decode('utf-8')
-            elif message.topic == '$SYS/broker/subscriptions/count':
-                self._broker['subscriptions'] = message.payload.decode('utf-8')
-            elif message.topic == '$SYS/broker/messages/stored':
-                self._broker['stored_messages'] = message.payload.decode('utf-8')
-            elif message.topic == '$SYS/broker/retained messages/count':
-                self._broker['retained_messages'] = message.payload.decode('utf-8')
-            elif message.topic == '$SYS/broker/uptime':
-                self._broker['uptime'] = message.payload.decode('utf-8').split(' ')[0]
-            elif message.topic == '$SYS/broker/load/messages/received/1min':
-                self._broker['msg_rcv_1min'] = message.payload.decode('utf-8')
-            elif message.topic == '$SYS/broker/load/messages/received/5min':
-                self._broker['msg_rcv_5min'] = message.payload.decode('utf-8')
-            elif message.topic == '$SYS/broker/load/messages/received/15min':
-                self._broker['msg_rcv_15min'] = message.payload.decode('utf-8')
-            elif message.topic == '$SYS/broker/load/messages/sent/1min':
-                self._broker['msg_snt_1min'] = message.payload.decode('utf-8')
-            elif message.topic == '$SYS/broker/load/messages/sent/5min':
-                self._broker['msg_snt_5min'] = message.payload.decode('utf-8')
-            elif message.topic == '$SYS/broker/load/messages/sent/15min':
-                self._broker['msg_snt_15min'] = message.payload.decode('utf-8')
-            elif message.topic == '$SYS/broker/version':
-                self.log_brokerinfo(message.payload)
-                self._broker['version'] = message.payload.decode('utf-8')
-                # self._client.unsubscribe('$SYS/broker/version')
-            else:
-                self.logger.error("on_mqtt_message: Received topic '{}', payload '{}', QoS '{}, retain '{}'' WITHOUT matching item/logic".format( message.topic, message.payload, str(message.qos), str(message.retain) ))
-
-
     def log_brokerinfo(self, payload):
         """
         Log info about broker connection
@@ -518,6 +745,7 @@ class Mqtt(Module):
         :param qos:        quality of service (optional) otherwise the default of the mqtt plugin will be used
         :param retain:     retain flag (optional)
         """
+
         self.logger.info("Function '{}()' - called by '{}()'".format(inspect.stack()[0][3], inspect.stack()[1][3]))
         self.logger.info("inspect.stack()[2][3] = '{}', inspect.stack()[3][3] = '{}'".format(inspect.stack()[2][3], inspect.stack()[3][3]))
         if not self._connected:
@@ -525,13 +753,19 @@ class Mqtt(Module):
 
         if qos == None:
             qos = self.qos
-        self.logger.info("Plugin/Logic '{}' is publishing topic '{}' with payload '{}' (qos={}, retain={})".format( source, topic, payload, qos, retain ))
-        payload = self.cast_to_mqtt(payload)
-        self._client.publish(topic=topic, payload=payload, qos=qos, retain=retain)
+        self.logger.info("Logic '{}' is publishing topic '{}' with payload '{}' (qos={}, retain={})".format( source, topic, payload, qos, retain ))
+        try:
+            payload = self.cast_to_mqtt(payload)
+            self._client.publish(topic=topic, payload=payload, qos=qos, retain=retain)
+            self.logger.info("Logic '{}' has published topic '{}' with payload '{}'".format(source, topic, payload))
+        except Exception as e:
+            self.logger.error("Publish exception'{}'".format(e))
+            self.logger.error("{}: Publish exception'{}'".format(inspect.stack()[0][3], e))
+            return False
         return True
 
 
-    def subscribe_topic(self, source, topic, qos=None):
+    def subscribe_topic_old(self, source, topic, qos=None):
         """
         function to subscribe to a topic
 
@@ -545,32 +779,6 @@ class Mqtt(Module):
             qos = self.qos
         self._client.subscribe(topic, qos=qos)
         self.logger.info("Plugin/Logic '{}' is subscribing to topic '{}'".format( source, topic ))
-
-
-
-    def subscribe_topic_from_logic(self, source, topic, qos=None, payload_type='str', logic=None):
-        """
-        function to subscribe to a topic
-
-        this function is to be called from plugins, which are utilizing the mqtt module
-
-        :param source:     name of plugin or logic which want's to publish a topic
-        :param topic:      topic to subscribe to
-        :param qos:        quality of service (optional) otherwise the default of the mqtt plugin will be used
-        """
-        self.logger.info("Function '{}()' - called by '{}()'".format(inspect.stack()[0][3], inspect.stack()[1][3]))
-        self.logger.info("inspect.stack()[2][3] = '{}', inspect.stack()[3][3] = '{}'".format(inspect.stack()[2][3], inspect.stack()[3][3]))
-        if qos == None:
-            qos = self.qos
-        self._client.subscribe(topic, qos=qos)
-        self.logger.info("Logic '{}' is subscribing to topic '{}'".format( source, topic ))
-
-        self.logictopics[topic] = logic
-
-        if payload_type.lower() in ['str', 'num', 'bool', 'list', 'dict', 'scene']:
-            self.logicpayloadtypes[topic] = payload_type.lower()
-        else:
-            self.logger.warning("Invalid payload-datatype specified for logic '{}', ignored".format(logic))
 
 
 
