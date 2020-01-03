@@ -25,6 +25,7 @@
 
 from lib.module import Modules
 from lib.model.smartplugin import *
+from lib.item import Items
 
 
 # If a needed package is imported, which might be not installed in the Python environment,
@@ -160,8 +161,9 @@ class SamplePlugin(SmartPlugin):
         :param source: if given it represents the source
         :param dest: if given it represents the dest
         """
-        if caller != self.get_shortname():
-            # code to execute, only if the item has not been changed by this this plugin:
+        if self.alive and caller != self.get_shortname():
+            # code to execute if the plugin is not stopped
+            # and only, if the item has not been changed by this this plugin:
             self.logger.info("Update item: {}, item has been changed outside this plugin".format(item.id()))
 
             if self.has_iattr(item.conf, 'foo_itemtag'):
@@ -262,6 +264,8 @@ class WebInterface(SmartPluginWebIf):
         self.plugin = plugin
         self.tplenv = self.init_template_environment()
 
+        self.items = Items.get_instance()
+
     @cherrypy.expose
     def index(self, reload=None):
         """
@@ -273,7 +277,7 @@ class WebInterface(SmartPluginWebIf):
         """
         tmpl = self.tplenv.get_template('index.html')
         # add values to be passed to the Jinja2 template eg: tmpl.render(p=self.plugin, interface=interface, ...)
-        return tmpl.render(p=self.plugin)
+        return tmpl.render(p=self.plugin, items=sorted(self.items.return_items(), key=lambda k: str.lower(k['_path'])))
 
 
     @cherrypy.expose
@@ -288,9 +292,15 @@ class WebInterface(SmartPluginWebIf):
         """
         if dataSet is None:
             # get the new data
-            #self.plugin.beodevices.update_devices_info()
+            data = {}
 
+            # data['item'] = {}
+            # for i in self.plugin.items:
+            #     data['item'][i]['value'] = self.plugin.getitemvalue(i)
+            #
             # return it as json the the web page
-            #return json.dumps(self.plugin.beodevices.beodeviceinfo)
-            pass
-        return
+            # try:
+            #     return json.dumps(data)
+            # except Exception as e:
+            #     self.logger.error("get_data_html exception: {}".format(e))
+        return {}

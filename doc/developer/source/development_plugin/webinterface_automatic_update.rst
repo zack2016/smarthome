@@ -56,13 +56,16 @@ and to return it as a dict:
                 data['fromip'] = 'fromip': self.plugin.fromip)
 
                 data['item'] = {}
-                for i in plugin.items:
+                for i in self.plugin.items:
                     data['item'][i]['value'] = self.plugin.getitemvalue(i)
 
                 # return it as json the the web page
-                return json.dumps(data)
+                try:
+                    return json.dumps(data)
+                except Exception as e:
+                    self.logger.error("get_data_html exception: {}".format(e))
 
-            return
+            return {}
 
 
 Die optionale Möglichkeit einen **dataSet** anzugeben, ist für zukünftige Erweiterungen vorgesehen. Darüber soll es
