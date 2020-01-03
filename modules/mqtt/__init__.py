@@ -75,6 +75,7 @@ class Mqtt(Module):
             self.last_will_payload = self._parameters['last_will_payload']
             self.birth_topic = self._parameters['birth_topic']
             self.birth_payload = self._parameters['birth_payload']
+            self.bool_values = self._parameters['bool_values']
             # self.publish_items = self._parameters['publish_items']
             # self.items_topic_prefix = self._parameters['items_topic_prefix']
             self.username = self._parameters['user']
@@ -221,6 +222,8 @@ class Mqtt(Module):
         :return:          data casted to the datatype of the item it should be written to
         :rtype:           str | bool | list | dict
         """
+        if bool_values is None:
+            bool_values = self.bool_values
         str_data = raw_data.decode('utf-8')
         if datatype == 'bytes':
             data = raw_data
@@ -274,6 +277,8 @@ class Mqtt(Module):
         :return:      data casted from the SmartHomeNG datatype to str to be written to payload
         :rtype:       str
         """
+        if bool_values is None:
+            bool_values = self.bool_values
         try:
             self.logger.info("cast_to_mqtt: data = '{}', type(data) = '{}', bool_values ='{}'".format(data, type(data), bool_values))
             if isinstance(data, bytes):
@@ -357,7 +362,12 @@ class Mqtt(Module):
         :rtype: dict
         """
         broker_config = {}
-        broker_config['host'] = self.broker_hostname
+        if self.broker_hostname:
+            broker_config['host'] = self.broker_hostname
+        elif self.broker_ip == '127.0.0.1':
+            broker_config['host'] = 'localhost'
+        else:
+            broker_config['host'] = self.broker_ip
         broker_config['port'] = self.broker_port
         broker_config['user'] = self.username
         broker_config['password'] = '-'
@@ -399,6 +409,8 @@ class Mqtt(Module):
         :param payload_type:
         :param callback:     plugin callback function or name of logic for logis-callbacks
         """
+        if bool_values is None:
+            bool_values = self.bool_values
 
         source_type = self._get_caller_type()
         self.logger.info("'{}()' - called from {} by '{}()'".format(inspect.stack()[0][3], source_type, inspect.stack()[1][3]))
@@ -858,14 +870,8 @@ class Mqtt(Module):
         :param qos:        quality of service (optional) otherwise the default of the mqtt plugin will be used
         :param retain:     retain flag (optional)
         """
-
-        # determine if called from logic or plugin
-        # if inspect.stack()[1][1].split('/')[4] == 'plugins':
-        #     source_type = 'Plugin'
-        # elif inspect.stack()[1][1].split('/')[4] == 'logics':
-        #     source_type = 'Logic'
-        # else:
-        #     source_type = 'Unknown'
+        if bool_values is None:
+            bool_values = self.bool_values
 
         source_type = self._get_caller_type()
         self.logger.info("'{}()' - called from {} by '{}()'".format(inspect.stack()[0][3], source_type, inspect.stack()[1][3]))
