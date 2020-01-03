@@ -209,7 +209,7 @@ class Mqtt(Module):
 #  common methods
 # ----------------------------------------------------------------------------------------
 
-    def cast_from_mqtt(self, datatype, raw_data):
+    def cast_from_mqtt(self, datatype, raw_data, bool_values=None):
         """
         Cast payload data to SmartHomeNG datatypes
 
@@ -222,12 +222,21 @@ class Mqtt(Module):
         :rtype:           str | bool | list | dict
         """
         str_data = raw_data.decode('utf-8')
+        if datatype == 'bytes':
+            data = raw_data
         if datatype == 'str':
-            data = str_data
+            data = str(str_data)
         elif datatype == 'num':
             data = str_data
         elif datatype == 'bool':
-            data = Utils.to_bool(str_data, default=False)
+            self.logger.info("cast_from_mqtt: datatype 'bool', str_data = '{}', bool_values = ‘{}‘".format(str_data, bool_values))
+            if bool_values:
+                try:
+                    data = bool_values.index(str_data.strip())
+                except:
+                    data = Utils.to_bool(str_data, default=False)
+            else:
+                data = Utils.to_bool(str_data, default=False)
         elif datatype == 'list':
             if not((len(str_data) > 0) and (str_data[0] == '[')):
                 str_data = '['+str_data+']'
@@ -255,31 +264,42 @@ class Mqtt(Module):
         return data
 
 
-    def cast_to_mqtt(self, data):
+    def cast_to_mqtt(self, data, bool_values=None):
         """
         Cast SmartHomeNG datatypes to payload data
 
         :param data:  data which should be casted to a payload compatible format
-        :type data:   str | bool | int | float | list | dict
+        :type data:   str | bool | int | float | list | dict | bytes
 
         :return:      data casted from the SmartHomeNG datatype to str to be written to payload
         :rtype:       str
         """
-        if isinstance(data, str):
-            payload_data = data
-        elif isinstance(data, int):
-            payload_data = str(data)
-        elif isinstance(data, float):
-            payload_data = str(data)
-        elif isinstance(data, bool):
-            payload_data = 'true' if data else 'false'
-        elif isinstance(data, list):
-            payload_data = json.dumps(data)
-        elif isinstance(data, dict):
-            payload_data = json.dumps(data)
-        else:
-            self.logger.warning("cast_from_mqtt: Casting '{}' type = '{}' to payload fat is not implemented".format(data, type(data)))
-            payload_data = str(data)
+        try:
+            self.logger.info("cast_to_mqtt: data = '{}', type(data) = '{}', bool_values ='{}'".format(data, type(data), bool_values))
+            if isinstance(data, bytes):
+                payload_data = data
+            elif isinstance(data, str):
+                payload_data = data
+            elif isinstance(data, bool):
+                self.logger.info("            : data = '{}', type(data) = '{}', bool_values ='{}'".format(data, type(data), bool_values))
+                if bool_values:
+                    payload_data = str(bool_values[data])
+                else:
+                    payload_data = 'true' if data else 'false'
+                self.logger.info("            : payload_data = '{}', type(payload_data) = '{}', bool_values ='{}'".format(payload_data, type(payload_data),bool_values))
+            elif isinstance(data, int):
+                payload_data = str(data)
+            elif isinstance(data, float):
+                payload_data = str(data)
+            elif isinstance(data, list):
+                payload_data = json.dumps(data)
+            elif isinstance(data, dict):
+                payload_data = json.dumps(data)
+            else:
+                self.logger.warning("cast_from_mqtt: Casting '{}' type = '{}' to payload fat is not implemented".format(data, type(data)))
+                payload_data = str(data)
+        except Exception as e:
+            self.logger.error("cast_to_mqtt: Cast exception'{}'".format(e))
         return payload_data
 
 
@@ -319,7 +339,34 @@ class Mqtt(Module):
         return True
 
 
-    def _add_subscription_definition(self, topic, subscription_source, subscriber_type, callback, payload_type):
+    def get_broker_info(self):
+        """
+        Return the collected broker information
+
+        :return: Broker information
+        :rtype: dict
+        """
+        return (self._broker, self.broker_monitoring)
+
+
+    def get_broker_config(self):
+        """
+        Return the configuration of the broker connection
+
+        :return: Broker configuration
+        :rtype: dict
+        """
+        broker_config = {}
+        broker_config['host'] = self.broker_hostname
+        broker_config['port'] = self.broker_port
+        broker_config['user'] = self.username
+        broker_config['password'] = '-'
+        broker_config['qos'] = self.qos
+        broker_config['acl'] = self.acl
+        return broker_config
+
+
+    def _add_subscription_definition(self, topic, subscription_source, subscriber_type, callback, payload_type, bool_values):
         """
         Add a subscription definition to a defined topic in the _subscribed_topics data
 
@@ -332,14 +379,15 @@ class Mqtt(Module):
         if self._subscribed_topics[topic].get(subscription_source, None):
             self.logger.info("_add_subscription_definition: Subscription to topic '{}' for logic '{}' already exists, overwriting it".format(topic, subscription_source))
         self._subscribed_topics[topic][subscription_source] = {}
-        self._subscribed_topics[topic][subscription_source]['subscriber_type'] = subscriber_type
+        self._subscribed_topics[topic][subscription_source]['subscriber_type'] = subscriber_type.lower()
         self._subscribed_topics[topic][subscription_source]['callback'] = callback
         self._subscribed_topics[topic][subscription_source]['payload_type'] = payload_type
+        self._subscribed_topics[topic][subscription_source]['bool_values'] = bool_values
         self.logger.info("_add_subscription_definition: {} '{}' is subscribing to topic '{}'".format(subscriber_type, subscription_source, topic))
         return
 
 
-    def subscribe_topic(self, source, topic, qos=None, payload_type='str', logic=None):
+    def subscribe_topic(self, source, topic, qos=None, payload_type='str', callback=None, bool_values=None):
         """
         method to subscribe to a topic
 
@@ -349,16 +397,23 @@ class Mqtt(Module):
         :param topic:        topic to subscribe to
         :param qos:          quality of service (optional) otherwise the default of the mqtt plugin will be used
         :param payload_type:
-        :param logic:
+        :param callback:     plugin callback function or name of logic for logis-callbacks
         """
-        self.logger.info("Function '{}()' - called by '{}()'".format(inspect.stack()[0][3], inspect.stack()[1][3]))
-        self.logger.debug("subscribe_topic: inspect.stack()[2][3] = '{}', inspect.stack()[3][3] = '{}'".format(inspect.stack()[2][3], inspect.stack()[3][3]))
+
+        source_type = self._get_caller_type()
+        self.logger.info("'{}()' - called from {} by '{}()'".format(inspect.stack()[0][3], source_type, inspect.stack()[1][3]))
+        #self.logger.debug("subscribe_topic: inspect.stack()[2][3] = '{}', inspect.stack()[3][3] = '{}'".format(inspect.stack()[2][3], inspect.stack()[3][3]))
+
         if qos == None:
             qos = self.qos
 
-        if not payload_type.lower() in ['str', 'num', 'bool', 'list', 'dict', 'scene']:
+        if bool_values:
+            if not (isinstance(bool_values, list) and len(bool_values)==2):
+                self.logger.warning("subscribe_topic: topic '{}', source '{}': Invalid bool_values specified ('{}') - Ignoring bool_values".format( topic, source, bool_values))
+
+        if not payload_type.lower() in ['str', 'num', 'bool', 'list', 'dict', 'scene', 'bytes']:
             payload_type = 'str'
-            self.logger.warning("Invalid payload-datatype specified for logic '{}', ignored".format(logic))
+            self.logger.warning("Invalid payload-datatype specified for {} '{}', ignored".format(source_type, callback))
 
         if not self._subscribed_topics.get(topic, None):
             # lock
@@ -369,7 +424,7 @@ class Mqtt(Module):
             self._subscribed_topics[topic] = {}
 
             # add subscription definition
-            self._add_subscription_definition(topic, source, 'logic', logic, payload_type)
+            self._add_subscription_definition(topic, source, source_type, callback, payload_type, bool_values)
 
             # unlock
 #            self._subscribed_topics_lock.release()
@@ -383,7 +438,7 @@ class Mqtt(Module):
 #            self._subscribed_topics_lock.acquire()
 
             # add subscription definition
-            self._add_subscription_definition(topic, source, 'logic', logic, payload_type)
+            self._add_subscription_definition(topic, source, source_type, callback, payload_type, bool_values)
 
             # unlock
 #            self._subscribed_topics_lock.release()
@@ -399,10 +454,8 @@ class Mqtt(Module):
         :param source:       name of logic which want's to publish a topic
         :param topic:        topic to unsubscribe from
         """
-        self.logger.info("Function '{}()' - called by '{}()'".format(inspect.stack()[0][3], inspect.stack()[1][3]))
-        self.logger.debug("subscribe_topic: inspect.stack()[2][3] = '{}', inspect.stack()[3][3] = '{}'".format(
-            inspect.stack()[2][3], inspect.stack()[3][3]))
-
+        source_type = self._get_caller_type()
+        self.logger.info("'{}()' - called from {} by '{}()'".format(inspect.stack()[0][3], source_type, inspect.stack()[1][3]))
 
         if not self._subscribed_topics.get(topic, None):
             # the topic is not subscribed
@@ -435,21 +488,59 @@ class Mqtt(Module):
 
     def _trigger_logic(self, subscription_dict, topic, payload):
         """
-        This method is called by on_mqtt_message to trigger a logic
+        This method is called by on_mqtt_message to trigger the right logic
+
+        :param subscription_dict:
+        :param topic:             Topic of message received via mqtt
+        :param payload:           Payload of message received via mqtt
 
         :return:
+        :rtype: bool
         """
         datatype = subscription_dict.get('payload_type', 'foo')
-        payload = self.cast_from_mqtt(datatype, payload)
+        bool_values = subscription_dict.get('bool_values', None)
+        payload = self.cast_from_mqtt(datatype, payload, bool_values)
         logic = subscription_dict.get('callback', None)
+
+        subscription_found = False
         if logic:
-            self.logger.info(
-                "on_mqtt_message: Using topic '{}', payload '{} (type {})' for triggering logic '{}'".format(topic,
-                                                                                                             payload,
-                                                                                                             datatype,
-                                                                                                             logic))
+            self.logger.info("_trigger_logic: Using topic '{}', payload '{} (type {})' for triggering logic '{}'".format(topic, payload, datatype, logic))
             self._sh.logics.trigger_logic(logic, source='mqtt', by=topic, value=payload)
             subscription_found = True
+
+        return subscription_found
+
+
+    def _callback_to_plugin(self, plugin_name, subscription_dict, topic, payload, qos, retain):
+        """
+        This method is called by on_mqtt_message to callback the rigth plugin
+
+        :param plugin_name:       Name of the plugin with the callback function
+        :param subscription_dict:
+        :param topic:             Topic of message received via mqtt
+        :param payload:           Payload of message received via mqtt
+        :param qos:
+        :param retain:
+
+        :return:
+        :rtype: bool
+        """
+        datatype = subscription_dict.get('payload_type', 'foo')
+        bool_values = subscription_dict.get('bool_values', None)
+        payload = self.cast_from_mqtt(datatype, payload, bool_values)
+        plugin = subscription_dict.get('callback', None)
+
+        try:
+            subscription_found = False
+            if plugin:
+                self.logger.info("_callback_to_plugin: Using topic '{}', payload '{}' (type {}) for callback to plugin '{}' {}".format(topic, payload, datatype, plugin_name, plugin))
+                #self._sh.logics.trigger_logic(logic, source='mqtt', by=topic, value=payload)
+                plugin(topic, payload, qos, retain)
+                subscription_found = True
+            else:
+                self.logger.error("_callback_to_plugin: callback for plugin '{}' not defined".format(plugin_name))
+        except Exception as e:
+            self.logger.error("_callback_to_plugin Exception {}".format(e))
 
         return subscription_found
 
@@ -463,7 +554,7 @@ class Mqtt(Module):
         :param message:   an instance of MQTTMessage.
                           This is a class with members topic, payload, qos, retain.
         """
-        self.logger.info( "on_mqtt_message: RECEIVED topic '{}', payload '{}, QoS '{}', retain '{}'".format(message.topic, message.payload, message.qos, message.retain))
+        self.logger.debug( "on_mqtt_message: RECEIVED topic '{}', payload '{}, QoS '{}', retain '{}'".format(message.topic, message.payload, message.qos, message.retain))
 
         # lock
         try:
@@ -479,10 +570,14 @@ class Mqtt(Module):
                 topic_dict = self._subscribed_topics[topic]
 
                 for subscription in topic_dict:
-                    self.logger.info(
-                        "on_mqtt_message: subscription '{}': {}".format(subscription, topic_dict[subscription]))
-                    if topic_dict[subscription].get('subscriber_type', None) == 'logic':
+                    self.logger.info("on_mqtt_message: subscription '{}': {}".format(subscription, topic_dict[subscription]))
+                    subscriber_type = topic_dict[subscription].get('subscriber_type', None)
+                    if subscriber_type == 'plugin':
+                        subscription_found = self._callback_to_plugin(subscription, topic_dict[subscription], message.topic, message.payload, message.qos, message.retain)
+                    elif subscriber_type == 'logic':
                         subscription_found = self._trigger_logic(topic_dict[subscription], message.topic, message.payload)
+                    else:
+                        self.logger.error("on_mqtt_message: received topic for unknown subscriber_type '{}'".format(subscriber_type))
 
         # unlock
         try:
@@ -733,7 +828,25 @@ class Mqtt(Module):
     # Following functions build the interface for other plugins which want to use MQTT
     #
 
-    def publish_topic(self, source, topic, payload, qos=None, retain=False):
+    def _get_caller_type(self):
+        # determine if called from logic or plugin
+        self.logger.debug("_get_caller_type: inspect.stack()[2][1] = '{}', split = {}".format(inspect.stack()[2][1], inspect.stack()[2][1].split('/')))
+        if inspect.stack()[2][1].split('/')[4] == 'lib' and inspect.stack()[2][1].split('/')[5] == 'model':
+            source_type = 'Plugin'
+        elif inspect.stack()[2][1].split('/')[4] == 'plugins':
+            source_type = 'Plugin'
+        elif inspect.stack()[2][1].split('/')[4] == 'logics':
+            source_type = 'Logic'
+        else:
+            source_type = 'Unknown'
+            self.logger.info("_get_caller_type: inspect.stack()[2][1] = '{}', split = {}".format(inspect.stack()[2][1],
+                                                                                                  inspect.stack()[2][
+                                                                                                      1].split('/')))
+
+        return source_type
+
+
+    def publish_topic(self, source, topic, payload, qos=None, retain=False, bool_values=None):
         """
         method to publish a topic
 
@@ -746,21 +859,30 @@ class Mqtt(Module):
         :param retain:     retain flag (optional)
         """
 
-        self.logger.info("Function '{}()' - called by '{}()'".format(inspect.stack()[0][3], inspect.stack()[1][3]))
-        self.logger.info("inspect.stack()[2][3] = '{}', inspect.stack()[3][3] = '{}'".format(inspect.stack()[2][3], inspect.stack()[3][3]))
+        # determine if called from logic or plugin
+        # if inspect.stack()[1][1].split('/')[4] == 'plugins':
+        #     source_type = 'Plugin'
+        # elif inspect.stack()[1][1].split('/')[4] == 'logics':
+        #     source_type = 'Logic'
+        # else:
+        #     source_type = 'Unknown'
+
+        source_type = self._get_caller_type()
+        self.logger.info("'{}()' - called from {} by '{}()'".format(inspect.stack()[0][3], source_type, inspect.stack()[1][3]))
+        #self.logger.info("inspect.stack()[1][1] = '{}', split = {}".format(inspect.stack()[1][1], inspect.stack()[1][1].split('/')))
+
         if not self._connected:
             return False
 
         if qos == None:
             qos = self.qos
-        self.logger.info("Logic '{}' is publishing topic '{}' with payload '{}' (qos={}, retain={})".format( source, topic, payload, qos, retain ))
+        self.logger.info("{} '{}' is publishing topic '{}' with payload '{}' (qos={}, retain={})".format(source_type, source, topic, payload, qos, retain ))
+        payload = self.cast_to_mqtt(payload, bool_values)
         try:
-            payload = self.cast_to_mqtt(payload)
             self._client.publish(topic=topic, payload=payload, qos=qos, retain=retain)
-            self.logger.info("Logic '{}' has published topic '{}' with payload '{}'".format(source, topic, payload))
+            self.logger.info("{} '{}' has published topic '{}' with payload '{}'".format(source_type, source, topic, payload))
         except Exception as e:
-            self.logger.error("Publish exception'{}'".format(e))
-            self.logger.error("{}: Publish exception'{}'".format(inspect.stack()[0][3], e))
+            self.logger.error("{}: Publish exception '{}'".format(inspect.stack()[0][3], e))
             return False
         return True
 
