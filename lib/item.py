@@ -1571,7 +1571,9 @@ class Item():
         @value.setter
         def value(self, value):
 
-            self._item.set(value, 'assign property')
+            #self._item.set(value, 'assign property')
+            #self._item.__update(value, caller='assign property')
+            self._item(value, caller='assign property')
             return
 
 
