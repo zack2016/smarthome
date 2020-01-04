@@ -251,40 +251,40 @@ parameters:
 #            en: '
 #                '
 
-    acl:
-        type: str
-        default: 'none'
-        valid_list:
-          - 'none'
-          - 'pub'
-          - 'sub'
-          - 'pubsub'
-        description:
-            de: 'Zugriffskontrolle (none/publish/subscribe)'
-            en: 'Accesscontrol (none/publish/subscribe)'
-        description_long:
-            de: '-> ***Noch nicht implementiert***\n
-                 \n
-                 **acl** definiert den globalen Default für die Zugriffskontrolle zu den Items.
-                 Access control ist nur aktiv, wenn die Item-Tree Struktur von SmartHomeNG publiziert wird.\n
-                 \n
-                  - none=kein Zugriff\n
-                  - pub=Publiziere als Topic (Read-Only von anderen Clients aus)\n
-                  - sub=Abonniere (subscribe) ein Topic (Akzeptiere Daten von anderen Clients)\n
-                  - pubsub=Publiziere und Abonniere (publish and subscribe) ein Topic.\n
-                 \n
-                 Dieser Parameter definert die Standard Zugriffskontrolle für Items, welche keine individuelle Zugriffskontrolle konfiguriert haben.
-                 '
-            en: '-> ***not yet implemented***\n
-                 \n
-                 **acl** defines the global default setting for the access control to the items.
-                 Access control is only active, when publishing the item-tree structure of SmartHomeNG.\n
-                 \n
-                  - none=no access\n
-                  - pub=publish as topic (read only from other client)\n
-                  - sub=subscribe to topic (accept data from other clients)\n
-                  - pubsub=publish and subscribe topic.\n
-                 \n
-                 This parameter defines the default access control for items, which have no individual access control configured.
-                 '
+#    acl:
+#        type: str
+#        default: 'none'
+#        valid_list:
+#          - 'none'
+#          - 'pub'
+#          - 'sub'
+#          - 'pubsub'
+#        description:
+#            de: 'Zugriffskontrolle (none/publish/subscribe)'
+#            en: 'Accesscontrol (none/publish/subscribe)'
+#        description_long:
+#            de: '-> ***Noch nicht implementiert***\n
+#                 \n
+#                 **acl** definiert den globalen Default für die Zugriffskontrolle zu den Items.
+#                 Access control ist nur aktiv, wenn die Item-Tree Struktur von SmartHomeNG publiziert wird.\n
+#                 \n
+#                  - none=kein Zugriff\n
+#                  - pub=Publiziere als Topic (Read-Only von anderen Clients aus)\n
+#                  - sub=Abonniere (subscribe) ein Topic (Akzeptiere Daten von anderen Clients)\n
+#                  - pubsub=Publiziere und Abonniere (publish and subscribe) ein Topic.\n
+#                 \n
+#                 Dieser Parameter definert die Standard Zugriffskontrolle für Items, welche keine individuelle Zugriffskontrolle konfiguriert haben.
+#                 '
+#            en: '-> ***not yet implemented***\n
+#                 \n
+#                 **acl** defines the global default setting for the access control to the items.
+#                 Access control is only active, when publishing the item-tree structure of SmartHomeNG.\n
+#                 \n
+#                  - none=no access\n
+#                  - pub=publish as topic (read only from other client)\n
+#                  - sub=subscribe to topic (accept data from other clients)\n
+#                  - pubsub=publish and subscribe topic.\n
+#                 \n
+#                 This parameter defines the default access control for items, which have no individual access control configured.
+#                 '
 

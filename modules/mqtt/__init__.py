@@ -83,7 +83,7 @@ class Mqtt(Module):
 
             # self.tls = self._parameters['tls']
             # self.ca_certs = self._parameters['ca_certs']
-            self.acl = self._parameters['acl'].lower()
+            # self.acl = self._parameters['acl'].lower()
         except KeyError as e:
             self.logger.critical(
                 "Module '{}': Inconsistent module (invalid metadata definition: {} not defined)".format(self._shortname, e))
@@ -147,9 +147,7 @@ class Mqtt(Module):
 
 
         self.topics = {}  # subscribed topics
-        self.logictopics = {}  # subscribed topics for triggering logics
         self.logicpayloadtypes = {}  # payload types for subscribed topics for triggering logics
-        self.inittopics = {}  # topics for items publishing initial value ('mqtt_topic_init')
 
 
         # ONLY used for multiinstance handling of plugins?
@@ -235,7 +233,7 @@ class Mqtt(Module):
             self.logger.info("cast_from_mqtt: datatype 'bool', str_data = '{}', bool_values = ‘{}‘".format(str_data, bool_values))
             if bool_values:
                 try:
-                    data = bool_values.index(str_data.strip())
+                    data = bool(bool_values.index(str_data.strip()))
                 except:
                     data = Utils.to_bool(str_data, default=False)
             else:
@@ -372,7 +370,7 @@ class Mqtt(Module):
         broker_config['user'] = self.username
         broker_config['password'] = '-'
         broker_config['qos'] = self.qos
-        broker_config['acl'] = self.acl
+        # broker_config['acl'] = self.acl
         return broker_config
 
 
@@ -397,7 +395,7 @@ class Mqtt(Module):
         return
 
 
-    def subscribe_topic(self, source, topic, qos=None, payload_type='str', callback=None, bool_values=None):
+    def subscribe_topic(self, source, topic, callback=None, qos=None, payload_type='str', bool_values=None):
         """
         method to subscribe to a topic
 
@@ -428,18 +426,17 @@ class Mqtt(Module):
             self.logger.warning("Invalid payload-datatype specified for {} '{}', ignored".format(source_type, callback))
 
         if not self._subscribed_topics.get(topic, None):
-            # lock
-#            self._subscribed_topics_lock.acquire()
-
-            # add topic
             self.logger.info("subscribe_topic: NO MQTT Subscription to topic '{}' exists yet, adding topic".format(topic))
-            self._subscribed_topics[topic] = {}
-
-            # add subscription definition
-            self._add_subscription_definition(topic, source, source_type, callback, payload_type, bool_values)
-
-            # unlock
-#            self._subscribed_topics_lock.release()
+            # lock
+            self._subscribed_topics_lock.acquire()
+            try:
+                # add topic
+                self._subscribed_topics[topic] = {}
+                # add subscription definition
+                self._add_subscription_definition(topic, source, source_type, callback, payload_type, bool_values)
+            finally:
+                # unlock
+                self._subscribed_topics_lock.release()
 
             # subscribe to topic
             result, mid = self._client.subscribe(topic, qos=qos)
@@ -447,13 +444,13 @@ class Mqtt(Module):
         else:
             self.logger.info("subscribe_topic: A MQTT Subscription to topic '{}' already exists".format(topic))
             # lock
-#            self._subscribed_topics_lock.acquire()
-
-            # add subscription definition
-            self._add_subscription_definition(topic, source, source_type, callback, payload_type, bool_values)
-
-            # unlock
-#            self._subscribed_topics_lock.release()
+            self._subscribed_topics_lock.acquire()
+            try:
+                # add subscription definition
+                self._add_subscription_definition(topic, source, source_type, callback, payload_type, bool_values)
+            finally:
+                # unlock
+                self._subscribed_topics_lock.release()
         return
 
 
@@ -479,21 +476,19 @@ class Mqtt(Module):
             self.logger.info("unsubscribe_topic: Topic '{}' is not subscribed by '{}'".format(topic, source))
             return
 
-        # lock
-        # self._subscribed_topics_lock.acquire()
-
-
-        # delete source for this topic
-        del self._subscribed_topics[topic][source]
         self.logger.debug("unsubscribe_topic: Subscription to topic '{}' for '{}' is removed".format(topic, source))
-
-        if self._subscribed_topics[topic] == {}:
-            # unsubscribe on broker, if no source is subscribing the topic any more
-            del self._subscribed_topics[topic]
-            self._client.unsubscribe(topic)
-
-        # unlock
-        # self._subscribed_topics_lock.release()
+        # lock
+        self._subscribed_topics_lock.acquire()
+        try:
+            # delete source for this topic
+            del self._subscribed_topics[topic][source]
+            if self._subscribed_topics[topic] == {}:
+                # unsubscribe on broker, if no source is subscribing the topic any more
+                del self._subscribed_topics[topic]
+                self._client.unsubscribe(topic)
+        finally:
+            # unlock
+            self._subscribed_topics_lock.release()
 
         return
 
@@ -569,34 +564,26 @@ class Mqtt(Module):
         self.logger.debug( "on_mqtt_message: RECEIVED topic '{}', payload '{}, QoS '{}', retain '{}'".format(message.topic, message.payload, message.qos, message.retain))
 
         # lock
+        self._subscribed_topics_lock.acquire()
         try:
-            pass
-            # self._subscribed_topics_lock.acquire()
-        except Exception as e:
-            self.logger.error("on_mqtt_message: Lock exception'{}'".format(e))
+            # look for subscriptions to the received topic
+            subscription_found = False
+            for topic in self._subscribed_topics:
+                if topic == message.topic:
+                    topic_dict = self._subscribed_topics[topic]
 
-        # look for subscriptions to the received topic
-        subscription_found = False
-        for topic in self._subscribed_topics:
-            if topic == message.topic:
-                topic_dict = self._subscribed_topics[topic]
-
-                for subscription in topic_dict:
-                    self.logger.info("on_mqtt_message: subscription '{}': {}".format(subscription, topic_dict[subscription]))
-                    subscriber_type = topic_dict[subscription].get('subscriber_type', None)
-                    if subscriber_type == 'plugin':
-                        subscription_found = self._callback_to_plugin(subscription, topic_dict[subscription], message.topic, message.payload, message.qos, message.retain)
-                    elif subscriber_type == 'logic':
-                        subscription_found = self._trigger_logic(topic_dict[subscription], message.topic, message.payload)
-                    else:
-                        self.logger.error("on_mqtt_message: received topic for unknown subscriber_type '{}'".format(subscriber_type))
-
-        # unlock
-        try:
-            pass
-            # self._subscribed_topics_lock.release()
-        except Exception as e:
-            self.logger.error("on_mqtt_message: Unlock exception'{}'".format(e))
+                    for subscription in topic_dict:
+                        self.logger.info("on_mqtt_message: subscription '{}': {}".format(subscription, topic_dict[subscription]))
+                        subscriber_type = topic_dict[subscription].get('subscriber_type', None)
+                        if subscriber_type == 'plugin':
+                            subscription_found = self._callback_to_plugin(subscription, topic_dict[subscription], message.topic, message.payload, message.qos, message.retain)
+                        elif subscriber_type == 'logic':
+                            subscription_found = self._trigger_logic(topic_dict[subscription], message.topic, message.payload)
+                        else:
+                            self.logger.error("on_mqtt_message: received topic for unknown subscriber_type '{}'".format(subscriber_type))
+        finally:
+            # unlock
+            self._subscribed_topics_lock.release()
 
         item = self.topics.get(message.topic, None)
         if item != None:
@@ -728,16 +715,6 @@ class Mqtt(Module):
                 self._client.subscribe(topic, qos=self.get_qos_forTopic(item) )
                 self.logger.info("Listening on topic '{}' for item '{}'".format( topic, item.id() ))
 
-            # subscribe to topics to listen for triggering logics
-            for topic in self.logictopics:
-                logic = self.logictopics[topic]
-                self._client.subscribe(topic, qos=self.qos)
-                self.logger.info("Listening on topic '{}' for logic '{}'".format( topic, str(logic) ))
-
-            for topic in self.inittopics:
-                item = self.inittopics[topic]
-                self.logger.info("Publishing and initialising topic '{}' for item '{}'".format( topic, item.id() ))
-                self.update_item(item)
             self.logger.info("self.topics = {}".format(self.topics))
 
             return
@@ -766,11 +743,6 @@ class Mqtt(Module):
             self.logger.debug("Unsubscribing topic '{}' for item '{}'".format(str(topic), str(item.id())))
             self._client.unsubscribe(topic)
 
-        for topic in self.logictopics:
-            logic = self.logictopics[topic]
-            self.logger.debug("Unsubscribing topic '{}' for logic '{}'".format(str(topic), str(logic.id())))
-            self._client.unsubscribe(topic)
-
         self.logger.info("Stopping mqtt client '{}'. Disconnecting from broker.".format(self._client._client_id.decode('utf-8')))
         if (self.last_will_topic != '') and (self.last_will_payload != ''):
             if (self.birth_topic != '') and (self.birth_payload != ''):
@@ -782,43 +754,12 @@ class Mqtt(Module):
         self._client.disconnect()
 
 
-    def seconds_to_displaysting(self, sec):
-        """
-        Convert number of seconds to time display sting
-        """
-        min = sec // 60
-        sec = sec - min * 60
-        std = min // 60
-        min = min - std * 60
-        days = std // 24
-        std = std - days * 24
-
-        result = ''
-        if days == 1:
-            result += str(days) + ' ' + self.translate('Tag') + ', '
-        elif days > 0:
-            result += str(days) + ' ' + self.translate('Tage') + ', '
-        if std == 1:
-            result += str(std) + ' ' + self.translate('Stunde') + ', '
-        elif std > 0:
-            result += str(std) + ' ' + self.translate('Stunden') + ', '
-        if min == 1:
-            result += str(min) + ' ' + self.translate('Minute') + ', '
-        elif min > 0:
-            result += str(min) + ' ' + self.translate('Minuten') + ', '
-        if sec == 1:
-            result += str(sec) + ' ' + self.translate('Sekunde')
-        elif sec > 0:
-            result += str(sec) + ' ' + self.translate('Sekunden')
-        return result
-
-
     def broker_uptime(self):
         """
         Return formatted uptime of broker
         """
         try:
-            return self.seconds_to_displaysting(int(self._broker['uptime']))
+            return self.shtime.seconds_to_displaysting(int(self._broker['uptime']))
         except:
             return '-'
 
@@ -841,7 +782,12 @@ class Mqtt(Module):
     #
 
     def _get_caller_type(self):
-        # determine if called from logic or plugin
+        """
+        determine if called from logic or plugin
+
+        :return: caller type ('Plugin' | 'Logic' | 'Unknown')
+        :rtype: str
+        """
         self.logger.debug("_get_caller_type: inspect.stack()[2][1] = '{}', split = {}".format(inspect.stack()[2][1], inspect.stack()[2][1].split('/')))
         if inspect.stack()[2][1].split('/')[4] == 'lib' and inspect.stack()[2][1].split('/')[5] == 'model':
             source_type = 'Plugin'
@@ -893,54 +839,54 @@ class Mqtt(Module):
         return True
 
 
-    def subscribe_topic_old(self, source, topic, qos=None):
-        """
-        function to subscribe to a topic
+    # def subscribe_topic_old(self, source, topic, qos=None):
+    #     """
+    #     function to subscribe to a topic
+    #
+    #     this function is to be called from plugins, which are utilizing the mqtt module
+    #
+    #     :param source:     name of plugin or logic which want's to publish a topic
+    #     :param topic:      topic to subscribe to
+    #     :param qos:        quality of service (optional) otherwise the default of the mqtt plugin will be used
+    #     """
+    #     if qos == None:
+    #         qos = self.qos
+    #     self._client.subscribe(topic, qos=qos)
+    #     self.logger.info("Plugin/Logic '{}' is subscribing to topic '{}'".format( source, topic ))
 
-        this function is to be called from plugins, which are utilizing the mqtt module
-
-        :param source:     name of plugin or logic which want's to publish a topic
-        :param topic:      topic to subscribe to
-        :param qos:        quality of service (optional) otherwise the default of the mqtt plugin will be used
-        """
-        if qos == None:
-            qos = self.qos
-        self._client.subscribe(topic, qos=qos)
-        self.logger.info("Plugin/Logic '{}' is subscribing to topic '{}'".format( source, topic ))
 
 
-
-    def subscription_callback(self, source, sub, callback=None):
-        """
-        method set a callback function
-
-        this method is to be called from plugins or logics to name a defined function which is handeling
-        the incoming topics which it has subscribed to
-
-        :param source:     name of plugin or logic which want's to publish a topic
-        :param plug:       identifier of plugin/logic using the MQTT plugin
-        :param sub:        topic(s) which should call the callback function
-                           example: 'device/eno-gw1/#'
-        :param callback:   quality of service (optional) otherwise the default of the mqtt plugin will be used
-        """
-        if self.__plugif_Sub == None:
-            if sub != '':
-                if sub[-2:] != '/#':
-                    if sub[-1] == '/':
-                        sub = sub[:-1]
-                    self.__plugif_Sub = sub + '/#'
-                else:
-                    self.__plugif_Sub = sub
-
-                self.logger.warning("Plugin/Logic '{}' is registering a callback function for subscription of topics '{}'".format( source, str(self.__plugif_Sub) ))
-                self._client.message_callback_add(self.__plugif_Sub, callback)
-        else:
-            if sub == '':
-                self.logger.warning("Plugin/Logic '{}' is clearing the callback function for subscription of topics '{}'".format( source, str(self.__plugif_Sub) ))
-                self._client.message_callback_remove(self.__plugif_Sub)
-                self.__plugif_Sub = None
-            else:
-                self.logger.error("Plugin/Logic '{}' is trying to register a second callback function (for subscription of topics '{}')".format( source, str(self.__plugif_Sub) ))
+    # def subscription_callback(self, source, sub, callback=None):
+    #     """
+    #     method set a callback function
+    #
+    #     this method is to be called from plugins or logics to name a defined function which is handeling
+    #     the incoming topics which it has subscribed to
+    #
+    #     :param source:     name of plugin or logic which want's to publish a topic
+    #     :param plug:       identifier of plugin/logic using the MQTT plugin
+    #     :param sub:        topic(s) which should call the callback function
+    #                        example: 'device/eno-gw1/#'
+    #     :param callback:   quality of service (optional) otherwise the default of the mqtt plugin will be used
+    #     """
+    #     if self.__plugif_Sub == None:
+    #         if sub != '':
+    #             if sub[-2:] != '/#':
+    #                 if sub[-1] == '/':
+    #                     sub = sub[:-1]
+    #                 self.__plugif_Sub = sub + '/#'
+    #             else:
+    #                 self.__plugif_Sub = sub
+    #
+    #             self.logger.warning("Plugin/Logic '{}' is registering a callback function for subscription of topics '{}'".format( source, str(self.__plugif_Sub) ))
+    #             self._client.message_callback_add(self.__plugif_Sub, callback)
+    #     else:
+    #         if sub == '':
+    #             self.logger.warning("Plugin/Logic '{}' is clearing the callback function for subscription of topics '{}'".format( source, str(self.__plugif_Sub) ))
+    #             self._client.message_callback_remove(self.__plugif_Sub)
+    #             self.__plugif_Sub = None
+    #         else:
+    #             self.logger.error("Plugin/Logic '{}' is trying to register a second callback function (for subscription of topics '{}')".format( source, str(self.__plugif_Sub) ))
 
 
 

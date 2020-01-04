@@ -19,8 +19,10 @@
 #  along with SmartHomeNG  If not, see <http://www.gnu.org/licenses/>.
 #########################################################################
 
-from lib.module import Modules
 import logging
+
+from lib.module import Modules
+from lib.shtime import Shtime
 
 
 class MqttPlugin():
@@ -33,48 +35,43 @@ class MqttPlugin():
     _item_values = {}                    # dict of dicts
 
 
+    def mqtt_init(self):
+        """
+        Initialization Routine for the mqtt extension class to SmartPlugin
+        """
+        # get instance of MQTT module
+        try:
+            self.mod_mqtt = Modules.get_instance().get_module(
+                'mqtt')  # try/except to handle running in a core version that does not support modules
+        except:
+            self.mod_mqtt = None
+        if self.mod_mqtt == None:
+            self.logger.error("Module MQTT could not be initialized. The plugin is not starting")
+            self._init_complete = False
+            return False
+
+        self._subscribed_topics = {}  # subscribed topics (a dict of dicts)
+        self._subscribe_current_number = 0  # current number of the subscription entry
+
+        # get broker configuration (for display in web interface)
+        self.broker_config = self.mod_mqtt.get_broker_config()
+
+        return True
+
+
     def get_broker_info(self):
         if self.mod_mqtt:
             (self._broker, self.broker_monitoring) = self.mod_mqtt.get_broker_info()
-
-
-    def seconds_to_displaysting(self, sec):
-        """
-        Convert number of seconds to time display sting
-        """
-        min = sec // 60
-        sec = sec - min * 60
-        std = min // 60
-        min = min - std * 60
-        days = std // 24
-        std = std - days * 24
-
-        result = ''
-        if days == 1:
-            result += str(days) + ' ' + self.translate('Tag') + ', '
-        elif days > 0:
-            result += str(days) + ' ' + self.translate('Tage') + ', '
-        if std == 1:
-            result += str(std) + ' ' + self.translate('Stunde') + ', '
-        elif std > 0:
-            result += str(std) + ' ' + self.translate('Stunden') + ', '
-        if min == 1:
-            result += str(min) + ' ' + self.translate('Minute') + ', '
-        elif min > 0:
-            result += str(min) + ' ' + self.translate('Minuten') + ', '
-        if sec == 1:
-            result += str(sec) + ' ' + self.translate('Sekunde')
-        elif sec > 0:
-            result += str(sec) + ' ' + self.translate('Sekunden')
-        return result
 
 
     def broker_uptime(self):
         """
         Return formatted uptime of broker
         """
+        if self.shtime is None:
+            self.shtime = Shtime.get_instance()
         try:
-            return self.seconds_to_displaysting(int(self._broker['uptime']))
+            return self.shtime.seconds_to_displaysting(int(self._broker['uptime']))
         except:
             return '-'
 
@@ -93,9 +90,8 @@ class MqttPlugin():
                     # callback = self._subscribed_topics[topic][item_path].get('callback', None)
                     bool_values = self._subscribed_topics[topic][item_path].get('bool_values', None)
                     self.logger.info("run(): Subscribing to topic {} for item {}".format(topic, item_path))
-                    self.mod_mqtt.subscribe_topic(self.get_shortname() + '-' + current, topic, qos=qos,
-                                                  payload_type=payload_type,
-                                                  callback=self.on_mqtt_message, bool_values=bool_values)
+                    self.mod_mqtt.subscribe_topic(self.get_shortname() + '-' + current, topic, callback=self.on_mqtt_message,
+                                                  qos=qos, payload_type=payload_type, bool_values=bool_values)
         return
 
     def _stop_subscriptions(self):
@@ -145,7 +141,7 @@ class MqttPlugin():
         :param payload:
         :return:
         """
-        self.logger.info(self.get_loginstance() + "MQTT2 on_mqtt_message: Received topic '{}', payload '{} (type {})', QoS '{}', retain '{}' ".format(topic, payload, type(payload), qos, retain))
+        self.logger.info(self.get_loginstance() + "on_mqtt_message: Received topic '{}', payload '{} (type {})', QoS '{}', retain '{}' ".format(topic, payload, type(payload), qos, retain))
 
         # get item for topic
         if self._subscribed_topics.get(topic, None):
@@ -154,7 +150,7 @@ class MqttPlugin():
                 item = self._subscribed_topics[topic][item_path].get('item', None)
                 if item != None:
                     self.logger.info(self.get_loginstance()+"Received topic '{}', payload '{}' (type {}), QoS '{}', retain '{}' for item '{}'".format( topic, payload, item.type(), qos, retain, item.id() ))
-                    item(payload, 'mqtt2')
+                    item(payload, self.get_shortname())
                     # Update dict for periodic updates of the web interface
                     self._update_item_values(item, payload)
         else:
@@ -162,7 +158,7 @@ class MqttPlugin():
         return
 
 
-    def _publish_topic(self, item, topic, payload, qos, retain, bool_values):
+    def _publish_topic(self, item, topic, payload, qos=None, retain=False, bool_values=None):
         self.logger.info("_publish_topic: Item '{}' -> topic '{}', payload '{}', QoS '{}', retain '{}'".format(item.id(), topic, payload, qos, retain))
         self.mod_mqtt.publish_topic(self.get_shortname(), topic, payload, qos, retain, bool_values)
 

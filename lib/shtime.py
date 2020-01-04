@@ -355,6 +355,52 @@ class Shtime:
             return -1
 
 
+    def seconds_to_displaysting(self, sec):
+        """
+        Convert number of seconds to time display sting
+
+        :param sec: Number of seconds to convert
+        :type sec: int
+
+        :return: Display-string (in the form x days, y hours, z minutes, s seconds)
+        :rtype: str
+        """
+        min = sec // 60
+        sec = sec - min * 60
+        std = min // 60
+        min = min - std * 60
+        days = std // 24
+        std = std - days * 24
+
+        result = ''
+        if days == 1:
+            result += str(days) + ' ' + self.translate('Tag')
+        elif days > 0:
+            result += str(days) + ' ' + self.translate('Tage')
+
+        if result and std > 0:
+            result += ', '
+        if std == 1:
+            result += str(std) + ' ' + self.translate('Stunde')
+        elif std > 0:
+            result += str(std) + ' ' + self.translate('Stunden')
+
+        if result and min > 0:
+            result += ', '
+        if min == 1:
+            result += str(min) + ' ' + self.translate('Minute')
+        elif min > 0:
+            result += str(min) + ' ' + self.translate('Minuten')
+
+        if result and sec > 0:
+            result += ', '
+        if sec == 1:
+            result += str(sec) + ' ' + self.translate('Sekunde')
+        elif sec > 0:
+            result += str(sec) + ' ' + self.translate('Sekunden')
+        return result
+
+
     # -----------------------------------------------------------------------------------------------------
     #   Following methods implement some date handling
     # -----------------------------------------------------------------------------------------------------
