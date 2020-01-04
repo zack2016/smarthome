@@ -11,6 +11,7 @@
    /admonition_arten.rst
    /dev/README.md
    /dev/sample_plugin/README.md
+   /dev/sample_module/README.md
    /modules/admin/README.md
    /modules/http/README.md
    /modules/mqtt/README.md

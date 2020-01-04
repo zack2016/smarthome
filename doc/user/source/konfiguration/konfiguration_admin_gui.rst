@@ -5,7 +5,7 @@
 .. role:: redsup
 
 ========================================
-Konfiguration über die GUI :redsup:`new`
+Konfiguration über die GUI :redsup:`Neu`
 ========================================
 
 SmartHomeNG kann vollständig über die graphische Oberfläche konfiguriert werden. Für einen Teil der Konfiguration stehen

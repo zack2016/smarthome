@@ -13,10 +13,8 @@ if [ "$1" == "-h" ]; then
   echo
   echo Optionen:
   echo   -h  -  Anzeigen dieser Hilfe
-  echo   -f  -  Github Repos erneut auschecken \(auch wenn bereits lokale Clones vorhanden sind\)
   echo   -u  -  Nur die Anwender Dokumentation erzeugen
   echo   -d  -  Nur die Entwickler Dokumentation erzeugen
-  echo   -m  -  Die Dokumentation aus dem master Branch bauen \(statt aus dem develop Branch\)
   echo
   exit
 fi
@@ -97,9 +95,9 @@ if [ "${KEEP_REPO,,}" != "true" ]; then
   echo und legt die entstandene Dokumentation in \'$DIR/html\' ab.
 fi
 echo
-echo Sollten diese Verzeichnisse bereits existieren, werden die alten
-echo Versionen während des Skriptes gelöscht. Der Account unter dem dieses
-echo Skript ausgeführt wird, muss Rechte zum anlegen von Verzeichnissen
+echo Sollten die build Verzeichnisse bereits existieren, werden die alten
+echo gebauten Versionen während des Skriptes gelöscht. Der Account unter dem s
+echo diese Skript ausgeführt wird, muss Rechte zum anlegen von Verzeichnissen
 echo in \'$DIR\' haben.
 echo
 if [ "${GIT_CHECKOUT,,}" == "true" ]; then
@@ -187,9 +185,9 @@ fi
 cd $DIR
   echo
 
-if [ "${KEEP_REPO,,}" == "true" ]; then
-  echo Geclontes Repository ist erhalten
-fi
+#if [ "${KEEP_REPO,,}" == "true" ]; then
+#  echo Geclontes Repository ist erhalten
+#fi
 
 if [ "${KEEP_REPO,,}" != "true" ]; then
   if [ -d "$DIR/html" ]; then

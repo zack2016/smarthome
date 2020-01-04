@@ -1,11 +1,15 @@
 .. index:: http
 .. index:: modules; http
+
 .. index:: Webinterfaces; Konfiguration
 .. index:: Webservices; Konfiguration
 
-###########
+. role:: redsup
+.. role:: bluesup
+
+===========
 Module http
-###########
+===========
 
 Dieses Modul erlaubt es Plugins eine Webschnittstelle zu implementieren. Die API wird weiter
 unten beschrieben. Das erste Plugin zur Nutzung dieser API ist das Backend-Plugin.
@@ -30,9 +34,11 @@ folgendermaßen installiert werden:
 
    sudo pip3 install cherrypy
 
-Bitte beachten, dass die lib (s) für Python3 installiert sind und nicht ein älteres Python 2.7,
-welches wahrscheinlich auch auf dem System installiert ist. Deshalb unbedingt `pip3` und nicht` pip`
-verwenden.
+.. important::
+
+    Bitte beachten, dass die Packages für Python3 installiert sind und nicht ein älteres Python 2.7,
+    welches wahrscheinlich auch auf dem System installiert ist. Deshalb unbedingt `pip3` und nicht` pip`
+    verwenden.
 
 
 .. index:: Konfigurationsdateien; /etc/module.yaml (http)
