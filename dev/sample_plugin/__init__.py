@@ -25,6 +25,7 @@
 
 from lib.module import Modules
 from lib.model.smartplugin import *
+#from lib.model.mqttplugin import *
 from lib.item import Items
 
 
@@ -33,6 +34,7 @@ from lib.item import Items
 
 
 class SamplePlugin(SmartPlugin):
+# class SamplePlugin(MqttPlugin):
     """
     Main class of the Plugin. Does all plugin specific stuff and provides
     the update functions for the items
@@ -57,6 +59,10 @@ class SamplePlugin(SmartPlugin):
         the configured (and checked) value for a parameter by calling self.get_parameter_value(parameter_name). It
         returns the value in the datatype that is defined in the metadata.
         """
+
+        # Call init code of parent class (SmartPlugin or MqttPlugin)
+        super().__init__()
+
         from bin.smarthome import VERSION
         if '.'.join(VERSION.split('.', 2)[:2]) <= '1.5':
             self.logger = logging.getLogger(__name__)
