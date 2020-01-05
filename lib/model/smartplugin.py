@@ -59,6 +59,12 @@ class SmartPlugin(SmartObject, Utils):
     logger = logging.getLogger(__name__)
 
 
+    # Initialization of SmartPlugin class called by super().__init__() from the plugin's __init__() method
+    def __init__(self, **kwargs):
+        pass
+
+
+
     def _append_to_itemlist(self, item):
         self._itemlist.append(item)
 

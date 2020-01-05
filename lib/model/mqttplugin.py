@@ -19,13 +19,12 @@
 #  along with SmartHomeNG  If not, see <http://www.gnu.org/licenses/>.
 #########################################################################
 
-import logging
-
 from lib.module import Modules
+from lib.model.smartplugin import *
 from lib.shtime import Shtime
 
 
-class MqttPlugin():
+class MqttPlugin(SmartPlugin):
 
     _broker_version = '?'
     _broker = {}
@@ -36,13 +35,22 @@ class MqttPlugin():
 
 
     def mqtt_init(self):
+        self.logger.warning("'mqtt_init()' method called. it is not used anymore. The Plugin should remove the call to mqtt_init(), use 'super.__init__()' instead")
+        pass
+        return True
+
+
+    # Initialization of SmartPlugin class called by super().__init__() from the plugin's __init__() method
+    def __init__(self):
+
         """
         Initialization Routine for the mqtt extension class to SmartPlugin
         """
+        SmartPlugin.__init__(self)
+
         # get instance of MQTT module
         try:
-            self.mod_mqtt = Modules.get_instance().get_module(
-                'mqtt')  # try/except to handle running in a core version that does not support modules
+            self.mod_mqtt = Modules.get_instance().get_module('mqtt')  # try/except to handle running in a core version that does not support modules
         except:
             self.mod_mqtt = None
         if self.mod_mqtt == None:
@@ -141,7 +149,7 @@ class MqttPlugin():
         :param payload:
         :return:
         """
-        self.logger.info(self.get_loginstance() + "on_mqtt_message: Received topic '{}', payload '{} (type {})', QoS '{}', retain '{}' ".format(topic, payload, type(payload), qos, retain))
+        self.logger.debug("on_mqtt_message: Received topic '{}', payload '{} (type {})', QoS '{}', retain '{}' ".format(topic, payload, type(payload), qos, retain))
 
         # get item for topic
         if self._subscribed_topics.get(topic, None):
@@ -149,7 +157,7 @@ class MqttPlugin():
             for item_path in self._subscribed_topics[topic]:
                 item = self._subscribed_topics[topic][item_path].get('item', None)
                 if item != None:
-                    self.logger.info(self.get_loginstance()+"Received topic '{}', payload '{}' (type {}), QoS '{}', retain '{}' for item '{}'".format( topic, payload, item.type(), qos, retain, item.id() ))
+                    self.logger.info(self.get_loginstance()+"on_mqtt_message: Received topic '{}', payload '{}' (type {}), QoS '{}', retain '{}' for item '{}'".format( topic, payload, item.type(), qos, retain, item.id() ))
                     item(payload, self.get_shortname())
                     # Update dict for periodic updates of the web interface
                     self._update_item_values(item, payload)
@@ -182,5 +190,4 @@ class MqttPlugin():
             self._item_values[item.id()]['value'] = payload
         self._item_values[item.id()]['last_update'] = item.last_update().strftime('%d.%m.%Y %H:%M:%S')
         self._item_values[item.id()]['last_change'] = item.last_change().strftime('%d.%m.%Y %H:%M:%S')
-        self.logger.info("_update_item_values: self._item_values = {}".format(self._item_values))
         return
