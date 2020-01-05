@@ -79,10 +79,10 @@ class Http(Module):
     gstatic_dir = ''
 
 
-
-    def __init__(self, sh, port=None, servicesport=None, ip='', threads=8, starturl='',
-                       showpluginlist='True', showservicelist='False', showtraceback='False',
-                       user='', password='', hashed_password=''):
+    # def __init__(self, sh, port=None, servicesport=None, ip='', threads=8, starturl='',
+    #                    showpluginlist='True', showservicelist='False', showtraceback='False',
+    #                    user='', password='', hashed_password=''):
+    def __init__(self, sh):
         """
         Initialization Routine for the module
         """
