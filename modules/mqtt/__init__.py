@@ -50,7 +50,7 @@ class Mqtt(Module):
     _broker_version = '?'
     _broker = {}
 
-    def __init__(self, sh, testparam=''):
+    def __init__(self, sh):
         """
         Initialization Routine for the module
         """
@@ -230,7 +230,7 @@ class Mqtt(Module):
         elif datatype == 'num':
             data = str_data
         elif datatype == 'bool':
-            self.logger.info("cast_from_mqtt: datatype 'bool', str_data = '{}', bool_values = ‘{}‘".format(str_data, bool_values))
+            self.logger.debug("cast_from_mqtt: datatype 'bool', str_data = '{}', bool_values = ‘{}‘".format(str_data, bool_values))
             if bool_values:
                 try:
                     data = bool(bool_values.index(str_data.strip()))
@@ -278,7 +278,7 @@ class Mqtt(Module):
         if bool_values is None:
             bool_values = self.bool_values
         try:
-            self.logger.info("cast_to_mqtt: data = '{}', type(data) = '{}', bool_values ='{}'".format(data, type(data), bool_values))
+            self.logger.debug("cast_to_mqtt: data = '{}', type(data) = '{}', bool_values ='{}'".format(data, type(data), bool_values))
             if isinstance(data, bytes):
                 payload_data = data
             elif isinstance(data, str):
