@@ -235,10 +235,12 @@ class Modules():
 
         # get arguments defined in __init__ of module's class to self.args
         try:
-            exec("self.args = inspect.getargspec({0}.{1}.__init__)[0][1:]".format(classpath, classname))
+#            exec("self.args = inspect.getargspec({0}.{1}.__init__)[0][1:]".format(classpath, classname))
+            exec("self.args = inspect.getfullargspec({0}.{1}.__init__)[0][1:]".format(classpath, classname))
         except Exception as e:
             logger.critical("Module '{}' ({}) exception during call to __init__.py: {}".format(name, classpath, e))
             return None
+        #logger.warning("- self.args = '{}'".format(self.args))
 
         # get list of argument used names, if they are defined in the module's class
         logger.debug("Module '{}': args = '{}'".format(classname, str(args)))

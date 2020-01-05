@@ -582,7 +582,9 @@ class PluginWrapper(threading.Thread):
         self.get_implementation()._itemlist = []
 
         # get arguments defined in __init__ of plugin's class to self.args
-        exec("self.args = inspect.getargspec({0}.{1}.__init__)[0][1:]".format(classpath, classname))
+#        exec("self.args = inspect.getargspec({0}.{1}.__init__)[0][1:]".format(classpath, classname))
+        exec("self.args = inspect.getfullargspec({0}.{1}.__init__)[0][1:]".format(classpath, classname))
+        #logger.warning("- self.args = '{}'".format(self.args))
 
         # get list of argument used names, if they are defined in the plugin's class
         logger.debug("Plugin '{}': args = '{}'".format(classname, str(args)))
