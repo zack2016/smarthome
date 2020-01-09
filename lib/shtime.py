@@ -420,7 +420,7 @@ class Shtime:
         elif isinstance(key, datetime.date):
             key = datetime.datetime(key.year, key.month, key.day, 0, 0, 0)
         elif isinstance(key, int) or isinstance(key, float):
-            key = datetime.utcfromtimestamp(key)
+            key = datetime.datetime.utcfromtimestamp(key)
         elif isinstance(key, str):
             dayfirst = True
             yearfirst = False
