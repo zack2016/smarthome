@@ -1,8 +1,9 @@
 :tocdepth: 7
 
-###########
+===========
 SmartHomeNG
-###########
+===========
+
 
 Developer documentation
 =======================
@@ -51,6 +52,7 @@ any way you want and can.
    config
    items
    logics
+   modules
    plugins_all
 
 

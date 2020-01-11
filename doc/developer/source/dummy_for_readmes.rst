@@ -9,6 +9,8 @@
    :hidden:
 
    /dev/sample_plugin/README.md
+   /dev/sample_mqttplugin/README.md
+   /dev/sample_module/README.md
 
 .. toctree::
    :maxdepth: 2
@@ -23,4 +25,5 @@
    /plugins/buderus/TODO.md
    /plugins/buderus/URLs.md
    /plugins/wunderground/README_OLD.md
+   /plugins/README.md
 

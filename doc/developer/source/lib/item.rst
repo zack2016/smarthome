@@ -44,6 +44,14 @@ lib.item
 
 The API consists of two classes.
 
+.. toctree::
+   :maxdepth: 6
+   :hidden:
+
+   item_class_item
+   item_class_items
+
+
 
 class Item
 ^^^^^^^^^^

@@ -1,21 +1,24 @@
-.. index:: Modules; admin
-.. index:: Adminnistration Interface; admin Module
+.. index:: Modules; mqtt
+.. index:: MQTT; mqtt Module
 
 .. role:: redsup
 .. role:: bluesup
 
-Module admin
-============
+Module mqtt :redsup:`new`
+=========================
 
-This module implements a graphical administration interface for SmartHomeNG plugins.
+This module implements the MQTT protocol into the core of SmartHomeNG to make it usable for plugins.
 
-
-.. automodule:: modules.admin.__init__
+.. automodule:: modules.mqtt
     :members:
     :undoc-members:
     :show-inheritance:
     :member-order: bysource
 
+-----
+
+README
+------
 
 A formatted version of the sample README.md can be found here:
 
@@ -24,18 +27,21 @@ A formatted version of the sample README.md can be found here:
    :glob:
    :titlesonly:
 
-   /modules/admin/README.md
+   /modules/mqtt/README.md
 
 
 A raw version of the README.md for copy and paste can be found below the metadata file.
 
 
+Metadata
+--------
+
 The meta data file:
 
-.. literalinclude:: /modules/admin/module.yaml
+.. literalinclude:: /modules/mqtt/module.yaml
     :caption: module.yaml
 
 
-.. literalinclude:: ../../../../modules/admin/README.md
+.. literalinclude:: /modules/mqtt/README.md
     :caption: README.md
 

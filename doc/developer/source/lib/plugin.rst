@@ -44,6 +44,14 @@ lib.plugin
 The API consists of two classes.
 
 
+.. toctree::
+   :maxdepth: 6
+   :hidden:
+
+   plugin_class_pluginwrapper
+   plugin_class_plugins
+
+
 class PluginWrapper
 ^^^^^^^^^^^^^^^^^^^
 

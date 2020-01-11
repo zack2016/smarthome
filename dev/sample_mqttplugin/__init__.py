@@ -7,8 +7,8 @@
 #  https://www.smarthomeNG.de
 #  https://knx-user-forum.de/forum/supportforen/smarthome-py
 #
-#  Sample plugin for new plugins to run with SmartHomeNG version 1.4 and
-#  upwards.
+#  Sample plugin for new plugins using MQTT to run with SmartHomeNG
+#  version 1.7 and upwards.
 #
 #  SmartHomeNG is free software: you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -26,7 +26,7 @@
 #########################################################################
 
 from lib.module import Modules
-from lib.model.smartplugin import *
+from lib.model.mqttplugin import *
 from lib.item import Items
 
 
@@ -34,7 +34,7 @@ from lib.item import Items
 # add it to a requirements.txt file within the plugin's directory
 
 
-class SamplePlugin(SmartPlugin):
+class SampleMqttPlugin(MqttPlugin):
     """
     Main class of the Plugin. Does all plugin specific stuff and provides
     the update functions for the items
@@ -55,20 +55,11 @@ class SamplePlugin(SmartPlugin):
         returns the value in the datatype that is defined in the metadata.
         """
 
-        # Call init code of parent class (SmartPlugin)
+        # Call init code of parent class (MqttPlugin)
         super().__init__()
-
-        from bin.smarthome import VERSION
-        if '.'.join(VERSION.split('.', 2)[:2]) <= '1.5':
-            self.logger = logging.getLogger(__name__)
 
         # get the parameters for the plugin (as defined in metadata plugin.yaml):
         # self.param1 = self.get_parameter_value('param1')
-
-        # cycle time in seconds, only needed, if hardware/interface needs to be
-        # polled for value changes by adding a scheduler entry in the run method of this plugin
-        # (maybe you want to make it a plugin parameter?)
-        self._cycle = 60
 
         # Initialization code goes here
 
@@ -78,9 +69,6 @@ class SamplePlugin(SmartPlugin):
 
         # if plugin should start even without web interface
         self.init_webinterface()
-        # if plugin should not start without web interface
-        # if not self.init_webinterface():
-        #     self._init_complete = False
 
         return
 
@@ -89,12 +77,11 @@ class SamplePlugin(SmartPlugin):
         Run method for the plugin
         """
         self.logger.debug("Run method called")
-        # setup scheduler for device poll loop   (disable the following line, if you don't need to poll the device. Rember to comment the self_cycle statement in __init__ as well)
-        self.scheduler_add('poll_device', self.poll_device, cycle=self._cycle)
 
         self.alive = True
-        # if you need to create child threads, do not make them daemon = True!
-        # They will not shutdown properly. (It's a python bug)
+
+        # start subscription to all topics
+        self.start_subscriptions()
 
     def stop(self):
         """
@@ -102,6 +89,9 @@ class SamplePlugin(SmartPlugin):
         """
         self.logger.debug("Stop method called")
         self.alive = False
+
+        # stop subscription to all topics
+        self.stop_subscriptions()
 
     def parse_item(self, item):
         """
@@ -116,12 +106,28 @@ class SamplePlugin(SmartPlugin):
                         with the item, caller, source and dest as arguments and in case of the knx plugin the value
                         can be sent to the knx with a knx write function within the knx plugin.
         """
-        if self.has_iattr(item.conf, 'foo_itemtag'):
+        if self.has_iattr(item.conf, 'foo_itemid'):
             self.logger.debug("parse item: {}".format(item))
 
-        # todo
-        # if interesting item for sending values:
-        #   return self.update_item
+            # subscribe to topic for relay state
+            # mqtt_id = self.get_iattr_value(item.conf, 'foo_itemid').upper()
+            # payload_type = item.property.type
+            # topic = 'shellies/shellyplug-' + mqtt_id + '/relay/0'
+            # bool_values = ['off','on']
+            # self.add_subscription(topic, payload_type, bool_values, item=item)
+
+            # alternative:
+            #   self.add_subscription(topic, payload_type, bool_values, callback=self.on_mqtt_message)
+            # and implement callback:
+            #   def on_mqtt_message(self, topic, payload, qos=None, retain=None):
+
+            # todo
+            # if interesting item for sending values:
+            #   return self.update_item
+
+            # if the item is changed in SmartHomeNG and shall update the mqtt device, enable:
+            # return self.update_item
+
 
     def parse_logic(self, logic):
         """
@@ -156,30 +162,6 @@ class SamplePlugin(SmartPlugin):
                                                                                                                source,
                                                                                                                dest))
             pass
-
-    def poll_device(self):
-        """
-        Polls for updates of the device
-
-        This method is only needed, if the device (hardware/interface) does not propagate
-        changes on it's own, but has to be polled to get the actual status.
-        It is called by the scheduler which is set within run() method.
-        """
-        # # get the value from the device
-        # device_value = ...
-        #
-        # # find the item(s) to update:
-        # for item in self.sh.find_items('...'):
-        #
-        #     # update the item by calling item(value, caller, source=None, dest=None)
-        #     # - value and caller must be specified, source and dest are optional
-        #     #
-        #     # The simple case:
-        #     item(device_value, self.get_shortname())
-        #     # if the plugin is a gateway plugin which may receive updates from several external sources,
-        #     # the source should be included when updating the the value:
-        #     item(device_value, self.get_shortname(), source=device_source_id)
-        pass
 
     def init_webinterface(self):
         """"

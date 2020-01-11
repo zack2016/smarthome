@@ -1,4 +1,4 @@
-# Sample Plugin <- put the name of your plugin here
+# Sample MQTT Plugin <- put the name of your plugin here
 
 #### Version 1.x.y
 

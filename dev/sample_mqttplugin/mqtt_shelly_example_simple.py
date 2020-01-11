@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # vim: set encoding=utf-8 tabstop=4 softtabstop=4 shiftwidth=4 expandtab
 #########################################################################
-#  Copyright 2019-      <AUTHOR>                                  <EMAIL>
+#  Copyright 2019-      Martin Sinn                         m.sinn@gmx.de
 #########################################################################
 #  This file is part of SmartHomeNG.
 #  https://www.smarthomeNG.de
@@ -25,26 +25,28 @@
 #
 #########################################################################
 
+import logging
+import json
+
 from lib.module import Modules
-from lib.model.smartplugin import *
+from lib.model.mqttplugin import *
 from lib.item import Items
 
 
-# If a needed package is imported, which might be not installed in the Python environment,
-# add it to a requirements.txt file within the plugin's directory
-
-
-class SamplePlugin(SmartPlugin):
+class Shelly(MqttPlugin):
     """
     Main class of the Plugin. Does all plugin specific stuff and provides
     the update functions for the items
     """
 
-    PLUGIN_VERSION = '1.7.0'
+    PLUGIN_VERSION = '1.0.0'
+
 
     def __init__(self, sh):
         """
         Initalizes the plugin.
+
+        :param sh:  **Deprecated**: The instance of the smarthome object. For SmartHomeNG versions 1.4 and up: **Don't use it**!
 
         If you need the sh object at all, use the method self.get_sh() to get it. There should be almost no need for
         a reference to the sh object any more.
@@ -55,46 +57,33 @@ class SamplePlugin(SmartPlugin):
         returns the value in the datatype that is defined in the metadata.
         """
 
-        # Call init code of parent class (SmartPlugin)
+        # Call init code of parent class (MqttPlugin)
         super().__init__()
-
-        from bin.smarthome import VERSION
-        if '.'.join(VERSION.split('.', 2)[:2]) <= '1.5':
-            self.logger = logging.getLogger(__name__)
 
         # get the parameters for the plugin (as defined in metadata plugin.yaml):
         # self.param1 = self.get_parameter_value('param1')
 
-        # cycle time in seconds, only needed, if hardware/interface needs to be
-        # polled for value changes by adding a scheduler entry in the run method of this plugin
-        # (maybe you want to make it a plugin parameter?)
-        self._cycle = 60
-
         # Initialization code goes here
+        self.shelly_items = []              # to hold item information for web interface
 
-        # On initialization error use:
-        #   self._init_complete = False
-        #   return
-
-        # if plugin should start even without web interface
+         # if plugin should start even without web interface
         self.init_webinterface()
-        # if plugin should not start without web interface
-        # if not self.init_webinterface():
-        #     self._init_complete = False
 
         return
+
 
     def run(self):
         """
         Run method for the plugin
         """
         self.logger.debug("Run method called")
-        # setup scheduler for device poll loop   (disable the following line, if you don't need to poll the device. Rember to comment the self_cycle statement in __init__ as well)
-        self.scheduler_add('poll_device', self.poll_device, cycle=self._cycle)
-
         self.alive = True
-        # if you need to create child threads, do not make them daemon = True!
-        # They will not shutdown properly. (It's a python bug)
+
+        # start subscription to all topics
+        self.start_subscriptions()
+
+        return
+
 
     def stop(self):
         """
@@ -102,6 +91,12 @@ class SamplePlugin(SmartPlugin):
         """
         self.logger.debug("Stop method called")
         self.alive = False
+
+        # stop subscription to all topics
+        self.stop_subscriptions()
+
+        return
+
 
     def parse_item(self, item):
         """
@@ -116,12 +111,25 @@ class SamplePlugin(SmartPlugin):
                         with the item, caller, source and dest as arguments and in case of the knx plugin the value
                         can be sent to the knx with a knx write function within the knx plugin.
         """
-        if self.has_iattr(item.conf, 'foo_itemtag'):
-            self.logger.debug("parse item: {}".format(item))
+        if self.has_iattr(item.conf, 'shelly_id'):
+            self.logger.debug("parsing item: {0}".format(item.id()))
 
-        # todo
-        # if interesting item for sending values:
-        #   return self.update_item
+            shelly_id = self.get_iattr_value(item.conf, 'shelly_id').upper()
+            shelly_type = self.get_iattr_value(item.conf, 'shelly_type').lower()
+            shelly_relay = self.get_iattr_value(item.conf, 'shelly_relay')
+            if not shelly_relay:
+                shelly_relay = '0'
+            # append to list used for web interface
+            self.shelly_items.append(item)
+
+            # subscribe to topic for relay state
+            topic = 'shellies/' + shelly_type + '-' + shelly_id + '/relay/' + shelly_relay
+            payload_type = item.property.type
+            bool_values = ['off','on']
+            self.add_subscription(topic, payload_type, bool_values, item=item)
+
+            return self.update_item
+
 
     def parse_logic(self, logic):
         """
@@ -130,6 +138,7 @@ class SamplePlugin(SmartPlugin):
         if 'xxx' in logic.conf:
             # self.function(logic['name'])
             pass
+
 
     def update_item(self, item, caller=None, source=None, dest=None):
         """
@@ -144,42 +153,23 @@ class SamplePlugin(SmartPlugin):
         :param source: if given it represents the source
         :param dest: if given it represents the dest
         """
+        self.logger.info("update_item: {}".format(item.id()))
+
         if self.alive and caller != self.get_shortname():
             # code to execute if the plugin is not stopped
             # and only, if the item has not been changed by this this plugin:
-            self.logger.info("Update item: {}, item has been changed outside this plugin".format(item.id()))
+            self.logger.info("update_item: {}, item has been changed outside this plugin".format(item.id()))
 
-            if self.has_iattr(item.conf, 'foo_itemtag'):
-                self.logger.debug(
-                    "update_item was called with item '{}' from caller '{}', source '{}' and dest '{}'".format(item,
-                                                                                                               caller,
-                                                                                                               source,
-                                                                                                               dest))
-            pass
+            # publish topic with new relay state
+            shelly_id = self.get_iattr_value(item.conf, 'shelly_id').upper()
+            shelly_type = self.get_iattr_value(item.conf, 'shelly_type').lower()
+            shelly_relay = self.get_iattr_value(item.conf, 'shelly_relay')
+            if not shelly_relay:
+                shelly_relay = '0'
+            topic = 'shellies/' + shelly_type + '-' + shelly_id + '/relay/' + shelly_relay + '/command'
+            self.publish_topic(topic, item(), item, bool_values=['off','on'])
 
-    def poll_device(self):
-        """
-        Polls for updates of the device
-
-        This method is only needed, if the device (hardware/interface) does not propagate
-        changes on it's own, but has to be polled to get the actual status.
-        It is called by the scheduler which is set within run() method.
-        """
-        # # get the value from the device
-        # device_value = ...
-        #
-        # # find the item(s) to update:
-        # for item in self.sh.find_items('...'):
-        #
-        #     # update the item by calling item(value, caller, source=None, dest=None)
-        #     # - value and caller must be specified, source and dest are optional
-        #     #
-        #     # The simple case:
-        #     item(device_value, self.get_shortname())
-        #     # if the plugin is a gateway plugin which may receive updates from several external sources,
-        #     # the source should be included when updating the the value:
-        #     item(device_value, self.get_shortname(), source=device_source_id)
-        pass
+    # -----------------------------------------------------------------------
 
     def init_webinterface(self):
         """"
@@ -188,8 +178,7 @@ class SamplePlugin(SmartPlugin):
         This method is only needed if the plugin is implementing a web interface
         """
         try:
-            self.mod_http = Modules.get_instance().get_module(
-                'http')  # try/except to handle running in a core version that does not support modules
+            self.mod_http = Modules.get_instance().get_module('http')  # try/except to handle running in a core version that does not support modules
         except:
             self.mod_http = None
         if self.mod_http == None:
@@ -223,9 +212,10 @@ class SamplePlugin(SmartPlugin):
         return True
 
 
-# ------------------------------------------
+
+# -----------------------------------------------------------------------
 #    Webinterface of the plugin
-# ------------------------------------------
+# -----------------------------------------------------------------------
 
 import cherrypy
 from jinja2 import Environment, FileSystemLoader
@@ -258,6 +248,8 @@ class WebInterface(SmartPluginWebIf):
 
         :return: contents of the template after beeing rendered
         """
+        self.plugin.get_broker_info()
+
         tmpl = self.tplenv.get_template('index.html')
         # add values to be passed to the Jinja2 template eg: tmpl.render(p=self.plugin, interface=interface, ...)
         return tmpl.render(p=self.plugin, items=sorted(self.items.return_items(), key=lambda k: str.lower(k['_path'])))
@@ -275,16 +267,18 @@ class WebInterface(SmartPluginWebIf):
         """
         if dataSet is None:
             # get the new data
+            self.plugin.get_broker_info()
             data = {}
+            data['broker_info'] = self.plugin._broker
+            data['broker_uptime'] = self.plugin.broker_uptime()
+            data['item_values'] = self.plugin._item_values
 
-            # data['item'] = {}
-            # for i in self.plugin.items:
-            #     data['item'][i]['value'] = self.plugin.getitemvalue(i)
-            #
             # return it as json the the web page
-            # try:
-            #     return json.dumps(data)
-            # except Exception as e:
-            #     self.logger.error("get_data_html exception: {}".format(e))
-        return {}
+            try:
+                return json.dumps(data)
+            except Exception as e:
+                self.logger.error("get_data_html exception: {}".format(e))
+                return {}
+
+        return
 
