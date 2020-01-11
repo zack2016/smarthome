@@ -26,18 +26,7 @@ from lib.shtime import Shtime
 
 class MqttPlugin(SmartPlugin):
 
-    _broker_version = '?'
-    _broker = {}
-    broker_config = {}
-    broker_monitoring = False
-
     _item_values = {}                    # dict of dicts
-
-
-    def mqtt_init(self):
-        self.logger.warning("'mqtt_init()' method called. it is not used anymore. The Plugin should remove the call to mqtt_init(), use 'super.__init__()' instead")
-        pass
-        return True
 
 
     # Initialization of SmartPlugin class called by super().__init__() from the plugin's __init__() method
@@ -60,11 +49,112 @@ class MqttPlugin(SmartPlugin):
 
         self._subscribed_topics = {}  # subscribed topics (a dict of dicts)
         self._subscribe_current_number = 0  # current number of the subscription entry
+        self._subscriptions_started = False
 
         # get broker configuration (for display in web interface)
         self.broker_config = self.mod_mqtt.get_broker_config()
 
         return True
+
+
+    def start_subscriptions(self):
+        """
+        Start subscription to all topics
+
+        Should be called from the run method of a plugin
+        """
+        if self.mod_mqtt:
+            for topic in self._subscribed_topics:
+                # start subscription to all items for this topic
+                for item_path in self._subscribed_topics[topic]:
+                    self._start_subscription(topic, item_path)
+            self._subscriptions_started = True
+        return
+
+    def stop_subscriptions(self):
+        """
+        Stop subscription to all topics
+
+        Should be called from the stop method of a plugin
+        """
+        if self.mod_mqtt:
+            for topic in self._subscribed_topics:
+                # stop subscription to all items for this topic
+                for item_path in self._subscribed_topics[topic]:
+                    current = str(self._subscribed_topics[topic][item_path]['current'])
+                    self.logger.info("stop(): Unsubscribing from topic {} for item {}".format(topic, item_path))
+                    self.mod_mqtt.unsubscribe_topic(self.get_shortname() + '-' + current, topic)
+            self._subscriptions_started = False
+        return
+
+    def _start_subscription(self, topic, item_path):
+
+        current = str(self._subscribed_topics[topic][item_path]['current'])
+        qos = self._subscribed_topics[topic][item_path].get('qos', None)
+        payload_type = self._subscribed_topics[topic][item_path].get('payload_type', None)
+        callback = self._subscribed_topics[topic][item_path].get('callback', None)
+        bool_values = self._subscribed_topics[topic][item_path].get('bool_values', None)
+        self.logger.info("_start_subscription: Subscribing to topic {} for item {}".format(topic, item_path))
+        self.mod_mqtt.subscribe_topic(self.get_shortname() + '-' + current, topic, callback=callback,
+                                      qos=qos, payload_type=payload_type, bool_values=bool_values)
+        return
+
+    def add_subscription(self, topic, payload_type, bool_values=None, item=None, callback=None):
+        """
+
+        :param topic:        topic to subscribe to
+        :param payload_type: payload type of the topic (for this subscription to the topic)
+        :param bool_values:  bool values (for this subscription to the topic)
+        :param item:         item that should receive the payload as value. Used by the standard handler (if no callback function is specified)
+        :param callback:     a plugin can provide an own callback function, if special handling of the payload is needed
+        :return:
+        """
+
+        # test if topic is new
+        if not self._subscribed_topics.get(topic, None):
+            self._subscribed_topics[topic] = {}
+        # add this item to topic
+        if item is None:
+            item_path = '*no_item*'
+        else:
+            item_path = item.path()
+        self._subscribed_topics[topic][item_path] = {}
+        self._subscribe_current_number += 1
+        self._subscribed_topics[topic][item_path]['current'] = self._subscribe_current_number
+        self._subscribed_topics[topic][item_path]['item'] = item
+        self._subscribed_topics[topic][item_path]['qos'] = None
+        self._subscribed_topics[topic][item_path]['payload_type'] = payload_type
+        if callback:
+            self._subscribed_topics[topic][item_path]['callback'] = callback
+        else:
+            self._subscribed_topics[topic][item_path]['callback'] = self._on_mqtt_message
+        self._subscribed_topics[topic][item_path]['bool_values'] = bool_values
+
+        if self._subscriptions_started:
+            # directly subscribe to added subscription, if subscribtions are started
+            self._start_subscription(topic, item_path)
+        return
+
+
+    def publish_topic(self, topic, payload, item=None, qos=None, retain=False, bool_values=None):
+        self.mod_mqtt.publish_topic(self.get_shortname(), topic, payload, qos, retain, bool_values)
+        if item is not None:
+            self.logger.info("publish_topic: Item '{}' -> topic '{}', payload '{}', QoS '{}', retain '{}'".format(item.id(), topic,  payload, qos, retain))
+            # Update dict for periodic updates of the web interface
+            self._update_item_values(item, payload)
+        else:
+            self.logger.info("publish_topic: topic '{}', payload '{}', QoS '{}', retain '{}'".format(topic,  payload, qos, retain))
+        return
+
+
+    # ----------------------------------------------------------------------------------------
+    #  methods to handle the broker connection
+    # ----------------------------------------------------------------------------------------
+
+    _broker_version = '?'
+    _broker = {}
+    broker_config = {}
+    broker_monitoring = False
 
 
     def get_broker_info(self):
@@ -84,72 +174,28 @@ class MqttPlugin(SmartPlugin):
             return '-'
 
 
-    def _start_subscriptions(self):
+    def mqtt_init(self):
         """
-        Start subscription to all topics
+        Dummy method - should not be called any more
+        :return: Bool value True
+        :rtype: bool
         """
-        if self.mod_mqtt:
-            for topic in self._subscribed_topics:
-                # start subscription to all items for this topic
-                for item_path in self._subscribed_topics[topic]:
-                    current = str(self._subscribed_topics[topic][item_path]['current'])
-                    qos = self._subscribed_topics[topic][item_path].get('qos', None)
-                    payload_type = self._subscribed_topics[topic][item_path].get('payload_type', None)
-                    # callback = self._subscribed_topics[topic][item_path].get('callback', None)
-                    bool_values = self._subscribed_topics[topic][item_path].get('bool_values', None)
-                    self.logger.info("run(): Subscribing to topic {} for item {}".format(topic, item_path))
-                    self.mod_mqtt.subscribe_topic(self.get_shortname() + '-' + current, topic, callback=self.on_mqtt_message,
-                                                  qos=qos, payload_type=payload_type, bool_values=bool_values)
-        return
+        self.logger.warning("'mqtt_init()' method called. it is not used anymore. The Plugin should remove the call to mqtt_init(), use 'super.__init__()' instead")
+        pass
+        return True
 
-    def _stop_subscriptions(self):
-        """
-        Stop subscription to all topics
-        """
-        if self.mod_mqtt:
-            for topic in self._subscribed_topics:
-                # stop subscription to all items for this topic
-                for item_path in self._subscribed_topics[topic]:
-                    current = str(self._subscribed_topics[topic][item_path]['current'])
-                    self.logger.info("stop(): Unsubscribing from topic {} for item {}".format(topic, item_path))
-                    self.mod_mqtt.unsubscribe_topic(self.get_shortname() + '-' + current, topic)
-        return
+    # -----------------------------------------------------------------------
 
-    def _add_subscription(self, topic, payload_type, bool_values, item):
-        """
-
-        :param topic:        topic to subscribe to
-        :param payload_type: payload type of the topic (for this subscription to the topic)
-        :param bool_values:  bool values (for this subscription to the topic)
-        :param item:         item that should receive the payload as value
-        :return:
-        """
-
-        # test if topic is new
-        if not self._subscribed_topics.get(topic, None):
-            self._subscribed_topics[topic] = {}
-        # add this item to topic
-        self._subscribed_topics[topic][item.path()] = {}
-        self._subscribe_current_number += 1
-        self._subscribed_topics[topic][item.path()]['current'] = self._subscribe_current_number
-        self._subscribed_topics[topic][item.path()]['item'] = item
-        self._subscribed_topics[topic][item.path()]['qos'] = None
-        self._subscribed_topics[topic][item.path()]['payload_type'] = payload_type
-        # self._subscribed_topics[topic][item.path()]['callback'] = self.on_mqtt_message
-        self._subscribed_topics[topic][item.path()]['bool_values'] = bool_values
-
-        return
-
-
-    def on_mqtt_message(self, topic, payload, qos=None, retain=None):
+    def _on_mqtt_message(self, topic, payload, qos=None, retain=None):
         """
         Callback function to handle received messages
 
         :param topic:
         :param payload:
-        :return:
+        :param qos:
+        :param retain:
         """
-        self.logger.debug("on_mqtt_message: Received topic '{}', payload '{} (type {})', QoS '{}', retain '{}' ".format(topic, payload, type(payload), qos, retain))
+        self.logger.debug("_on_mqtt_message: Received topic '{}', payload '{} (type {})', QoS '{}', retain '{}' ".format(topic, payload, type(payload), qos, retain))
 
         # get item for topic
         if self._subscribed_topics.get(topic, None):
@@ -157,21 +203,19 @@ class MqttPlugin(SmartPlugin):
             for item_path in self._subscribed_topics[topic]:
                 item = self._subscribed_topics[topic][item_path].get('item', None)
                 if item != None:
-                    self.logger.info(self.get_loginstance()+"on_mqtt_message: Received topic '{}', payload '{}' (type {}), QoS '{}', retain '{}' for item '{}'".format( topic, payload, item.type(), qos, retain, item.id() ))
+                    try:
+                        log_info = (float(payload) != float(item()))
+                    except:
+                        log_info = (str(payload) != str(item()))
+                    if log_info:
+                        self.logger.info("_on_mqtt_message: Received topic '{}', payload '{}' (type {}), QoS '{}', retain '{}' for item '{}'".format( topic, payload, item.type(), qos, retain, item.id() ))
+                    else:
+                        self.logger.debug("_on_mqtt_message: Received topic '{}', payload '{}' (type {}), QoS '{}', retain '{}' for item '{}'".format(topic, payload, item.type(), qos, retain, item.id()))
                     item(payload, self.get_shortname())
                     # Update dict for periodic updates of the web interface
                     self._update_item_values(item, payload)
         else:
-            self.logger.error("on_mqtt_message: No definition found for subscribed topic '{}'".format(topic))
-        return
-
-
-    def _publish_topic(self, item, topic, payload, qos=None, retain=False, bool_values=None):
-        self.logger.info("_publish_topic: Item '{}' -> topic '{}', payload '{}', QoS '{}', retain '{}'".format(item.id(), topic, payload, qos, retain))
-        self.mod_mqtt.publish_topic(self.get_shortname(), topic, payload, qos, retain, bool_values)
-
-        # Update dict for periodic updates of the web interface
-        self._update_item_values(item, payload)
+            self.logger.error("_on_mqtt_message: No definition found for subscribed topic '{}'".format(topic))
         return
 
 

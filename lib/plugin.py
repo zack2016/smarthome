@@ -563,10 +563,10 @@ class PluginWrapper(threading.Thread):
             if instance != '':
                 logger.debug("set plugin {0} instance to {1}".format(name, instance ))
                 self.get_implementation()._set_instance_name(instance)
-#           addition von smai
+#           addition by smai
             # Customized logger instance for plugin to append name of plugin instance to log text
             self.get_implementation().logger = PluginLoggingAdapter(logging.getLogger(classpath), {'plugininstance': self.get_implementation().get_loginstance()})
-#           end addition von smai
+#           end addition by smai
             self.get_implementation()._set_sh(smarthome)
             self.get_implementation()._set_plugin_dir( os.path.join( os.path.dirname( os.path.dirname(os.path.abspath(__file__)) ), classpath.replace('.',os.sep) ) )
             self.get_implementation()._plgtype = self.meta.get_string('type')

@@ -168,15 +168,14 @@ class Mqtt(Module):
             return
 
 
-        ip = get_local_ipv4_address()
+        ip = _get_local_ipv4_address()
 
 
     def start(self):
         """
-        If the module needs to startup threads or uses python modules that create threads,
-        put thread creation code or the module startup code here.
+        This method starts the mqtt module
 
-        Otherwise don't enter code here
+        It is called by lib.module and should not be called otherwise.
         """
         # self.alive = True
         if (self.birth_topic != '') and (self.birth_payload != ''):
@@ -192,122 +191,19 @@ class Mqtt(Module):
 
     def stop(self):
         """
-        If the module has started threads or uses python modules that created threads,
-        put cleanup code here.
+        This method stops the mqtt module
 
-        Otherwise don't enter code here
+        It is called by lib.module and should not be called otherwise.
         """
         #        self.logger.debug("Module '{}': Shutting down".format(self.shortname))
         self._client.loop_stop()
         self.logger.debug("MQTT client loop stopped")
-        self.DisconnectFromBroker()
+        self._disconnect_from_broker()
         # self.alive = False
 
 
-# ----------------------------------------------------------------------------------------
-#  common methods
-# ----------------------------------------------------------------------------------------
-
-    def cast_from_mqtt(self, datatype, raw_data, bool_values=None):
-        """
-        Cast payload data to SmartHomeNG datatypes
-
-        :param datatype:  datatype to which the data should be casted to
-        :param raw_data:  data as received from the mqtt broker
-        :type datatype:   str
-        :type raw_data:   str
-
-        :return:          data casted to the datatype of the item it should be written to
-        :rtype:           str | bool | list | dict
-        """
-        if bool_values is None:
-            bool_values = self.bool_values
-        str_data = raw_data.decode('utf-8')
-        if datatype == 'bytes':
-            data = raw_data
-        if datatype == 'str':
-            data = str(str_data)
-        elif datatype == 'num':
-            data = str_data
-        elif datatype == 'bool':
-            self.logger.debug("cast_from_mqtt: datatype 'bool', str_data = '{}', bool_values = ‘{}‘".format(str_data, bool_values))
-            if bool_values:
-                try:
-                    data = bool(bool_values.index(str_data.strip()))
-                except:
-                    data = Utils.to_bool(str_data, default=False)
-            else:
-                data = Utils.to_bool(str_data, default=False)
-        elif datatype == 'list':
-            if not((len(str_data) > 0) and (str_data[0] == '[')):
-                str_data = '['+str_data+']'
-            try:
-                data = json.loads(str_data)
-            except Exception as e:
-                self.logger.error("cast_from_mqtt: datatype 'list', error '{}', data = ‘{}‘".format(e, str_data))
-                data = str_data
-        elif datatype == 'dict':
-            try:
-                data = json.loads(str_data)
-            except Exception as e:
-                self.logger.error("cast_from_mqtt: datatype 'dict', error '{}', data = ‘{}‘".format(e, str_data))
-                data = str_data
-        elif datatype == 'scene':
-            data = '0'
-            if Utils.is_int(str_data):
-                if (int(str_data) >= 0) and (int(str_data) < 0):
-                    data = str_data
-        elif datatype == 'foo':
-            data = raw_data
-        else:
-            self.logger.warning("cast_from_mqtt: Casting '{}' to '{}' is not implemented".format(raw_data, datatype))
-            data = raw_data
-        return data
-
-
-    def cast_to_mqtt(self, data, bool_values=None):
-        """
-        Cast SmartHomeNG datatypes to payload data
-
-        :param data:  data which should be casted to a payload compatible format
-        :type data:   str | bool | int | float | list | dict | bytes
-
-        :return:      data casted from the SmartHomeNG datatype to str to be written to payload
-        :rtype:       str
-        """
-        if bool_values is None:
-            bool_values = self.bool_values
-        try:
-            self.logger.debug("cast_to_mqtt: data = '{}', type(data) = '{}', bool_values ='{}'".format(data, type(data), bool_values))
-            if isinstance(data, bytes):
-                payload_data = data
-            elif isinstance(data, str):
-                payload_data = data
-            elif isinstance(data, bool):
-                self.logger.info("            : data = '{}', type(data) = '{}', bool_values ='{}'".format(data, type(data), bool_values))
-                if bool_values:
-                    payload_data = str(bool_values[data])
-                else:
-                    payload_data = 'true' if data else 'false'
-                self.logger.info("            : payload_data = '{}', type(payload_data) = '{}', bool_values ='{}'".format(payload_data, type(payload_data),bool_values))
-            elif isinstance(data, int):
-                payload_data = str(data)
-            elif isinstance(data, float):
-                payload_data = str(data)
-            elif isinstance(data, list):
-                payload_data = json.dumps(data)
-            elif isinstance(data, dict):
-                payload_data = json.dumps(data)
-            else:
-                self.logger.warning("cast_from_mqtt: Casting '{}' type = '{}' to payload fat is not implemented".format(data, type(data)))
-                payload_data = str(data)
-        except Exception as e:
-            self.logger.error("cast_to_mqtt: Cast exception'{}'".format(e))
-        return payload_data
-
-
     # ----------------------------------------------------------------------------------------
-    #  methods to handle mqtt
+    #  methods to handle the broker connection
     # ----------------------------------------------------------------------------------------
 
     def _connect_to_broker(self):
@@ -330,9 +226,10 @@ class Mqtt(Module):
         if self.username != '':
             self._client.username_pw_set(self.username, self.password)
             self.logger.debug("- Using broker login information user '{}' and password".format(self.username))
-        self._client.on_connect = self.on_connect
-        self._client.on_log = self.on_mqtt_log
-        self._client.on_message = self.on_mqtt_message
+        self._client.on_connect = self._on_connect
+        self._client.on_disconnect = self._on_disconnect
+        self._client.on_log = self._on_mqtt_log
+        self._client.on_message = self._on_mqtt_message
         try:
             self._client.connect(self.broker_ip, self.broker_port, 60)
             self.logger.debug("- Sending connect request to broker")
@@ -340,6 +237,50 @@ class Mqtt(Module):
             self.logger.error('Connection error: {0}'.format(e))
             return False
         return True
+
+
+    def _disconnect_from_broker(self):
+        """
+        Stop all communication with MQTT broker
+        """
+        self._unsubscribe_broker_infos()
+
+        for topic in self.topics:
+            item = self.topics[topic]
+            self.logger.debug("Unsubscribing topic '{}' for item '{}'".format(str(topic), str(item.id())))
+            self._client.unsubscribe(topic)
+
+        self.logger.info("Stopping mqtt client '{}'. Disconnecting from broker.".format(self._client._client_id.decode('utf-8')))
+        if (self.last_will_topic != '') and (self.last_will_payload != ''):
+            if (self.birth_topic != '') and (self.birth_payload != ''):
+                self._client.publish(self.last_will_topic, self.last_will_payload + ' (shutdown)', self.qos, retain=True)
+                self.logger.debug("- Disconnect: Last will sent with topic '{}' and payload '{}' and retain set to '{}'".format(self.last_will_topic,self.last_will_payload, True))
+
+        self._client.loop_stop()
+        self._connected = False
+        self._client.disconnect()
+
+
+    def _log_brokerinfo(self, payload):
+        """
+        Log info about broker connection
+        """
+        payload = self.cast_from_mqtt('str', payload)
+        if self.broker_hostname == '':
+            address = str(self.broker_ip)+':'+str(self.broker_port)
+        else:
+            address = self.broker_hostname + ' (' + str(self.broker_ip)+':'+str(self.broker_port) + ')'
+        self.logger.info("Connected to broker '{}' at address {}".format( str(payload), address ))
+
+
+    def broker_uptime(self):
+        """
+        Return formatted uptime of broker
+        """
+        try:
+            return self.shtime.seconds_to_displaysting(int(self._broker['uptime']))
+        except:
+            return '-'
 
 
     def get_broker_info(self):
@@ -374,6 +315,10 @@ class Mqtt(Module):
         return broker_config
 
 
+    # ----------------------------------------------------------------------------------------
+    #  methods to handle mqtt
+    # ----------------------------------------------------------------------------------------
+
     def _add_subscription_definition(self, topic, subscription_source, subscriber_type, callback, payload_type, bool_values):
         """
         Add a subscription definition to a defined topic in the _subscribed_topics data
@@ -401,11 +346,16 @@ class Mqtt(Module):
 
         this function is to be called from plugins, which are utilizing the mqtt module
 
-        :param source:       name of logic which want's to publish a topic
+        :param source:       name of plugin or logic which want's to publish a topic
         :param topic:        topic to subscribe to
-        :param qos:          quality of service (optional) otherwise the default of the mqtt plugin will be used
-        :param payload_type:
-        :param callback:     plugin callback function or name of logic for logis-callbacks
+        :param qos:          Optional: quality of service (0-2) otherwise the default of the mqtt plugin will be used
+        :param payload_type: Optional: 'str', 'num', 'bool', 'list', 'dict', 'scene', 'bytes'
+        :param callback:     plugin callback function or name of logic for logics-callbacks
+        :type source:        str
+        :type topic:         str
+        :type qos:           int
+        :type payload_type:  str
+        :type callback:      str (if logic) or function (if called from MqttPlugin class)
         """
         if bool_values is None:
             bool_values = self.bool_values
@@ -552,7 +502,7 @@ class Mqtt(Module):
         return subscription_found
 
 
-    def on_mqtt_message(self, client, userdata, message):
+    def _on_mqtt_message(self, client, userdata, message):
         """
         Callback function to handle received messages for items and logics
 
@@ -561,7 +511,7 @@ class Mqtt(Module):
         :param message:   an instance of MQTTMessage.
                           This is a class with members topic, payload, qos, retain.
         """
-        self.logger.debug( "on_mqtt_message: RECEIVED topic '{}', payload '{}, QoS '{}', retain '{}'".format(message.topic, message.payload, message.qos, message.retain))
+        self.logger.debug( "_on_mqtt_message: RECEIVED topic '{}', payload '{}, QoS '{}', retain '{}'".format(message.topic, message.payload, message.qos, message.retain))
 
         # lock
         self._subscribed_topics_lock.acquire()
@@ -573,14 +523,14 @@ class Mqtt(Module):
                     topic_dict = self._subscribed_topics[topic]
 
                     for subscription in topic_dict:
-                        self.logger.info("on_mqtt_message: subscription '{}': {}".format(subscription, topic_dict[subscription]))
+                        self.logger.info("_on_mqtt_message: subscription '{}': {}".format(subscription, topic_dict[subscription]))
                         subscriber_type = topic_dict[subscription].get('subscriber_type', None)
                         if subscriber_type == 'plugin':
                             subscription_found = self._callback_to_plugin(subscription, topic_dict[subscription], message.topic, message.payload, message.qos, message.retain)
                         elif subscriber_type == 'logic':
                             subscription_found = self._trigger_logic(topic_dict[subscription], message.topic, message.payload)
                         else:
-                            self.logger.error("on_mqtt_message: received topic for unknown subscriber_type '{}'".format(subscriber_type))
+                            self.logger.error("_on_mqtt_message: received topic for unknown subscriber_type '{}'".format(subscriber_type))
         finally:
             # unlock
             self._subscribed_topics_lock.release()
@@ -594,12 +544,12 @@ class Mqtt(Module):
 
         if (not subscription_found) and (item == None):
             if not self._handle_broker_infos(message):
-                self.logger.error("on_mqtt_message: Received topic '{}', payload '{}', QoS '{}', retain '{}' WITHOUT matching item/logic".format( message.topic, message.payload, message.qos, message.retain))
+                self.logger.error("_on_mqtt_message: Received topic '{}', payload '{}', QoS '{}', retain '{}' WITHOUT matching item/logic".format( message.topic, message.payload, message.qos, message.retain))
+
 
     # ----------------------------------------------------------------------------------------
 
-
-    def get_qos_forTopic(self, item):
+    def _get_qos_forTopic(self, item):
         """
         Return the configured QoS for a topic/item as an integer
 
@@ -612,8 +562,8 @@ class Mqtt(Module):
         return int(qos)
 
 
-    def on_mqtt_log(self, client, userdata, level, buf):
-        # self.logger.info("on_log: {}".format(buf))
+    def _on_mqtt_log(self, client, userdata, level, buf):
+        # self.logger.info("_on_log: {}".format(buf))
         return
 
 
@@ -665,7 +615,7 @@ class Mqtt(Module):
         elif message.topic == '$SYS/broker/load/messages/sent/15min':
             self._broker['msg_snt_15min'] = message.payload.decode('utf-8')
         elif message.topic == '$SYS/broker/version':
-            self.log_brokerinfo(message.payload)
+            self._log_brokerinfo(message.payload)
             self._broker['version'] = message.payload.decode('utf-8')
             # self._client.unsubscribe('$SYS/broker/version')
         else:
@@ -697,7 +647,7 @@ class Mqtt(Module):
         return
 
 
-    def on_connect(self, client, userdata, flags, rc):
+    def _on_connect(self, client, userdata, flags, rc):
         """
         Callback function called on connect
         """
@@ -712,7 +662,7 @@ class Mqtt(Module):
             # subscribe to topics to listen for items
             for topic in self.topics:
                 item = self.topics[topic]
-                self._client.subscribe(topic, qos=self.get_qos_forTopic(item) )
+                self._client.subscribe(topic, qos=self._get_qos_forTopic(item) )
                 self.logger.info("Listening on topic '{}' for item '{}'".format( topic, item.id() ))
 
             self.logger.info("self.topics = {}".format(self.topics))
@@ -721,59 +671,15 @@ class Mqtt(Module):
 
         self.logger.warning("Connection returned result '{}': {} (client={}, userdata={}, self._client={})".format( str(rc), mqtt.connack_string(rc), client, userdata, self._client ))
         if rc == 5:
-            self.DisconnectFromBroker()
+            self._disconnect_from_broker()
 
 
-    def on_disconnect(self, client, userdata, rc):
+    def _on_disconnect(self, client, userdata, rc):
         """
         Callback function called on disconnect
         """
         self.logger.info("Disconnection returned result '{}' ".format(rc))
         return
-
-
-    def DisconnectFromBroker(self):
-        """
-        Stop all communication with MQTT broker
-        """
-        self._unsubscribe_broker_infos()
-
-        for topic in self.topics:
-            item = self.topics[topic]
-            self.logger.debug("Unsubscribing topic '{}' for item '{}'".format(str(topic), str(item.id())))
-            self._client.unsubscribe(topic)
-
-        self.logger.info("Stopping mqtt client '{}'. Disconnecting from broker.".format(self._client._client_id.decode('utf-8')))
-        if (self.last_will_topic != '') and (self.last_will_payload != ''):
-            if (self.birth_topic != '') and (self.birth_payload != ''):
-                self._client.publish(self.last_will_topic, self.last_will_payload + ' (shutdown)', self.qos, retain=True)
-                self.logger.debug("- Disconnect: Last will sent with topic '{}' and payload '{}' and retain set to '{}'".format(self.last_will_topic,self.last_will_payload, True))
-
-        self._client.loop_stop()
-        self._connected = False
-        self._client.disconnect()
-
-
-    def broker_uptime(self):
-        """
-        Return formatted uptime of broker
-        """
-        try:
-            return self.shtime.seconds_to_displaysting(int(self._broker['uptime']))
-        except:
-            return '-'
-
-
-    def log_brokerinfo(self, payload):
-        """
-        Log info about broker connection
-        """
-        payload = self.cast_from_mqtt('str', payload)
-        if self.broker_hostname == '':
-            address = str(self.broker_ip)+':'+str(self.broker_port)
-        else:
-            address = self.broker_hostname + ' (' + str(self.broker_ip)+':'+str(self.broker_port) + ')'
-        self.logger.info("Connected to broker '{}' at address {}".format( str(payload), address ))
 
 
 
@@ -839,60 +745,112 @@ class Mqtt(Module):
         return True
 
 
-    # def subscribe_topic_old(self, source, topic, qos=None):
-    #     """
-    #     function to subscribe to a topic
-    #
-    #     this function is to be called from plugins, which are utilizing the mqtt module
-    #
-    #     :param source:     name of plugin or logic which want's to publish a topic
-    #     :param topic:      topic to subscribe to
-    #     :param qos:        quality of service (optional) otherwise the default of the mqtt plugin will be used
-    #     """
-    #     if qos == None:
-    #         qos = self.qos
-    #     self._client.subscribe(topic, qos=qos)
-    #     self.logger.info("Plugin/Logic '{}' is subscribing to topic '{}'".format( source, topic ))
+    # ----------------------------------------------------------------------------------------
+    #  casting methods
+    # ----------------------------------------------------------------------------------------
+
+    def cast_from_mqtt(self, datatype, raw_data, bool_values=None):
+        """
+        Cast payload data to SmartHomeNG datatypes
+
+        :param datatype:  datatype to which the data should be casted to
+        :param raw_data:  data as received from the mqtt broker
+        :type datatype:   str
+        :type raw_data:   str
+
+        :return:          data casted to the datatype of the item it should be written to
+        :rtype:           str | bool | list | dict
+        """
+        if bool_values is None:
+            bool_values = self.bool_values
+        str_data = raw_data.decode('utf-8')
+        if datatype == 'bytes':
+            data = raw_data
+        if datatype == 'str':
+            data = str(str_data)
+        elif datatype == 'num':
+            data = str_data
+        elif datatype == 'bool':
+            self.logger.debug("cast_from_mqtt: datatype 'bool', str_data = '{}', bool_values = ‘{}‘".format(str_data, bool_values))
+            if bool_values:
+                try:
+                    data = bool(bool_values.index(str_data.strip()))
+                except:
+                    data = Utils.to_bool(str_data, default=False)
+            else:
+                data = Utils.to_bool(str_data, default=False)
+        elif datatype == 'list':
+            if not ((len(str_data) > 0) and (str_data[0] == '[')):
+                str_data = '[' + str_data + ']'
+            try:
+                data = json.loads(str_data)
+            except Exception as e:
+                self.logger.error("cast_from_mqtt: datatype 'list', error '{}', data = ‘{}‘".format(e, str_data))
+                data = str_data
+        elif datatype == 'dict':
+            try:
+                data = json.loads(str_data)
+            except Exception as e:
+                self.logger.error("cast_from_mqtt: datatype 'dict', error '{}', data = ‘{}‘".format(e, str_data))
+                data = str_data
+        elif datatype == 'scene':
+            data = '0'
+            if Utils.is_int(str_data):
+                if (int(str_data) >= 0) and (int(str_data) < 0):
+                    data = str_data
+        elif datatype == 'foo':
+            data = raw_data
+        else:
+            self.logger.warning("cast_from_mqtt: Casting '{}' to '{}' is not implemented".format(raw_data, datatype))
+            data = raw_data
+        return data
 
 
+    def cast_to_mqtt(self, data, bool_values=None):
+        """
+        Cast SmartHomeNG datatypes to payload data
 
-    # def subscription_callback(self, source, sub, callback=None):
-    #     """
-    #     method set a callback function
-    #
-    #     this method is to be called from plugins or logics to name a defined function which is handeling
-    #     the incoming topics which it has subscribed to
-    #
-    #     :param source:     name of plugin or logic which want's to publish a topic
-    #     :param plug:       identifier of plugin/logic using the MQTT plugin
-    #     :param sub:        topic(s) which should call the callback function
-    #                        example: 'device/eno-gw1/#'
-    #     :param callback:   quality of service (optional) otherwise the default of the mqtt plugin will be used
-    #     """
-    #     if self.__plugif_Sub == None:
-    #         if sub != '':
-    #             if sub[-2:] != '/#':
-    #                 if sub[-1] == '/':
-    #                     sub = sub[:-1]
-    #                 self.__plugif_Sub = sub + '/#'
-    #             else:
-    #                 self.__plugif_Sub = sub
-    #
-    #             self.logger.warning("Plugin/Logic '{}' is registering a callback function for subscription of topics '{}'".format( source, str(self.__plugif_Sub) ))
-    #             self._client.message_callback_add(self.__plugif_Sub, callback)
-    #     else:
-    #         if sub == '':
-    #             self.logger.warning("Plugin/Logic '{}' is clearing the callback function for subscription of topics '{}'".format( source, str(self.__plugif_Sub) ))
-    #             self._client.message_callback_remove(self.__plugif_Sub)
-    #             self.__plugif_Sub = None
-    #         else:
-    #             self.logger.error("Plugin/Logic '{}' is trying to register a second callback function (for subscription of topics '{}')".format( source, str(self.__plugif_Sub) ))
+        :param data:  data which should be casted to a payload compatible format
+        :type data:   str | bool | int | float | list | dict | bytes
+
+        :return:      data casted from the SmartHomeNG datatype to str to be written to payload
+        :rtype:       str
+        """
+        if bool_values is None:
+            bool_values = self.bool_values
+        try:
+            self.logger.debug("cast_to_mqtt: data = '{}', type(data) = '{}', bool_values ='{}'".format(data, type(data), bool_values))
+            if isinstance(data, bytes):
+                payload_data = data
+            elif isinstance(data, str):
+                payload_data = data
+            elif isinstance(data, bool):
+                self.logger.info("            : data = '{}', type(data) = '{}', bool_values ='{}'".format(data, type(data), bool_values))
+                if bool_values:
+                    payload_data = str(bool_values[data])
+                else:
+                    payload_data = 'true' if data else 'false'
+                self.logger.info("            : payload_data = '{}', type(payload_data) = '{}', bool_values ='{}'".format(payload_data, type(payload_data), bool_values))
+            elif isinstance(data, int):
+                payload_data = str(data)
+            elif isinstance(data, float):
+                payload_data = str(data)
+            elif isinstance(data, list):
+                payload_data = json.dumps(data)
+            elif isinstance(data, dict):
+                payload_data = json.dumps(data)
+            else:
+                self.logger.warning("cast_from_mqtt: Casting '{}' type = '{}' to payload fat is not implemented".format(data, type(data)))
+                payload_data = str(data)
+        except Exception as e:
+            self.logger.error("cast_to_mqtt: Cast exception'{}'".format(e))
+        return payload_data
 
 
 
 # ----------------------------------------------------------------------------------------
 
-def get_local_ipv4_address():
+def _get_local_ipv4_address():
     """
     Get's local ipv4 address of the interface with the default gateway.
     Return '127.0.0.1' if no suitable interface is found
