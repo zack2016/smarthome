@@ -81,6 +81,7 @@ lib.shtime_translations:
     'not defined':           {'de': 'nicht definiert', 'en': '='}
     'Defined holidays':      {'de': 'Definierte Feiertage', 'en': '='}
     'custom holiday':        {'de': 'benutzerdefinierter Feiertag', 'en': '='}
+    "Week not specified":    {'de': 'Woche nicht angegeben', 'en': '='}
 
     "Using holidays for country '{country}', province '{province}', state '{state}',{count} custom holiday definitions(s) {defined}":
         'de': "Nutze Feiertage für Land '{country}', Provinz '{province}', State '{state}',{count} benutzerdefinierte Feiertagsdefinition(en) {defined}"
@@ -99,4 +100,19 @@ lib.shtime_translations:
         'en': '='
     "A second 'shtime' object has been created. There should only be ONE instance of class 'Shtime'!!! Called from: {callframe1} ({callframe3})":
         'de': "Ein zweites 'shtime' Objekt wurde erzeugt. Es darf nur EINE Instanz der Klasse 'Shtime' geben!!! Aufgerufen von: {callframe1} ({callframe3})"
+        'en': '='
+    "Custom holiday definitions defined during runtime: {cust_date}":
+        'de': "Benutzeddefinierte Feiertagsdefinition wurde zur Laufzeit erzeugt: {cust_date}"
+        'en': '='
+    "Called with point in time that is later than now: {dt}":
+        'de': 'Aufgerufen mit Zeitpunkt in der Zukunft'
+        'en': '='
+    "Called with parameter that is not of type 'datetime': {dt}":
+        'de': "Aufgerufen mit einem Parameter der nicht vom Typ 'datetime' ist: {dt}"
+        'en': '='
+    "Called with parameter that is not of type 'datetime': {dt1}, {dt2}":
+        'de': "Aufgerufen mit einem Parameter der nicht vom Typ 'datetime' ist: {dt1}, {dt2}"
+        'en': '='
+    "Called with point in time that is earlier than now: {dt}":
+        'de': 'Aufgerufen mit Zeitpunkt in der Vergangenheit'
         'en': '='

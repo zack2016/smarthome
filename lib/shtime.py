@@ -297,11 +297,11 @@ class Shtime:
         if type(dt) is datetime.datetime:
             delta = self.now() - dt
             if delta.days < 0:
-                logger.error("time_since called with point in time that is later than now: {dt}".format(dt=dt))
+                logger.error("time_since: "+self.translate("Called with point in time that is later than now: {dt}").format(dt=dt))
                 return (0, 0)
             return self._build_timediff_resulttype(delta, resulttype)
         else:
-            logger.error("time_since: Called with parameter that is not of type 'datetime': {dt}".format(dt=dt))
+            logger.error("time_since: "+self.translate("Called with parameter that is not of type 'datetime': {dt}").format(dt=dt))
             return -1
 
 
@@ -321,11 +321,11 @@ class Shtime:
         if type(dt) is datetime:
             delta = dt - self.now()
             if delta.days < 0:
-                logger.error("time_until called with point in time that is earlier than now: {dt}".format(dt=dt))
+                logger.error("time_until: "+self.translate("Called with point in time that is earlier than now: {dt}").format(dt=dt))
                 return (0, 0)
             return self._build_timediff_resulttype(delta, resulttype)
         else:
-            logger.error("time_since: Called with parameter that is not of type 'datetime': {dt}".format(dt=dt))
+            logger.error("time_since: "+self.translate("Called with parameter that is not of type 'datetime': {dt}").format(dt=dt))
             return -1
 
 
@@ -351,7 +351,7 @@ class Shtime:
                 delta = dt1 - dt2
             return self._build_timediff_resulttype(delta, resulttype)
         else:
-            logger.error("time_since: Called with parameter that is not of type 'datetime': {dt1}, {dt2}".format(dt1=dt2, dt2=dt2))
+            logger.error("time_since: "+self.translate("Called with parameter that is not of type 'datetime': {dt1}, {dt2}").format(dt1=dt2, dt2=dt2))
             return -1
 
 
@@ -478,7 +478,7 @@ class Shtime:
             if year is None:
                 year = self.current_year()
             if week is None:
-                logger.error("beginning_of_week: week not specified")
+                logger.error("beginning_of_week: "+self.translate("Week not specified"))
                 return self.today()
 
         #monday = datetime.datetime.strptime(f'{year}-{week}-1', "%Y-%W-%w")  # geht erst ab Python 3.6
