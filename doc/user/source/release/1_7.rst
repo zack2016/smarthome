@@ -4,6 +4,14 @@ Release 1.7 - noch nicht released
 
 Es gibt eine Menge neuer Features im Core von SmartHomeNG und den Plugins.
 
+.. note::
+
+    Diese Release Notes sind ein Arbeitsstand.
+
+     - Berücksichtigt sind Commits im smarthome Repository bis incl. 13. Jan 2020 (Additions to user documentation)
+     - Berücksichtigt sind Commits im plugins Repository bis incl. 13. Jan 2020 (executor: Clarified desciption in metadata)
+
+
 
 Unterstützte Python Versionen
 =============================
@@ -25,19 +33,15 @@ Absolute minimum Python Version
 Die Minimum Python Version in der SmartHomeNG startet wurde bei v3.4 belassen. Bei einer Neuinstallation wird jedoch
 empfohlen auf einer der neueren Python Versionen (3.6 oder 3.7) aufzusetzen.
 
+.. important::
 
+   Mit dem kommenden Release werden die unterstützten Python Versionen (wie hier beschrieben) auf **Python 3.6, 3.7, 3.8**
+   angehoben. Python 3.6 hat eine Reihe sehr interessanter Features und Verbesserungen gebracht, die dann in SmartHomeNG
+   genutzt werden können.
 
-Bitte auch die Release Notes für Version 1.x unter `https://www.smarthomeNG.de/user/release <../../user/release/1_x.html>`_ beachten.
-
-
-
-
-.. note::
-
-    Diese Release Notes ind ein Arbeitsstand.
-
-     - Berücksichtigt sind Commits im smarthome Repository bis incl. 13. Jan 2020 (Additions to user documentation)
-     - Berücksichtigt sind Commits im plugins Repository bis incl. 13. Jan 2020 (executor: Clarified desciption in metadata)
+   Sollten solche neuen Features in den Core Einzug halten, wird die **Absolute minimum Python Version** auf 3.6
+   angehoben werden. Sollten die Features nur in Plugins genutzt werden, so können nur solche Plugins nicht genutzt
+   werden, wenn eine ältere Python Version als 3.6 eingesetzt wird.
 
 
 Bugfixes im CORE
@@ -284,7 +288,7 @@ Plugin Updates
 * visu_websocket:
 
   * Improved exception handling
-x
+
 
 Veraltete Plugins
 -----------------
