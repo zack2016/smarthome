@@ -102,7 +102,7 @@ Neue Plugins
 Für Details zu den inhaltlichen Änderungen der einzelnen Plugins, bitte die Dokumentation des jeweiligen Plugins konsultieren.
 
 
- bose_soundtouch: Plugin zur Integration von Bose Soundtouch Systemen
+* bose_soundtouch: Plugin zur Integration von Bose Soundtouch Systemen
 * executor: Ausführen von Python Statements im Kontext von SmartHomeNG. Alternative für den Interactive Mode von SmartHomeNG
 * garminconnect: Ermöglicht den Abruf von Daten (Statistiken, Pulswerte) aus Garmin Connect
 * helios_tcp: Erlaubt die Kommunikation über TCP mit Helios KWL Geräten mit Helios Easy Controls
