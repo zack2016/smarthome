@@ -56,6 +56,10 @@ plugin-spezifischen Attributen. Hierbei kann ein Attribut mit dem Wert eines Att
 Es kann die übergeordete Ebene (Eltern / Großeltern) das Attribut der Ebene angebeben werden. Dabei wird
 als Wert eines Attributes folgender Platzhalter eingetragen: :code:`<Ebene>:<Attribut>`
 
+.. attention::
+
+   Zwischen Ebene und Doppelpunkt, sowie zwischen Doppelpunkt und Attribut dürfen keine Leerzeichen angegeben werden.
+
 Die :code:`<Ebene>` kann die Werte :code:`..` und :code:`...` für Eltern- bzw. Großeltern Item.
 Für :code:`<Attribut>` kann der Name des Attributes aus der übergeordenten Ebene angebeben werden oder
 :code:`.` um aus der übergeordenten Ebene das Attribut mit dem Selben Namen zu referenzieren.

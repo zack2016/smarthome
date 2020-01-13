@@ -65,7 +65,31 @@ Die Funktionen für Feiertags- und Wochenend-Handling sind folgende:
 | shtime.add_custom_holiday_range(from_date,| Markiert jeden Tag, beginnend mit **fromdate** bis inklusive **to_date**  |
 | to_date=None, holiday_name=' ')           | als Ferientag mit dem angegebenen Namen                                   |
 +-------------------------------------------+---------------------------------------------------------------------------+
-
+| shtime.time_since(dt, resulttype)         | Liefert die Zeitdifferenz zwischen dem angegeben Zeitpunkt **dt** und     |
+|                                           | jetzt. **resulttype** gibt an, ob das Ergebnis als str (**s**) , als      |
+|                                           | float Minuten (**m**), Stunden (**h**), Tagen (*+d**), als int Minuten    |
+|                                           | (**im**), Stunden (**ih**), Tagen (*+id**) oder als tuple (**dhms**) bzw. |
+|                                           | (**ds**) zurück gegeben werden soll. Falls nicht angegeben, wird **s**    |
+|                                           | verwendet.                                                                |
++-------------------------------------------+---------------------------------------------------------------------------+
+| shtime.time_until(dt, resulttype)         | Liefert die Zeitdifferenz zwischen jetzt und dem angegeben Zeitpunkt      |
+|                                           | **dt**. **resulttype** ist analog zu **time_since()** zu verwenden.       |
++-------------------------------------------+---------------------------------------------------------------------------+
+| shtime.time_diff(dt1, dt2, resulttype)    | Liefert die Zeitdifferenz zwischen den beiden angegebenen Zeitpunkten     |
+|                                           | **dt1** und **dt2**.  **resulttype** ist analog zu **time_since()** zu    |
+|                                           | verwenden.                                                                |
++-------------------------------------------+---------------------------------------------------------------------------+
+| shtime.beginning_of_week(week, year)      | Liefert das Datum des ersten Tages der angegebenen Woche. Falls **week**  |
+|                                           | oder **year** nicht angegeben werden, wird der jeweils aktuelle Wert      |
+|                                           | verwendet.                                                                |
++-------------------------------------------+---------------------------------------------------------------------------+
+| shtime.beginning_of_month(month, year)    | Liefert das Datum des ersten Tages des angegebenen Monats. Falls **month**|
+|                                           | oder **year** nicht angegeben werden, wird der jeweils aktuelle Wert      |
+|                                           | verwendet.                                                                |
++-------------------------------------------+---------------------------------------------------------------------------+
+| shtime.beginning_of_year(year)            | Liefert das Datum des ersten Tages des angegebenen Jahres. Falls **year** |
+|                                           | nicht angegeben wird, wird das aktuelle Jahr verwendet.                   |
++-------------------------------------------+---------------------------------------------------------------------------+
 
 
 .. index:: Funktionen; Datum und Zeit
