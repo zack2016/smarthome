@@ -1,5 +1,5 @@
 =============================
-Release 1.x - Month day, 2019
+Release 1.x - month day, 2020
 =============================
 
 Es gibt eine Menge neuer Features im Core von SmartHomeNG und den Plugins.
@@ -8,10 +8,10 @@ Es gibt eine Menge neuer Features im Core von SmartHomeNG und den Plugins.
 Unterstützte Python Versionen
 =============================
 
-Die älteste offiziell unterstützte Python Version für SmartHomeNG Release 1.x ist Python 3.5.
+Die älteste offiziell unterstützte Python Version für SmartHomeNG Release 1.7 ist Python 3.5.
 (Siehe auch *Hard- u. Software Anforderungen* im Abschnitt *Installation* zu unterstützten Python Versionen)
 
-Das bedeutet nicht unbedingt, dass SmartHomeNG ab Release 1.6 nicht mehr unter älteren Python Versionen läuft. Es
+Das bedeutet nicht unbedingt, dass SmartHomeNG ab Release 1.7 nicht mehr unter älteren Python Versionen läuft. Es
 bedeutet, dass SmartHomeNG nicht mehr mit älteren Python Versionen getestet wird und das gemeldete Fehler mit älteren
 Python Versionen nicht mehr zu Buxfixen führen.
 
@@ -36,22 +36,33 @@ Bitte auch die Release Notes für Version 1.x unter `https://www.smarthomeNG.de/
 
     Diese Release Notes ind ein Arbeitsstand.
 
-     - Berücksichtigt sind Commits im smarthome Repository bis incl. 10. Dez 2019
-     - Berücksichtigt sind Commits im plugins Repository bis: 10. Aug 2019 (Merge pull request #270 from Tom-Bom-badil/patch-1) [letztes Commit im 1.6.1 Master]
+     - Berücksichtigt sind Commits im smarthome Repository bis incl. 13. Jan 2020 (Additions to user documentation)
+     - Berücksichtigt sind Commits im plugins Repository bis incl. 13. Jan 2020 (executor: Clarified desciption in metadata)
 
 
 Bugfixes im CORE
 ----------------
 
 * lib.scheduler: fixes part of issue 335
-* ...
-
+* tools.plugin_metadata_checker: Bug fixes
+* lib.module: Bugfix
+* lib.item: Bugfix - setting an <item>.property.value didn't trigger further actions
+* lib.plugin: Removed call to deprecated Python function
+* lib.module: Removed call to deprecated Python function
 
 
 Updates im CORE
 ---------------
 
-* ...
+* Implemented command line option to create backups of the configuration of SmartHomeNG and to restore from such a backup
+* .cer and .key files from /etc are backed up too
+* Support for national and regional holidays added
+* Support for custom holidays added
+* Added a lot of functions to lib.shtime to simplify date and time handling in logics and plugins
+* Global translation support (lib.translation) added (moved from plugins to a global level)
+* crontab: Implemtation of day ranges
+* MQTT Support for logics added (using new mqtt module)
+* New class MqttPlugin to support MQTT usage in plugins (using new mqtt module)
 
 * Items:
 
@@ -70,10 +81,14 @@ Updates im CORE
   * http:
 
     * Webinterfaces: Initial version with support for periodic updata of data
+    * Updated datepicker to 1.9.0
+    * Added chartjs library for web interfaces
 
   * admin:
 
     * ...
+
+  * mqtt: New module to delived mqtt support for plugins and logics
 
 * Plugins:
 
@@ -86,19 +101,188 @@ Neue Plugins
 
 Für Details zu den inhaltlichen Änderungen der einzelnen Plugins, bitte die Dokumentation des jeweiligen Plugins konsultieren.
 
-* xxx:
 
-  * ...
+ bose_soundtouch: ...
+* executor: Ausführen von Python Statements im Kontext von SmartHomeNG. Alternative für den Interactive Mode von SmartHomeNG
+* garminconnect: ...
+* helios_tcp: ...
+* neato: Plugin zur Anbindung von einem Neato/Vorwerk Staubsauger Robotor an SmartHomeNG
+* rpi1wire: ...
+* shelly: Steuerung von Shally devices über mqtt (nutzt das neue mqtt Modul)
+* vacations: Ermöglicht den Abruf deutscher Schulferien für die Bundesländer BW, BY, BE, BB, HB, HH, HE, MV, NI, NW, RP, SL, SN, ST, SH, TH.
+* yamahayxc: Plugin, um Yamaha MusicCast-Geräte zu kontrollieren
 
 
 
-Plugin Erweiterungen
---------------------
+Plugin Updates
+--------------
 
-* xxx:
+* alexa4p3:
 
-  * ...
+  * fixed naming for plugin
 
+* avm:
+
+  * added write support for AVM Dec 301 hkrt devices (command set temperature)
+  * Now using one single item for read and write temperature setpoint; fixed filter for items calls by avm plugin
+  * changed name of monitoring service thread
+  * fix for retrieval of HOST data and MultiInstance functionality
+  * bugfixes for MI handling
+
+* blockly:
+
+  * updated blockly to Release Q3 Patch 4
+
+* darksky:
+
+  * added hourly and daily data to struct
+  * fix for multiple items accessing the same match string
+  * Quick Fix Webinterface Item, needs more work though
+  * added support for multiple items in a key
+  * compact table appearance, show large text block reduced at first
+
+* Dashbutton:
+
+  * updated from buggy kamene package to scapy package
+
+* dmx:
+
+  * converted to SmartPlugin
+
+* gpio:
+
+  * fix problem with slow raspis after reboot
+
+* ical:
+
+  * Fix for recurring event having multiple exceptions
+  * fix problems with long lines that are continued on next line
+  * Fix for recurring event having multiple exceptions
+
+* kathrein:
+
+  * converted to SmartPlugin
+
+* knx:
+
+  * added hostname support
+
+* mailrcv:
+
+  * Added option to set the name of the trashfolder to use
+  * Removed use of smarthome object and used self.scheduler_add instead
+
+* memlog:
+
+  * improved documentation
+
+* milight:
+
+  * converted to SmartPlugin
+  * implemented multi-instance
+
+* miflora:
+
+  * Fixed some namings: scheduler methods of SmartPlugin
+  * Fixed new init parameter access
+  * added Web Interface with auto update
+  * added support for all 3 Libraries used in Miflora pypi package
+  * new default library: bluepy (which needs a new package to be installed)
+
+* mqtt:
+
+  * renamed existing mqtt plugin to mqtt1 and set deprecated flag for this plugin
+  * reimplemented mqtt plugin derived from class MqttPlugin for using the new mqtt module
+  * added item atteibute **bool_values**: defines which mqtt payload values should be interpreted as True or False
+
+* nuki:
+
+  * Added updates for event values in web interface via Ajax
+
+* odlinfo:
+
+  * small fixes
+
+* onewire:
+
+  * Fixed error handling in case of readout problem (85 °C)
+  * plugin enable use of alias names
+  * added webinterface
+  * reworked internals
+  * fix multiple thread creation after discovery
+  * fix bug with too many threads started
+
+* roomba:
+
+  * converted to SmartPlugin
+
+* rtr:
+
+  * bugfix in stop_controller()
+  * fixed stop_item handling
+  * Added check of self.alive before accessing items
+
+* russound
+
+  * converted to SmartPlugin
+  * handling of decode error added
+
+* sma_em:
+
+  * Added updates for values in web interface via Ajax
+  * SMA_EM: reworked whole plugin as requested in issue #319
+
+    * supports multicasts of new versions of energy meter
+    * item naming changed (look at newly introduced struct or README)
+    * new items for info if consume and supply is active
+    * introduced scheduler instead of sleeping thread (needed to show that a plugin updated the item, also better for performance)
+
+* smlx:
+
+  * Added parameters for CRC check
+  * implement support for Holley DTZ541 (2018 model with faulty CRC implementation)
+  * fixes actualTime calculation issue and provides status properties
+  * Fixed issue with calculation of actualTime.
+  * Fixed misinterpretation of Client-ID as OBIS code.
+  * Added properties for Smartmeter status
+
+* solarlog:
+
+  * converted to SmartPlugin
+  * bugfixes
+
+* speech:
+
+  * converted to SmartPlugin
+
+* squeezebox:
+
+  * fix repeat and shuffle playlist
+  * div. bugfixes
+
+* stateengine:
+
+  * improved Stateeninge Graph in Web Interface
+  * documentation updates
+  * div. bugfixes
+
+* telegram:
+
+  * documentation updates
+  * pretify thread names for job queue
+
+* trovis557x:
+
+  * Corrected processing of negative 16-bit register values, also corrected some typos
+
+* uzsu:
+
+  * added error message when using wrong sv widget
+  * div. bugfixes
+
+* visu_websocket:
+
+  * Improved exception handling
 
 
 
@@ -137,11 +321,11 @@ Dokumentation
 
 * Anwender Dokumentation
 
-  * ...
-  * Allgemeine Updates
+  * Added sample_module to /dev
+  * Allgemeine Updates und Erweiterungen
 
 
 * Entwickler Dokumentation
 
   * Dokumentation zur Erstellung von Webinterfaces für Plugins erweitert
-  * Allgemeine Updates
+  * Allgemeine Updates und Erweiterungen
