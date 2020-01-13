@@ -102,10 +102,10 @@ Neue Plugins
 Für Details zu den inhaltlichen Änderungen der einzelnen Plugins, bitte die Dokumentation des jeweiligen Plugins konsultieren.
 
 
- bose_soundtouch: ...
+ bose_soundtouch: Plugin zur Integration von Bose Soundtouch Systemen
 * executor: Ausführen von Python Statements im Kontext von SmartHomeNG. Alternative für den Interactive Mode von SmartHomeNG
-* garminconnect: ...
-* helios_tcp: ...
+* garminconnect: Ermöglicht den Abruf von Daten (Statistiken, Pulswerte) aus Garmin Connect
+* helios_tcp: Erlaubt die Kommunikation über TCP mit Helios KWL Geräten mit Helios Easy Controls
 * neato: Plugin zur Anbindung von einem Neato/Vorwerk Staubsauger Robotor an SmartHomeNG
 * rpi1wire: ...
 * shelly: Steuerung von Shally devices über mqtt (nutzt das neue mqtt Modul)
