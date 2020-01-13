@@ -1,6 +1,6 @@
-=============================
-Release 1.x - month day, 2020
-=============================
+=================================
+Release 1.7 - noch nicht released
+=================================
 
 Es gibt eine Menge neuer Features im Core von SmartHomeNG und den Plugins.
 
@@ -71,7 +71,7 @@ Updates im CORE
 
 * Logiken:
 
-  * ...
+  * Support für MQTT implementiert
 
 * lib.config: Ignoring files starting with a '.' that are created when accessing a folder from MacOS
 * lib.logic: Adjusted log level for triggered logics that are disabled
@@ -92,6 +92,7 @@ Updates im CORE
 
 * Plugins:
 
+  * Support für MQTT implementiert
   * Webinterfaces: make all tabs sticky on webinterface for better scroll appearance
 
 
@@ -258,13 +259,13 @@ Plugin Updates
 * squeezebox:
 
   * fix repeat and shuffle playlist
-  * div. bugfixes
+  * various bugfixes
 
 * stateengine:
 
   * improved Stateeninge Graph in Web Interface
   * documentation updates
-  * div. bugfixes
+  * various bugfixes
 
 * telegram:
 
@@ -278,13 +279,12 @@ Plugin Updates
 * uzsu:
 
   * added error message when using wrong sv widget
-  * div. bugfixes
+  * various bugfixes
 
 * visu_websocket:
 
   * Improved exception handling
-
-
+x
 
 Veraltete Plugins
 -----------------
@@ -321,11 +321,13 @@ Dokumentation
 
 * Anwender Dokumentation
 
-  * Added sample_module to /dev
+  * sample_module zu /dev hinzugefügt
+  * Neue MQTT Untersützung dokumentiert
   * Allgemeine Updates und Erweiterungen
 
 
 * Entwickler Dokumentation
 
   * Dokumentation zur Erstellung von Webinterfaces für Plugins erweitert
+  * Neue MQTT Untersützung dokumentiert
   * Allgemeine Updates und Erweiterungen
