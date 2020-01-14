@@ -430,7 +430,7 @@ class Mqtt(Module):
         # lock
         self._subscribed_topics_lock.acquire()
         try:
-            # delete source for this topic
+            # delete subscription-source for this topic
             del self._subscribed_topics[topic][source]
             if self._subscribed_topics[topic] == {}:
                 # unsubscribe on broker, if no source is subscribing the topic any more

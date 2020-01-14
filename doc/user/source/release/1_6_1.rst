@@ -1,6 +1,6 @@
-==================================
-Release 1.6.1 - August, 10th, 2019
-==================================
+===============================
+Release 1.6.1 - 10. August 2019
+===============================
 
 Es gibt eine Menge neuer Features in den Plugins. Dieses ist ein reines Plugin Release. Am Core gibt es keine
 Veränderungen.
