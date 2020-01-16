@@ -1,9 +1,16 @@
 
+.. index:: MQTT Broker installieren
+.. index:: Mosquitto installieren
+
+.. role:: bluesup
 .. role:: redsup
 
-########################
+========================
 MQTT Broker installieren
-########################
+========================
+
+.. contents:: Schritte der Installation
+   :local:
 
 Um MQTT zu nutzen, muss ein Broker verwendet werden, mit dem die MQTT Clients kommunizieren. Wenn im Netzwerk noch kein
 Broker installiert ist, kann auf dem Rechner auf dem SmartHomeNG installiert wird, auch ein Broker installiert werden.

@@ -1,6 +1,7 @@
-############
+
+============
 Installation
-############
+============
 
 Die hier beschriebenen Punkte erläutern die Anforderungen und beschreiben die Installation von
 SmartHomeNG und benötigter oder optionaler Komponenten.
@@ -9,11 +10,11 @@ Es wird auch die Installation mit Docker und das Update bzw. Upgrade von ältere
 
 
 .. toctree::
-   :maxdepth: 4
+   :maxdepth: 5
    :hidden:
    :titlesonly:
 
    anforderungen.rst
-   komplettanleitung.rst
+   komplettanleitung/komplettanleitung.rst
    docker.rst
    update_upgrade.rst

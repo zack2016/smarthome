@@ -1,6 +1,10 @@
-#################
+
+.. index:: Komplettanleitung
+
+=================
 Komplettanleitung
-#################
+=================
+
 
 Ziel dieser Anleitung
 =====================
@@ -22,12 +26,12 @@ Es bietet sich an die allererste Installation einfach in einer virtuellen Maschi
    :maxdepth: 5
    :hidden:
 
-   komplettanleitung_debian
-   komplettanleitung_smarthomeng
-   komplettanleitung_smartvisu
-   komplettanleitung_knxd
-   komplettanleitung_onewire
-   komplettanleitung_mosquitto
-   komplettanleitung_samba
-   komplettanleitung_shng_daemon
+   01_debian
+   02_smarthomeng
+   03_smartvisu
+   04_knxd
+   05_onewire
+   06_mosquitto
+   07_samba
+   08_shng_daemon
 

@@ -35,9 +35,9 @@ empfohlen auf einer der neueren Python Versionen (3.6 oder 3.7) aufzusetzen.
 
 .. important::
 
-   Mit dem kommenden Release werden die unterstützten Python Versionen (wie hier beschrieben) auf **Python 3.6, 3.7, 3.8**
-   angehoben. Python 3.6 hat eine Reihe sehr interessanter Features und Verbesserungen gebracht, die dann in SmartHomeNG
-   genutzt werden können.
+   Mit dem kommenden Release 1.8 werden die unterstützten Python Versionen (wie hier beschrieben) auf **Python 3.6, 3.7,
+   3.8** angehoben. Python 3.6 hat eine Reihe sehr interessanter Features und Verbesserungen gebracht, die dann in
+   SmartHomeNG genutzt werden können.
 
    Sollten solche neuen Features in den Core Einzug halten, wird die **Absolute minimum Python Version** auf 3.6
    angehoben werden. Sollten die Features nur in Plugins genutzt werden, so können nur solche Plugins nicht genutzt
@@ -96,6 +96,7 @@ Updates im CORE
 
 * Plugins:
 
+  * Konfigurations-Parameter **class_name** und **class_path** in **/etc/plugin.yaml** sind nun DEPRECATED
   * Support für MQTT implementiert
   * Webinterfaces: make all tabs sticky on webinterface for better scroll appearance
 

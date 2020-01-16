@@ -1,17 +1,22 @@
+
+.. index:: smartVISU installieren
+
+.. role:: bluesup
+.. role:: redsup
+
+======================
 smartVISU installieren
 ======================
-
--  Schritte der Installation:
-
-   -  `zusätzliche Pakete
-      installieren <#zusätzliche-pakete-installieren>`__
-   -  `SmartVISU Quellcode laden <#smartvisu-quellcode-laden>`__
 
 Die SmartVISU ist eine Sammlung von HTML-Dateien und PHP Skripten die es
 ermöglicht Items vom SmartHomeNG anzuzeigen. Im Wesentlichen wird dazu
 ein Webserver benötigt, hier der Apache2 und für die variablen Daten des
 SmartHomeNG braucht die SmartVisu noch eine Websocket-Verbindung zum
 SmartHomeNG.
+
+.. contents:: Schritte der Installation
+   :local:
+
 
 zusätzliche Pakete installieren
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

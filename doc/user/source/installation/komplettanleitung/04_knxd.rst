@@ -1,20 +1,21 @@
+
+.. index:: knxd installieren
+
+.. role:: bluesup
+.. role:: redsup
+
+=================
 knxd installieren
 =================
-
--  Schritte der Installation:
-
-   -  `zusätzliche Pakete
-      installieren <#zusätzliche-pakete-installieren>`__
-   -  `Quellcode laden, compilieren und ein Paket
-      schnüren <#quellcode-laden-compilieren-und-ein-paket-schnüren>`__
-   -  `knxd konfigurieren <#knxd-konfigurieren>`__
-   -  `knxd und systemd <#knxd-und-systemd>`__
 
 Der knxd implementiert Zugriffe auf verschiedenste Schnittstellen zum
 KNX Bus (z.B. IP-Router, IP-Schnittstelle, USB-Schnittstelle, etc.) und
 bietet dafür eine dokumentierte Softwareschnittstelle für Programme an.
 SmartHomeNG nutzt den knxd über seine tcp Schnittstelle um Daten auf den
 KNX Bus zu schreiben oder zu lesen.
+
+.. contents:: Schritte der Installation
+   :local:
 
 Wer keinen KNX-Bus einsetzt, kann diesen Installationsschritt
 überspringen. Für den Fall, das die knxd Installation ausgelassen wird,
@@ -27,7 +28,9 @@ Grundsätzlich findet sich auf der
 Installation. Auf der Github Seite kann unter **Code** immer der Branch
 ausgewählt werden. Jeder Branch hat sein eigenes Read.me.
 
-    **Wichtig:** Der knxd wird derzeit aktiv weiterentwickelt. Ab
+.. important::
+
+    Der knxd wird derzeit aktiv weiterentwickelt. Ab
     Version 0.12.x ist pthsem nicht mehr notwendig und es wird libev
     eingesetzt. Wer genügend Wissen zum Testen hat ist herzlich
     eingeladen hier mitzuhelfen oder zu spenden. Auch bitte **vor** der
@@ -40,8 +43,9 @@ ausgewählt werden. Jeder Branch hat sein eigenes Read.me.
 
 Die folgenden Installationsschritte beziehen sich auf Version **0.14**.
 
+
 zusätzliche Pakete installieren
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+-------------------------------
 
 Zunächst müssen für den Bau einige grundlegende Tools installiert
 werden:
@@ -51,7 +55,7 @@ werden:
     sudo apt-get install git-core build-essential dh-systemd autoconf libtool libusb-1.0-0-dev pkg-config libsystemd-dev libev-dev cmake
 
 Quellcode laden, compilieren und ein Paket schnüren
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+---------------------------------------------------
 
 Zunächst den Quellcode für den knxd vom github laden und sicherstellen,
 das der 0.14 branch gewählt wird:
@@ -87,7 +91,7 @@ noch installiert werden mit:
     sudo dpkg -i knxd_*.deb knxd-tools_*.deb
 
 knxd konfigurieren
-~~~~~~~~~~~~~~~~~~
+------------------
 
 Als nächstes muß die Konfiguration des knxd für die zu verwendende
 Schnittstelle angepasst werden. Dazu muß bei Systemen mit systemd die
@@ -123,7 +127,7 @@ zu vermeiden. Der Parameter **--no-tunnel-client-queuing** ist obsolet
 und sollte nicht mehr eingesetzt werden.
 
 knxd und systemd
-~~~~~~~~~~~~~~~~
+----------------
 
 Um die Änderungen wirksam werden zu lassen, muß der knxd die neue
 Konfiguration noch berücksichtigen dazu muß er ggf. beendet und neu

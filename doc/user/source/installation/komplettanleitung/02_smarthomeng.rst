@@ -1,6 +1,6 @@
 
 
-.. index:: Komplettanleitung
+.. index:: SmartHomeNG installieren
 
 .. role:: bluesup
 .. role:: redsup
@@ -9,18 +9,13 @@
 SmartHomeNG installieren :bluesup:`update`
 ==========================================
 
-- Schritte der Installation:
-    - zusätzliche Pakete installieren
-    - Quellcode laden
-    - Weitere Python Bibliotheken
-    - Erstmalige Konfiguration erstellen,
-      die verschiedenen Konfigurationsdateien
-    - SmartHomeNG starten
-    - Admin Interface nutzen
+
+.. contents:: Schritte der Installation
+   :local:
 
 
-zusätzliche Pakete installieren
-===============================
+zusätzliche Linux Pakete installieren
+=====================================
 
 Zunächst müssen einige zusätzlichen Pakete erfüllt werden:
 
@@ -63,8 +58,8 @@ unter dem später SmartHomeNG laufen soll, **nicht als root**.
 Bitte auf den Punkt am Ende des ersten **git clone** Kommandos achten!
 
 
-Weitere Python Bibliotheken
-===========================
+Weitere Python Bibliotheken installieren
+========================================
 
 Für den ersten Start müssen noch einige Python Packages nachgeladen werden.
 Im Unterordner ``requirements`` befindet sich dafür eine Datei ``base.txt``.
@@ -415,9 +410,9 @@ Für die Grundkonfiguration ist dies das http Modul, das z.B. vom backend oder d
 Auch hier ist kein Handlungsbedarf, die Beschreibung ist ebenfalls der Vollständigkeit halber enthalten.
 
 
--------------------
 SmartHomeNG starten
--------------------
+===================
+
 
 Nachdem die Grundlagen für den Betrieb des Kerns von SmartHomeNG nun beschrieben sind, kann SmartHomeNG erstmalig gestartet werden:
 

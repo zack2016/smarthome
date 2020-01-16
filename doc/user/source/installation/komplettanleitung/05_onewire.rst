@@ -1,5 +1,19 @@
+
+.. index:: Onewire installieren
+
+.. role:: bluesup
+.. role:: redsup
+
+====================
 Onewire installieren
 ====================
+
+.. contents:: Schritte der Installation
+   :local:
+
+
+zusätzliche Linux Pakete installieren
+=====================================
 
 SmartHomeNG realisiert den Zugriff auf einen OneWire Bus über ein Plugin.
 Das Plugin nutzt dazu das Paket ``owserver``.

@@ -1,18 +1,11 @@
 
+.. index:: Linux; Debian installieren
+
 .. role:: bluesup
 
-###########################################
+===========================================
 Debian Linux installieren :bluesup:`update`
-###########################################
-
-Schritte der Installation:
-~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-- `Softwareauswahl <#softwareauswahl>`__
-- `Einloggen via SSH oder an der
-  Konsole <#einloggen-via-ssh--oder-an-der-konsole>`__
-- `Systemaktualisierung <#systemaktualisierung>`__
-- `Restarbeiten am System <#restarbeiten-am-system>`__
+===========================================
 
 Die genaue Schritt für Schritt  Installation des Betriebsystems wird hier nicht
 beschrieben, das hier ist der falsche Ort dafür. Jedoch werden als
@@ -23,6 +16,12 @@ z.B. `Linux Live USB Creator <http://www.linuxliveusb.com/>`__,
 `Universal-USB-Installer <http://www.pendrivelinux.com/universal-usb-installer-easy-as-1-2-3/>`__
 oder `UNetbootin <https://unetbootin.github.io/>`__ auf einen USB Stick
 übertragen.
+
+
+.. contents:: Schritte der Installation
+   :local:
+
+
 
 .. topic:: Raspberry Pi
 
@@ -70,6 +69,7 @@ holen da der Vorgang je nach Hardware und Netzwerkgeschwindigkeit
 zwischen 4 und 8 Minuten dauert. Die Rückmeldung des Systems an die
 Entwicklung darf abgelehnt werden.
 
+
 Softwareauswahl
 ~~~~~~~~~~~~~~~
 
@@ -93,6 +93,7 @@ Nun ist es Zeit für das nächste Getränk, das nachladen der zu
 installierenden Pakete dauert jetzt wiederum 5 bis 20 Minuten. Die
 angebotene Installation von GRUB wird akzeptiert und anschließend neu
 gestartet.
+
 
 Einloggen via SSH oder an der Konsole
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

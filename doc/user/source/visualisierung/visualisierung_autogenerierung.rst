@@ -3,7 +3,7 @@
 ========================
 Automatische Generierung
 ========================
-s
+
 
 Überblick
 =========

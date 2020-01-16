@@ -1,16 +1,31 @@
 
-.. role:: bluesup
+.. index:: Samba installieren
+.. index:: Mosquitto installieren
 
-###########################################
+.. role:: bluesup
+.. role:: redsup
+
+====================================
 Samba installieren :bluesup:`update`
-###########################################
+====================================
 
 Wer mit einem Windows-Rechner auf die Dateien von SmartHomeNG und
-SmartVISU zugreifen möchte, *kann* dazu **Samba** installieren:
+SmartVISU zugreifen möchte, *kann* dazu **Samba** installieren.
+
+.. contents:: Schritte der Installation
+   :local:
+
+
+zusätzliche Linux Pakete installieren
+=====================================
 
 .. code-block:: bash
 
    sudo apt-get install samba
+
+
+Samba konfigurieren
+===================
 
 Dann die smb.conf sichern und editieren:
 
