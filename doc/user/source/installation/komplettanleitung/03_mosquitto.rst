@@ -9,11 +9,16 @@
 MQTT Broker installieren
 ========================
 
+Ab Version 1.7 wird MQTT direkt vom Core von SmartHomeMG unterstützt. Um MQTT zu nutzen, muss ein Broker verwendet werden,
+mit dem die MQTT Clients kommunizieren. Wenn im Netzwerk noch kein Broker installiert ist, kann auf dem Rechner auf dem
+SmartHomeNG installiert wird, auch ein Broker installiert werden.
+
 .. contents:: Schritte der Installation
    :local:
 
-Um MQTT zu nutzen, muss ein Broker verwendet werden, mit dem die MQTT Clients kommunizieren. Wenn im Netzwerk noch kein
-Broker installiert ist, kann auf dem Rechner auf dem SmartHomeNG installiert wird, auch ein Broker installiert werden.
+
+Mosquitto installieren
+======================
 
 Ein populärer Open Source Broker ist **Eclipse Mosquitto™**. Die Installation dieses Brokers wird im folgenden beschrieben.
 Weitergehende Informationen zu dem Broker sind unter https://mosquitto.org zu finden.

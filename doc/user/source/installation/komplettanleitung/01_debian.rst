@@ -2,6 +2,7 @@
 .. index:: Linux; Debian installieren
 
 .. role:: bluesup
+.. role:: redsup
 
 ===========================================
 Debian Linux installieren :bluesup:`update`
@@ -23,7 +24,7 @@ oder `UNetbootin <https://unetbootin.github.io/>`__ auf einen USB Stick
 
 
 
-.. topic:: Raspberry Pi
+.. note::
 
    Die Installation auf einem **Raspberry Pi** kann idealerweise über ein fertiges
    `Image <https://sourceforge.net/projects/smarthomeng-raspi-image/>`__
@@ -71,7 +72,7 @@ Entwicklung darf abgelehnt werden.
 
 
 Softwareauswahl
-~~~~~~~~~~~~~~~
+===============
 
 Wenn ihre keine grafische Benutzeroberfläche braucht, dann bitte
 **abwählen**:
@@ -96,7 +97,7 @@ gestartet.
 
 
 Einloggen via SSH oder an der Konsole
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+=====================================
 
 | Mit einem **SSH Client** jetzt auf den frisch installierten smarthome
   Server einloggen: Unter OSX dazu einfach eine Kommandozeile öffnen und
@@ -132,7 +133,7 @@ Zertifikaten <https://www.thomas-krenn.com/de/wiki/SSH_Key_Login>`__
 gibt es z.B. bei Thomas Krenn.
 
 Systemaktualisierung
-~~~~~~~~~~~~~~~~~~~~
+====================
 
 Nach der Anmeldung ist zunächst mit
 
@@ -175,8 +176,11 @@ ist sicher.
    verwiesen <https://wiki.debian.org/NetworkConfiguration>`__
 
 
-Optional: Installation der Open VM Tools bei Verwendung als virtuelle Maschine unter VMWare Workstation oder ESXi
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Optional
+--------
+
+Bei Verwendung unter VMware: Installation der Open VM Tools
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Wenn die Installation virtuelle Maschine erfolgt ist, wird von `VMWare
 empfohlen <https://kb.vmware.com/kb/2073803>`__ die Open VM Tools zu
@@ -197,8 +201,9 @@ bei Vorhandensein einer GUI dann alternativ mit
 Die automatische Anpassung der Bildschirmgröße funktioniert erst nach
 einem Neustart.
 
-Optional: Installation der Gästeerweiterungen bei Verwendung als virtuelle Maschine unter Oracle VM VirtualBox
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Bei Verwendung unter Oracle VM VirtualBox: Installation der Gästeerweiterungen
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Um die Gästeerweiterungen zu installieren zuerst unter **Geräte** ->
 **Gästeerweiterungen einlegen** anklicken. Diese nun via Terminal/Shell
@@ -211,8 +216,9 @@ ausführen und den Anweisungen folgen:
 Nach einem Neustart passt sich nun bspw. bei Verwendung einer GUI die
 Auflösung dynamisch an.
 
+
 Restarbeiten am System
-~~~~~~~~~~~~~~~~~~~~~~
+======================
 
 Wenn kein Passwort für root vergeben wurde, dann wird der bei der
 Installation erstellte User (hier: smarthome) automatisch in die Gruppe

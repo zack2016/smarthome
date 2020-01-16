@@ -104,8 +104,8 @@ Diese können wie folgt installiert werden:
 Jetzt ist SmartHomeNG installiert und kann konfiguriert werden.
 
 
-Erstmalige Konfiguration
-========================
+Erstmalige Konfiguration per GUI
+================================
 
 Die erstmalige Konfiguration kann mit der graphischen Oberfläche (Administrations-Interface) oder durch Anpassung
 der Konfigurationdateien vorgenommen werden.
@@ -196,8 +196,8 @@ ist.
 
 
 
-Erstmalige Konfiguration für Fortgeschrittene
-=============================================
+Erstmalige Konfiguration per Kommandozeile (für Fortgeschrittene)
+=================================================================
 
 Fortgeschrittene oder Experten können SmartHomeNG auch direkt über die Konfigurationsdateien konfigurieren. Dieses ist
 hier im folgenden kurz beschrieben. Eine ausführlichere Beschreibung findet sich im Abschnitt
