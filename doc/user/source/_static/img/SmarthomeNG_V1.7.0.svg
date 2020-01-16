@@ -2053,11 +2053,17 @@
                 <text x="0px" y="0px" style="font-family:'LucidaGrande', 'Lucida Grande', sans-serif;font-weight:500;font-size:14.003px;">Plugins</text>
             </g>
         </g>
-        <g id="id9" transform="matrix(1,0,0,1,0,84)">
-            <rect x="640.885" y="209.452" width="159.959" height="76.904" style="fill:none;"/>
-            <path d="M720.85,286.299L640.913,286.299L640.913,209.48L800.787,209.48L800.787,286.299L720.85,286.299Z" style="fill:rgb(132,246,113);"/>
-            <path d="M720.85,286.299L640.913,286.299L640.913,209.48L800.787,209.48L800.787,286.299L720.85,286.299Z" style="fill:none;stroke:rgb(52,101,164);stroke-width:0.8px;"/>
-            <g>
+        <g>
+            <g transform="matrix(1,0,0,1,0,84)">
+                <rect x="640.885" y="209.452" width="159.959" height="76.904" style="fill:none;"/>
+            </g>
+            <g transform="matrix(1.06309,0,0,1,-40.4332,84)">
+                <path d="M720.85,286.299L640.913,286.299L640.913,209.48L800.787,209.48L800.787,286.299L720.85,286.299Z" style="fill:rgb(132,246,113);"/>
+            </g>
+            <g transform="matrix(1.06346,0,0,1,-40.6733,84)">
+                <path d="M720.85,286.299L640.913,286.299L640.913,209.48L800.787,209.48L800.787,286.299L720.85,286.299Z" style="fill:none;stroke:rgb(52,101,164);stroke-width:0.8px;"/>
+            </g>
+            <g transform="matrix(1,0,0,1,0,84)">
                 <g transform="matrix(1,0,0,1,705.969,224.844)">
                     <text x="0px" y="0px" style="font-family:'LucidaGrande', 'Lucida Grande', sans-serif;font-weight:500;font-size:14.003px;">knxd</text>
                 </g>
@@ -2084,11 +2090,17 @@
             <path d="M443.055,233.15L456.69,238.847L457.398,229.521L443.055,233.15Z"/>
             <path d="M640.913,247.89L627.279,242.192L626.57,251.518L640.913,247.89Z"/>
         </g>
-        <g id="id11" transform="matrix(1,0,0,1,0,84)">
-            <rect x="640.885" y="289.106" width="159.959" height="76.904" style="fill:none;"/>
-            <path d="M720.85,365.953L640.913,365.953L640.913,289.134L800.787,289.134L800.787,365.953L720.85,365.953Z" style="fill:rgb(131,202,255);"/>
-            <path d="M720.85,365.953L640.913,365.953L640.913,289.134L800.787,289.134L800.787,365.953L720.85,365.953Z" style="fill:none;stroke:rgb(52,101,164);stroke-width:0.8px;"/>
-            <g>
+        <g>
+            <g transform="matrix(1,0,0,1,0,84)">
+                <rect x="640.885" y="289.106" width="159.959" height="76.904" style="fill:none;"/>
+            </g>
+            <g transform="matrix(1.06735,0,0,1,-43.1684,84)">
+                <path d="M720.85,365.953L640.913,365.953L640.913,289.134L800.787,289.134L800.787,365.953L720.85,365.953Z" style="fill:rgb(131,202,255);"/>
+            </g>
+            <g transform="matrix(1.06691,0,0,1,-42.8865,84)">
+                <path d="M720.85,365.953L640.913,365.953L640.913,289.134L800.787,289.134L800.787,365.953L720.85,365.953Z" style="fill:none;stroke:rgb(52,101,164);stroke-width:0.8px;"/>
+            </g>
+            <g transform="matrix(1,0,0,1,0,84)">
                 <g transform="matrix(1,0,0,1,692.362,304.498)">
                     <text x="0px" y="0px" style="font-family:'LucidaGrande', 'Lucida Grande', sans-serif;font-weight:500;font-size:14.003px;">owserver</text>
                 </g>
@@ -2206,31 +2218,31 @@
                 <text x="0px" y="0px" style="font-family:'LucidaGrande', 'Lucida Grande', sans-serif;font-weight:500;font-size:14.003px;">RS232</text>
             </g>
         </g>
-        <g id="id20" transform="matrix(1,0,0,1,0,84)">
+        <g id="id20" transform="matrix(0.968117,0,0,1,36.1386,84)">
             <rect x="800.787" y="196.724" width="103.181" height="55.616" style="fill:none;"/>
             <path d="M814.394,247.635C872.419,245.424 891.524,235.219 899.49,209.877" style="fill:none;stroke:black;stroke-width:0.57px;"/>
             <path d="M800.787,247.89L814.904,252.283L814.734,242.929L800.787,247.89Z"/>
             <path d="M901.417,196.724L894.671,209.877L903.912,211.294L901.417,196.724Z"/>
         </g>
-        <g id="id21" transform="matrix(1,0,0,1,0,84)">
+        <g id="id21" transform="matrix(0.968117,0,0,1,36.1386,84)">
             <rect x="800.787" y="196.724" width="178.639" height="55.786" style="fill:none;"/>
             <path d="M814.62,247.805C923.811,246.501 961.625,235.077 975.26,209.395" style="fill:none;stroke:black;stroke-width:0.57px;"/>
             <path d="M800.787,247.89L814.847,252.482L814.791,243.128L800.787,247.89Z"/>
             <path d="M978.378,196.724L970.328,209.14L979.398,211.493L978.378,196.724Z"/>
         </g>
-        <g id="id22" transform="matrix(1,0,0,1,0,84)">
+        <g id="id22" transform="matrix(0.968117,0,0,1,36.1386,84)">
             <rect x="800.787" y="196.724" width="230.627" height="55.843" style="fill:none;"/>
             <path d="M814.677,247.833C959.046,246.841 1010.24,234.935 1027.45,209.027" style="fill:none;stroke:black;stroke-width:0.57px;"/>
             <path d="M800.787,247.89L814.847,252.51L814.791,243.156L800.787,247.89Z"/>
             <path d="M1031.24,196.724L1022.49,208.63L1031.39,211.521L1031.24,196.724Z"/>
         </g>
-        <g id="id23" transform="matrix(1,0,0,1,0,84)">
+        <g id="id23" transform="matrix(0.968117,0,0,1,36.1386,84)">
             <rect x="800.787" y="196.724" width="277.965" height="55.843" style="fill:none;"/>
             <path d="M814.734,247.861C990.737,247.011 1054.12,234.85 1074.39,208.715" style="fill:none;stroke:black;stroke-width:0.57px;"/>
             <path d="M800.787,247.89L814.819,252.539L814.819,243.184L800.787,247.89Z"/>
             <path d="M1078.72,196.724L1069.4,208.205L1078.13,211.493L1078.72,196.724Z"/>
         </g>
-        <g id="id24" transform="matrix(1,0,0,1,0,84)">
+        <g id="id24" transform="matrix(0.968117,0,0,1,36.1386,84)">
             <rect x="800.787" y="196.724" width="332.674" height="55.871" style="fill:none;"/>
             <path d="M814.762,247.861C1027.22,247.153 1104.94,234.737 1128.56,208.375" style="fill:none;stroke:black;stroke-width:0.57px;"/>
             <path d="M800.787,247.89L814.819,252.539L814.819,243.184L800.787,247.89Z"/>
@@ -2334,13 +2346,13 @@
                 <text x="871.672px" y="165.519px" style="font-family:'ArialMT', 'Arial', sans-serif;font-size:12.933px;fill:white;">Device</text>
             </g>
         </g>
-        <g id="id28" transform="matrix(1,0,0,1,0,84)">
+        <g id="id28" transform="matrix(0.94575,0,0,1,52.0674,84)">
             <rect x="800.787" y="313.03" width="100.658" height="19.077" style="fill:none;"/>
             <path d="M814.365,327.402C855.241,326.523 847.417,321.817 858.586,317.225C869.754,312.633 886.422,311.046 895.975,318.331" style="fill:none;stroke:black;stroke-width:0.57px;"/>
             <path d="M800.787,327.543L814.876,332.079L814.762,322.724L800.787,327.543Z"/>
             <path d="M901.417,329.953L899.376,315.298L890.986,319.465L901.417,329.953Z"/>
         </g>
-        <g id="id29" transform="matrix(1,0,0,1,0,84)">
+        <g id="id29" transform="matrix(0.94575,0,0,1,52.0674,84)">
             <rect x="800.787" y="293.839" width="177.42" height="38.126" style="fill:none;"/>
             <path d="M814.45,327.26C859.521,325.219 850.904,313.569 879.704,302.797C908.504,292.025 961.88,286.129 973.843,316.942" style="fill:none;stroke:black;stroke-width:0.57px;"/>
             <path d="M800.787,327.543L814.904,331.909L814.706,322.554L800.787,327.543Z"/>
@@ -2434,102 +2446,100 @@
                 </g>
             </g>
         </g>
-        <g transform="matrix(1,0,0,1,0,68)">
-            <g>
-                <g id="id38">
-                    <rect x="858.132" y="443.197" width="293.499" height="436.677" style="fill:none;"/>
-                    <path d="M1004.91,879.392L858.501,879.534L858.416,443.764L1151.24,443.509L1151.32,879.279L1004.91,879.392Z" style="fill:rgb(221,221,221);"/>
-                    <path d="M1004.91,879.392L858.501,879.534L858.416,443.764L1151.24,443.509L1151.32,879.279L1004.91,879.392Z" style="fill:none;stroke:rgb(52,101,164);stroke-width:0.57px;"/>
-                    <g transform="matrix(1,0,0,1,865.814,463.833)">
-                        <text x="0px" y="0px" style="font-family:'LucidaGrande', 'Lucida Grande', sans-serif;font-weight:500;font-size:14.003px;">Webbrowser (Firefox, Chrome &amp; Co.)</text>
-                    </g>
-                </g>
-                <g id="id39">
-                    <rect x="871.937" y="743.216" width="266.769" height="124.469" style="fill:none;"/>
-                    <path d="M1005.31,867.373L872.22,867.373L872.22,743.499L1138.39,743.499L1138.39,867.373L1005.31,867.373Z" style="fill:rgb(114,159,207);"/>
-                    <path d="M1005.31,867.373L872.22,867.373L872.22,743.499L1138.39,743.499L1138.39,867.373L1005.31,867.373Z" style="fill:none;stroke:rgb(52,101,164);stroke-width:0.57px;"/>
-                    <g>
-                        <g transform="matrix(1,0,0,1,879.591,776.806)">
-                            <text x="0px" y="0px" style="font-family:'LucidaGrande', 'Lucida Grande', sans-serif;font-weight:500;font-size:14.003px;">SmartVISU</text>
-                        </g>
-                        <g transform="matrix(1,0,0,1,890.929,788.825)">
-                            <text x="0px" y="0px" style="font-family:'LucidaGrande', 'Lucida Grande', sans-serif;font-weight:500;font-size:10.006px;">bekommt das Grundgerüst der Seite über http vom</text>
-                        </g>
-                        <g transform="matrix(1,0,0,1,890.929,799.994)">
-                            <text x="0px" y="0px" style="font-family:'LucidaGrande', 'Lucida Grande', sans-serif;font-weight:500;font-size:10.006px;">Webserver (Apache etc.)</text>
-                        </g>
-                        <g transform="matrix(1,0,0,1,890.929,811.162)">
-                            <text x="0px" y="0px" style="font-family:'LucidaGrande', 'Lucida Grande', sans-serif;font-weight:500;font-size:10.006px;">benötigt zwingend Javascript</text>
-                        </g>
-                        <g transform="matrix(1,0,0,1,890.929,822.331)">
-                            <text x="0px" y="0px" style="font-family:'LucidaGrande', 'Lucida Grande', sans-serif;font-weight:500;font-size:10.006px;">Browser ohne Websockets funktionieren nicht</text>
-                        </g>
-                        <g transform="matrix(1,0,0,1,890.929,833.499)">
-                            <text x="0px" y="0px" style="font-family:'LucidaGrande', 'Lucida Grande', sans-serif;font-weight:500;font-size:10.006px;">Itemwerte; Datenlisten etc. werden JSON codiert über</text>
-                        </g>
-                        <g transform="matrix(1,0,0,1,890.929,844.668)">
-                            <text x="0px" y="0px" style="font-family:'LucidaGrande', 'Lucida Grande', sans-serif;font-weight:500;font-size:10.006px;">Websocket-Verbindung übertragen</text>
-                        </g>
-                    </g>
-                    <g>
-                        <g id="bullet-char-template-8226" transform="matrix(0.172363,0,0,-0.172363,879.591,787.776)">
-                            <path d="M9.808,12.954C7.739,12.954 5.924,13.691 4.394,15.165C2.863,16.611 2.098,18.397 2.098,20.494C2.098,22.564 2.863,24.35 4.394,25.824C5.924,27.298 7.739,28.035 9.808,28.035C11.877,28.035 13.606,27.298 15.052,25.795C16.498,24.35 17.235,22.564 17.235,20.494C17.235,18.369 16.526,16.611 15.08,15.165C13.663,13.691 11.906,12.954 9.808,12.954Z"/>
-                        </g>
-                        <g id="bullet-char-template-82261" serif:id="bullet-char-template-8226" transform="matrix(0.172363,0,0,-0.172363,879.591,810.113)">
-                            <path d="M9.808,12.954C7.739,12.954 5.924,13.691 4.394,15.165C2.863,16.611 2.098,18.397 2.098,20.494C2.098,22.564 2.863,24.35 4.394,25.824C5.924,27.298 7.739,28.035 9.808,28.035C11.877,28.035 13.606,27.298 15.052,25.795C16.498,24.35 17.235,22.564 17.235,20.494C17.235,18.369 16.526,16.611 15.08,15.165C13.663,13.691 11.906,12.954 9.808,12.954Z"/>
-                        </g>
-                        <g id="bullet-char-template-82262" serif:id="bullet-char-template-8226" transform="matrix(0.172363,0,0,-0.172363,879.591,821.282)">
-                            <path d="M9.808,12.954C7.739,12.954 5.924,13.691 4.394,15.165C2.863,16.611 2.098,18.397 2.098,20.494C2.098,22.564 2.863,24.35 4.394,25.824C5.924,27.298 7.739,28.035 9.808,28.035C11.877,28.035 13.606,27.298 15.052,25.795C16.498,24.35 17.235,22.564 17.235,20.494C17.235,18.369 16.526,16.611 15.08,15.165C13.663,13.691 11.906,12.954 9.808,12.954Z"/>
-                        </g>
-                        <g id="bullet-char-template-82263" serif:id="bullet-char-template-8226" transform="matrix(0.172363,0,0,-0.172363,879.591,832.45)">
-                            <path d="M9.808,12.954C7.739,12.954 5.924,13.691 4.394,15.165C2.863,16.611 2.098,18.397 2.098,20.494C2.098,22.564 2.863,24.35 4.394,25.824C5.924,27.298 7.739,28.035 9.808,28.035C11.877,28.035 13.606,27.298 15.052,25.795C16.498,24.35 17.235,22.564 17.235,20.494C17.235,18.369 16.526,16.611 15.08,15.165C13.663,13.691 11.906,12.954 9.808,12.954Z"/>
-                        </g>
-                    </g>
-                </g>
-                <g id="id40">
-                    <rect x="871.909" y="608.74" width="266.712" height="131.414" style="fill:none;"/>
-                    <path d="M1005.25,739.616L872.22,739.814L872.192,609.42L1138.28,609.052L1138.31,739.446L1005.25,739.616Z" style="fill:rgb(114,159,207);"/>
-                    <path d="M1005.25,739.616L872.22,739.814L872.192,609.42L1138.28,609.052L1138.31,739.446L1005.25,739.616Z" style="fill:none;stroke:rgb(52,101,164);stroke-width:0.57px;"/>
-                    <g>
-                        <g transform="matrix(1,0,0,1,879.562,643.663)">
-                            <text x="0px" y="0px" style="font-family:'LucidaGrande', 'Lucida Grande', sans-serif;font-weight:500;font-size:14.003px;">Admin Interface, liefert Informationen</text>
-                        </g>
-                        <g transform="matrix(1,0,0,1,879.562,659.395)">
-                            <text x="0px" y="0px" style="font-family:'LucidaGrande', 'Lucida Grande', sans-serif;font-weight:500;font-size:14.003px;">über SmartHomeNG:</text>
-                        </g>
-                        <g transform="matrix(1,0,0,1,890.901,671.414)">
-                            <text x="0px" y="0px" style="font-family:'LucidaGrande', 'Lucida Grande', sans-serif;font-weight:500;font-size:10.006px;">Als Basis in Angular implementiert</text>
-                        </g>
-                        <g transform="matrix(1,0,0,1,890.901,682.583)">
-                            <text x="0px" y="0px" style="font-family:'LucidaGrande', 'Lucida Grande', sans-serif;font-weight:500;font-size:10.006px;">benötigt im Browser zwingend Javascript</text>
-                        </g>
-                        <g transform="matrix(1,0,0,1,890.901,693.751)">
-                            <text x="0px" y="0px" style="font-family:'LucidaGrande', 'Lucida Grande', sans-serif;font-weight:500;font-size:10.006px;">Anfragen an SmartHomeNG laufen über Ajax</text>
-                        </g>
-                        <g transform="matrix(1,0,0,1,890.901,704.92)">
-                            <text x="0px" y="0px" style="font-family:'LucidaGrande', 'Lucida Grande', sans-serif;font-weight:500;font-size:10.006px;">Informationen u.a Logger, Logiken, Scheduler, Items,</text>
-                        </g>
-                        <g transform="matrix(1,0,0,1,890.901,716.088)">
-                            <text x="0px" y="0px" style="font-family:'LucidaGrande', 'Lucida Grande', sans-serif;font-weight:500;font-size:10.006px;">Umgebung, etc.</text>
-                        </g>
-                    </g>
-                    <g>
-                        <g id="bullet-char-template-82264" serif:id="bullet-char-template-8226" transform="matrix(0.172363,0,0,-0.172363,879.562,670.365)">
-                            <path d="M9.808,12.954C7.739,12.954 5.924,13.691 4.394,15.165C2.863,16.611 2.098,18.397 2.098,20.494C2.098,22.564 2.863,24.35 4.394,25.824C5.924,27.298 7.739,28.035 9.808,28.035C11.877,28.035 13.606,27.298 15.052,25.795C16.498,24.35 17.235,22.564 17.235,20.494C17.235,18.369 16.526,16.611 15.08,15.165C13.663,13.691 11.906,12.954 9.808,12.954Z"/>
-                        </g>
-                        <g id="bullet-char-template-82265" serif:id="bullet-char-template-8226" transform="matrix(0.172363,0,0,-0.172363,879.562,681.534)">
-                            <path d="M9.808,12.954C7.739,12.954 5.924,13.691 4.394,15.165C2.863,16.611 2.098,18.397 2.098,20.494C2.098,22.564 2.863,24.35 4.394,25.824C5.924,27.298 7.739,28.035 9.808,28.035C11.877,28.035 13.606,27.298 15.052,25.795C16.498,24.35 17.235,22.564 17.235,20.494C17.235,18.369 16.526,16.611 15.08,15.165C13.663,13.691 11.906,12.954 9.808,12.954Z"/>
-                        </g>
-                        <g id="bullet-char-template-82266" serif:id="bullet-char-template-8226" transform="matrix(0.172363,0,0,-0.172363,879.562,692.702)">
-                            <path d="M9.808,12.954C7.739,12.954 5.924,13.691 4.394,15.165C2.863,16.611 2.098,18.397 2.098,20.494C2.098,22.564 2.863,24.35 4.394,25.824C5.924,27.298 7.739,28.035 9.808,28.035C11.877,28.035 13.606,27.298 15.052,25.795C16.498,24.35 17.235,22.564 17.235,20.494C17.235,18.369 16.526,16.611 15.08,15.165C13.663,13.691 11.906,12.954 9.808,12.954Z"/>
-                        </g>
-                        <g id="bullet-char-template-82267" serif:id="bullet-char-template-8226" transform="matrix(0.172363,0,0,-0.172363,879.562,703.871)">
-                            <path d="M9.808,12.954C7.739,12.954 5.924,13.691 4.394,15.165C2.863,16.611 2.098,18.397 2.098,20.494C2.098,22.564 2.863,24.35 4.394,25.824C5.924,27.298 7.739,28.035 9.808,28.035C11.877,28.035 13.606,27.298 15.052,25.795C16.498,24.35 17.235,22.564 17.235,20.494C17.235,18.369 16.526,16.611 15.08,15.165C13.663,13.691 11.906,12.954 9.808,12.954Z"/>
-                        </g>
-                    </g>
+        <g>
+            <g id="id38" transform="matrix(1.04355,0,0,1,-46.3698,68)">
+                <rect x="858.132" y="443.197" width="293.499" height="436.677" style="fill:none;"/>
+                <path d="M1004.91,879.392L858.501,879.534L858.416,443.764L1151.24,443.509L1151.32,879.279L1004.91,879.392Z" style="fill:rgb(221,221,221);"/>
+                <path d="M1004.91,879.392L858.501,879.534L858.416,443.764L1151.24,443.509L1151.32,879.279L1004.91,879.392Z" style="fill:none;stroke:rgb(52,101,164);stroke-width:0.57px;"/>
+                <g transform="matrix(1,0,0,1,865.814,463.833)">
+                    <text x="0px" y="0px" style="font-family:'LucidaGrande', 'Lucida Grande', sans-serif;font-weight:500;font-size:14.003px;">Webbrowser (Firefox, Chrome &amp; Co.)</text>
                 </g>
             </g>
-            <g>
+            <g transform="matrix(1,0,0,1,-9,68)">
+                <rect x="871.937" y="743.216" width="266.769" height="124.469" style="fill:none;"/>
+            </g>
+            <g transform="matrix(1.05731,0,0,1,-58.9896,68)">
+                <path d="M1005.31,867.373L872.22,867.373L872.22,743.499L1138.39,743.499L1138.39,867.373L1005.31,867.373Z" style="fill:rgb(114,159,207);"/>
+            </g>
+            <g transform="matrix(1.05567,0,0,1,-57.556,68)">
+                <path d="M1005.31,867.373L872.22,867.373L872.22,743.499L1138.39,743.499L1138.39,867.373L1005.31,867.373Z" style="fill:none;stroke:rgb(52,101,164);stroke-width:0.57px;"/>
+            </g>
+            <g transform="matrix(1,0,0,1,870.591,844.806)">
+                <text x="0px" y="0px" style="font-family:'LucidaGrande', 'Lucida Grande', sans-serif;font-weight:500;font-size:14.003px;">SmartVISU</text>
+            </g>
+            <g transform="matrix(1,0,0,1,881.929,856.825)">
+                <text x="0px" y="0px" style="font-family:'LucidaGrande', 'Lucida Grande', sans-serif;font-weight:500;font-size:10.006px;">bekommt das Grundgerüst der Seite über http vom</text>
+            </g>
+            <g transform="matrix(1,0,0,1,881.929,867.994)">
+                <text x="0px" y="0px" style="font-family:'LucidaGrande', 'Lucida Grande', sans-serif;font-weight:500;font-size:10.006px;">Webserver (Apache etc.)</text>
+            </g>
+            <g transform="matrix(1,0,0,1,881.929,879.162)">
+                <text x="0px" y="0px" style="font-family:'LucidaGrande', 'Lucida Grande', sans-serif;font-weight:500;font-size:10.006px;">benötigt zwingend Javascript</text>
+            </g>
+            <g transform="matrix(1,0,0,1,881.929,890.331)">
+                <text x="0px" y="0px" style="font-family:'LucidaGrande', 'Lucida Grande', sans-serif;font-weight:500;font-size:10.006px;">Browser ohne Websockets funktionieren nicht</text>
+            </g>
+            <g transform="matrix(1,0,0,1,881.929,901.499)">
+                <text x="0px" y="0px" style="font-family:'LucidaGrande', 'Lucida Grande', sans-serif;font-weight:500;font-size:10.006px;">Itemwerte; Datenlisten etc. werden JSON codiert über</text>
+            </g>
+            <g transform="matrix(1,0,0,1,881.929,912.668)">
+                <text x="0px" y="0px" style="font-family:'LucidaGrande', 'Lucida Grande', sans-serif;font-weight:500;font-size:10.006px;">Websocket-Verbindung übertragen</text>
+            </g>
+            <g id="bullet-char-template-8226" transform="matrix(0.172363,0,0,-0.172363,870.591,855.776)">
+                <path d="M9.808,12.954C7.739,12.954 5.924,13.691 4.394,15.165C2.863,16.611 2.098,18.397 2.098,20.494C2.098,22.564 2.863,24.35 4.394,25.824C5.924,27.298 7.739,28.035 9.808,28.035C11.877,28.035 13.606,27.298 15.052,25.795C16.498,24.35 17.235,22.564 17.235,20.494C17.235,18.369 16.526,16.611 15.08,15.165C13.663,13.691 11.906,12.954 9.808,12.954Z"/>
+            </g>
+            <g id="bullet-char-template-82261" serif:id="bullet-char-template-8226" transform="matrix(0.172363,0,0,-0.172363,870.591,878.113)">
+                <path d="M9.808,12.954C7.739,12.954 5.924,13.691 4.394,15.165C2.863,16.611 2.098,18.397 2.098,20.494C2.098,22.564 2.863,24.35 4.394,25.824C5.924,27.298 7.739,28.035 9.808,28.035C11.877,28.035 13.606,27.298 15.052,25.795C16.498,24.35 17.235,22.564 17.235,20.494C17.235,18.369 16.526,16.611 15.08,15.165C13.663,13.691 11.906,12.954 9.808,12.954Z"/>
+            </g>
+            <g id="bullet-char-template-82262" serif:id="bullet-char-template-8226" transform="matrix(0.172363,0,0,-0.172363,870.591,889.282)">
+                <path d="M9.808,12.954C7.739,12.954 5.924,13.691 4.394,15.165C2.863,16.611 2.098,18.397 2.098,20.494C2.098,22.564 2.863,24.35 4.394,25.824C5.924,27.298 7.739,28.035 9.808,28.035C11.877,28.035 13.606,27.298 15.052,25.795C16.498,24.35 17.235,22.564 17.235,20.494C17.235,18.369 16.526,16.611 15.08,15.165C13.663,13.691 11.906,12.954 9.808,12.954Z"/>
+            </g>
+            <g id="bullet-char-template-82263" serif:id="bullet-char-template-8226" transform="matrix(0.172363,0,0,-0.172363,870.591,900.45)">
+                <path d="M9.808,12.954C7.739,12.954 5.924,13.691 4.394,15.165C2.863,16.611 2.098,18.397 2.098,20.494C2.098,22.564 2.863,24.35 4.394,25.824C5.924,27.298 7.739,28.035 9.808,28.035C11.877,28.035 13.606,27.298 15.052,25.795C16.498,24.35 17.235,22.564 17.235,20.494C17.235,18.369 16.526,16.611 15.08,15.165C13.663,13.691 11.906,12.954 9.808,12.954Z"/>
+            </g>
+            <g transform="matrix(1,0,0,1,-9,68)">
+                <rect x="871.909" y="608.74" width="266.712" height="131.414" style="fill:none;"/>
+            </g>
+            <g transform="matrix(1.05433,0,0,1,-56.3869,68)">
+                <path d="M1005.25,739.616L872.22,739.814L872.192,609.42L1138.28,609.052L1138.31,739.446L1005.25,739.616Z" style="fill:rgb(114,159,207);"/>
+            </g>
+            <g transform="matrix(1.05565,0,0,1,-57.5392,68)">
+                <path d="M1005.25,739.616L872.22,739.814L872.192,609.42L1138.28,609.052L1138.31,739.446L1005.25,739.616Z" style="fill:none;stroke:rgb(52,101,164);stroke-width:0.57px;"/>
+            </g>
+            <g transform="matrix(1,0,0,1,870.562,711.663)">
+                <text x="0px" y="0px" style="font-family:'LucidaGrande', 'Lucida Grande', sans-serif;font-weight:500;font-size:14.003px;">Admin Interface, liefert Informationen</text>
+            </g>
+            <g transform="matrix(1,0,0,1,870.562,727.395)">
+                <text x="0px" y="0px" style="font-family:'LucidaGrande', 'Lucida Grande', sans-serif;font-weight:500;font-size:14.003px;">über SmartHomeNG:</text>
+            </g>
+            <g transform="matrix(1,0,0,1,881.901,739.414)">
+                <text x="0px" y="0px" style="font-family:'LucidaGrande', 'Lucida Grande', sans-serif;font-weight:500;font-size:10.006px;">Als Basis in Angular implementiert</text>
+            </g>
+            <g transform="matrix(1,0,0,1,881.901,750.583)">
+                <text x="0px" y="0px" style="font-family:'LucidaGrande', 'Lucida Grande', sans-serif;font-weight:500;font-size:10.006px;">benötigt im Browser zwingend Javascript</text>
+            </g>
+            <g transform="matrix(1,0,0,1,881.901,761.751)">
+                <text x="0px" y="0px" style="font-family:'LucidaGrande', 'Lucida Grande', sans-serif;font-weight:500;font-size:10.006px;">Anfragen an SmartHomeNG laufen über Ajax</text>
+            </g>
+            <g transform="matrix(1,0,0,1,881.901,772.92)">
+                <text x="0px" y="0px" style="font-family:'LucidaGrande', 'Lucida Grande', sans-serif;font-weight:500;font-size:10.006px;">Informationen u.a Logger, Logiken, Scheduler, Items,</text>
+            </g>
+            <g transform="matrix(1,0,0,1,881.901,784.088)">
+                <text x="0px" y="0px" style="font-family:'LucidaGrande', 'Lucida Grande', sans-serif;font-weight:500;font-size:10.006px;">Umgebung, etc.</text>
+            </g>
+            <g id="bullet-char-template-82264" serif:id="bullet-char-template-8226" transform="matrix(0.172363,0,0,-0.172363,870.562,738.365)">
+                <path d="M9.808,12.954C7.739,12.954 5.924,13.691 4.394,15.165C2.863,16.611 2.098,18.397 2.098,20.494C2.098,22.564 2.863,24.35 4.394,25.824C5.924,27.298 7.739,28.035 9.808,28.035C11.877,28.035 13.606,27.298 15.052,25.795C16.498,24.35 17.235,22.564 17.235,20.494C17.235,18.369 16.526,16.611 15.08,15.165C13.663,13.691 11.906,12.954 9.808,12.954Z"/>
+            </g>
+            <g id="bullet-char-template-82265" serif:id="bullet-char-template-8226" transform="matrix(0.172363,0,0,-0.172363,870.562,749.534)">
+                <path d="M9.808,12.954C7.739,12.954 5.924,13.691 4.394,15.165C2.863,16.611 2.098,18.397 2.098,20.494C2.098,22.564 2.863,24.35 4.394,25.824C5.924,27.298 7.739,28.035 9.808,28.035C11.877,28.035 13.606,27.298 15.052,25.795C16.498,24.35 17.235,22.564 17.235,20.494C17.235,18.369 16.526,16.611 15.08,15.165C13.663,13.691 11.906,12.954 9.808,12.954Z"/>
+            </g>
+            <g id="bullet-char-template-82266" serif:id="bullet-char-template-8226" transform="matrix(0.172363,0,0,-0.172363,870.562,760.702)">
+                <path d="M9.808,12.954C7.739,12.954 5.924,13.691 4.394,15.165C2.863,16.611 2.098,18.397 2.098,20.494C2.098,22.564 2.863,24.35 4.394,25.824C5.924,27.298 7.739,28.035 9.808,28.035C11.877,28.035 13.606,27.298 15.052,25.795C16.498,24.35 17.235,22.564 17.235,20.494C17.235,18.369 16.526,16.611 15.08,15.165C13.663,13.691 11.906,12.954 9.808,12.954Z"/>
+            </g>
+            <g id="bullet-char-template-82267" serif:id="bullet-char-template-8226" transform="matrix(0.172363,0,0,-0.172363,870.562,771.871)">
+                <path d="M9.808,12.954C7.739,12.954 5.924,13.691 4.394,15.165C2.863,16.611 2.098,18.397 2.098,20.494C2.098,22.564 2.863,24.35 4.394,25.824C5.924,27.298 7.739,28.035 9.808,28.035C11.877,28.035 13.606,27.298 15.052,25.795C16.498,24.35 17.235,22.564 17.235,20.494C17.235,18.369 16.526,16.611 15.08,15.165C13.663,13.691 11.906,12.954 9.808,12.954Z"/>
+            </g>
+            <g transform="matrix(1,0,0,1,12,68)">
                 <g>
                     <g id="id41">
                         <rect x="882.397" y="493.427" width="70.101" height="94.649" style="fill:none;"/>
@@ -2565,7 +2575,7 @@
                 </g>
             </g>
         </g>
-        <g id="id47" transform="matrix(0.905993,0,0,-1.42904,83.5369,1722.03)">
+        <g id="id47" transform="matrix(0.884498,-2.63229e-18,4.15197e-18,-1.42904,91.3035,1722.03)">
             <rect x="361.332" y="660.529" width="510.917" height="18.794" style="fill:none;"/>
             <path d="M376.866,665.206C726.491,665.461 484.923,674.362 856.743,674.617" style="fill:none;stroke:black;stroke-width:0.57px;"/>
             <path d="M361.332,665.206L375.364,669.883L375.364,660.529L361.332,665.206Z"/>
@@ -2577,13 +2587,13 @@
             <path d="M361.332,665.206L375.364,669.883L375.364,660.529L361.332,665.206Z"/>
             <path d="M872.22,674.617L858.189,669.94L858.189,679.294L872.22,674.617Z"/>
         </g>
-        <g id="id48" transform="matrix(0.876712,0,0,0.939507,107.538,137.999)">
+        <g id="id48" transform="matrix(0.851502,0,0,0.939507,118.67,137.999)">
             <rect x="441.581" y="557.688" width="430.668" height="252.312" style="fill:none;"/>
             <path d="M456.973,562.394C757.672,570.076 555.449,798.321 858.331,805.266" style="fill:none;stroke:black;stroke-width:0.57px;"/>
             <path d="M441.581,562.195L455.556,567.043L455.669,557.688L441.581,562.195Z"/>
             <path d="M872.22,805.436L858.246,800.589L858.132,809.943L872.22,805.436Z"/>
         </g>
-        <g id="id49" transform="matrix(1,0,0,1,0,89)">
+        <g id="id49" transform="matrix(0.937503,0,0,1,46.1018,89)">
             <rect x="737.66" y="801.836" width="134.589" height="361.871" style="fill:none;"/>
             <path d="M742.365,1149.7C744.038,920.183 781.2,818.192 859.039,806.4" style="fill:none;stroke:black;stroke-width:0.57px;"/>
             <path d="M742.309,1163.68L747.043,1149.68L737.688,1149.62L742.309,1163.68Z"/>
@@ -2953,6 +2963,19 @@
                 </g>
                 <g transform="matrix(1,0,0,1,526.479,251.206)">
                     <text x="0px" y="0px" style="font-family:'LucidaGrande', 'Lucida Grande', sans-serif;font-weight:500;font-size:10.006px;">Port 6720</text>
+                </g>
+            </g>
+        </g>
+        <g transform="matrix(1,0,0,1,13.4063,-40.737)">
+            <g transform="matrix(0.691718,0,0,1,171.447,0)">
+                <path d="M548.022,256.365L505.502,256.365L505.502,228.019L590.542,228.019L590.542,256.365L548.022,256.365Z" style="fill:rgb(255,204,0);"/>
+            </g>
+            <g>
+                <g transform="matrix(1,0,0,1,538.072,240.038)">
+                    <text x="0px" y="0px" style="font-family:'LucidaGrande', 'Lucida Grande', sans-serif;font-weight:500;font-size:10.006px;">TCP</text>
+                </g>
+                <g transform="matrix(1,0,0,1,526.479,251.206)">
+                    <text x="0px" y="0px" style="font-family:'LucidaGrande', 'Lucida Grande', sans-serif;font-weight:500;font-size:10.006px;">Port 1883</text>
                 </g>
             </g>
         </g>
