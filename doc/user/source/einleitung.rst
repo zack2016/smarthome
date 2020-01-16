@@ -1,7 +1,7 @@
+
 .. figure:: _static/img/logo_long.png
    :alt: Logo SmartHomeNG
 
-   Image
 
 Einleitung
 ==========
@@ -35,5 +35,5 @@ Codes oder auch Beispiele sein.
 Wie alles zusammenhängt
 -----------------------
 
-.. figure:: /_static/img/SmarthomeNG_V1.6.0.svg
+.. figure:: /_static/img/SmarthomeNG_V1.7.0.svg
    :alt: Image

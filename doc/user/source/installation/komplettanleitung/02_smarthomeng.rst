@@ -150,7 +150,7 @@ Es sollte eine Zeile augegeben werden, die etwa so aussieht:
 Die Zeile zeigt an, dass unter dem User **smarthome** (hier zu smartho+ abgekürzt) unter der PID **28373** seit **12:45**
 Uhr SmartHomeNG (**python3 bin/smarthome.py**) ausgeführt wird.
 
-Erfolgt keine Ausgabe, so läuft SmartHomeNG nicht. In diesem Fall bitte den Angaben im Abschnitt :doc:`../fehlersuche`
+Erfolgt keine Ausgabe, so läuft SmartHomeNG nicht. In diesem Fall bitte den Angaben im Abschnitt :doc:`../../fehlersuche`
 nachlesen.
 
 
