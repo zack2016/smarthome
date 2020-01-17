@@ -1024,18 +1024,19 @@ class Requirements_files():
 
 
     def _write_header(self, ofile, filename):
-        filename = filename.ljust(25)
+        pip_statement = 'pip3 install -r '+filename+' --user'
+        pip_statement = pip_statement.ljust(49)
         ofile.write('\n')
-        ofile.write('#   +-----------------------------------------------+\n')
-        ofile.write('#   |                 SmartHomeNG                   |\n')
-        ofile.write('#   |            DON\'T EDIT THIS FILE               |\n')
-        ofile.write('#   |           THIS FILE IS GENERATED              |\n')
-        ofile.write('#   |              BY lib/shpypi.py                 |\n')
-        ofile.write('#   |            ON '+datetime.datetime.now().strftime('%d.%m.%Y %H:%M')+'                |\n')
-        ofile.write('#   |                                               |\n')
-        ofile.write('#   |               INSTALL WITH:                   |\n')
-        ofile.write('#   | sudo pip3 install -r '+filename+'|\n')
-        ofile.write('#   +-----------------------------------------------+\n')
+        ofile.write('#   +--------------------------------------------------+\n')
+        ofile.write('#   |                 SmartHomeNG                      |\n')
+        ofile.write('#   |            DON\'T EDIT THIS FILE                  |\n')
+        ofile.write('#   |           THIS FILE IS GENERATED                 |\n')
+        ofile.write('#   |              BY lib/shpypi.py                    |\n')
+        ofile.write('#   |            ON '+datetime.datetime.now().strftime('%d.%m.%Y %H:%M')+'                   |\n')
+        ofile.write('#   |                                                  |\n')
+        ofile.write('#   |               INSTALL WITH:                      |\n')
+        ofile.write('#   | '+pip_statement+'|\n')
+        ofile.write('#   +--------------------------------------------------+\n')
         ofile.write('\n')
 
 

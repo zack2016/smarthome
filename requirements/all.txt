@@ -1,14 +1,14 @@
 
-#   +-----------------------------------------------+
-#   |                 SmartHomeNG                   |
-#   |            DON'T EDIT THIS FILE               |
-#   |           THIS FILE IS GENERATED              |
-#   |              BY lib/shpypi.py                 |
-#   |            ON 13.01.2020 13:30                |
-#   |                                               |
-#   |               INSTALL WITH:                   |
-#   | sudo pip3 install -r requirements/all.txt     |
-#   +-----------------------------------------------+
+#   +--------------------------------------------------+
+#   |                 SmartHomeNG                      |
+#   |            DON'T EDIT THIS FILE                  |
+#   |           THIS FILE IS GENERATED                 |
+#   |              BY lib/shpypi.py                    |
+#   |            ON 17.01.2020 09:55                   |
+#   |                                                  |
+#   |               INSTALL WITH:                      |
+#   | pip3 install -r requirements/all.txt --user      |
+#   +--------------------------------------------------+
 
 # plugin mvg_live
 PyMVGLive>=1.1.4
@@ -49,6 +49,7 @@ nokia>=1.0.0,<=1.2.0
 # plugin uzsu
 numpy
 
+# SmartHomeNG-module mqtt
 # plugin mqtt1
 paho-mqtt>=1.2.2
 
@@ -109,8 +110,8 @@ pyusb>=1.0.2
 
 # plugin withings_health
 # SmartHomeNG-lib
-# plugin neato
 # plugin yamahayxc
+# plugin neato
 requests>=2.20.1
 
 # plugin jsonread
@@ -134,8 +135,8 @@ scapy>=2.4.3
 # plugin uzsu
 scipy>=1.1.0
 
-# plugin harmony
 # plugin xmpp
+# plugin harmony
 sleekxmpp>=1.3.1
 
 # plugin priv_telegram_1_1_3

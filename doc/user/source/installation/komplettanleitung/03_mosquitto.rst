@@ -64,9 +64,19 @@ Der Service kann dann mit den folgenden Befehlen gestartet, gestoppt und neugest
    sudo service mosquitto restart
 
 
-Nach der Installation ist der Broker für jeden MQTT Client nutzbar.
-Wenn eine Authentifizierung gewünscht wird, muss Mosquitto
-entsprechend der Dokumentation (https://mosquitto.org/man/mosquitto-conf-5.html)
-konfiguriert und neu gestartet werden.
+Mosquitto konfigurieren
+=======================
 
-Gleiches gilt, wenn zusätzlich zum MQTT Protokoll (auf Port 1883) auch noch Websockets genutzt werden sollen.
+Nach der Installation ist der Broker ohne weitere Konfiguration nutzbar. Allerdings kann
+jeder Client den Broker nutzen, da der Client sich nicht authentifizieren muss.
+
+Wenn eine Authentifizierung gewünscht wird, muss Mosquitto entsprechend der Dokumentation
+(https://mosquitto.org/man/mosquitto-conf-5.html) konfiguriert und neu gestartet werden.
+
+Gleiches gilt, wenn zusätzlich zum MQTT Protokoll (auf Port 1883) auch noch Websockets genutzt
+werden sollen.
+
+.. note::
+
+   SmartHomeNG nutzt zur Kommunikation mit dem Broker nur das MQTT Protokoll.
+
