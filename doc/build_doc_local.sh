@@ -90,7 +90,6 @@ if [ "$?" == "1" ]; then
   echo
   exit
 fi
-echo Dieses Skript erzeugt ein Arbeitsverzeichnis \'$DIR/$LOCALREPO\'
 if [ "${KEEP_REPO,,}" != "true" ]; then
   echo und legt die entstandene Dokumentation in \'$DIR/html\' ab.
 fi
@@ -156,7 +155,7 @@ read -rsp $'Um fortzufahren ENTER drücken, zum Abbruch ^C drücken...\n'
 if [ "${DOC,,}" == "developer" ] || [ "${DOC,,}" == "all" ]; then
   cd $DIR/
 #  cd $LOCALREPO
-  cd doc
+#  cd doc
   echo
   echo Bau der Entwickler-Dokumentation:
   cd $DEVELOPDOC
@@ -170,7 +169,7 @@ fi
 if [ "${DOC,,}" == "user" ] || [ "${DOC,,}" == "all" ]; then
   cd $DIR/
 #  cd $LOCALREPO
-  cd doc
+#  cd doc
   echo
   echo Bau der Anwender-Dokumentation:
   cd $USERDOC

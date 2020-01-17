@@ -4,29 +4,22 @@
 .. role:: bluesup
 .. role:: redsup
 
-=================
-knxd installieren
-=================
+===================================
+knxd installieren :bluesup:`update`
+===================================
 
-Der knxd implementiert Zugriffe auf verschiedenste Schnittstellen zum
-KNX Bus (z.B. IP-Router, IP-Schnittstelle, USB-Schnittstelle, etc.) und
-bietet dafür eine dokumentierte Softwareschnittstelle für Programme an.
-SmartHomeNG nutzt den knxd über seine tcp Schnittstelle um Daten auf den
-KNX Bus zu schreiben oder zu lesen.
+Der knxd implementiert Zugriffe auf verschiedenste Schnittstellen zum KNX Bus (z.B. IP-Router, IP-Schnittstelle,
+USB-Schnittstelle, etc.) und bietet dafür eine dokumentierte Softwareschnittstelle für Programme an. SmartHomeNG
+nutzt den knxd über seine tcp Schnittstelle um Daten auf den KNX Bus zu schreiben oder zu lesen. Wer keinen KNX-Bus
+einsetzt, kann diesen Installationsschritt überspringen.
 
 .. contents:: Schritte der Installation
    :local:
 
-Wer keinen KNX-Bus einsetzt, kann diesen Installationsschritt
-überspringen. Für den Fall, das die knxd Installation ausgelassen wird,
-kann es sein, das für weitere Module wie SmartHomeNG einige Pakete
-fehlen. Diese müssten dann per **sudo apt-get install paketname**
-nachinstalliert werden.
 
-Grundsätzlich findet sich auf der
-`knxd-Seite <https://github.com/knxd/knxd>`__ die Anleitung für die
-Installation. Auf der Github Seite kann unter **Code** immer der Branch
-ausgewählt werden. Jeder Branch hat sein eigenes Read.me.
+Grundsätzlich findet sich auf der `knxd-Seite <https://github.com/knxd/knxd>`__ die Anleitung für die
+Installation. Auf der Github Seite kann unter **Code** immer der Branch ausgewählt werden. Jeder Branch
+hat sein eigenes Read.me.
 
 .. important::
 
@@ -44,8 +37,32 @@ ausgewählt werden. Jeder Branch hat sein eigenes Read.me.
 Die folgenden Installationsschritte beziehen sich auf Version **0.14**.
 
 
-zusätzliche Pakete installieren
--------------------------------
+knxd unter Debian Buster installieren
+=====================================
+
+Ab dem Buster Release, ist knxd als Installationspaket in der Distribution enthalten. Die in Buster enthaltene knxd
+Version ist 0.14.
+
+Das fertige knxd Paket kann mit folgenden Kommandos installiert werden:
+
+
+.. code-block:: bash
+
+    apt-get update
+    apt-get install -t buster knxd
+
+Anschließend mit der Konfiguration gemäß Abschnitt `knxd konfigurieren <#knxd-konfigurieren>`__ fortfahren.
+
+
+knxd unter älteren Debian Versionen installieren
+================================================
+
+In älteren Debian Linux Versionen ist kein Installationspaket für knxd enthalten. Unter diesen Versionen muss knxd
+zuerst aus dem Quellcode compiliert werden.
+
+
+zusätzliche Pakete zum Bau installieren
+---------------------------------------
 
 Zunächst müssen für den Bau einige grundlegende Tools installiert
 werden:
@@ -53,6 +70,7 @@ werden:
 .. code-block:: bash
 
     sudo apt-get install git-core build-essential dh-systemd autoconf libtool libusb-1.0-0-dev pkg-config libsystemd-dev libev-dev cmake
+
 
 Quellcode laden, compilieren und ein Paket schnüren
 ---------------------------------------------------
@@ -90,8 +108,9 @@ noch installiert werden mit:
     cd ..
     sudo dpkg -i knxd_*.deb knxd-tools_*.deb
 
+
 knxd konfigurieren
-------------------
+==================
 
 Als nächstes muß die Konfiguration des knxd für die zu verwendende
 Schnittstelle angepasst werden. Dazu muß bei Systemen mit systemd die
@@ -126,8 +145,9 @@ Paketen eine kleine Pause eingelegt um ein überfahren der Schnittstelle
 zu vermeiden. Der Parameter **--no-tunnel-client-queuing** ist obsolet
 und sollte nicht mehr eingesetzt werden.
 
+
 knxd und systemd
-----------------
+================
 
 Um die Änderungen wirksam werden zu lassen, muß der knxd die neue
 Konfiguration noch berücksichtigen dazu muß er ggf. beendet und neu
