@@ -1,8 +1,8 @@
 SmartHomeNG Items
 =================
 
-Unter ``env.core`` finden sich Items mit Daten zur Laufzeit von SmartHomeNG. Diese werden
-standardmäßig mit der SmartVISU angezeigt.
+Unter ``env.core`` finden sich Items mit Daten zur Laufzeit von SmartHomeNG. Dieses sind System-Items
+und deren Definition sollte nicht verändert werden. Diese Items werden standardmäßig mit der SmartVISU angezeigt.
 
 ::
 
@@ -19,6 +19,9 @@ standardmäßig mit der SmartVISU angezeigt.
 Umgebungsbezogene Items
 =======================
 
+Unter ``env.location`` finden sich Items mit Daten zur Umgebung der SmartHomeNG Installation. Dieses sind System-Items
+und deren Definition sollte nicht verändert werden.
+
 Tag/Nacht
 ---------
 
@@ -27,9 +30,8 @@ Tag/Nacht
     env.location.day                    # boolean: True wenn Tag ist
     env.location.night                  # boolean: True wenn Nacht ist
 
-* Weiterführende Informationen zur Nutzung der Tag-/Nacht-Items in KNX
-  finden sich auf der Seite unter Konfiguration/Items auf der Seite
-  **Tipps & Tricks**
+* Weiterführende Informationen zur Nutzung der Tag-/Nacht-Items in KNX finden sich auf der Seite unter
+  Konfiguration/Items auf der Seite **Tipps & Tricks**
 
 Mondlicht / -stand
 ------------------
@@ -65,13 +67,14 @@ Zugriffsbeispiel:
 
 ::
 
-     if sh.env.location.sun_position.azimut() < 215 and sh.env.location.sun_position.elevation() < 25: 
+     if sh.env.location.sun_position.azimut() < 215 and sh.env.location.sun_position.elevation() < 25:
         ....
 
 System Items
 ============
 
 Unter ``env.system`` finden sich Informationen zum Betriebssystem wie Systemauslastung, freie Diskspeicher, etc.
+Dieses sind System-Items und deren Definition sollte nicht verändert werden.
 
 ::
 
@@ -83,3 +86,4 @@ Unter ``env.system`` finden sich Informationen zum Betriebssystem wie Systemausl
     env.system.diskusage                # num: Genutzte Größe des Laufwerks auf dem SmarthomeNG läuft
     env.system.diskusagepercent         # num: Genutzte Größe des Laufwerks auf dem SmarthomeNG  läuft (in Prozent)
     env.system.libs.ephem_version       # str: Installierte Version ephem
+

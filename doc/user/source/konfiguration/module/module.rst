@@ -1,8 +1,11 @@
 .. index:: Module
 
-######
+.. role:: redsup
+.. role:: bluesup
+
+======
 Module
-######
+======
 
 Module stellen Core Funktionalitäten von SmartHomeNG zur Verfügung. Da diese Funktionalitäten
 einen größeren Ressourcen Bedarf haben, sind sie als ladbare Module ausgeführt. Dadurch ist

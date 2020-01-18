@@ -309,12 +309,13 @@ Zunächst ist wichtig, das in der Grundkonfiguration zwei Dateien erzeugt werden
 
 In der ersten Datei findet man nach dem ersten Start von SmartHomeNG etwas ähnliches wie folgende Informationen:
 
-.. code-block:: bash
+.. code-block::
 
-   YYYY-MM-dd  hh:mm:ss WARNING  __main__            --------------------   Init SmartHomeNG 1.6  --------------------
-   YYYY-MM-dd  hh:mm:ss WARNING  __main__            Running in Python interpreter 'v3.5.3 final' (pid=????) on linux platform
-   YYYY-MM-dd  hh:mm:ss WARNING  plugins.cli         CLI: You should set a password for this plugin.
-   YYYY-MM-dd  hh:mm:ss WARNING  lib.item            load_itemdefinitions(): For testing the joined item structs are saved to /usr/local/smarthome/etc/structs_joined.yaml
+    YYYY-MM-dd  hh:mm:ss WARNING  __main__             --------------------   Init SmartHomeNG 1.7   --------------------
+    YYYY-MM-dd  hh:mm:ss WARNING  __main__             Running in Python interpreter 'v3.5.3 final' (pid=????) on linux platform
+    YYYY-MM-dd  hh:mm:ss WARNING  lib.shtime           Nutze Feiertage für Land 'DE', Provinz 'HH', State 'None', 1 benutzerdefinierte Feiertagsdefinition(en) definiert
+    YYYY-MM-dd  hh:mm:ss WARNING  plugins.cli          CLI: You should set a password for this plugin.
+
 
 Vorne steht Datum und Uhrzeit, dann der Loglevel (ERROR, WARNING, INFO), dann je nach Setup in der Datei logging.yaml
 noch Name bzw. Modul oder Thread und ein Meldungstext der den Logeintrag beschreibt.
@@ -331,9 +332,16 @@ melden und sich beenden.
    Wichtig ist es nach CRITICAL, ERROR und WARNING zu schauen und zu versuchen diese zu vermeiden.
    Meldungen der Level INFO und DEBUG sind normal und brauchen erstmal nicht weiter beachtet zu werden.
 
-In der Zweiten Datei finden sich zusätzliche Informationen die für die Erstkonfiguration die hier beschrieben wird nicht entscheidend sind.
+   Deshalb schreibt SmartHomeNG standardmäßig zwei Logs (**smarthome-warnings.log** und **smarthome-details.log**).
+   Das erste Log ist so konfiguriert, dass es aus allen konfigurierten Logs nur die Einträge folgender Log-Level
+   enthält: CRITICAL, ERROR und WARNING. **smarthome-details.log** enthält dem gegenüber Log Einträge bis zum Level DEBUG.
 
-Da nach dem ersten Start von SmartHomeNG ohnehin die default Datei übernommen wird, ist hier kein Handlungsbedarf etwas anzupassen.
+
+In der zweiten Datei finden sich zusätzliche Informationen die für die Erstkonfiguration die hier beschrieben wird nicht
+entscheidend sind.
+
+Da nach dem ersten Start von SmartHomeNG ohnehin die default Datei übernommen wird, ist hier kein Handlungsbedarf etwas
+anzupassen.
 
 
 plugin.yaml
@@ -430,64 +438,21 @@ Auch hier ist kein Handlungsbedarf, die Beschreibung ist ebenfalls der Vollstän
 
 
 SmartHomeNG starten
-===================
+-------------------
 
 
-Nachdem die Grundlagen für den Betrieb des Kerns von SmartHomeNG nun beschrieben sind, kann SmartHomeNG erstmalig gestartet werden:
+Nachdem die Konfiguration für den Betrieb des Kerns von SmartHomeNG nun erfolgt ist, muss SmartHomeNG (neu) gestartet
+werden:
 
 .. code-block:: bash
 
    cd /usr/local/smarthome
    python3 bin/smarthome.py
 
-Wie zuvor beschrieben werden nun Konfigurationsdateien eingelesen und bei Bedarf auf den defaults übernommen.
-Auf der Shell (Konsole, Kommandozeile) sollte jetzt nur eine Zeile erscheinen wie:
-
-.. code-block:: bash
-
-   Daemon PID ????
-
-Das bedeutet, das SmartHomeNG nun im Hintergrund läuft und unter der Prozess ID ``????`` bekannt ist. Auch über den Shell Befehl
-
-.. code-block:: bash
-
-   sudo ps ax | grep smarthome
-
-sollte eine Zeile augegeben werden mit
-
-.. code-block:: bash
-
-   ???? ?        Sl     0:01 python3 bin/smarthome.py
-
-.. note::
-
-   SmartHomeNG kann zur Zeit nur ein einziges Mal auf einem Rechner ausgeführt werden. Versucht man dies mehrfach,
-   so kann die Version die als letztes gestartet wurde oft keine Netzwerkverbindungen aufbauen.
-   Ein solcher Fall kann schnell auftreten, wenn SmartHomeNG als Daemon eingerichtet wird und aber zusätzlich ein Start
-   von der Kommandozeile erfolgt.
-
 
 Admin Interface
 ---------------
 
-Viele Einstellungen in den Konfigurationsdateien, die manuell mit dem Editor ausgeführt werden, sind bereits über das
-Admin Interface möglich.
-
-Unter ``System --> Konfiguration --> Allgemein`` lassen sich die Inhalte der ``smarthome.yaml`` ändern sowie unter
-``System --> Konfiguration --> Http Modul`` und ``System --> Konfiguration --> Admin Modul`` die Zugangsdaten und Parameter
-für Webserver und Admin Interface ändern. Die Änderungen müssen explizit gesichert werden und anschließend
-muß über ``Core neu starten`` ein Neustart von SmartHomeNG initiiert werden.
-
-Unter ``Plugins --> Konfiguration --> Plugin hinzufügen`` lassen sich Plugins hinzufügen und konfigurieren. An gleicher Stelle
-können sie auch ausgeschaltet oder gelöscht werden. Auch hier gilt das nach Änderungen SmartHomeNG neu gestartet werden muß damit die
-Änderungen wirksam werden.
-
-Auch wichtig ist ``Logs --> Logs anzeigen`` denn hier lassen sich die letzten Logdateien bequem untersuchen auf Auffälligkeiten.
-Sollte es sein, das hier steht ``FILE NOT FOUND!`` so ist es sehr wahrscheinlich, das SmartHomeNG gerade neu startet oder aber
-wegen einer Fehlkonfiguration oder einer fehlenden Bibliothek nicht gestartet werden kann.
-In diesem Fall sollte man sich z.B. die letzten 50 Einträge der Logdatei unter ``/usr/local/smarthome/var/log/smarthome-warnings.log``
-auf der Shell anzeigen lassen mit ``tail -n 50 /usr/local/smarthome/var/log/smarthome-warnings.log``.
-
-
-
+Die weitere Konfiguration kann auch über die GUI erfolgen, wie im Abschnitt `SmartHomeNG konfigurieren <#smarthomeng-konfigurieren>`__
+beschrieben.
 

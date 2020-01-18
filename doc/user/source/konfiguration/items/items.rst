@@ -1,5 +1,5 @@
 Items
-#####
+=====
 
 .. Aus dem Wiki übernommen: 11. November 2017 von Seite https://github.com/smarthomeNG/smarthome/wiki/Items
 
@@ -9,7 +9,7 @@ Items
    :hidden:
 
    initiale_itemkonfiguration
-   items_standard_attribute
+   standard_attribute/items_standard_attribute
    items_plugin_attribute
    items_attributes_relative_referenzen
    items_attributes_eval_ausdruecke

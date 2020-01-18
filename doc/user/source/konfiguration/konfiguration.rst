@@ -13,10 +13,10 @@ Konfiguration
    :hidden:
    :titlesonly:
 
-   konfiguration_admin_gui
-   konfigurationsdateien
-   items.rst
-   module.rst
+   konfiguration_admin_gui/konfiguration_admin_gui
+   konfigurationsdateien/konfigurationsdateien
+   items/items.rst
+   module/module.rst
    plugins.rst
    logiken.rst
    logging.rst
