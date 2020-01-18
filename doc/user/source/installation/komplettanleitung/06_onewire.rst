@@ -24,8 +24,10 @@ Die dazu benötigten Komponenten werden installiert mit:
    sudo apt-get -y install owhttpd owserver
 
 
-Nach der Paketinstallation von ``owserver`` muß die
-Konfigurationsdatei ``/etc/owfs.conf``
+Owserver konfigurieren
+======================
+
+Nach der Paketinstallation von ``owserver`` muß die Konfigurationsdatei ``/etc/owfs.conf``
 noch auf den verwendeten Adapter angepasst werden:
 
 .. code-block:: bash
@@ -84,8 +86,9 @@ Nach der Konfigurationsänderung muß der ``owserver`` neu gestartet werden:
 
    sudo systemctl restart owserver
 
+
 SmartHomeNG Plugin konfigurieren
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+================================
 
 Damit das Onewire-Plugin von SmartHomeNG genutzt werden kann, muß in der
 **../etc/plugin.yaml** noch folgendes eingefügt werden:
@@ -93,8 +96,7 @@ Damit das Onewire-Plugin von SmartHomeNG genutzt werden kann, muß in der
 .. code-block:: yaml
 
     ow:
-      class_name: OneWire
-      class_path: plugins.onewire
+      plugin_name: onewire
       host: 127.0.0.1
       port: 4304
       cycle: 60  # update every minute

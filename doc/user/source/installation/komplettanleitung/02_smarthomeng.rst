@@ -29,11 +29,13 @@ Zunächst müssen einige zusätzlichen Pakete installiert werden:
    sudo apt-get install python3-pip
 
 
-Dann sollte Pythons Paketmanager PIP auf den neuesten Stand gebracht werden:
+.. admonition:: Folgendes ist vor dem Release noch zu prüfen
 
-.. code-block:: bash
+    Dann sollte Pythons Paketmanager PIP auf den neuesten Stand gebracht werden:
 
-   sudo python3 -m pip install --upgrade pip
+    .. code-block:: bash
+
+       sudo python3 -m pip install --upgrade pip
 
 
 SmartHomeNG Quellcode laden
@@ -68,20 +70,32 @@ Diese können wie folgt installiert werden:
 .. code-block:: bash
 
    cd /usr/local/smarthome
-   sudo pip3 install -r requirements/base.txt
+   pip3 install -r requirements/base.txt --user
+
+.. attention::
+
+    In früheren Beschreibungen wurde die globale Installation von Python Packages mit dem sudo Kommando
+    beschrieben:
+
+       sudo pip3 install -r requirements/base.txt
+
+    Dieses funktioniert unter Debian Buster **NICHT** mehr. Zumindest unter Buster **muss** die Installation
+    für den entsprechenden User mit **--user** erfolgen (wie oben beschrieben).
 
 
-.. hint::
+.. admonition:: Folgendes ist vor dem Release noch zu prüfen: Wird das noch gebraucht?
 
-    Eventuell wird es eine Warnung geben, das die Bibliothek ``six`` nicht installiert wurde oder
-    eine zu alte Version. Das liegt an einer indirekten Abhängigkeit von
-    ``cherrypy -> cheroot --> six (>= 1.11.0``
-    In diesem Fall kann ``six`` aktualisiert werden durch
+    .. hint::
 
-    .. code-block:: bash
+        Eventuell wird es eine Warnung geben, das die Bibliothek ``six`` nicht installiert wurde oder
+        eine zu alte Version. Das liegt an einer indirekten Abhängigkeit von
+        ``cherrypy -> cheroot --> six (>= 1.11.0``
+        In diesem Fall kann ``six`` aktualisiert werden durch
 
-       cd /usr/local/smarthome
-       sudo pip3 install six>=1.11.0 --upgrade
+        .. code-block:: bash
+
+           cd /usr/local/smarthome
+           sudo pip3 install six>=1.11.0 --upgrade
 
 
 .. note::
@@ -94,22 +108,17 @@ Diese können wie folgt installiert werden:
 
     Um das sicherzustellen, ist statt
 
-                sudo pip3 install -r requirements/base.txt
+                pip3 install -r requirements/base.txt --user
 
     der folgende Befehl auszuführen:
 
-                sudo <python used to start SmartHomeNG> -m pip3 install -r requirements/base.txt
+                <python used to start SmartHomeNG> -m pip3 install -r requirements/base.txt --user
 
 Jetzt ist SmartHomeNG installiert und kann konfiguriert werden.
 
 
-Erstmalige Konfiguration per GUI
-================================
-
-Die erstmalige Konfiguration kann mit der graphischen Oberfläche (Administrations-Interface) oder durch Anpassung
-der Konfigurationdateien vorgenommen werden.
-
-Zur Konfiguration über die graphische Oberfläche, muss SmartHomeNG zunächst gestartet werden:
+Erstmaliger Start von SmartHomeNG
+=================================
 
 
 SmartHomeNG starten
@@ -168,6 +177,17 @@ nachlesen.
     abgeschlossen ist.
 
 
+
+Initiale Konfiguration per GUI
+==============================
+
+Zur Konfiguration per GUI muss SmartHomeNG laufen. Der Start wurde in den vorangegangenen Schritten durchgeführt
+und es wurde getestet ob SmartHomeNG läuft.
+
+
+
+
+
 SmartHomeNG konfigurieren
 -------------------------
 
@@ -191,16 +211,16 @@ ausgegraut):
 
 
 Nun kann mit der Konfiguration begonnen werden, wie sie unter :doc:`Konfiguration </konfiguration/konfiguration_admin_gui>` beschrieben
-ist.
+ist. Nach Abschluß der Konfiguration muss SmartHomeNG neu gestartet werden. Dieses kann aus der GUI heraus erfolgen.
 
 
 
 Erstmalige Konfiguration per Kommandozeile (für Fortgeschrittene)
 =================================================================
 
-Fortgeschrittene oder Experten können SmartHomeNG auch direkt über die Konfigurationsdateien konfigurieren. Dieses ist
-hier im folgenden kurz beschrieben. Eine ausführlichere Beschreibung findet sich im Abschnitt
-:doc:`../../konfiguration/konfiguration` .
+Die Konfiguration kann mit der graphischen Oberfläche (Administrations-Interface) oder (für Fortgeschrittene) durch
+Anpassung der Konfigurationdateien vorgenommen werden. Dieses ist hier im folgenden kurz beschrieben. Eine ausführlichere
+Beschreibung findet sich im Abschnitt :doc:`../../konfiguration/konfiguration` .
 
 Mit der Grundinstallation werden einige Konfigurationsdateien mitgeliefert die den gleichen Namen tragen wie die
 benötigten Dateien aber zusätzlich noch die Endung **.default**. Wenn SmartHomeNG beim Start eine benötigte
@@ -219,7 +239,8 @@ Es werden für einen Systemstart folgende Konfigurationsdateien benötigt:
 Der Inhalt von **.yaml** Dateien ist speziell formatierter Text und sollte nur mit einem Editor
 bearbeitet werden, der Dateien im UTF-8 Format (ohne BOM) schreiben kann.
 (z.B. **nano**, **Notepad++**)
-Kommentare können mit einem ``#`` begonnen werden. Die Einrückungen müssen Leerzeichen sein
+
+ommentare können mit einem ``#`` begonnen werden. Die Einrückungen müssen Leerzeichen sein
 und bestimmten die Position eines Elementes in der Objekthierarchie.
 
 .. note::
@@ -362,15 +383,14 @@ Jedes Plugin kann weitere Abhängigkeiten von Bibliotheken mit sich bringen. Die
 .. code-block:: bash
 
    cd /usr/local/smarthome
-   sudo pip3 install -r plugins/<plugin-name-hier-einsetzen>/requirements.txt
+   pip3 install -r plugins/<plugin-name-hier-einsetzen>/requirements.txt --user
 
 .. note::
 
    Beim Start von SmartHomeNG wird die Datei **requirements/all.txt** erstellt.
 
    Es kann allerdings dann zu einem Abbruch des Starts von SmartHomeNG kommen, da beim Start automatisch nur die beiden
-   Requirements-Dateien erstellt werden. Die benötigten Python Packages werden dabei nicht automatisch installiert, da
-   hierzu erweiterte Rechte (sudo) benötigt werden.
+   Requirements-Dateien erstellt werden. Die benötigten Python Packages werden dabei nicht automatisch installiert.
 
    Es lassen sich über diese Datei zwar sämtliche benötigten Abhängigkeiten installieren, jedoch rät das Entwicklungsteam
    ausdrücklich davon ab alle Abhängigkeiten zu installieren.

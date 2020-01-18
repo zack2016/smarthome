@@ -124,26 +124,23 @@ Die Originalzeile ``KNXD_OPTS="-e 0.0.1 -E 0.0.2:8 -u /tmp/eib -b
 ip:"`` am besten auskommentieren und in der Zeile darunter dann die
 gewählten Parameter eintragen.
 
-Details zu Schnittstellen finden sich auf der `Github-Seite vom
-knxd <https://github.com/knxd/knxd>`__.
-Der Parameter **-c** stellt den knxd so ein, das er einen Cache
-nutzt. Danach folgen die Optionen für die Verwendung der
-Schnittstelle:
+Details zu Schnittstellen finden sich auf der `Github-Seite vom knxd <https://github.com/knxd/knxd>`__.
+Der Parameter **-c** stellt den knxd so ein, das er einen Cache nutzt. Danach folgen die Optionen für
+die Verwendung der Schnittstelle:
 
--  IP Schnittstelle: ``KNXD\_OPTS="-e 0.0.1 -E 0.0.2:8 -c -b ipt:<IP
-   der knx Schnittstelle>"``
--  IP Router: ``KNXD\_OPTS="-e 0.0.1 -E 0.0.2:8 -c -b ip:<IP des knx
-   Routers>"``
--  USB-Interface: Bitte `Wiki zum
-   knxd <https://github.com/knxd/knxd/tree/v0.14>`__ konsultieren.
+-  IP Schnittstelle: ``KNXD\_OPTS="-e 0.0.1 -E 0.0.2:8 -c -b ipt:<IP der knx Schnittstelle>"``
+-  IP Router: ``KNXD\_OPTS="-e 0.0.1 -E 0.0.2:8 -c -b ip:<IP des knx Routers>"``
+-  USB-Interface: Bitte `Wiki zum knxd <https://github.com/knxd/knxd/wiki>`__ konsultieren.
 
-Es kann sein, das bei ``KNXD_OPTS`` hinter dem **-c** bei einigen
-Interfaces noch ein ``--send-delay=30`` eingefügt werden muß um
-Telegrammverlust bei hohen Lasten zu minimieren. Die 30 bedeutet dabei
-eine zusätzliche Wartezeit von 30msec. Es wird damit zwischen den
-Paketen eine kleine Pause eingelegt um ein überfahren der Schnittstelle
-zu vermeiden. Der Parameter **--no-tunnel-client-queuing** ist obsolet
-und sollte nicht mehr eingesetzt werden.
+Es kann sein, das bei ``KNXD_OPTS`` hinter dem **-c** bei einigen Interfaces noch ein ``--send-delay=30`` eingefügt
+werden muß um Telegrammverlust bei hohen Lasten zu minimieren. Die 30 bedeutet dabei eine zusätzliche Wartezeit
+von 30msec. Es wird damit zwischen den Paketen eine kleine Pause eingelegt um ein überfahren der Schnittstelle
+zu vermeiden. Der Parameter **--no-tunnel-client-queuing** ist obsolet und sollte nicht mehr eingesetzt werden.
+
+.. note::
+
+   Einige IP Schnittstellen (besonders ältere) unterstützen nur einen Tunnel. Das bedeutet, dass z.B. ETS und
+   knxd (SmartHomeNG) nicht gleichzeitig an solchen Schnittstellen betrieben werden können.
 
 
 knxd und systemd
@@ -223,3 +220,27 @@ Die Funktion des knxd läßt sich z.B. testen mit einer Gruppenadresse
 Sollte sich jetzt nichts tun, dann gibt es irgendwo einen Fehler und
 alles muß noch einmal geprüft werden. Vielleicht ist der Neustart des
 knxd vergessen oder ein Build-Fehler übersehen worden.
+
+.. note::
+
+   Der Befehl zum testen ist **knxtool groupswrite** und nicht **knxtool groupwrite**!
+
+
+SmartHomeNG Plugin konfigurieren
+================================
+
+Damit das KNX-Plugin von SmartHomeNG genutzt werden kann, muß in der
+**../etc/plugin.yaml** noch folgendes eingefügt werden:
+
+.. code-block:: yaml
+
+    knx:
+        plugin_name: knx
+        # host: 127.0.0.1    # host, falls knxd auf einem anderen System läuft als SmartHomeNG
+        # port: 6720         # port zur Kommunikation mit knxd, default 6720
+        # send_time: 600     # update date/time every 600 seconds, default none
+        # time_ga: 11/1/1    # time GA (default none)
+        # date_ga: 11/1/0    # date GA (default none)
+        # busmonitor: 'on'
+
+Alternativ kann dazu natürlich auch das Admin Interface genutzt werden.
