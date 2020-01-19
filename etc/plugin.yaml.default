@@ -36,7 +36,6 @@ database:
 #     date_ga: 6/0/1    # default none
 #     busmonitor: True  # log all knx messages, default false
 #     readonly: True    ## don't write to knx bus, default false"
-#     instance: default
 
 # ow:
 #     plugin_name: onewire

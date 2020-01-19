@@ -108,11 +108,15 @@ Diese können wie folgt installiert werden:
 
     Um das sicherzustellen, ist statt
 
-                pip3 install -r requirements/base.txt --user
+    .. code-block:: bash
+
+        pip3 install -r requirements/base.txt --user
 
     der folgende Befehl auszuführen:
 
-                <python used to start SmartHomeNG> -m pip3 install -r requirements/base.txt --user
+    .. code-block:: bash
+
+        <python used to start SmartHomeNG> -m pip3 install -r requirements/base.txt --user
 
 Jetzt ist SmartHomeNG installiert und kann konfiguriert werden.
 

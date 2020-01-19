@@ -48,8 +48,8 @@ Das fertige knxd Paket kann mit folgenden Kommandos installiert werden:
 
 .. code-block:: bash
 
-    apt-get update
-    apt-get install -t buster knxd
+    sudo apt-get update
+    sudo apt-get install -t buster knxd
 
 Anschließend mit der Konfiguration gemäß Abschnitt `knxd konfigurieren <#knxd-konfigurieren>`__ fortfahren.
 
