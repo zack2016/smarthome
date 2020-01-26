@@ -648,7 +648,10 @@ class SmartPlugin(SmartObject, Utils):
 
 
 
-from jinja2 import Environment, FileSystemLoader
+try:
+    from jinja2 import Environment, FileSystemLoader
+except:
+    pass
 from lib.module import Modules
 
 
