@@ -79,10 +79,14 @@ def parse_itemsdir(itemsdir, item_conf, addfilenames=False, struct_dict={}):
     At the moment it looks for .yaml files and a .conf files
     Both filetypes are read, even if they have the same basename
 
-    :param itemsdir: Name of folder containing the configuration files
-    :param item_conf: Optional OrderedDict tree, into which the configuration should be merged
-    :type itemsdir: str
-    :type item_conf: OrderedDict
+    :param itemsdir:      Name of folder containing the configuration files
+    :param item_conf:     Optional OrderedDict tree, into which the configuration should be merged
+    :param addfilenames:
+    :param struct_dict:   dict with all defined structs (from /etc/structs.yaml and from loaded plugins)
+    :type itemsdir:       str
+    :type item_conf:      OrderedDict
+    :type addfilenames:
+    :type struct_dict:    dict / OrderedDict
 
     :return: The resulting merged OrderedDict tree
     :rtype: OrderedDict
@@ -111,6 +115,8 @@ def parse(filename, config=None, addfilenames=False, parseitems=False, struct_di
 
     :param filename: Name of the configuration file
     :param config: Optional OrderedDict tree, into which the configuration should be merged
+
+    :param struct_dict:   dict with all defined structs (from /etc/structs.yaml and from loaded plugins)
     :type filename: str
     :type config: OrderedDict
 
@@ -295,15 +301,21 @@ def nested_put(output_dict, path, value):
 
 
 def search_for_struct_in_items(items, template, struct_dict, config, nestlevel=0, parent=''):
-    '''
+    """
     Test if the loaded file contains items with 'struct' attribute.
 
     This function is (recursively) called before merging the loaded file into the item tree
 
-    :param config: OrderedDict tree, into which the configuration should be merged
-
+    :param items:        tree content of a single items.yaml file (or part of it during recursion)
+    :type items:         OrderedDict
+    :param template:
+    :param struct_dict:   dict with all defined structs (from /etc/structs.yaml and from loaded plugins)
+    :param config:       tree, into which the configuration should be merged
+    :type config:        OrderedDict
+    :param nestlevel:
+    :param parent:
     :return:
-    '''
+    """
 
     result = False
     template = collections.OrderedDict()
@@ -371,7 +383,7 @@ def add_struct_to_template(path, struct_name, template, struct_dict, instance):
     :param path: Path of the item which references a struct (template)
     :param struct_name: Name of the to use for the item
     :param template: Template dict to be merged into the item tree
-    :param struct_dict: struct to be inserted
+    :param struct_dict:   dict with all defined structs (from /etc/structs.yaml and from loaded plugins)
     :param instance: For multi instance plugins: instance for which the items work (is derived from item with struct attribute)
 
     :return:

@@ -62,6 +62,50 @@ Bitte auf den Punkt am Ende des ersten **git clone** Kommandos achten!
 Weitere Python Bibliotheken installieren
 ========================================
 
+Ab Version 1.7 kann SmartHomeNG benötigte Pakete selbst nachinstallieren. Eine manuelle Installation
+ist daher nur bei älteren Versionen von SmartHomeNG notwendig. (Siehe nächster Abschnitt)
+
+Wenn SmartHomeNG in einer Python Umgebing gestartet wird in der nicht der minimale Set an Packages installiert ist,
+wird dieser installiert und die Informationen werden auf die Konsole ausgegeben (da das Logging dann noch nicht
+konfiguriert werden kann). Anschließend startet SmartHomeNG neu. Das sieht folgendermaßen aus.
+
+.. code-block:: bash
+
+    $ python3 bin/smarthome.py
+
+    test_requirements: 'ephem' not installed. Minimum v3.7 needed
+    test_requirements: 'holidays' not installed. Minimum v0.9.11 needed
+    test_requirements: 'psutil' not installed, any version needed
+    test_requirements: 'python-dateutil' not installed. Minimum v2.5.3 needed
+    test_requirements: 'requests' not installed. Minimum v2.20.0 needed
+    test_requirements: 'ruamel.yaml' not installed. Minimum v0.13.7 needed
+
+    Installing core requirements for the current user, please wait...
+    Running in a virtualenv environment,
+    installing core requirements only to actual virtualenv, please wait...
+
+    core requirements installed
+
+    Starting SmartHomeNG again...
+    Daemon PID 4024
+
+    $
+
+Danach kann der Core von SmartHomeNG vollständing initialisiert werden und Ausgaben erfolgen in smarthome-warnings.log
+
+Anschließend prüft SmartHomeNG ob die benötigten Pakete für die ladbaren Module und für die konfigurierten Plugins
+installiert sind. Falls nicht, werden diese jeweils installiert und SmartHomeNG startet sich erneut.
+
+.. note::
+
+    Dieser Mechanismus sorgt auch dafür, dass Pakete die von später konfigurierten Plugins benötigt werden, automatisch
+    nachinstalliert werden.
+
+
+
+Python Bibliotheken installieren (für SmartHomeNG vor v1.7)
+-----------------------------------------------------------
+
 Für den ersten Start müssen noch einige Python Packages nachgeladen werden.
 Im Unterordner ``requirements`` befindet sich dafür eine Datei ``base.txt``.
 In dieser Datei stehen die von SmartHomeNG grundlegend benötigten Bibliotheken.
@@ -81,21 +125,6 @@ Diese können wie folgt installiert werden:
 
     Dieses funktioniert unter Debian Buster **NICHT** mehr. Zumindest unter Buster **muss** die Installation
     für den entsprechenden User mit **--user** erfolgen (wie oben beschrieben).
-
-
-.. admonition:: Folgendes ist vor dem Release noch zu prüfen: Wird das noch gebraucht?
-
-    .. hint::
-
-        Eventuell wird es eine Warnung geben, das die Bibliothek ``six`` nicht installiert wurde oder
-        eine zu alte Version. Das liegt an einer indirekten Abhängigkeit von
-        ``cherrypy -> cheroot --> six (>= 1.11.0``
-        In diesem Fall kann ``six`` aktualisiert werden durch
-
-        .. code-block:: bash
-
-           cd /usr/local/smarthome
-           sudo pip3 install six>=1.11.0 --upgrade
 
 
 .. note::
