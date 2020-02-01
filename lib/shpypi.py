@@ -316,7 +316,7 @@ class Shpypi:
             print()
             print("Installing "+req_type_display+" requirements for the current user, please wait...")
 
-        stdout, stderr = Utils.execute_subprocess('pip3 install -r requirements/'+req_type+'.txt --user')
+        stdout, stderr = Utils.execute_subprocess('pip3 install -r requirements/'+req_type+'.txt --user --no-warn-script-location')
         if stderr != '':
             if 'virtualenv' in stderr and '--user' in stderr:
                 if logging:
