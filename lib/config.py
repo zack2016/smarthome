@@ -222,7 +222,7 @@ def remove_invalid(ydata, filename=''):
     remove_keys(ydata, lambda k: True if True in [True for i in range(len(k)) if k[i] not in valid_chars] else False, [REMOVE_ATTR, REMOVE_PATH], msg="Problem parsing '{}' in file '"+filename+"': Invalid character. Valid characters are: " + str(valid_chars))
 
 
-def merge(source, destination):
+def merge(source, destination, source_name='', dest_name=''):
     '''
     Merges an OrderedDict Tree into another one
 
@@ -244,22 +244,23 @@ def merge(source, destination):
         True
 
     '''
-    problem = ''
-    try:
-        for key, value in source.items():
-            problem = destination
+    for key, value in source.items():
+        try:
             if isinstance(value, collections.OrderedDict):
                 # get node or create one
                 node = destination.setdefault(key, collections.OrderedDict())
-                merge(value, node)
+                if node == 'None':
+                    destination[key] = value
+                else:
+                    merge(value, node, source_name, dest_name)
             else:
                 if type(value).__name__ == 'list':
                     destination[key] = value
                 else:
                     # convert to string and remove newlines from multiline attributes
                     destination[key] = str(value).replace('\n','')
-    except Exception as err:
-        logger.error("Problem merging subtrees, probably invalid YAML file with entry {}. Error: {}".format(problem, err))
+        except Exception as e:
+            logger.error("Problem merging subtrees (key={}), probably invalid YAML file '{}' with entry '{}'. Error: {}".format(key, source_name, destination, e))
 
     return destination
 
@@ -511,7 +512,7 @@ def parse_yaml(filename, config=None, addfilenames=False, parseitems=False, stru
             logger.debug("parse_yaml: Add filename = {} to items".format(os.path.basename(filename)))
             _add_filenames_to_config(items, os.path.basename(filename))
 
-        config = merge(items, config)
+        config = merge(items, config, os.path.basename(filename), 'Item-Tree')
     return config
 
 
