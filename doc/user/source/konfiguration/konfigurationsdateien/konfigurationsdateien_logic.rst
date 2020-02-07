@@ -28,6 +28,6 @@ der Wert des Items `watch_item` ändert.
    Ab SmartHomeNG v1.4 können Logiken vollständig in der graphischen Administrationsoberfläche
    **Backend** erstellt und konfiguriert werden.
 
-   .. image:: assets/backend_logikliste.jpg
+   .. image:: ../assets/backend_logikliste.jpg
 
 Details zur Konfiguration von Logiken finden sich :doc:`hier <./logiken>` .

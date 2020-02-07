@@ -20,7 +20,7 @@ an.
 
 Die Datei sollte folgendermaßen aussehen:
 
-.. literalinclude:: ../../../../etc/smarthome.yaml.default
+.. literalinclude:: ../../../../../etc/smarthome.yaml.default
    :caption: smarthome.yaml
    :language: yaml
 

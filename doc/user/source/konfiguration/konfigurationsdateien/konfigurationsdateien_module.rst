@@ -15,7 +15,7 @@ Die ladbaren Module werden in der Datei **../etc/module.yaml** konfiguriert.
 
 Die Datei sollte folgendermaßen aussehen:
 
-.. literalinclude:: ../../../../etc/module.yaml.default
+.. literalinclude:: ../../../../../etc/module.yaml.default
    :caption: module.yaml
    :language: yaml
 

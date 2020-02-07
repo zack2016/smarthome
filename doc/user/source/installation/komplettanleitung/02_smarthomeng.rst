@@ -243,7 +243,7 @@ ausgegraut):
    :class: screenshot
 
 
-Nun kann mit der Konfiguration begonnen werden, wie sie unter :doc:`Konfiguration </konfiguration/konfiguration_admin_gui>` beschrieben
+Nun kann mit der Konfiguration begonnen werden, wie sie unter :doc:`Konfiguration <../../konfiguration/konfiguration_admin_gui>` beschrieben
 ist. Nach Abschluß der Konfiguration muss SmartHomeNG neu gestartet werden. Dieses kann aus der GUI heraus erfolgen.
 
 
@@ -342,7 +342,7 @@ Zunächst ist wichtig, das in der Grundkonfiguration zwei Dateien erzeugt werden
 
 In der ersten Datei findet man nach dem ersten Start von SmartHomeNG etwas ähnliches wie folgende Informationen:
 
-.. code-block::
+.. code-block:: text
 
     YYYY-MM-dd  hh:mm:ss WARNING  __main__             --------------------   Init SmartHomeNG 1.7   --------------------
     YYYY-MM-dd  hh:mm:ss WARNING  __main__             Running in Python interpreter 'v3.5.3 final' (pid=????) on linux platform

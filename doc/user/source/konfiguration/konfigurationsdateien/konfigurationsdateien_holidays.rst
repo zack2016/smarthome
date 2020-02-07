@@ -24,7 +24,7 @@ In der Konfigurationsdatei können auch noch zusätzlich benutzerdefinierte Feie
 
 Die Konfiguration sollte in etwa so aussehen:
 
-.. literalinclude:: ../../../../etc/holidays.yaml.default
+.. literalinclude:: ../../../../../etc/holidays.yaml.default
    :caption: holidays.yaml
    :language: yaml
 
