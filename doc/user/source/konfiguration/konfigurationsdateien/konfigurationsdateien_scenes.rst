@@ -21,7 +21,7 @@ solange die Extension `.yaml` ist.
    Dateiformat weicht jedoch vom Dateiformat der anderen .conf Dateien ab.
 
 
-Weitere Details zur Konfiguration von Items als Szenen sind :doc:`hier <items>` zu finden.
+Weitere Details zur Konfiguration von Items als Szenen sind :doc:`hier <../items>` zu finden.
 
 
 

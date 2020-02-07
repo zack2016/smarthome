@@ -30,4 +30,4 @@ der Wert des Items `watch_item` ändert.
 
    .. image:: ../assets/backend_logikliste.jpg
 
-Details zur Konfiguration von Logiken finden sich :doc:`hier <./logiken>` .
+Details zur Konfiguration von Logiken finden sich :doc:`hier <../logiken>` .

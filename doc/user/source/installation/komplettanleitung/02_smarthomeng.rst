@@ -243,7 +243,7 @@ ausgegraut):
    :class: screenshot
 
 
-Nun kann mit der Konfiguration begonnen werden, wie sie unter :doc:`Konfiguration <../../konfiguration/konfiguration_admin_gui>` beschrieben
+Nun kann mit der Konfiguration begonnen werden, wie sie unter :doc:`Konfiguration </konfiguration/konfiguration_admin_gui/konfiguration_admin_gui>` beschrieben
 ist. Nach Abschluß der Konfiguration muss SmartHomeNG neu gestartet werden. Dieses kann aus der GUI heraus erfolgen.
 
 

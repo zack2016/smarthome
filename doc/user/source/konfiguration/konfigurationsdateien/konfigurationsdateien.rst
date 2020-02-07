@@ -22,7 +22,7 @@ Es gibt außerdem ein Service Tool im Verzeichnis ***../tools***, welches dazu d
 konvertieren. Hierbei kann gewählt werden, ob die Inhalte des ***../etc*** Verzeichnisses, des ***../items*** Verzeichnisses
 oder beide konvertiert werden sollen.
 
-Genaueres bitte unter :doc:`../tools/tools` nachlesen.
+Genaueres bitte unter :doc:`../../tools/tools` nachlesen.
 
 
 ---------------------------------------------
