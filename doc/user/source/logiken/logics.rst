@@ -43,6 +43,7 @@ Eine Logik sieht prinzipiell folgendermaßen aus:
 
    objekteundmethoden
    persistente_variablen
+   funktions_nutzung
    mqtt_nutzung
    beispiellogiken
 
