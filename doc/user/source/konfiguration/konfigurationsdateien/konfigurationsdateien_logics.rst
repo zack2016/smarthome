@@ -36,7 +36,7 @@ generierten Python Code (Dateiendung **.py**).
    .. image:: ../assets/backend_logik_editor.jpg
 
 
-Für weitere Details zur Konfiguration von Logiken, bitte die Seite :doc:`Logiken <../logiken>` im Abschnitt Konfiguration lesen.
+Für weitere Details zur Konfiguration von Logiken, bitte die Seite :doc:`Logiken <../logiken/logics>` im Abschnitt Konfiguration lesen.
 
-Für Details zur Erstellung von Logiken, bitte den Abschitt :doc:`Logiken <../logiken/logics>` dieser Dokumentation lesen.
+Für Details zur Erstellung von Logiken, bitte den Abschitt :doc:`Logiken <konfiguration/logiken/logics>` dieser Dokumentation lesen.
 

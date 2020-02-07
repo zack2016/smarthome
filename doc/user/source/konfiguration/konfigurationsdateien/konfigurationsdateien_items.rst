@@ -29,6 +29,6 @@ von SmartHomeNG wird vermerkt, dass die yaml Datei fehlerhalft ist, und wo (welc
 wird.
 
 
-Weitere Details zur Konfiguration von Items sind :doc:`hier <items/items>` zu finden.
+Weitere Details zur Konfiguration von Items sind :doc:`hier <../items/items>` zu finden.
 
 
