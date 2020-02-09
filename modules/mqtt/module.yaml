@@ -53,6 +53,49 @@ parameters:
                  In a standard setup you should not need to configure this parameter.
                  '
 
+    user:
+        type: str
+        default: ''
+        description:
+            de: 'Username für das Broker Login (optional)'
+            en: 'Username for login to the broker (optional)'
+        description_long:
+            de: 'Username zum Login beim MQTT Broker, falls der Broker für user/password Authentifizierung konfiguriert ist.\n
+                 \n
+                 **ACHTUNG**: Bis zur Implementierung von TLS, werden Username und Password unverschlüsselt übertragen.
+                '
+            en: 'Username to login to the MQTT broker, if the broker is configured for user/password authentication.\n
+                 \n
+                 **NOTICE**: Until Implementation of TLS, username and password are transmitted unencrypted.
+                '
+
+    password:
+        type: str
+        default: ''
+        hide: True
+        description:
+            de: 'Passwort für das Broker Login (optional)'
+            en: 'Password for login to the broker'
+        description_long:
+            de: 'Passwort zum Login beim MQTT Broker, falls der Broker für user/password Authentifizierung konfiguriert ist.\n
+                 \n
+                 **ACHTUNG**:\n
+                 \n
+                  - Bis zur Implementierung von TLS, werden Username und Password unverschlüsselt übertragen.\n
+                  - Bei der jetzigen Implementierung wird das Passwort in **../etc/plugin.yaml** im Klartext gespeichert.\n
+                 \n
+                 \n
+                '
+            en: 'Password to login to the MQTT broker, if the broker is configured for user/password authentication.\n
+                 \n
+                 **NOTICE**:\n
+                 \n
+                  - Until Implementation of TLS, username and password are transmitted unencrypted.\n
+                  - At this stage of implementation the Password is stored in the plugin.yaml file as clear text.\n
+                 \n
+                 \n
+                '
+
     broker_monitoring:
         type: bool
         default: False
@@ -84,8 +127,16 @@ parameters:
                  A good explanation about Quality-of-Service in MQTT can be found here: http://www.hivemq.com/blog/mqtt-essentials-part-6-mqtt-quality-of-service-levels.\n
                  "
 
+    bool_values:
+        type: list
+        default: None*
+        description:
+            de: "Gewünschte Werte (im MQTT Payload) für Publish und Subscribe von boolsche Werten (z.B. ['Falsch','Wahr'])"
+            en: "Values (in MQTT payload) for publish and subscribe of boolean values (e.g. ['Wrong','Right'])"
+
     last_will_topic:
         type: str
+        gui_type: wide_str
         default: ''
         description:
             de: 'Topic für Last-Will Telegramm'
@@ -116,6 +167,7 @@ parameters:
 
     last_will_payload:
         type: str
+        gui_type: wide_str
         default: ''
         description:
             de: 'Payload für die MQTT testament message. Wenn keine **last_will_payload** angegeben wird, wird kein Last-Will Telegramm gesendet.'
@@ -123,8 +175,7 @@ parameters:
 
     birth_topic:
         type: str
-        default: ''
-        type: str
+        gui_type: wide_str
         default: ''
         description:
             de: 'Topic für das Birth Telegramm'
@@ -135,17 +186,11 @@ parameters:
 
     birth_payload:
         type: str
+        gui_type: wide_str
         default: ''
         description:
             de: 'Payload für das Birth Telegramm. Wenn keine birth_payload konfiguriert ist, wird keine Birth Message gesendet. In diesem Fall wird auch keine last-will message gesendet, falls die Verbindung ordnungsgemäß geschlossen wird (beim Beenden von SmartHomeNG).'
             en: 'Payload for the birth telegram. if birth_payload is not specified, no birth message will be sent. In this case there will be no last-will message sent, if the connection is closed orderly (by shutting down SmartHomeNG).'
-
-    bool_values:
-        type: list
-        default: None*
-        description:
-            de: "Gewünschte Werte (im MQTT Payload) für Publish und Subscribe von boolsche Werten (z.B. ['Falsch','Wahr'])"
-            en: "Values (in MQTT payload) for publish and subscribe of boolean values (e.g. ['Wrong','Right'])"
 
 #    publish_items:
 #        type: bool
@@ -183,49 +228,6 @@ parameters:
 #                 \n
 #                 items_topic_prefix defines the prefix when building the MQTT topic from item-path.
 #                 '
-
-    user:
-        type: str
-        default: ''
-        description:
-            de: 'Username für das Broker Login (optional)'
-            en: 'Username for login to the broker (optional)'
-        description_long:
-            de: 'Username zum Login beim MQTT Broker, falls der Broker für user/password Authentifizierung konfiguriert ist.\n
-                 \n
-                 **ACHTUNG**: Bis zur Implementierung von TLS, werden Username und Password unverschlüsselt übertragen.
-                '
-            en: 'Username to login to the MQTT broker, if the broker is configured for user/password authentication.\n
-                 \n
-                 **NOTICE**: Until Implementation of TLS, username and password are transmitted unencrypted.
-                '
-
-    password:
-        type: str
-        default: ''
-        hide: True
-        description:
-            de: 'Passwort für das Broker Login'
-            en: 'Password for login to the broker'
-        description_long:
-            de: 'Passwort zum Login beim MQTT Broker, falls der Broker für user/password Authentifizierung konfiguriert ist.\n
-                 \n
-                 **ACHTUNG**:\n
-                 \n
-                  - Bis zur Implementierung von TLS, werden Username und Password unverschlüsselt übertragen.\n
-                  - Bei der jetzigen Implementierung wird das Passwort in **../etc/plugin.yaml** im Klartext gespeichert.\n
-                 \n
-                 \n
-                '
-            en: 'Password to login to the MQTT broker, if the broker is configured for user/password authentication.\n
-                 \n
-                 **NOTICE**:\n
-                 \n
-                  - Until Implementation of TLS, username and password are transmitted unencrypted.\n
-                  - At this stage of implementation the Password is stored in the plugin.yaml file as clear text.\n
-                 \n
-                 \n
-                '
 
 #    tls:    # Not yet implemented
 #        type: bool

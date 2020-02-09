@@ -31,6 +31,7 @@ import dateutil
 import pytz
 from dateutil.tz import tzlocal
 from dateutil import parser
+import json
 import logging
 import os
 
@@ -844,7 +845,11 @@ class Shtime:
         custom = self.config.get('custom', [])
         count = 0
         if len(custom) > 0:
-            for cust_date in custom:
+            for entry in custom:
+                if isinstance(entry, str):
+                    cust_date = json.loads(entry)
+                else:
+                    cust_date = entry
                 # generate for range of years or a given year
                 if cust_date.get('year', None) is None:
                     gen_for_years = self.years
