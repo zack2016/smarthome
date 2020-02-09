@@ -116,6 +116,9 @@
 
 <div class="container-fluid" style="position: sticky;background-color: white;top:  180px;z-index: 8;">
 	<ul class="nav nav-tabs">
+		{% if tabcount == 1 %}
+			<li id="tab_1" class="nav-item"><a class="text-dark nav-link active" href="#bodytab_1">{{ tab1title }}</a></li>
+		{% endif %}
 		{% if tabcount > 1 %}
 			<li id="tab_1" class="nav-item"><a class="text-dark nav-link {% if start_tab==1 %}active{% endif %}" data-toggle="tab" href="#bodytab_1">{{ tab1title }}</a></li>
 			<li id="tab_2" class="nav-item"><a class="text-dark nav-link {% if start_tab==2 %}active{% endif %}" data-toggle="tab" href="#bodytab_2">{{ tab2title }}</a></li>
