@@ -211,7 +211,7 @@ def html_escape(str):
 #    str = str.rstrip().replace('<', '&lt;').replace('>', '&gt;')
 #    str = str.rstrip().replace('(', '&#40;').replace(')', '&#41;')
 #    str = str.rstrip().replace("'", '&#39;').replace('"', '&quot;')
-    html = str.rstrip().replace("ä", '&auml;').replace("ö", '&ouml;').replace("ü", '&uuml;')
+    html = str.rstrip().replace("ä", '&auml;').replace("ö", '&ouml;').replace("ü", '&uuml;') if str else ""
     return html
 
 
