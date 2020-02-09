@@ -94,16 +94,16 @@ parameters:
         type: str
         default: ""
         description:
-            de: "Hier wird das Bundesland für die regionalen Feiertage festgelegt<br>
-                - für DE: BW, BY, BE, BB, HB, HH, HE, MV, NI, NW, RP, SL, SN, ST, SH, TH\n
-                - für AT: B, K, N, O, S, ST, T, V, W (default)\n
-                - für CH: AG, AR, AI, BL, BS, BE, FR, GE, GL, GR, JU, LU, NE, NW, OW, SG, SH, SZ, SO, TG, TI, UR, VD, VS, ZG, ZH\n
+            de: "Hier wird das Bundesland für die regionalen Feiertage festgelegt
+                - für DE: BW, BY, BE, BB, HB, HH, HE, MV, NI, NW, RP, SL, SN, ST, SH, TH
+                - für AT: B, K, N, O, S, ST, T, V, W (default)
+                - für CH: AG, AR, AI, BL, BS, BE, FR, GE, GL, GR, JU, LU, NE, NW, OW, SG, SH, SZ, SO, TG, TI, UR, VD, VS, ZG, ZH
                 - für FRA: Métropole (default), Alsace-Moselle, Guadeloupe, Guyane, Martinique, Mayotte, Nouvelle-Calédonie, La Réunion, Polynésie Française, Saint-Barthélémy, Saint-Martin, Wallis-et-Futuna
                 "
-            en: "Province to be used for regional holifays\n
-                - for DE: BW, BY, BE, BB, HB, HH, HE, MV, NI, NW, RP, SL, SN, ST, SH, TH\n
-                - for AT: B, K, N, O, S, ST, T, V, W (default)\n
-                - for CH: AG, AR, AI, BL, BS, BE, FR, GE, GL, GR, JU, LU, NE, NW, OW, SG, SH, SZ, SO, TG, TI, UR, VD, VS, ZG, ZH\n
+            en: "Province to be used for regional holifays
+                - for DE: BW, BY, BE, BB, HB, HH, HE, MV, NI, NW, RP, SL, SN, ST, SH, TH
+                - for AT: B, K, N, O, S, ST, T, V, W (default)
+                - for CH: AG, AR, AI, BL, BS, BE, FR, GE, GL, GR, JU, LU, NE, NW, OW, SG, SH, SZ, SO, TG, TI, UR, VD, VS, ZG, ZH
                 - for FRA: Métropole (default), Alsace-Moselle, Guadeloupe, Guyane, Martinique, Mayotte, Nouvelle-Calédonie, La Réunion, Polynésie Française, Saint-Barthélémy, Saint-Martin, Wallis-et-Futuna
             "
 
