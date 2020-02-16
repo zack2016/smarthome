@@ -275,6 +275,16 @@ def restore_backup(conf_base_dir, base_dir):
     # backup files from /scenes
     restore_directory(restorezip, 'scenes', scenes_dir, overwrite)
 
+    # mark zip-file as restored
+    os.rename(restorezip_filename, restorezip_filename + '.done')
+
+    # delete last backup timestamp
+    filename = os.path.join(backup_dir, 'last_backup')
+    try:
+        os.remove(filename)
+    except OSError:
+        pass
+
     return restorezip_filename
 
 

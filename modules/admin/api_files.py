@@ -478,12 +478,13 @@ class FilesController(RESTResource):
 
         self._sh.shng_status = {'code': 102, 'text': 'Restore: Restoring'}
         fn = lib.backup.restore_backup(self.extern_conf_dir, self.base_dir)
-        self.logger.info("FilesController.restore_config(): Configuration '{}' restored".format(filename))
         if fn is None:
             self.shng_status = old_shng_status
             result = {"result": "error"}
         else:
+            self.logger.info("FilesController.restore_config(): Configuration '{}' restored".format(filename))
             self._sh.shng_status = {'code': 103, 'text': 'Restart clicked'}
+
             self._sh.restart('Restore Config')
             result = {"result": "ok"}
 
