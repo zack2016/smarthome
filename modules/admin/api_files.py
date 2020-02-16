@@ -438,6 +438,13 @@ class FilesController(RESTResource):
         """
         self.logger.info("FilesController.restore_config(filename='{}')".format(filename))
 
+        old_shng_status = self._sh.shng_status
+        if old_shng_status['code'] != 20:
+            response = {'result': 'error', 'text': "SmartHomeNG is not in state 'running'"}
+            return
+
+        self._sh.shng_status = {'code': 101, 'text': 'Restore: Uploading'}
+
         # create restore directory, if it does not exist
         restore_dir = os.path.join(self.base_dir, 'var', 'restore')
         if not os.path.isdir(restore_dir):
@@ -446,6 +453,7 @@ class FilesController(RESTResource):
             except OSError as e:
                 self.logger.error("Cannot create directory - No restore was created - Error {}".format(e))
                 result = {"result": "Cannot create directory - No restore was created - Error {}".format(e)}
+                self.shng_status = old_shng_status
                 return result
 
 
@@ -453,18 +461,31 @@ class FilesController(RESTResource):
         params = self.get_body(binary=True)
         if params is None:
             self.logger.warning("FilesController.restore_config(): Bad, request")
+            self.shng_status = old_shng_status
             raise cherrypy.HTTPError(status=411)
         self.logger.debug("FilesController.restore_config(): '{}'".format(params))
 
+        # write file to restore-directory
+
+        # !!! make restore-directory empty !!!
 
         filename = os.path.join(restore_dir, filename)
         read_data = None
         with open(filename, 'w+b') as f:
             f.write(params)
 
-        result = {"result": "ok"}
-        result = {"result": "not yet implemented"}
+        self._sh.shng_status = {'code': 102, 'text': 'Restore: Restoring'}
+        fn = lib.backup.restore_backup(self.extern_conf_dir, self.base_dir)
+        if fn is None:
+            self.shng_status = old_shng_status
+            result = {"result": "error"}
+        else:
+            self._sh.shng_status = {'code': 103, 'text': 'Restart clicked'}
+            self._sh.restart('Restore Config')
+            result = {"result": "ok"}
+
         return json.dumps(result)
+
 
 
     # ======================================================================
