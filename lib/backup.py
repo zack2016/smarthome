@@ -30,6 +30,7 @@ import shutil
 import time
 import os
 from datetime import datetime
+from lib.shtime import Shtime
 
 logger = logging.getLogger(__name__)
 
@@ -48,7 +49,6 @@ def get_backuptime():
     return hour + '-' + minute + '-' + second
 
 
-
 def make_backup_directories(base_dir):
     """
     Create the backup-dirctory and the restore-directory, if the do not already exist
@@ -56,6 +56,7 @@ def make_backup_directories(base_dir):
     :param base_dir:
     :return:
     """
+    global backup_dir
     backup_dir = os.path.join(base_dir, 'var','backup')
     restore_dir = os.path.join(base_dir, 'var','restore')
 
@@ -147,7 +148,35 @@ def create_backup(conf_base_dir, base_dir, filename_with_timestamp=False, before
 
     #logger.warning("- backup_dir = {}".format(backup_dir))
 
+    shtime = Shtime.get_instance()
+    now = shtime.now()
+    logger.info("get_backup_timestamp: now = '{}'".format(now))
+
+    fd = open(os.path.join(backup_dir, 'last_backup'), 'w+')
+    fd.write("%s" % now)
+    fd.close()
+
     return os.path.join(backup_dir, backup_filename)
+
+
+def get_lastbackuptime():
+    """
+    This method reads the file 'last_backup' and returns the timestamp.
+
+    :return: last backup time
+    :rtype: str
+    """
+
+    try:
+        if os.path.isfile(os.path.join(backup_dir, 'last_backup')):
+            fd = open(os.path.join(backup_dir, 'last_backup'), 'r')
+            line = fd.readline()
+            fd.close()
+            return line
+    except:
+        logger.warning("last_backup could not be read!")
+    return ""
+
 
 
 def backup_file(backupzip, source_dir, arc_dir, filename):
@@ -295,3 +324,15 @@ def restore_directory(restorezip, arc_dir, dest_dir, overwrite=False):
         if fn.startswith(arc_dir+'/'):
             restore_file(restorezip, arc_dir, os.path.basename(fn), dest_dir, overwrite)
     return
+
+
+def write_lastbackuptime(timestamp, timefile):
+    """
+    This method writes the PID to the pidfile and locks it while the process is running.
+
+    :param pid: PID of SmartHomeNG
+    :param pidfile: Name of the pidfile to write to
+    :type pid: int
+    :type pidfile: str
+    """
+

@@ -194,6 +194,30 @@ class Shtime:
         return datetime.datetime.now(tzlocal()).tzname()
 
 
+    def tznameST(self):
+        """
+        Returns the name for Standard Time in the local timezone (e.g. CET)
+
+        :return: Timezone info
+        :rtype: str
+        """
+
+        jan = datetime.datetime.fromtimestamp(datetime.datetime.timestamp(datetime.datetime(2020, 1, 1)), tzlocal())
+        return jan.strftime("%Z")
+
+
+    def tznameDST(self):
+        """
+        Returns the name for Daylight Saving Time (DST) in the local timezone (e.g. CEST)
+
+        :return: Timezone info
+        :rtype: str
+        """
+
+        jul = datetime.datetime.fromtimestamp(datetime.datetime.timestamp(datetime.datetime(2020, 7, 1)), tzlocal())
+        return jul.strftime("%Z")
+
+
     def utcnow(self):
         """
         Returns the actual time in GMT

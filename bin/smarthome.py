@@ -684,7 +684,7 @@ class SmartHome():
         exit()
 
 
-    def restart(self,source=''):
+    def restart(self, source=''):
         """
         This method is used to restart the python interpreter and SmartHomeNG
         """
@@ -693,6 +693,7 @@ class SmartHome():
             source = ', initiated by ' + source
         self._logger.warning("SmartHomeNG restarting"+source)
         command = sys.executable + ' ' + os.path.join(self._base_dir, 'bin', 'smarthome.py') + ' -r'
+        self._logger.info("Restart command = '{}'".format(command))
         p = subprocess.Popen(command, shell=True)
 
 

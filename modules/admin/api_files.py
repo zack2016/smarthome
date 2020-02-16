@@ -455,6 +455,7 @@ class FilesController(RESTResource):
                 result = {"result": "Cannot create directory - No restore was created - Error {}".format(e)}
                 self.shng_status = old_shng_status
                 return result
+            self.logger.info("FilesController.restore_config(): Directory '{}' created".format(restore_dir))
 
 
         params = None
@@ -469,13 +470,15 @@ class FilesController(RESTResource):
 
         # !!! make restore-directory empty !!!
 
-        filename = os.path.join(restore_dir, filename)
+        fn = os.path.join(restore_dir, filename)
         read_data = None
-        with open(filename, 'w+b') as f:
+        with open(fn, 'w+b') as f:
             f.write(params)
+        self.logger.info("FilesController.restore_config(): Configuration '{}' uploaded".format(filename))
 
         self._sh.shng_status = {'code': 102, 'text': 'Restore: Restoring'}
         fn = lib.backup.restore_backup(self.extern_conf_dir, self.base_dir)
+        self.logger.info("FilesController.restore_config(): Configuration '{}' restored".format(filename))
         if fn is None:
             self.shng_status = old_shng_status
             result = {"result": "error"}
