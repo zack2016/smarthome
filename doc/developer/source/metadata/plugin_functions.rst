@@ -1,5 +1,5 @@
-Section `plugin_functions:`
----------------------------
+Section `plugin_functions`
+--------------------------
 
 This sections describes the public functions that are defined by the plugin.
 

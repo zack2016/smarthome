@@ -86,7 +86,7 @@ def create_backup(conf_base_dir, base_dir, filename_with_timestamp=False, before
 
     :param conf_base_dir: basedir for configuration
                           (should be 'extern_conf_dir' to reflect --config_dir option)
-    :param base_dir:       var-directory. If empty or ommited, conf_base_dir/var is used.
+    :param base_dir:      var-directory. If empty or ommited, conf_base_dir/var is used.
 
     :return:
     """
@@ -141,7 +141,7 @@ def create_backup(conf_base_dir, base_dir, filename_with_timestamp=False, before
     backup_directory(backupzip, scenes_dir)
 
     zipped_files = backupzip.namelist()
-    #logger.warning("Zipped files: {}".format(zipped_files))
+    logger.info("Zipped files: {}".format(zipped_files))
     backupzip.close()
 
 
@@ -161,6 +161,7 @@ def backup_file(backupzip, source_dir, arc_dir, filename):
     """
     if not filename.startswith('.'):
         if os.path.isfile(os.path.join(source_dir, filename)):
+            #logger.debug("Zipping file: {}".format(filename))
             backupzip.write(os.path.join(source_dir, filename), arcname=os.path.join(arc_dir, filename))
     return
 

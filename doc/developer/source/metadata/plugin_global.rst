@@ -1,5 +1,5 @@
-Section `plugin:`
------------------
+Section `plugin`
+----------------
 
 The global metadata section ``plugin:`` has the following keys:
 

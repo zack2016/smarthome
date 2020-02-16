@@ -1,5 +1,5 @@
-Section `module:`
------------------
+Section `module`
+----------------
 
 The global metadata section ``module:`` has the following keys:
 

@@ -20,6 +20,7 @@
 #########################################################################
 
 
+import base64
 import os
 import datetime
 import logging
@@ -59,7 +60,7 @@ class FilesController(RESTResource):
         return
 
 
-    def get_body(self, text=False):
+    def get_body(self, text=False, binary=False):
         """
         Get content body of received request header (for file uploads)
 
@@ -73,10 +74,19 @@ class FilesController(RESTResource):
         rawbody = cherrypy.request.body.read(int(cl))
         self.logger.debug("ServicesController(): get_body(): rawbody = {}".format(rawbody))
         try:
-            if text:
-                params = rawbody.decode('utf-8')
+            if binary:
+                wrk = rawbody.decode('ascii').split(',')
+                datatype = wrk[0].split(';')
+                if datatype[1] == 'base64':
+                    params = base64.b64decode(wrk[1])
+                else:
+                    self.logger.error("ServicesController(): get_body(): cannot decode: rawbody = {}".format(rawbody))
+                    params = wrk[1]
             else:
-                params = json.loads(rawbody.decode('utf-8'))
+                if text:
+                    params = rawbody.decode('utf-8')
+                else:
+                    params = json.loads(rawbody.decode('utf-8'))
         except Exception as e:
             self.logger.warning("ServicesController(): get_body(): Exception {}".format(e))
             return None
@@ -401,7 +411,7 @@ class FilesController(RESTResource):
 
     def get_config_backup(self):
 
-        filename = lib.backup.create_backup(self.extern_conf_dir)
+        filename = lib.backup.create_backup(self.extern_conf_dir, self.base_dir)
         # self.logger.warning("FilesController.get_config_backup(): filename = '{}'".format(filename))
 
         read_data = None
@@ -413,10 +423,49 @@ class FilesController(RESTResource):
 
     def get_config_backup2(self):
 
-        filename = lib.backup.create_backup(self.extern_conf_dir)
+        filename = lib.backup.create_backup(self.extern_conf_dir, self.base_dir)
         # self.logger.warning("FilesController.get_config_backup2(): filename = '{}'".format(filename))
         cherrypy.lib.static.serve_file(filename, 'application/zip', 'attachment', 'shng_config_backup.zip')
         return json.dumps({"result": "ok"})
+
+
+    def restore_config(self, filename):
+        """
+        Restore previously created backup
+
+        :param filename:
+        :return:
+        """
+        self.logger.info("FilesController.restore_config(filename='{}')".format(filename))
+
+        # create restore directory, if it does not exist
+        restore_dir = os.path.join(self.base_dir, 'var', 'restore')
+        if not os.path.isdir(restore_dir):
+            try:
+                os.makedirs(restore_dir)
+            except OSError as e:
+                self.logger.error("Cannot create directory - No restore was created - Error {}".format(e))
+                result = {"result": "Cannot create directory - No restore was created - Error {}".format(e)}
+                return result
+
+
+        params = None
+        params = self.get_body(binary=True)
+        if params is None:
+            self.logger.warning("FilesController.restore_config(): Bad, request")
+            raise cherrypy.HTTPError(status=411)
+        self.logger.debug("FilesController.restore_config(): '{}'".format(params))
+
+
+        filename = os.path.join(restore_dir, filename)
+        read_data = None
+        with open(filename, 'w+b') as f:
+            f.write(params)
+
+        result = {"result": "ok"}
+        result = {"result": "not yet implemented"}
+        return json.dumps(result)
+
 
     # ======================================================================
     #  GET /api/services/
@@ -476,11 +525,28 @@ class FilesController(RESTResource):
             return self.save_scenes_config(filename)
         elif (id == 'logics' and filename != ''):
             return self.save_logics_config(filename)
+        elif (id == 'restore' and filename != ''):
+            return self.restore_config(filename)
 
         return None
 
     update.expose_resource = True
     update.authentication_needed = True
+
+
+    def add(self, id='', filename=''):
+        """
+        Handle POST requests for server API
+        """
+        self.logger.info("FilesController.add(id='{}', filename='{}')".format(id, filename))
+
+        #if (id == 'restore' and filename != ''):
+        #    return self.restore_config(filename)
+
+        return None
+
+    add.expose_resource = True
+    add.authentication_needed = True
 
 
     def delete(self, id='', filename=''):

@@ -243,6 +243,7 @@ class ItemData:
             item = self.items.return_item(item_path)
         except Exception as e:
             self.logger.error("item_change_value_html: item '{}' set to value '{}' - Exception {}".format(item_path, value, e))
+            return
         if 'num' in item.type():
             if "." in value or "," in value:
                 value = float(value)
