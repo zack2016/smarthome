@@ -1,4 +1,5 @@
-.. index:: mqtt
+
+.. index:: mqtt; Modul
 .. index:: modules; mqtt
 .. index:: mqtt; Konfiguration
 

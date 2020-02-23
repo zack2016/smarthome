@@ -1,10 +1,12 @@
-.. index:: http
+
+.. index:: http; Modul
 .. index:: modules; http
+.. index:: http; Konfiguration
 
 .. index:: Webinterfaces; Konfiguration
 .. index:: Webservices; Konfiguration
 
-. role:: redsup
+.. role:: redsup
 .. role:: bluesup
 
 ===========
