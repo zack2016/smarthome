@@ -8,8 +8,8 @@
 Konfiguration Sichern und Wiederherstellen :redsup:`neu`
 ========================================================
 
-.. index:: Backup
-.. index:: Sichern
+.. index:: Backup; Kommandozeile
+.. index:: Sichern; Kommandozeile
 .. index:: Konfiguration; Backup
 
 -------
@@ -35,8 +35,8 @@ nicht notwendig ein laufendes SmartHomeNG vorher zu beenden.
    Es werden keine Konfigurationsdateien des alten .CONF Formats gesichert, sondern ausschließlich YAML Dateien.
 
 
-.. index:: Restore
-.. index:: Wiederherstellen
+.. index:: Restore; Kommandozeile
+.. index:: Wiederherstellen; Kommandozeile
 .. index:: Konfiguration; Restore
 
 ----------------

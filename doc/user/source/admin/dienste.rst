@@ -25,7 +25,7 @@ Auf diesem Tab können folgende Funktionen ausgelöst werden:
 .. index:: Backup; Admin GUI
 .. index:: Admin GUI; Backup
 
-* Backup: Herunterladen der Konfigurationsdaten von SmartHomeNG als Zip Archiv
+* **Backup**: Herunterladen der Konfigurationsdaten von SmartHomeNG als Zip Archiv
 
   Das Zip-Archiv enthält die yaml Konfigurationsdateien aus dem /etc Verzeichnis (logging.yaml, logic.yaml,
   module.yaml, plugin.yaml, smarthome.yaml und struct.yaml). Weiterhin sind alle yaml Dateien der Verzeichnisse
@@ -41,7 +41,7 @@ Auf diesem Tab können folgende Funktionen ausgelöst werden:
 .. index:: Restore; Admin GUI
 .. index:: Admin GUI; Restore
 
-* Restore: Wiederherstellen der Konfiguration von SmartHomeNG aus einem Zip Archiv
+* **Restore**: Wiederherstellen der Konfiguration von SmartHomeNG aus einem Zip Archiv
 
   Über diese Funktion kann eine Zip Archivdatei ausgewählt und zum SmartHomeNG Server hochgeladen werden. Im Anschluß
   wird die in dem Zip Archiv gesicherte Konfiguration wiederhergestellt. Als Vorsichtsmaßnahme wird vor Beginn der

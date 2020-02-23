@@ -26,7 +26,7 @@ SmartVISU liefern zu können:
 
 .. code-block:: bash
 
-   sudo apt-get install libawl-php php-curl php php-json php-xml php7.0-mbstring
+   sudo apt-get install libawl-php php-curl php php-json php-xml php-mbstring
    sudo service apache2 restart
 
 
