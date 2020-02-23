@@ -24,7 +24,7 @@ Konfigurationsdialog heraus veranlasst werden.
 
 Falls Daten verändert und gesichert wurden, wird der Button **Core neu starten** (unten links im Dialog) aktiviert.
 Wenn der Button geklickt wird, wird SmartHomeNG neu gestartet. Dieses nimmt einige Zeit in Anspruch. Der Fortschritt
-kann auf der Seite **Dienste** im Tab **Dienste** verfolgt werden.
+kann auf der Seite  **Dienste** im Tab **Dienste** verfolgt werden.
 
 
 Konfiguration der Feiertage
