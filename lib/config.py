@@ -301,7 +301,7 @@ def nested_put(output_dict, path, value):
     return
 
 
-def search_for_struct_in_items(items, template, struct_dict, config, nestlevel=0, parent=''):
+def search_for_struct_in_items(items, struct_dict, config, source_name='', parent=''):
     """
     Test if the loaded file contains items with 'struct' attribute.
 
@@ -309,17 +309,13 @@ def search_for_struct_in_items(items, template, struct_dict, config, nestlevel=0
 
     :param items:        tree content of a single items.yaml file (or part of it during recursion)
     :type items:         OrderedDict
-    :param template:
     :param struct_dict:   dict with all defined structs (from /etc/structs.yaml and from loaded plugins)
     :param config:       tree, into which the configuration should be merged
     :type config:        OrderedDict
-    :param nestlevel:
     :param parent:
     :return:
     """
 
-    result = False
-    template = collections.OrderedDict()
     for key in items:
         value = items[key]
         if key == 'struct':
@@ -332,14 +328,13 @@ def search_for_struct_in_items(items, template, struct_dict, config, nestlevel=0
             instance = items.get('instance', '')
             for struct_name in struct_names:
                 wrk = struct_name.find('@')
+                template = collections.OrderedDict()
                 if wrk > -1:
                     add_struct_to_template(parent, struct_name[:wrk], template, struct_dict, struct_name[wrk+1:])
                 else:
                     add_struct_to_template(parent, struct_name, template, struct_dict, instance)
                 if template != {}:
-                    config = merge(template, config)
-                    template = collections.OrderedDict()
-            result = True
+                    config = merge(template, config, source_name, 'Item-Tree')
         else:
             #item is no struct
             if isinstance(value, collections.OrderedDict):
@@ -349,14 +344,11 @@ def search_for_struct_in_items(items, template, struct_dict, config, nestlevel=0
                 else:
                     path = parent+'.'+key
                 # test if a aub-item is a struct
-                if search_for_struct_in_items(value, template, struct_dict, config, nestlevel+1, parent=path):
-                    result = True
-
-#        if nestlevel == 0:
-#            if template != {}:
-#                config = merge(template, config)
-    return result
-
+                search_for_struct_in_items(value, struct_dict, config, source_name, parent=path)
+                template = collections.OrderedDict()
+                nested_put(template, path, value)
+                config = merge(template, config, source_name, 'Item-Tree')
+    return
 
 def set_attr_for_subtree(subtree, attr, value, indent=0):
     '''
@@ -500,19 +492,17 @@ def parse_yaml(filename, config=None, addfilenames=False, parseitems=False, stru
         remove_invalid(items, filename)
 
         if parseitems:
-            # test if file contains 'struct' attribute
+            # test if file contains 'struct' attribute and merge all items into config
             logger.debug("parse_yaml: Checking if file {} contains 'struct' attribute".format(os.path.basename(filename)))
-            items_template = collections.OrderedDict()
-            if search_for_struct_in_items(items, items_template, struct_dict, config):
-                pass
-#                if items_template != {}:
-#                    config = merge(items_template, config)
+            search_for_struct_in_items(items, struct_dict, config, os.path.basename(filename))
 
         if addfilenames:
             logger.debug("parse_yaml: Add filename = {} to items".format(os.path.basename(filename)))
             _add_filenames_to_config(items, os.path.basename(filename))
 
-        config = merge(items, config, os.path.basename(filename), 'Item-Tree')
+        if not parseitems:
+            # if not already merged
+            config = merge(items, config, os.path.basename(filename), 'Item-Tree')
     return config
 
 
