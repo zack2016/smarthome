@@ -17,12 +17,6 @@ So ist es möglich dass die Klingel mit der Musikanlage und TV spricht,
 und dessen Wiedergabe unterbricht oder bei Abwesenheit eine Nachricht
 per Email verschickt.
 
-Viele haben in die Konfiguration Ihres Smarthome.py Systems viel Arbeit
-gesteckt und wollen das jetzt nicht aufgeben und wieder etwas komplett
-neues machen. So wurde ein Fork **SmartHomeNG** erstellt um die
-Fortentwicklungen im System wieder zusammenzuführen und eine Basis für
-Weiterentwicklungen zu stellen.
-
 Eine umfassende Entwickler-Dokumentation in englischer Sprache gibt es
 unter
 `www.SmartHomeNG.de/developer <https://www.smarthomeng.de/developer>`__.
