@@ -396,9 +396,9 @@ def add_struct_to_template(path, struct_name, template, struct_dict, instance):
         # no struct/template with this name
         nf = collections.OrderedDict()
         nf['name'] = "ERROR: struct '" + struct_name+"' not found!"
-        nf['value'] = nf['name']
+        # nf['value'] = nf['name']
         nested_put(template, path, nf)
-        logger.warning("add_struct_to_template: 'struct' definition for '{}' not found (referenced in item {})".format(struct_name, path))
+        logger.error("add_struct_to_template: Struct definition for '{}' not found (referenced in item {})".format(struct_name, path))
     else:
         # add struct/template to temporary item(template) tree
         nested_put(template, path, copy.deepcopy(struct))
