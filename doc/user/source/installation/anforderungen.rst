@@ -18,13 +18,13 @@ wie Rechner mit einer ARM CPU wie Raspberry Pi.
 
 Häufig verwendete Hardware ist:
 
--  Raspberry Pi 2 oder Raspberry Pi 3 (der Letztere wird aufgrund der besseren Hardware **unbedingt empfohlen**)
+-  Raspberry Pi 2, 3 oder 4 (der letztere wird aufgrund der besseren Hardware **unbedingt empfohlen**)
    besonders wenn die Webinterfaces der Plugins genutzt werden und falls die Visualisierung (smartVISU) auf dem
    selben System betrieben werden sollen. Der Großteil der Nutzer verwendet diese Hardware, siehe
    `Umfrage <https://knx-user-forum.de/forum/supportforen/smarthome-py/1112952-welche-hardware-nutzt-ihr-f%C3%BCr-euer-smarthomeng>`__
 -  Intel NUC (Empfohlen für Stabilität und Geschwindigkeit, auch wenn
    diese Rechner mehr Leistung haben, als benötigt wird. Unterstützt
-   normale SATA Festplatten, was ein Vorteil gegenüber den Raspberry Pi
+   normale SATA Festplatten/SSD, was ein Vorteil gegenüber den Raspberry Pi
    mit ihren SD-Karten ist)
 -  ODroid
 -  Banana Pi
@@ -40,11 +40,12 @@ Virtuelle Maschine mit 512MB RAM und zwischen 20GB und 60GB
 Plattenplatz.
 
 
-Raspberry Pi 2 oder 3, jeweils Modell B oder B+
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Raspberry Pi 2, 3 oder 4
+~~~~~~~~~~~~~~~~~~~~~~~~
 
 SmartHomeNG ist auf einem Raspberry Pi 1 zwar lauffähig, sollte dann aber nur in einer Minimalkonfiguration eingesetzt
-werden. Das
+werden.
+
 Vorteile:
 ^^^^^^^^^
 
