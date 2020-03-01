@@ -171,12 +171,14 @@ class Items():
 
     def resolve_struct(self, struct, substruct, struct_name, substruct_name):
 
+        if substruct is None:
+            logger.error("resolve_struct: Resolving substruct '{0}' of struct '{1}' - substruct '{0}' not found".format(substruct_name, struct_name))
+            return
+
         if substruct.get('struct', None) is not None:
             logger.info("resolve_struct: resolving substruct of struct '{}'".format(struct_name))
             sub_substruct = self._struct_definitions.get(substruct_name, None)
-            if sub_substruct is None:
-                logger.error("resolve_struct: resolving substruct of struct '{}' - substruct '{}' not found".format(struct_name, substruct['struct']))
-            else:
+            if sub_substruct is not None:
                 self.resolve_struct(substruct, sub_substruct, substruct_name, substruct['struct'])
 
         logger.info("resolve_struct: struct_name='{}', substruct_name='{}', substruct='{}'".format(struct_name, substruct_name, substruct))
