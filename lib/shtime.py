@@ -380,9 +380,9 @@ class Shtime:
             return -1
 
 
-    def seconds_to_displaysting(self, sec):
+    def seconds_to_displaystring(self, sec):
         """
-        Convert number of seconds to time display sting
+        Convert number of seconds to time display-string
 
         :param sec: Number of seconds to convert
         :type sec: int
