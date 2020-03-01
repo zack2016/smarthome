@@ -308,12 +308,12 @@ def search_for_struct_in_items(items, struct_dict, config, source_name='', paren
     This function is (recursively) called before merging the loaded file into the item tree
 
     :param items:        tree content of a single items.yaml file (or part of it during recursion)
-    :type items:         OrderedDict
-    :param struct_dict:   dict with all defined structs (from /etc/structs.yaml and from loaded plugins)
+    :param struct_dict:  dict with all defined structs (from /etc/structs.yaml and from loaded plugins)
     :param config:       tree, into which the configuration should be merged
-    :type config:        OrderedDict
     :param parent:
-    :return:
+    :type items:         OrderedDict
+    :type config:        OrderedDict
+    :return: True, if a struct attribute was expanded
     """
 
     for key in items:

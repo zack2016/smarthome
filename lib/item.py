@@ -169,6 +169,46 @@ class Items():
         return
 
 
+    def resolve_struct(self, struct, substruct, struct_name, substruct_name):
+
+        if substruct.get('struct', None) is not None:
+            logger.info("resolve_struct: resolving substruct of struct '{}'".format(struct_name))
+            sub_substruct = self._struct_definitions.get(substruct_name, None)
+            if sub_substruct is None:
+                logger.error("resolve_struct: resolving substruct of struct '{}' - substruct '{}' not found".format(struct_name, substruct['struct']))
+            else:
+                self.resolve_struct(substruct, sub_substruct, substruct_name, substruct['struct'])
+
+        logger.info("resolve_struct: struct_name='{}', substruct_name='{}', substruct='{}'".format(struct_name, substruct_name, substruct))
+
+        for key in substruct:
+            if struct.get(key, None) is None:
+                logger.info("resolve_struct: - key='{}', value='{}'".format(key, substruct[key]))
+                struct[key] = copy.deepcopy(substruct[key])
+            else:
+                logger.info("resolve_struct: - key='{}', value is ignored'".format(key))
+
+
+    def fill_nested_structs(self):
+        """
+        Resolve struct references in structs and fill in the content of the struct
+
+        :return:
+        """
+        import copy
+        for struct_name in self._struct_definitions:
+            struct = self._struct_definitions[struct_name]
+            substruct_name = struct.get('struct', None)
+            if substruct_name is not None:
+                # stuct has a sub-struct
+                name = substruct_name
+                if isinstance(substruct_name, list):
+                    name = substruct_name[0]
+                substruct = self._struct_definitions.get(name, None)
+                logger.info("fill_nested_structs: struct_name='{}', substruct_name='{}', substruct='{}'".format(struct_name, substruct_name, substruct))
+                self.resolve_struct(struct, substruct, struct_name, substruct_name)
+
+
     def return_struct_definitions(self):
         """
         Return all loaded structure template definitions
@@ -202,8 +242,10 @@ class Items():
         #
         # structs are merged into the item tree in lib.config
         #
+        # structs are read in from metadata file of plugins while loading plugins
+        # and from ../etc/struct.yaml
+        #
         # Read in item structs from ../etc/struct.yaml
-        struct_filename = os.path.join(etc_dir, 'struct.yaml')
         struct_definitions = shyaml.yaml_load(os.path.join(etc_dir, 'struct.yaml'), ordered=True, ignore_notfound=True)
         if struct_definitions is not None:
             if isinstance(struct_definitions, collections.OrderedDict):
@@ -211,6 +253,9 @@ class Items():
                     self.add_struct_definition('', key, struct_definitions[key])
             else:
                 logger.error("load_itemdefinitions(): Invalid content in struct.yaml: struct_definitions = '{}'".format(struct_definitions))
+
+        self.fill_nested_structs()
+
         # for Testing: Save structure of joined item structs
         logger.warning("load_itemdefinitions(): For testing the joined item structs are saved to {}".format(os.path.join(etc_dir, 'structs_joined.yaml')))
         shyaml.yaml_save(os.path.join(etc_dir, 'structs_joined.yaml'), self._struct_definitions)
