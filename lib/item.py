@@ -169,26 +169,90 @@ class Items():
         return
 
 
-    def resolve_struct(self, struct, substruct, struct_name, substruct_name):
+    def merge(self, source, destination, source_name='', dest_name=''):
+        '''
+        Merges an OrderedDict Tree into another one
 
-        if substruct is None:
-            logger.error("resolve_struct: Resolving substruct '{0}' of struct '{1}' - substruct '{0}' not found".format(substruct_name, struct_name))
-            return
+        :param source: source tree to merge into another one
+        :param destination: destination tree to merge into
+        :type source: OrderedDict
+        :type destination: OrderedDict
 
-        if substruct.get('struct', None) is not None:
-            logger.info("resolve_struct: resolving substruct of struct '{}'".format(struct_name))
-            sub_substruct = self._struct_definitions.get(substruct_name, None)
-            if sub_substruct is not None:
-                self.resolve_struct(substruct, sub_substruct, substruct_name, substruct['struct'])
+        :return: Merged configuration tree
+        :rtype: OrderedDict
 
-        logger.info("resolve_struct: struct_name='{}', substruct_name='{}', substruct='{}'".format(struct_name, substruct_name, substruct))
+        :Example: Run me with nosetests --with-doctest file.py
 
-        for key in substruct:
-            if struct.get(key, None) is None:
-                logger.info("resolve_struct: - key='{}', value='{}'".format(key, substruct[key]))
-                struct[key] = copy.deepcopy(substruct[key])
+        .. code-block:: python
+
+            >>> a = { 'first' : { 'all_rows' : { 'pass' : 'dog', 'number' : '1' } } }
+            >>> b = { 'first' : { 'all_rows' : { 'fail' : 'cat', 'number' : '5' } } }
+            >>> merge(b, a) == { 'first' : { 'all_rows' : { 'pass' : 'dog', 'fail' : 'cat', 'number' : '5' } } }
+            True
+
+        '''
+        for key, value in source.items():
+            try:
+                if isinstance(value, collections.OrderedDict):
+                    # get node or create one
+                    node = destination.setdefault(key, collections.OrderedDict())
+                    if node == 'None':
+                        destination[key] = value
+                    else:
+                        self.merge(value, node, source_name, dest_name)
+                else:
+                    if type(value).__name__ == 'list':
+                        destination[key] = value
+                    else:
+                        # convert to string and remove newlines from multiline attributes
+                        if destination.get(key, None) is None:
+                            destination[key] = str(value).replace('\n', '')
+            except Exception as e:
+                logger.error("Problem merging subtrees (key={}), probably invalid YAML file '{}' with entry '{}'. Error: {}".format(key, source_name, destination, e))
+
+        return destination
+
+
+    def resolve_structs(self, struct, struct_name, substruct_names):
+        """
+        Resolve a struct reference
+
+        if the struct definition that is to be inserted contains a struct reference, it is resolved first
+
+        :param struct:          struct that contains a struct reference
+        :param substruct:       sub-struct definition that shall be inserted
+        :param struct_name:     name of the struct that contains a struct reference
+        :param substruct_name:  name of the sub-struct definition that shall be inserted
+        """
+
+        logger.info("resolve_structs: struct_name='{}', substruct_names='{}'".format(struct_name, substruct_names))
+
+        new_struct = collections.OrderedDict()
+        structentry_list = list(struct.keys())
+        for structentry in structentry_list:
+            # copy all existing attributes and sub-entrys of the struct
+            if new_struct.get(structentry, None) is None:
+                logger.info("resolve_struct: - copy attribute structentry='{}', value='{}'".format(structentry, struct[structentry]))
+                new_struct[structentry] = copy.deepcopy(struct[structentry])
             else:
-                logger.info("resolve_struct: - key='{}', value is ignored'".format(key))
+                logger.debug("resolve_struct: - key='{}', value is ignored'".format(structentry))
+            if structentry == 'struct':
+                for substruct_name in substruct_names:
+                    # for every substruct
+                    logger.info("resolve_struct: ->substruct_name='{}'".format(substruct_name))
+                    substruct = self._struct_definitions.get(substruct_name, None)
+                    # merge in the sub-struct
+                    for key in substruct:
+                        if new_struct.get(key, None) is None:
+                            logger.info("resolve_struct: - key='{}', value='{}' -> new_struct='{}'".format(key, substruct[key], new_struct))
+                            new_struct[key] = copy.deepcopy(substruct[key])
+                        elif isinstance(new_struct.get(key, None), dict):
+                            logger.info("resolve_struct: - merge key='{}', value='{}' -> new_struct='{}'".format(key, substruct[key], new_struct))
+                            self.merge(substruct[key], new_struct[key], key, struct_name+'.'+key)
+                        else:
+                            logger.debug("resolve_struct: - key='{}', value is ignored'".format(key))
+
+        return new_struct
 
 
     def fill_nested_structs(self):
@@ -199,16 +263,15 @@ class Items():
         """
         import copy
         for struct_name in self._struct_definitions:
+            # for every defined struct
             struct = self._struct_definitions[struct_name]
-            substruct_name = struct.get('struct', None)
-            if substruct_name is not None:
+            substruct_names = struct.get('struct', None)
+            if substruct_names is not None:
                 # stuct has a sub-struct
-                name = substruct_name
-                if isinstance(substruct_name, list):
-                    name = substruct_name[0]
-                substruct = self._struct_definitions.get(name, None)
-                logger.info("fill_nested_structs: struct_name='{}', substruct_name='{}', substruct='{}'".format(struct_name, substruct_name, substruct))
-                self.resolve_struct(struct, substruct, struct_name, substruct_name)
+                if isinstance(substruct_names, str):
+                    substruct_names = [substruct_names]
+                struct = self.resolve_structs(struct, struct_name, substruct_names)
+                self._struct_definitions[struct_name] = struct
 
 
     def return_struct_definitions(self):
