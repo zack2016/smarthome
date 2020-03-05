@@ -147,6 +147,25 @@ class Items():
         return _items_instance
 
 
+    # -----------------------------------------------------------------------------------------
+    #   Following methods handle structs
+    # -----------------------------------------------------------------------------------------
+
+    struct_merge_lists = True
+
+
+    def merge_structlists(self, l1, l2, key=''):
+        if not self.struct_merge_lists:
+            logger.warning("merge_structlists: Not merging lists, key '{}' value '{}' is ignored'".format(key, l2))
+            return l1
+        else:
+            if not isinstance(l2, list):
+                l1 = [l1]
+            if not isinstance(l2, list):
+                l2 = [l2]
+            return l1 + l2
+
+
     def add_struct_definition(self, plugin_name, struct_name, struct):
         """
         Add a struct definition
@@ -202,7 +221,7 @@ class Items():
                         self.merge(value, node, source_name, dest_name)
                 else:
                     if type(value).__name__ == 'list':
-                        destination[key] = value
+                        destination[key] = self.merge_structlists(destination[key], value, key)
                     else:
                         # convert to string and remove newlines from multiline attributes
                         if destination.get(key, None) is None:
@@ -249,8 +268,10 @@ class Items():
                         elif isinstance(new_struct.get(key, None), dict):
                             logger.info("resolve_struct: - merge key='{}', value='{}' -> new_struct='{}'".format(key, substruct[key], new_struct))
                             self.merge(substruct[key], new_struct[key], key, struct_name+'.'+key)
+                        elif isinstance(new_struct.get(key, None), list):
+                            new_struct[key] = self.merge_structlists(new_struct[key], substruct[key], key)
                         else:
-                            logger.debug("resolve_struct: - key='{}', value is ignored'".format(key))
+                            logger.debug("resolve_struct: - key='{}', value '{}' is ignored'".format(key, substruct[key]))
 
         return new_struct
 
@@ -261,7 +282,6 @@ class Items():
 
         :return:
         """
-        import copy
         for struct_name in self._struct_definitions:
             # for every defined struct
             struct = self._struct_definitions[struct_name]
