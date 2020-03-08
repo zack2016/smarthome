@@ -340,7 +340,8 @@
     "OPEN_WEBIF": "Open webinterface",
     "OPEN_CONFIGINFO": "Open configuration documentation",
     "OPEN_DOC": "Open plugin documentation",
-    "OPEN_SUPPORT_THREAD": "Open support thread"
+    "OPEN_SUPPORT_THREAD": "Open support thread",
+    "OPEN_BLOGS": "Open blogs articles"
   },
   "SCENES": {
     "SCENE": "Scene",
