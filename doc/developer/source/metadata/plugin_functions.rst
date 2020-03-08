@@ -2,8 +2,8 @@
 .. role:: redsup
 .. role:: bluesup
 
-..index:: plugin_functions; Plugin Metadata
-..index:: Plugin Metadata; plugin_functions
+.. index:: plugin_functions; Plugin Metadata
+.. index:: Plugin Metadata; plugin_functions
 
 Section `plugin_functions`
 ==========================

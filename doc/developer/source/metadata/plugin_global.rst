@@ -2,7 +2,7 @@
 .. role:: redsup
 .. role:: bluesup
 
-..index:: Plugin Metadata; Global Metadata
+.. index:: Plugin Metadata; Global Metadata
 
 Section `plugin`
 ================

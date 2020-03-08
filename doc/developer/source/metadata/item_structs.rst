@@ -2,10 +2,10 @@
 .. role:: redsup
 .. role:: bluesup
 
-..index:: item_structs; Plugin Metadata
-..index:: structs; Plugin Metadata
-..index:: Plugin Metadata; item_structs
-..index:: Plugin Metadata; structs
+.. index:: item_structs; Plugin Metadata
+.. index:: structs; Plugin Metadata
+.. index:: Plugin Metadata; item_structs
+.. index:: Plugin Metadata; structs
 
 Section `item_structs` :bluesup:`update`
 ========================================

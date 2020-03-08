@@ -2,8 +2,8 @@
 .. role:: redsup
 .. role:: bluesup
 
-..index:: logic_parameters; Plugin Metadata
-..index:: Plugin Metadata; logic_parameters
+.. index:: logic_parameters; Plugin Metadata
+.. index:: Plugin Metadata; logic_parameters
 
 Section `logic_parameters`
 ==========================

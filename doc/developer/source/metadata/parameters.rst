@@ -2,8 +2,8 @@
 .. role:: redsup
 .. role:: bluesup
 
-..index:: parameters; Plugin Metadata
-..index:: Plugin Metadata; parameters
+.. index:: parameters; Plugin Metadata
+.. index:: Plugin Metadata; parameters
 
 Section `parameters`
 ====================

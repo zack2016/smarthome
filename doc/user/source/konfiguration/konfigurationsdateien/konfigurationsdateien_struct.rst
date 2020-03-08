@@ -109,7 +109,7 @@ Das **individual_item** wird in die Struktur des Templates eingefügt.
 Verschachtelte struct Definitionen
 ----------------------------------
 
-Ab SmartHomeNG v1.7 können Strukturdefinitionen verschachtelt werden. Wie Items, die mithilfe des Attributs ** struct: **
+Ab SmartHomeNG v1.7 können Strukturdefinitionen verschachtelt werden. Wie Items, die mithilfe des Attributs **struct:**
 auf eine Strukturdefinition verweisen, können dies jetzt auch Strukturen tun.
 
 SmartHomeNG löst alle Unterstrukturreferenzen vor dem Laden des Item Trees auf, um das Laden der Item Definitionen
@@ -117,8 +117,8 @@ zu beschleunigen.
 
 .. note::
 
-   Bitte beachten Sie: Wenn Unterstrukturdefinitionen aufgelöst werden, gibt es zwei Unterschiede zu der Art und Weise,
-   wie Item Definitionen geladen werden. Die Unterschiede treten nur dann auf, wenn Strukturen / Unterstrukturen
+   Bitte beachten: Wenn Unterstrukturdefinitionen aufgelöst werden, gibt es zwei Unterschiede zu der Art und Weise,
+   wie Item Definitionen geladen werden. Die Unterschiede treten nur dann zutage, wenn Strukturen / Unterstrukturen
    Attribute re-definieren.
 
 

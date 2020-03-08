@@ -104,7 +104,9 @@ Updates im CORE
     * Items: Display of eval and crontab details corrected
     * Services: Row 'Node-Red service' is only shown, if service is available
 
-  * mqtt: New module to delived mqtt support for plugins and logics
+  * mqtt:
+
+    * New module to delived mqtt support for plugins and logics
 
 * Plugins:
 
@@ -220,7 +222,7 @@ Plugin Updates
 
   * renamed existing mqtt plugin to mqtt1 and set deprecated flag for this plugin
   * reimplemented mqtt plugin derived from class MqttPlugin for using the new mqtt module
-  * added item atteibute **bool_values**: defines which mqtt payload values should be interpreted as True or False
+  * added item attribute **bool_values**: defines which mqtt payload values should be interpreted as True or False
   * added gui_type: wide_str for appropriate parameters
 
 * nuki:

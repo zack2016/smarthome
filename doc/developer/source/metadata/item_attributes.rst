@@ -2,8 +2,8 @@
 .. role:: redsup
 .. role:: bluesup
 
-..index:: item_attributes; Plugin Metadata
-..index:: Plugin Metadata; item_attributes
+.. index:: item_attributes; Plugin Metadata
+.. index:: Plugin Metadata; item_attributes
 
 Section `item_attributes`
 =========================
