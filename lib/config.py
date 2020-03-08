@@ -491,14 +491,14 @@ def parse_yaml(filename, config=None, addfilenames=False, parseitems=False, stru
         remove_keyword(items, filename)
         remove_invalid(items, filename)
 
+        if addfilenames:
+            logger.debug("parse_yaml: Add filename = {} to items".format(os.path.basename(filename)))
+            _add_filenames_to_config(items, os.path.basename(filename))
+
         if parseitems:
             # test if file contains 'struct' attribute and merge all items into config
             logger.debug("parse_yaml: Checking if file {} contains 'struct' attribute".format(os.path.basename(filename)))
             search_for_struct_in_items(items, struct_dict, config, os.path.basename(filename))
-
-        if addfilenames:
-            logger.debug("parse_yaml: Add filename = {} to items".format(os.path.basename(filename)))
-            _add_filenames_to_config(items, os.path.basename(filename))
 
         if not parseitems:
             # if not already merged
@@ -520,7 +520,7 @@ def _add_filenames_to_config(items, filename, level=0):
     for attr, value in items.items():
         if isinstance(value, dict):
             child_path = dict(value)
-            if filename != '':
+            if (filename != ''):
                 value['_filename'] = filename
             _add_filenames_to_config(child_path, filename, level+1)
     return
