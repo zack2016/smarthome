@@ -356,13 +356,16 @@ class Modules():
         """
         logger.info('Stop Modules')
 
-        for module in self.return_modules():
+        module_list = self.return_modules()
+        # stop modules in revered order (module started first is stopped last)
+        module_list.reverse()
+        for module in module_list:
             logger.debug('Stopping {} Module'.format(module))
             self.m = self.get_module(module)
             try:
                 self.m.stop()
-            except:
-                pass
-#            except Exception as e:
-#                logger.warning("Error while stopping module '{}'\n{}".format(module, e))
+#            except:
+#                pass
+            except Exception as e:
+                logger.warning("Error while stopping module '{}'\n-> {}".format(module, e))
 
