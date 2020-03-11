@@ -211,25 +211,20 @@ class Items():
 
         '''
         for key, value in source.items():
-            try:
-                if isinstance(value, collections.OrderedDict):
-                    # get node or create one
-                    node = destination.setdefault(key, collections.OrderedDict())
-                    if node == 'None':
-                        destination[key] = value
-                    else:
-                        self.merge(value, node, source_name, dest_name)
+            if isinstance(value, collections.OrderedDict):
+                # get node or create one
+                node = destination.setdefault(key, collections.OrderedDict())
+                if node == 'None':
+                    destination[key] = value
                 else:
-#                    if type(value).__name__ == 'list':
-                    if isinstance(value, list) or isinstance(destination[key]):
-                        destination[key] = self.merge_structlists(destination[key], value, key)
-                    else:
-                        # convert to string and remove newlines from multiline attributes
-                        if destination.get(key, None) is None:
-                            destination[key] = str(value).replace('\n', '')
-            except Exception as e:
-                logger.error("Problem merging subtrees (key={}), probably invalid YAML file '{}' with entry '{}'. Error: {}".format(key, source_name, destination, e))
-
+                    self.merge(value, node, source_name, dest_name)
+            else:
+                if isinstance(value, list) or isinstance(destination.get(key, None), list):
+                    destination[key] = self.merge_structlists(destination[key], value, key)
+                else:
+                    # convert to string and remove newlines from multiline attributes
+                    if destination.get(key, None) is None:
+                        destination[key] = str(value).replace('\n', '')
         return destination
 
 
