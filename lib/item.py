@@ -220,7 +220,10 @@ class Items():
                     self.merge(value, node, source_name, dest_name)
             else:
                 if isinstance(value, list) or isinstance(destination.get(key, None), list):
-                    destination[key] = self.merge_structlists(destination[key], value, key)
+                    if destination.get(key, None) is None:
+                        destination[key] = value
+                    else:
+                        destination[key] = self.merge_structlists(destination[key], value, key)
                 else:
                     # convert to string and remove newlines from multiline attributes
                     if destination.get(key, None) is None:
