@@ -4,7 +4,7 @@ Hard- u. Software Anforderungen
 Um SmartHomeNG nutzen zu können, braucht es nicht viel. Für jemanden,
 der erstmalig SmartHomeNG installiert bietet es sich an zum Kennenlernen
 eine virtuelle Maschine zu erstellen und dort als Betriebssystem ein
-aktuelles Debian Stretch (>= 9.x) oder Ubuntu (>= 15.x) zu verwenden.
+aktuelles Debian Buster (>= 10.x) oder Ubuntu (>= 18.04) zu verwenden.
 
 Da SmartHomeNG in den meisten Fällen im Hintergrund laufen wird,
 benötigt das System keine grafische Benutzeroberfläche und kann
@@ -86,7 +86,7 @@ Vorteile:
 Nachteile:
 ^^^^^^^^^^
 
--  teurer (z.B. bei 4GB RAM, 60GB SSD um 250 EUR)
+-  teurer (z.B. bei 4GB RAM und 60GB SSD um 250 EUR)
 
 
 NAS wie z.B. Synology, QNAP
@@ -169,4 +169,6 @@ Version aktuelle Python Version und die zwei Vorgängerversionen.**
 Das bedeutet nicht automatisch, dass SmartHomeNG auf älteren Versionen
 von Python nicht mehr funktioniert. Die Entwicklung wird nur nicht mehr
 gegen die älteren Versionen getestet.
+
+Debian Buster bringt aktuell Python 3.7.x und PHP 7.3 mit und Ubuntu 18.04 LTS Python 3.6 und PHP 7.2
 
