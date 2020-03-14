@@ -36,8 +36,8 @@
 # Check Python Version
 #####################################################################
 import sys
-if sys.hexversion < 0x03040000:
-    print("Sorry your python interpreter ({0}.{1}) is too old. Please update to 3.4 or newer.".format(sys.version_info[0], sys.version_info[1]))
+if sys.hexversion < 0x03050000:
+    print("Sorry your python interpreter ({0}.{1}) is too old. Please update to 3.5 or newer.".format(sys.version_info[0], sys.version_info[1]))
     exit()
 PYTHON_VERSION = str(sys.version_info[0])+'.'+str(sys.version_info[1])+'.'+str(sys.version_info[2])+' '+str(sys.version_info[3])
 if sys.version_info[3] != 'final':
