@@ -345,7 +345,7 @@ In der ersten Datei findet man nach dem ersten Start von SmartHomeNG etwas ähnl
 .. code-block:: text
 
     YYYY-MM-dd  hh:mm:ss WARNING  __main__             --------------------   Init SmartHomeNG 1.7   --------------------
-    YYYY-MM-dd  hh:mm:ss WARNING  __main__             Running in Python interpreter 'v3.5.3 final' (pid=????) on linux platform
+    YYYY-MM-dd  hh:mm:ss WARNING  __main__             Running in Python interpreter 'v3.7.3 final' (pid=????) on linux platform
     YYYY-MM-dd  hh:mm:ss WARNING  lib.shtime           Nutze Feiertage für Land 'DE', Provinz 'HH', State 'None', 1 benutzerdefinierte Feiertagsdefinition(en) definiert
     YYYY-MM-dd  hh:mm:ss WARNING  plugins.cli          CLI: You should set a password for this plugin.
 
@@ -390,16 +390,12 @@ SmartHomeNG Instanz zugegriffen werden kann.
 
    %YAML 1.1
    ---
-   BackendServer:
-       plugin_name: backend
-       #updates_allowed: False
-
    cli:
        plugin_name: cli
        ip: 0.0.0.0
        #port: 2323
        update: True
-       #hashed_password: 1245a9633edf47b7091f37c4d294b5be5a9936c81c5359b16d1c48337$
+       #hashed_password: 123456789abcdef123456789abcdef123456789abcdef
 
    # Bereitstellung eines Websockets zur Kommunikation zwischen SmartVISU und SmartHomeNG
    websocket:
@@ -410,6 +406,12 @@ SmartHomeNG Instanz zugegriffen werden kann.
        #wsproto: 4
        #acl: rw
 
+   database:
+       plugin_name: database
+       driver: sqlite3
+       connect:
+       -   database:./var/db/smarthomeng.db
+       -   check_same_thread:0
    # ... etc.
 
 Die Konfiguration weiterer Plugins ist auskommentiert vorhanden, um die Nutzung

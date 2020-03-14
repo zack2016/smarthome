@@ -36,7 +36,7 @@ Virtuelle Maschine
 ~~~~~~~~~~~~~~~~~~
 
 Eine brauchbare Grundlage um **SmartHomeNG** auszuprobieren ist eine
-Virtuelle Maschine mit 512MB RAM und zwischen 20GB und 60GB
+virtuelle Maschine mit 512MB RAM und zwischen 40GB und 80GB
 Plattenplatz.
 
 
@@ -63,7 +63,7 @@ Nachteile:
    Schreibzyklen (Alternativ ist eine `Auslagerung der
    Dateien <https://knx-user-forum.de/forum/supportforen/smarthome-py/862047-wie-sqlite-auf-schnelleres-medium-verlagern>`__
    auf einen USB-Stick möglich
-   Aktuelle Raspbian Versionen unterstüten auch das booten von USB Devices, so dass eine HD oder SSD über USB angeschlossen
+   Aktuelle Raspbian Versionen unterstützen auch das Booten von USB Geräten, so dass eine HD oder SSD über USB angeschlossen
    werden kann.
 -  Empfindlich, braucht eine **sehr stabile Spannungsversorgung**
 -  ARM Plattform, es gibt nicht für alles fertige Pakete zum Download
@@ -79,7 +79,7 @@ Vorteile:
 
 -  verschiedene Hardwareausstattungen möglich
 -  niedriger Verbrauch
--  Normale SSD kann verwendet werden (60GB oder 120GB macht Sinn)
+-  Normale SSD kann verwendet werden (ab 40GB)
 -  Installation über Docker-Container leicht möglich
 
 
@@ -130,7 +130,7 @@ Betriebssystem
 Ein beliebiges Linux oder Unix System (mit Shell Zugang um die Requirements und SmartHomeNG zu installieren) sollte
 funktionieren.
 
-SmartHomeNG ist mindestens getestet auf Raspbian und Debian Stretch (amd64)
+SmartHomeNG ist mindestens getestet auf Raspbian und Debian Buster (amd64)
 
 Wenn eine Hardware ohne gepufferte Echtzeituhr (Realtime Clock) genutzt wird, ist der
 Einsatz eines NTP Daemons notwendig, um die Zeit über das Internet zu
@@ -165,10 +165,9 @@ Version aktuelle Python Version und die zwei Vorgängerversionen.**
   "v1.7",            "Python 3.7",  "Python 3.5, 3.6, 3.7"
   "v1.8",            "Python 3.8",  "Python 3.6, 3.7, 3.8"
 
-Das bedeutet nicht automatisch, dass SmartHomeNG auf älteren Versionen
-von Python nicht mehr funktioniert. Die Entwicklung wird nur nicht mehr
-gegen die älteren Versionen getestet.
-
+Das bedeutet nicht automatisch, dass SmartHomeNG mit älteren Python Versionen
+nicht mehr funktioniert, die Entwicklung wird nur nicht mehr
+mit älteren Versionen getestet.
 
 Debian Buster bringt aktuell Python 3.7.x und PHP 7.3 mit und Ubuntu 18.04 LTS Python 3.6 und PHP 7.2
 

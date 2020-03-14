@@ -8,7 +8,7 @@
 Debian Linux installieren :bluesup:`update`
 ===========================================
 
-Die genaue Schritt für Schritt  Installation des Betriebsystems wird hier nicht
+Die genaue Schritt für Schritt Installation des Betriebsystems wird hier nicht
 beschrieben, das hier ist der falsche Ort dafür. Jedoch werden als
 Referenz die Paketauswahlen während der Installation hier beschrieben.
 Am kompaktesten ist die Netinstall ISO-Datei. Zur Installation auf einem
@@ -16,18 +16,17 @@ externen Rechner (z.B. NUC o.ä.) kann die ISO-Datei mit Tools wie
 z.B. `Linux Live USB Creator <http://www.linuxliveusb.com/>`__,
 `Universal-USB-Installer <http://www.pendrivelinux.com/universal-usb-installer-easy-as-1-2-3/>`__
 oder `UNetbootin <https://unetbootin.github.io/>`__ auf einen USB Stick
-übertragen.
+übertragen werden.
 
 
 .. contents:: Schritte der Installation
    :local:
 
 
-
 .. note::
 
    Die Installation auf einem **Raspberry Pi** kann idealerweise über ein fertiges
-   `Image <https://sourceforge.net/projects/smarthomeng-raspi-image/>`__
+   `Image <https://github.com/smarthomeNG/raspberrypi-image/releases>`__
    erfolgen bei dem fast alles vorbereitet ist.
    Ansonsten beginnt man am besten mit dem aktuellsten `Raspbian
    Image <https://www.raspberrypi.org/downloads/raspbian/>`__ von der
@@ -74,7 +73,7 @@ Entwicklung darf abgelehnt werden.
 Softwareauswahl
 ===============
 
-Wenn ihre keine grafische Benutzeroberfläche braucht, dann bitte
+Wenn keine grafische Benutzeroberfläche gebraucht wird, dann bitte
 **abwählen**:
 
 -  Debian Desktop Environment
@@ -90,21 +89,21 @@ Wenn ihre keine grafische Benutzeroberfläche braucht, dann bitte
    benötigt)
 -  Standard-Systemwerkzeuge
 
-Nun ist es Zeit für das nächste Getränk, das nachladen der zu
+Nun ist es Zeit für das nächste Getränk, das Nachladen der zu
 installierenden Pakete dauert jetzt wiederum 5 bis 20 Minuten. Die
-angebotene Installation von GRUB wird akzeptiert und anschließend neu
-gestartet.
+angebotene Installation von GRUB sollte akzeptiert und anschließend ein
+Reboot durchgeführt werden.
 
 
 Einloggen via SSH oder an der Konsole
 =====================================
 
-| Mit einem **SSH Client** jetzt auf den frisch installierten smarthome
-  Server einloggen: Unter OSX dazu einfach eine Kommandozeile öffnen und
+| Mit einem **SSH Client** jetzt am Server einloggen:
+  Unter **Mac OS X** dazu einfach eine Kommandozeile öffnen und
   folgendes eintippen: ``ssh <ip_des_servers>``.
-| Unter Linux genau das gleiche, Kommandozeile öffnen und folgendes
+| Unter **Linux** genau das gleiche, Kommandozeile öffnen und folgendes
   eintippen: ``ssh <ip_des_servers>``.
-| Unter Windows gibt es Putty als SSH Client, `download
+| Unter **Windows** gibt es Putty als SSH Client, `download
   hier <http://the.earth.li/~sgtatham/putty/latest/x86/putty.exe>`__.
   Noch komfortabler ist
   `Kitty <http://www.9bis.net/kitty/?page=Download>`__. Einfach zunächst
@@ -113,7 +112,7 @@ Einloggen via SSH oder an der Konsole
   Natürlich ``<ip_des_servers>`` ersetzen durch die IP Adresse oder den
   Namen des neuen smarthome Servers.
 
-Oder alternativ direkt an der **Konsole** anmelden.
+Oder alternativ (z.B. bei einer virtuellen Maschine) direkt an der **Konsole** anmelden.
 
 Benutzer zum Anmelden ist **smarthome** und das weiter oben erstellte
 Passwort für diesen User. Wurde kein Passwort angegeben und möchte man
