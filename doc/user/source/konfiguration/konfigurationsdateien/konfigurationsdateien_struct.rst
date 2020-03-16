@@ -110,7 +110,8 @@ Verschachtelte struct Definitionen
 ----------------------------------
 
 Ab SmartHomeNG v1.7 können Strukturdefinitionen verschachtelt werden. Wie Items, die mithilfe des Attributs **struct:**
-auf eine Strukturdefinition verweisen, können dies jetzt auch Strukturen tun.
+auf eine Strukturdefinition verweisen, können dies jetzt auch Strukturen tun. In Strukturen wird das **struct** Attribut
+**nur** auf der obersten Ebene als Referenz ausgewertet.
 
 SmartHomeNG löst alle Unterstrukturreferenzen vor dem Laden des Item Trees auf, um das Laden der Item Definitionen
 zu beschleunigen.

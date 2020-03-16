@@ -157,7 +157,7 @@ class Items():
     def merge_structlists(self, l1, l2, key=''):
         if not self.struct_merge_lists:
             logger.warning("merge_structlists: Not merging lists, key '{}' value '{}' is ignored'".format(key, l2))
-            return l1
+            return l1       # First wins
         else:
             if not isinstance(l1, list):
                 l1 = [l1]
@@ -2133,7 +2133,7 @@ class Item():
                         item._items_to_trigger.append(self)
             if self._eval:
                 # Build eval statement from trigger items (joined by given function)
-                items = ['sh.' + x.id() + '()' for x in _items]
+                items = ['sh.' + str(x.id()) + '()' for x in _items]
                 if self._eval == 'and':
                     self._eval = ' and '.join(items)
                 elif self._eval == 'or':
