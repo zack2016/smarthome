@@ -29,5 +29,5 @@ Selbst definierte Item-Strukturen
 
 Zusätzlich zu den Item-Strukturen, die Plugins als Template mitbringen, können eigene Strukturen angelegt werden. Diese
 Strukturen werden in der Konfigurationdatei **../etc/struct.yaml** abgelegt werden.
-(Siehe :doc:`Konfigurationsdateien/struct.yaml </konfiguration/konfigurationsdateien/konfigurationsdateien_struct>`)
+(Siehe :doc:`Konfiguration/Konfigurationsdateien/struct.yaml </konfiguration/konfigurationsdateien/konfigurationsdateien_struct>`)
 
