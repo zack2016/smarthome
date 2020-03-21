@@ -12,8 +12,8 @@ Template verwendet werden können.
 
 .. note::
 
-    Weitergehende Informationen zu structs sind in der Entwicklerdokumentation unter **Development of Plugins** /
-    **Plugin Metadata** zu finden.
+    Weitergehende Informationen zu structs sind unter :doc:`Konfiguration/struct </konfiguration/item_structs>` und in
+    der Entwicklerdokumentation unter **Development of Plugins** / **Plugin Metadata** zu finden.
 
 
 Hierbei gibt die oberste Ebene den Namen der Templates an. Darunter können Item Strukturen definiert werden, wie man es
@@ -110,8 +110,9 @@ Verschachtelte struct Definitionen
 ----------------------------------
 
 Ab SmartHomeNG v1.7 können Strukturdefinitionen verschachtelt werden. Wie Items, die mithilfe des Attributs **struct:**
-auf eine Strukturdefinition verweisen, können dies jetzt auch Strukturen tun. In Strukturen wird das **struct** Attribut
-**nur** auf der obersten Ebene als Referenz ausgewertet.
+auf eine Strukturdefinition verweisen, können dies jetzt auch Strukturen tun.
+
+In Strukturen wird das **struct** Attribut **nur** auf der obersten Ebene als Referenz ausgewertet.
 
 SmartHomeNG löst alle Unterstrukturreferenzen vor dem Laden des Item Trees auf, um das Laden der Item Definitionen
 zu beschleunigen.
@@ -120,7 +121,7 @@ zu beschleunigen.
 
    Bitte beachten: Wenn Unterstrukturdefinitionen aufgelöst werden, gibt es zwei Unterschiede zu der Art und Weise,
    wie Item Definitionen geladen werden. Die Unterschiede treten nur dann zutage, wenn Strukturen / Unterstrukturen
-   Attribute re-definieren.
+   Attribute re-definieren. (Siehe hierzu auch :doc:`Konfiguration/structs </konfiguration/item_structs>`
 
 
 Re-Definieren von Attributen
@@ -133,7 +134,7 @@ Unterstrukturdefinitionen gewinnt die zuerst eingelesene Attributdefinition.
 Beim Auflösen von Unterstrukturen sollte normalerweise die Definition der Struktur der oberen Ebene gewinnen. Dies
 ermöglicht ein "Überschreiben" von Attributwerten, die in einer Unterstruktur definiert wurden. Dazu muss das Attribut
 in der Struktur der oberen Ebene vor dem **struct**-Attribut definiert werden. Wenn das Attribut nach dem
-**struct**-Attribut definiert ist, gewinnt die Definition in der Unterstruktur.
+**struct**-Attribut definiert ist, gewinnt die Definition in der Unterstruktur. Regel: "first wins"
 
 
 Re-Definieren von list-Attributen

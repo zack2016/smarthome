@@ -106,9 +106,11 @@ Instance Namen das Wort **instance** als Platzhalter angegeben (wie im folgenden
                 type: num
                 ds_matchstring@instance: latitude
 
+            ...
 
-In der Definition der Items bestehen zwei Möglichkeiten der **struct** die **instance** mitzugeben auf die sich die
-**struct** beziehen soll.
+
+In der Definition der Items bestehen zwei Möglichkeiten einer **struct** die **instance** mitzugeben auf die sich
+die **struct** beziehen soll.
 
 
 1. Die **instance** kann in dem Item in dem die **struct** referenziert wird, als zusätzliches Attribut definiert werden:
@@ -125,6 +127,9 @@ In der Definition der Items bestehen zwei Möglichkeiten der **struct** die **in
             struct: darksky.weather
             instance: summer_residence
 
+Diese Angabe (**instance: \<instance>**) wird dann auf alle Items übertragen, die durch das Template hinzugefügt wurden.
+Das kann man auch in der Administrationsoberfläche sehen.
+
 
 2. Die **instance** kann direkt im **struct** Attribut mit angegeben werden:
 
@@ -139,13 +144,10 @@ In der Definition der Items bestehen zwei Möglichkeiten der **struct** die **in
             struct: darksky.weather@summer_residence
 
 
-Diese Angabe (**instance: \<instance>**) wird dann auf alle Items übertragen, die durch das Template hinzugefügt wurden.
-Das kann man auch in der Administrationsoberfläche sehen.
+.. note::
 
-.. note:
-
-    Wenn man eigene Items in den Teilbaum der durch das Template hinzugefügt wurde einfügen will, muss man für diese selbst
-    hinzugefügten Items natürlich das Attribut **instance** angeben.
+    Wenn man eigene Items in den Teilbaum der durch das Template hinzugefügt wurde einfügen will, muss man für diese
+    selbst hinzugefügten Items natürlich das Attribut **instance** angeben.
 
 
 
@@ -153,9 +155,10 @@ Selbst definierte Item-Strukturen
 =================================
 
 Zusätzlich zu den Item-Strukturen, die Plugins als Template mitbringen, können eigene Strukturen angelegt werden. Diese
-Strukturen werden in der Konfigurationdatei **../etc/struct.yaml** abgelegt werden. (Siehe Konfigurationsdateien/struct)
+Strukturen werden in der Konfigurationdatei **../etc/struct.yaml** abgelegt werden. (Siehe
+:doc:`Konfigurationsdateien/struct.yaml </konfiguration/konfigurationsdateien/konfigurationsdateien_struct>`)
 
-Diese Template werden mit dem Namen der Struktur ohne vorrangestellten Plugin-Namen angegeben:
+Diese Templates werden mit dem Namen der Struktur ohne einen vorrangestellten Plugin-Namen angegeben:
 
 .. code-block:: yaml
     :caption: items/item.yaml
@@ -171,7 +174,7 @@ Innerhalb der durch die Templates angelegten Strukturen können in der Item Defi
 angegeben werden. Es ist dabei sogar möglich, Attribute die in den Templates gesetzt wurden zu überschreiben.
 
 Wenn ein Attribut in einem **struct** Template und in den Item Definitionen definiert wird, "gewinnt" die Angabe
-aus der Item Definition.
+aus der Item Definition. Regel: "Item wins"
 
 
 Besonderheit bei Attributen, die Listen enthalten
@@ -186,7 +189,8 @@ Dazu müssen folgende Voraussetzungen erfüllt sein:
 
 - Das zu mergende Attribut MUSS vor dem **struct** Attribut definiert werden
 - Das zu mergende Attribut MUSS im Item als Liste definiert sein
-- Das zu mergende Attribut MUSS im Item als ersten Eintrag **merge\*** oder **merge_uniqe\*** enthalten
+- Das zu mergende Attribut MUSS im Item als ersten Eintrag **merge\*** oder **merge_unique\*** enthalten
+  (Der Stern/Asterix muss direkt, ohne Leerzeichen, auf **merge** bzw. **merge_unique** folgen)
 
 Falls der ersten Listeintrag **merge\*** ist, bleiben doppelte Listeinträge erhalten.
 
@@ -203,8 +207,8 @@ Unterschiede zum **struct** Attribut in Item Definitionen:
   **struct** "gewinnt", hängt von der Reihenfolge der Definition ab. Falls das entsprechende Attribut vor dem
   **struct** Attribut definiert wird, bleibt der Wert der übergeordneten **struct** erhalten. Anderenfalls bleibt
   der Wert aus der referenzierten **struct** erhalten. Regel: "first wins"
-- Innerhalb der **struct** Definitionen braucht das Attribut **merge\*** oder **merge_uniqe\*** nicht angegeben zu
-  werden. Listen werden standardmäßig gemerged.
+- Innerhalb der **struct** Definitionen braucht das Attribut **merge\*** nicht angegeben zu werden. Listen werden
+  standardmäßig gemerged.
 
 
 
