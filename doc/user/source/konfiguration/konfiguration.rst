@@ -16,6 +16,7 @@ Konfiguration
    konfiguration_admin_gui/konfiguration_admin_gui
    konfigurationsdateien/konfigurationsdateien
    items/items.rst
+   item_structs.rst
    module/module.rst
    plugins.rst
    logiken.rst
