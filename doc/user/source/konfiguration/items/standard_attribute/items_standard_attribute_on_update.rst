@@ -4,8 +4,9 @@
 .. index:: on_change
 
 
+===========================
 *on_update* und *on_change*
-###########################
+===========================
 
 Attribut *on_update*
 ====================
@@ -13,7 +14,7 @@ Attribut *on_update*
 Ermöglicht das Setzen des Wertes anderer Items, wenn das aktuelle Item ein Update erhält
 (auch wenn sich der Wert des aktuellen Items dabei nicht ändert).
 Das ist der Unterschied zu **on_change**, welches nur ausgelöst
-wird wenn sich bei einem Update der Wert des Items auch ändert. **Ab SmartHomeNG v1.4**
+wird wenn sich bei einem Update der Wert des Items auch ändert. **Seit SmartHomeNG v1.4**
 
 Die Syntax ist wie folgt:
 
@@ -85,7 +86,34 @@ Attribut *on_change*
 
 Ermöglicht das Setzen des Wertes anderer Items, wenn der Wert des aktuellen Items verändert wird.
 Im Gegensatz zu **on_update** wird **on_change** nur ausgelöst, wenn sich beim Update
-eines Items der Wert auch ändert. **Ab SmartHomeNG v1.4**
+eines Items der Wert auch ändert. **Seit SmartHomeNG v1.4**
 
 Der Syntax ist äquivalent zum Attribut **on_update**.
 
+
+Gemeinsame Verwendung von eval und on\_\.\.\. Item Attributen
+-------------------------------------------------------------
+
+Bei Verwendung des **eval** Attributes zusammen mit **on_change** oder **on_update** in der
+selben Item Definition ist zu beachten, dass value unterschiedliche Werte hat/haben kann.
+
+Im Ausdruck des **eval** Attributes hat value den alten Wert des Items. Nach Abschluss dieser
+Berechnung, wird dem Item das Ergebnis zugewiesen. Anschließend werden die Ausdrücke für
+**on_change** und **on_update** berechnet. Zu diesem Zeitpunkt hat das Item (und damit
+**value**) bereits den neuen Wert.
+
+Wenn in **eval** Ausdrücken in **on_change** oder **on_update** Attributen auf den alten Wert
+des Items zugegriffen werden soll, muss dazu die Item Funktion **prev_value()** genutzt werden.
+Auf den alten Wert des aktuellen Items kann ohne die Angabe der vollständigen Item Pfades durch
+den Ausdruck **sh.self.prev_value()** zugegriffen werden.
+
+
+.. attention::
+
+   Bei **eval** Ausdrücken (wie sie in den Item Attributen **eval**, **on_update** und **on_change**
+   verwendet werden) ist zu beachten, dass bei Verwendung von **if** auch immer ein **else**
+   Zweig angegeben werden muss!
+
+   Wenn man jedoch ein Item nur verändern möchte wenn die **if** Bedingung erfüllt ist und sonst
+   unverändert lassen möchte, muss als **else** Zweig der Ausdruck **else None** angegeben werden.
+   **None** bewirkt, dass das Item unverändert bleibt, und somit auch keine Trigger ausgelöst werden.

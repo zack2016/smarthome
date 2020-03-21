@@ -45,5 +45,4 @@ Eine Logik sieht prinzipiell folgendermaßen aus:
    persistente_variablen
    funktions_nutzung
    mqtt_nutzung
-   beispiellogiken
 

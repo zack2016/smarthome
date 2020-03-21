@@ -16,7 +16,6 @@ Items
    items_properties
    items_funktionen
    items_systemitems
-   items_tipps_und_tricks
 
 
 Überblick

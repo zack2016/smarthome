@@ -51,6 +51,7 @@ oder im `Chat auf gitter.im <https://gitter.im/smarthomeNG/smarthome>`_ .
    logiken/logics.rst
    visualisierung/visualisierung.rst
    admin/admin.rst
+   beispiele/beispiele.rst
    tools/tools.rst
    fehlersuche
    faq

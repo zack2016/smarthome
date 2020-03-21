@@ -1,13 +1,15 @@
-.. index:: Standard-Attribute; eval_trigger
-.. index:: eval_trigger
-.. index:: Standard-Attribute; eval
-.. index:: eval
 
+
+=========================
 *eval* und *eval_trigger*
 =========================
 
+
+.. index:: Standard-Attribute; eval
+.. index:: eval
+
 Attribut *eval*
----------------
+===============
 
 Wenn ein Item einen neuen Wert zugewiesen bekommen soll (z.B. via KNX
 oder Logik), wird der neue Wert zunächst in **value**
@@ -28,8 +30,15 @@ Das Item soll aber die Temperatur in °Celsius speichern.
        type: num
        eval: (value - 32 ) * 5 / 9  # Aus 68°F werden somit 20°C
 
+Die Auswertung des **eval** Ausdrucks wird gestartet, wenn:
+ - dem Item ein neuer Wert zugewiesen wird (siehe Erläuterug im ersten Absatz)
+ - sich der Wert des oder der Items aus dem **eval_trigger** ändert (siehe Erläuterug weiter unten)
+ - ein **timer** verwendet wird und die angegebene Zeit abgelaufen ist
+ - ein **autotimer** verwendet wird und die angegebene Zeit abgelaufen ist
+ - ein **crontab** definiert ist und die zeitlichen Angaben zutreffen
+
 Das Eval Attribut kann auch bis zu einem gewissen Grad Logiken
-beinhalten. Wichtig ist, dass bei der Angabe eines if auch ein else
+beinhalten. Wichtig ist, dass bei der Angabe eines **if** auch ein **else**
 implementiert sein muss. Außerdem ist dem Item ein **sh.** voran zu
 setzen. Die () Klammern hinter dem Item sind nötig, um den Item-Wert
 abzufragen.
@@ -46,18 +55,23 @@ abzufragen.
 Weiter ist es möglich, direkt die Werte der eval_trigger im eval
 entsprechend auszuwerten:
 
-::
-
-   | keyword | Beschreibung                                                            |
-   | ------- | ----------------------------------------------------------------------- |
-   |   sum   | Errechnet die Summe aller eval_trigger Items.                           |
-   |   avg   | Errechnet den Mittelwert aller Items auf die sich eval_trigger bezieht. |
-   |   min   | Errechnet den Minimalwert aller Items auf die sich eval_trigger bezieht.|
-   |   max   | Errechnet den Maximalwert aller Items auf die sich eval_trigger bezieht.|
-   |   and   | Setzt den Wert des Items auf True, wenn alle Items auf die sich         |
-   |         | eval_triggers bezieht den Wert True haben.                              |
-   |   or    | Setzt den Wert des Items auf True, wenn eines der Items auf die sich    |
-   |         | eval_triggers bezieht den Wert True haben.                              |
++-------------+-------------------------------------------------------------------------------+
+| **Keyword** | **Beschreibung**                                                              |
++=============+===============================================================================+
+|   sum       | Errechnet die Summe aller **eval_trigger** Items.                             |
++-------------+-------------------------------------------------------------------------------+
+|   avg       | Errechnet den Mittelwert aller Items auf die sich **eval_trigger** bezieht.   |
++-------------+-------------------------------------------------------------------------------+
+|   min       | Errechnet den Minimalwert aller Items auf die sich **eval_trigger** bezieht.  |
++-------------+-------------------------------------------------------------------------------+
+|   max       | Errechnet den Maximalwert aller Items auf die sich **eval_trigger** bezieht.  |
++-------------+-------------------------------------------------------------------------------+
+|   and       | Setzt den Wert des Items auf True, wenn alle Items auf die sich               |
+|             | **eval_triggers** bezieht den Wert True haben.                                |
++-------------+-------------------------------------------------------------------------------+
+|   or        | Setzt den Wert des Items auf True, wenn eines der Items auf die sich          |
+|             | **eval_triggers** bezieht den Wert True haben.                                |
++-------------+-------------------------------------------------------------------------------+
 
 Beispiel:
 
@@ -81,7 +95,7 @@ Beispiel:
              - room_a.presence
              - room_b.presence
 
-Ab SmartHomeNG v1.3 wird das Python Modul
+Seit SmartHomeNG v1.3 wird das Python Modul
 `math <https://docs.python.org/3.4/library/math.html>`__ bereitgestellt
 und es können entsprechende Funktionen genutzt werden.
 
@@ -93,7 +107,7 @@ Beispiel:
      type: num
      eval: ceil(sh.otheritem() / 60.0)
 
-Ab SmartHomeNG v1.3 können für **eval** auch relative `Relative Item
+Seit SmartHomeNG v1.3 können für **eval** auch relative `Relative Item
 Referenzen <https://github.com/smarthomeNG/smarthome/wiki/Items:-Relative-Item-Referenzen>`__
 genutzt werden. Dann müssen Bezüge auf andere Items nicht mehr absolut
 angegeben werden sondern können sich relative auf andere Items beziehen.
@@ -106,8 +120,50 @@ angegeben werden sondern können sich relative auf andere Items beziehen.
    in eval Attributen genutzt werden können.
 
 
+.. tip::
+
+   Im Abschnitt **Beispiele** sind auf der Seite :doc:`eval und eval_trigger Beispiele </beispiele/eval>`
+   weitere ausführliche Beispiele zu finden.
+
+
+Eval Syntax
+-----------
+
+Der Syntax eines **eval** Ausdrucks ist der Syntax einer `Python conditional expression <https://www.python.org/dev/peps/pep-0308/>`_
+
+Dieser Syntax wird bei den Item Attributen **eval**, **on_change** und **on_update** verwendet.
+
+Zu beachten ist, dass der Syntax einer if-Bedingung in einer Python conditional Expression folgender ist:
+
+``eval: <expression-if-true> if <condition> else <expression-if-false>``
+
+
+Beispiel:
+
+.. code-block:: yaml
+
+   eval: value if value>0 else 0
+
+Die Expression setzt den Item-Wert auf den bisherigen Wert, falls er >0 ist, sonst wird der Wert auf 0 gesetzt.
+Damit findet eine Zuweisung statt und on_change bzw. on_update Trigger werden ausgelöst.
+
+Wenn das Beispiel folgendermaßen formuliert wird:
+
+.. code-block:: yaml
+
+   eval: 0 if value<0 else None
+
+Hätte es auf den Item-Wert letztlich die selben Auswirkungen: Hier wird der Item-Wert auf 0 gesetzt, falls der Wert <0 ist,
+sonst (None) wird keine Aktion ausgeführt (damit bleibt der Wert unverändert erhalten).
+Damit werden on_change bzw. on_update Trigger nur ausgelöst, wenn der Wert vorher <0 war. Bei Erhalt des Wertes (None),
+werden keine Trigger ausgelöst.
+
+
+.. index:: Standard-Attribute; eval_trigger
+.. index:: eval_trigger
+
 Attribut *eval_trigger*
------------------------
+=======================
 
 Das Attribut eval_trigger legt eine Abhängigkeit von anderen Items fest.
 Sobald sich diese im Wert ändern, wird eine Neuberechnung gestartet. Das
@@ -138,8 +194,58 @@ Kinderitems des Temperatur-Items zum Evaluieren des Items führen. Oder
 Namen “Trigger” aktualisiert werden kann, also z.B. durch
 Temperatur.Trigger, Licht.OG.Trigger, etc.
 
-Ab SmartHomeNG v1.3 können für **eval_trigger** auch relative `Relative
+Seit SmartHomeNG v1.3 können für **eval_trigger** auch :doc:`Relative Item Referenzen </konfiguration/items/items_attributes_relative_referenzen>`
+
+`Relative
 Item
 Referenzen <https://github.com/smarthomeNG/smarthome/wiki/Items:-Relative-Item-Referenzen>`__
 genutzt werden. Dann müssen Bezüge auf andere Items nicht mehr absolut
 angegeben werden sondern können sich relative auf andere Items beziehen.
+
+.. note::
+
+    Ein häufiger Fehler bei der Nutzung von **eval** im Zusammenspiel mit **eval_trigger** ist,
+    bei **eval_trigger** auch den vollen Python-Pfad zu einem SmartHomeNG Item zu verwenden, wie
+    im **eval** Ausdruck.
+
+    Richtig ist es, bei **eval_trigger** nur der Item-Pfad zu nutzen (ohne führendes **sh.** und
+    ohne folgende **()**).
+
+
+    **Korrekt**:
+
+    - eval: **sh.** my.value **()**
+    - eval_trigger: my.value | my.other.value
+
+    **Falsch**:
+
+    - eval: sh.my.value
+    - eval_trigger: **sh.** my.value | **sh.** my.other.value
+
+
+Gemeinsame Verwendung von eval und on\_\.\.\. Item Attributen
+-------------------------------------------------------------
+
+Bei Verwendung des **eval** Attributes zusammen mit **on_change** oder **on_update** in der
+selben Item Definition ist zu beachten, dass value unterschiedliche Werte hat/haben kann.
+
+Im Ausdruck des **eval** Attributes hat value den alten Wert des Items. Nach Abschluss dieser
+Berechnung, wird dem Item das Ergebnis zugewiesen. Anschließend werden die Ausdrücke für
+**on_change** und **on_update** berechnet. Zu diesem Zeitpunkt hat das Item (und damit
+**value**) bereits den neuen Wert.
+
+Wenn in **eval** Ausdrücken in **on_change** oder **on_update** Attributen auf den alten Wert
+des Items zugegriffen werden soll, muss dazu die Item Funktion **prev_value()** genutzt werden.
+Auf den alten Wert des aktuellen Items kann ohne die Angabe der vollständigen Item Pfades durch
+den Ausdruck **sh.self.prev_value()** zugegriffen werden.
+
+
+.. attention::
+
+   Bei **eval** Ausdrücken (wie sie in den Item Attributen **eval**, **on_update** und **on_change**
+   verwendet werden) ist zu beachten, dass bei Verwendung von **if** auch immer ein **else**
+   Zweig angegeben werden muss!
+
+   Wenn man jedoch ein Item nur verändern möchte wenn die **if** Bedingung erfüllt ist und sonst
+   unverändert lassen möchte, muss als **else** Zweig der Ausdruck **else None** angegeben werden.
+   **None** bewirkt, dass das Item unverändert bleibt, und somit auch keine Trigger ausgelöst werden.

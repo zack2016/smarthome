@@ -4,9 +4,9 @@
 Relative Item Referenzen
 ########################
 
-**Ab Release 1.3** von SmartHomeNG werden relative Item Referenzen unterstützt.
+**Seit Release 1.3** von SmartHomeNG werden relative Item Referenzen unterstützt.
 
-Damit können in **eva`** und in **eval_trigger** Attributen von Items andere Items referenziert
+Damit können in **eval** und in **eval_trigger** Attributen von Items andere Items referenziert
 werden ohne den vollständigen Item-Pfad anzugeben. Das ist besonders hilfreich, wenn man Item
 Strukturen hat, die man mehrfach kopieren möchte, da man dann die entsprechenden **eval** und
 **eval_trigger** Einträge nicht jedes mal anpassen muss. Auch die mit Release 1.4 hinzukommenden

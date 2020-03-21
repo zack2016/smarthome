@@ -1,11 +1,13 @@
-Tipps und Tricks
-================
+
+=======================
+Items: Tipps und Tricks
+=======================
 
 Invertieren eines Item Wertes
------------------------------
+=============================
 
 Erste Aufgabenstellung
-~~~~~~~~~~~~~~~~~~~~~~
+----------------------
 
 Es geht um einen Reed-Kontakt am Fenster, der über einen 1-Wire
 Multi-I/O-Sensor per 1-Wire-Plugin abgefragt und auf den KNX-Bus
@@ -39,7 +41,7 @@ invertierte Wert auf den KNX Bus geschrieben.
 
 
 Zweite Aufgabenstellung
-~~~~~~~~~~~~~~~~~~~~~~~
+-----------------------
 
 Es geht um einen Lausprecher, der über einen GPIO Kontakt des Raspberry
 geschaltet werden soll. Der Wert kommt von einem Item das per knx bedient
@@ -69,12 +71,12 @@ ein ``eval_trigger`` und ein ``eval`` zufügen.
 
 
 Item Strukturen bequem kopieren mit Hilfe relativer Item Adressierung
----------------------------------------------------------------------
+=====================================================================
 
 .. _aufgabenstellung-1:
 
 Aufgabenstellung
-~~~~~~~~~~~~~~~~
+----------------
 
 Es sollen Fensterkontakte ausgewertet werden (zwei Kontakte je Fenster
 oder z.B. Hoppe Fenstergriffe). Hierbei ergeben zwei Kontakte drei
@@ -189,10 +191,10 @@ Referenzen <items_attributes_relative_referenzen>`__
 zu finden.
 
 Nutzung der Tag-/Nacht-Items in KNX
------------------------------------
+===================================
 
 Einleitung
-~~~~~~~~~~
+----------
 
 Ein Tag- oder Nachtobjekt kann zur Ansteuerung von Status-LEDs,
 Präsenzmeldern oder ähnlichem genutzt werden.
@@ -204,7 +206,7 @@ zur Dämmerung am Abend, danach ist es “false” (also 0)
 zur Dämmerung am Morgen, danach ist es “false” (also 0)
 
 Bürgerliche Dämmerung bedeutet, dass sich die Sonne noch/schon unterhalb des
-Horizonts befindet, der Himmel aber dennoch leicht erhellt wird. 
+Horizonts befindet, der Himmel aber dennoch leicht erhellt wird.
 
 Welches der beiden Items man nutzen will, bleibt jedem selbst
 überlassen. Schließlich ist der Status des jeweiligen Items bereits
@@ -217,11 +219,11 @@ Um Tag/Nacht-Items zu erstellen, bringt SmarthomeNG bereits alles mit.
 Man kann einfach auf die SmarthomeNG internen Items ``env.location.day``
 und ``env.location.night`` zugreifen.
 
-Beispiele:
-~~~~~~~~~~
+Beispiele
+---------
 
-Nutzung mit neuen (zusätzlichen) items:
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Nutzung mit neuen (zusätzlichen) items
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. code-block:: yaml
 
@@ -242,8 +244,8 @@ Nutzung mit neuen (zusätzlichen) items:
        eval_trigger: env.location.night
 
 
-Nutzung der SmarthomeNG internen Items:
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Nutzung der SmarthomeNG internen Items
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Dazu müssen die entsprechenden Items um die KNX Attribute erweitert
 werden:
@@ -266,8 +268,9 @@ werden:
 Da sich die internen Items von Release zu Release ändern könnten, ist
 der Weg der zusätzlichen Items zu bevorzugen.
 
+
 Berechnung von Tag und Nacht
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+----------------------------
 
 Die Berechnung der Items *Tag* und *Nacht* erfolgt SmarthomeNG-intern
 über *sh.sun.rise(-6).day* (bürgerliche Dämmerung).

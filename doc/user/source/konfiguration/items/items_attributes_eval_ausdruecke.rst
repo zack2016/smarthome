@@ -1,7 +1,11 @@
-.. index:: eval Ausdrücke
 
+
+==============
 eval Ausdrücke
-##############
+==============
+
+.. index:: Item-Attribute; eval
+.. index:: eval
 
 Eval Syntax
 ===========
@@ -67,6 +71,9 @@ den Ausdruck **sh.self.prev_value()** zugegriffen werden.
    unverändert lassen möchte, muss als **else** Zweig der Ausdruck **else None** angegeben werden.
    **None** bewirkt, dass das Item unverändert bleibt, und somit auch keine Trigger ausgelöst werden.
 
+
+.. index:: Item-Attribute; eval_trigger
+.. index:: eval_trigger
 
 Eval Trigger
 ------------
