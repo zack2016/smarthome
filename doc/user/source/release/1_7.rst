@@ -20,14 +20,14 @@ Die älteste offiziell unterstützte Python Version für SmartHomeNG Release 1.7
 (Siehe auch *Hard- u. Software Anforderungen* im Abschnitt *Installation* zu unterstützten Python Versionen)
 
 ..
-    Das bedeutet nicht unbedingt, dass SmartHomeNG ab Release 1.7 nicht mehr unter älteren Python Versionen läuft. Es
-    bedeutet, dass SmartHomeNG nicht mehr mit älteren Python Versionen getestet wird und das gemeldete Fehler mit älteren
+    Das bedeutet nicht unbedingt, dass SmartHomeNG ab Release 1.7 nicht mehr unter älteren Python Versionen läuft,
+    sondern das SmartHomeNG nicht mehr mit älteren Python Versionen getestet wird und das gemeldete Fehler mit älteren
     Python Versionen nicht mehr zu Buxfixen führen.
 
-    Es werden jedoch zunehmend Features eingesetzt, die erste ab Python 3.5 zur Verfügung stehen.
+    Es werden jedoch zunehmend Features eingesetzt, die erst ab Python 3.5 zur Verfügung stehen.
 
 
-Absolute minimum Python Version
+Absolute Minimum Python Version
 ===============================
 
 Die Minimum Python Version in der SmartHomeNG startet wurde auf v3.5 angehoben, da Python 3.4 im Jahr 2019 End-of-Life
@@ -40,7 +40,7 @@ Versionen (3.6 oder 3.7) aufzusetzen.
    3.8** angehoben. Python 3.6 hat eine Reihe sehr interessanter Features und Verbesserungen gebracht, die dann in
    SmartHomeNG genutzt werden können.
 
-   Sollten solche neuen Features in den Core Einzug halten, wird die **Absolute minimum Python Version** auf 3.6
+   Sollten solche neuen Features in den Core Einzug halten, wird die **Absolute Minimum Python Version** auf 3.6
    angehoben werden. Sollten die Features nur in Plugins genutzt werden, so können nur solche Plugins nicht genutzt
    werden, wenn eine ältere Python Version als 3.6 eingesetzt wird.
 
@@ -62,7 +62,7 @@ Updates im CORE
 ---------------
 
 * Implemented command line option to create backups of the configuration of SmartHomeNG and to restore from such a backup
-* .cer and .key files from /etc are backed up too
+* .cer and .key files from /etc are backed up, too
 * Support for national and regional holidays added
 * Support for custom holidays added
 * Added a lot of functions to lib.shtime to simplify date and time handling in logics and plugins
@@ -70,22 +70,22 @@ Updates im CORE
 * crontab: Implementation of day ranges
 * MQTT Support for logics added (using new mqtt module)
 * New class MqttPlugin to support MQTT usage in plugins (using new mqtt module)
-* Implemented installation of needed Python packages
-* env.system.start now a datetime instead of formatted string
-* plugin webinterface showed tabs also if only one tab was defined
+* Implemented installation of required Python packages
+* Changed datatype of env.system.start from formatted string to datetime
+* Plugin webinterface shows tabs also if only one tab is defined
 * Implemented nesting of structs
-* structs allow merging of lists in attributes
+* Structs allow merging of lists in attributes
 
 * Items:
 
-  * Support for dynamic properties. Right now, values of plugin-specific attributes are implemented as r/o properties
+  * Support for dynamic properties. Currently values of plugin-specific attributes are implemented as readonly properties
 
 
 * Logics:
 
   * Support for MQTT implemented
 
-* lib.config: Ignoring files starting with a '.' that are created when accessing a folder from MacOS
+* lib.config: Ignoring files starting with a ´´.´´ that are created when accessing a folder from MacOS
 * lib.config: Bugfix in merge() if itemtree contains pseudo-nodes (nodes without leafs or subnodes)
 * lib.logic: Adjusted log level for triggered logics that are disabled
 
@@ -96,14 +96,14 @@ Updates im CORE
     * Webinterfaces: Initial version with support for periodic updata of data
     * Updated datepicker to 1.9.0
     * Added chartjs library for web interfaces
-    * Check if ports are already in use implemented
+    * Implemented a check if ports are already in use
 
   * admin:
 
     * Implemented system configuration for holidays and MQTT module
     * Implemented gui_type: wide_str for system configuration and plugin parameters
     * Added multiline support for descriptions (system & plugin configuration)
-    * Implemented implemented restore of config backups
+    * Implemented restore of config backups
     * Additions to system: IPv6 and process ID
     * Items: Display of eval and crontab details corrected
     * Services: Row 'Node-Red service' is only shown, if service is available
@@ -112,7 +112,7 @@ Updates im CORE
 
   * mqtt:
 
-    * New module to delived mqtt support for plugins and logics
+    * New module to deliver mqtt support for plugins and logics
 
 * Plugins:
 
@@ -126,7 +126,6 @@ New Plugins
 ------------
 
 For details of the changes of the individual plugins, please refer to the documentation of the respective plugin.
-
 
 * bose_soundtouch: Plugin for the integration of Bose Soundtouch systems
 * executor: Execute Python statements in the context of SmartHomeNG. Alternative to the interactive mode of SmartHomeNG
@@ -166,7 +165,7 @@ Plugin Updates
 
 * blockly:
 
-  * Updated blockly to Release Q3 Patch 4
+  * Updated blockly to Release Q3 Patch 4, Plugin is still in early alpha phase
 
 * darksky:
 
@@ -192,7 +191,6 @@ Plugin Updates
 
   * Fix for recurring event having multiple exceptions
   * Fix problems with long lines that are continued on next line
-  * Fix for recurring event having multiple exceptions
 
 * kathrein:
 
@@ -243,8 +241,8 @@ Plugin Updates
 * onewire:
 
   * Fixed error handling in case of readout problem (85 °C)
-  * Plugin enable use of alias names
-  * Added webinterface
+  * Plugin may use alias names instead of sensor ids
+  * Added simple webinterface
   * Reworked internals
   * Fix multiple thread creation after discovery
   * Fix bug with too many threads started
@@ -252,7 +250,7 @@ Plugin Updates
 
 * rcswitch:
 
-  * rcswitch_host - change type to ip
+  * Change type for rcswitch_host to ip
 
 * roomba:
 
@@ -286,7 +284,7 @@ Plugin Updates
 * smlx:
 
   * Added parameters for CRC check
-  * Implement support for Holley DTZ541 (2018 model with faulty CRC implementation)
+  * Implemented special support for Holley DTZ541 (2018 model with faulty CRC implementation)
   * Fixes actualTime calculation issue and provides status properties
   * Fixed issue with calculation of actualTime.
   * Fixed misinterpretation of Client-ID as OBIS code.
@@ -306,7 +304,7 @@ Plugin Updates
   * Fix repeat and shuffle playlist
   * Various bugfixes
   * Some optimizations
-  * Updates play,pause,stop items every time there is a change
+  * Updates play, pause, stop items every time there is a change
 
 * stateengine:
 
@@ -321,7 +319,7 @@ Plugin Updates
 
   * Documentation updates
   * Prettify thread names for job queue
-  * Removed error message when welcome_msg or bye_msg is empty
+  * Removed error message in case welcome_msg or bye_msg are empty
 
 * thz:
 
@@ -356,23 +354,23 @@ in the next release. User of these plugins should switch to corresponding succee
 
 * Gateway Plugins
 
-  * tellstick - classic Plugin, laut Umfrage nicht genutzt
+  * tellstick - classic Plugin, not used according to survey in knx-user-forum
 
 * Interface Plugins
 
-  * netio230b - classic plugin, not used according to survey
-  * smawb - classic plugin, not used according to survey
+  * netio230b - classic plugin, not used according to survey in knx-user-forum
+  * smawb - classic plugin, not used according to survey in knx-user-forum
 
 * Web Plugins
 
   * alexa - switch to the **alexa4p3** plugin
-  * boxcar - classic Plugin, not used according to survey
+  * boxcar - classic Plugin, not used according to survey in knx-user-forum
   * mail - switch to the **mailsend** and **mailrcv** plugin
-  * openenergymonitor - classic plugin, not used according to survey
+  * openenergymonitor - classic plugin, not used according to survey in knx-user-forum
   * wunderground - the free API is not provided anymore by Wunderground
 
 
-The following plugins are marked as *deprecated* with SmartHomeNG v1.7, because no users and testers has been found:
+The following plugins are marked as *deprecated* with SmartHomeNG v1.7, because neither user nor tester have been found:
 
 * Gateway Plugins
 
@@ -403,14 +401,13 @@ Documentation
 
 * User Documentation
 
-  * sample_module added to /dev
+  * Sample module provided in /dev/sample_module
   * New MQTT support documented
   * Generic updates and extensions
   * "Komplettanleitung" revised
   * Overview image revised
   * "Arbeiten mit Funktionen in Logiken" added
   * Section "Beispiele, Tipps & Tricks" added (Thanks to sisamiwe for the examples)
-
 
 * Developer Documentation
 
