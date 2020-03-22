@@ -281,7 +281,7 @@ Hier ein Beispiel, wie man weitere (nicht standardmäßig verfügbare) Python Mo
 Verwendung der Item-Funktion timer
 ----------------------------------
 
-siehe auch `Thread im knx-user-forum <https://knx-user-forum.de/forum/supportforen/smarthome-py/1447847-autotimer-sperren-garage-automatisch-zu>`_
+siehe auch `Thread im knx-user-forum <https://knx-user-forum.de/forum/supportforen/smarthome-py/1447847-autotimer-sperren-garage-automatisch-zu>`__
 
 .. code-block:: yaml
 
@@ -298,7 +298,7 @@ siehe auch `Thread im knx-user-forum <https://knx-user-forum.de/forum/supportfor
 Countdown für Timer bzw. Autotimer
 ----------------------------------
 
-siehe auch `Thread im knx-user-forum <https://knx-user-forum.de/forum/supportforen/smarthome-py/1403134-countdown-f%C3%BCr-timer-bzw-autotimer>`_
+siehe auch `Thread im knx-user-forum <https://knx-user-forum.de/forum/supportforen/smarthome-py/1403134-countdown-f%C3%BCr-timer-bzw-autotimer>`__
 
  - Item das den Bewässerungskreis (Lampe, ...) schaltet. In meinem Fall ist das das Item "Rundbeet"
  - Item über das ich in der Visu die Dauer setze
@@ -331,7 +331,7 @@ siehe auch `Thread im knx-user-forum <https://knx-user-forum.de/forum/supportfor
 Item mit verzögertem Status
 ---------------------------
 
-siehe auch `Thread im knx-user-forum <https://knx-user-forum.de/forum/supportforen/smarthome-py/1430942-item-mit-verz%C3%B6gertem-status>`_
+siehe auch `Thread im knx-user-forum <https://knx-user-forum.de/forum/supportforen/smarthome-py/1430942-item-mit-verz%C3%B6gertem-status>`__
 
 Das folgende Beispiel setzt das Item "out":
  - Wenn Item in = True wird, soll Item out = True werden
@@ -351,7 +351,7 @@ Das folgende Beispiel setzt das Item "out":
 Konsolidieren von Itemwerten
 ----------------------------
 
-siehe auch `Thread im knx-user-forum <https://knx-user-forum.de/forum/supportforen/smarthome-py/1346543-eval-und-autotimer>`_
+siehe auch `Thread im knx-user-forum <https://knx-user-forum.de/forum/supportforen/smarthome-py/1346543-eval-und-autotimer>`__
 
 Das folgende Beispiel zeigt, wie aus 5 Präsenzmelderrückmeldungen der Anwesenheitsstatus ermittelt werden. Die Präsenzmelder senden immer True, wenn Präsenz da ist (es wird keine False gesendet).
 

@@ -9,7 +9,7 @@ Items
    :hidden:
 
    initiale_itemkonfiguration
-   standard_attribute/items_standard_attribute
+   standard_attribute/standard_attribute
    items_plugin_attribute
    items_attributes_relative_referenzen
    items_attributes_eval_ausdruecke

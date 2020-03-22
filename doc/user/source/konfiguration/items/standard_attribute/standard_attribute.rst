@@ -111,12 +111,12 @@ plugin-spezifischen Attribute ist in der Dokumentation des jeweiligen Plugins na
    :maxdepth: 5
    :hidden:
 
-   items_standard_attribute_autotimer
-   items_standard_attribute_crontab
-   items_standard_attribute_cycle
-   items_standard_attribute_enforce_updates
-   items_standard_attribute_eval
-   items_standard_attribute_on_update
-   items_standard_attribute_struct
-   items_standard_attribute_type
+   autotimer
+   crontab
+   cycle
+   enforce_updates
+   eval
+   on_update
+   struct
+   type
 

@@ -67,7 +67,7 @@ Updates im CORE
 * Support for custom holidays added
 * Added a lot of functions to lib.shtime to simplify date and time handling in logics and plugins
 * Global translation support (lib.translation) added (moved from plugins to a global level)
-* crontab: Implemtation of day ranges
+* crontab: Implementation of day ranges
 * MQTT Support for logics added (using new mqtt module)
 * New class MqttPlugin to support MQTT usage in plugins (using new mqtt module)
 * Implemented installation of needed Python packages
@@ -134,7 +134,7 @@ Für Details zu den inhaltlichen Änderungen der einzelnen Plugins, bitte die Do
 * helios_tcp: Erlaubt die Kommunikation über TCP mit Helios KWL Geräten mit Helios Easy Controls
 * ksemmodbus: Anbindung von einem Kostal Smart Energy Meter über Modbus
 * neato: Plugin zur Anbindung von einem Neato/Vorwerk Staubsauger Robotor an SmartHomeNG
-* rpi1wire: Plugin für den Rapberry Pi. Erlaubt den einfachen Zugriff auf 1-Wire Sensoren. Getestet mit Raspberry Pi B und dem Temperatursensor DS18B20
+* rpi1wire: Plugin für den Raspberry Pi. Erlaubt den einfachen Zugriff auf 1-Wire Sensoren. Getestet mit Raspberry Pi B und dem Temperatursensor DS18B20
 * shelly: Steuerung von Shelly devices über mqtt (nutzt das neue mqtt Modul)
 * snmp: SNMP Queries
 * vacations: Ermöglicht den Abruf deutscher Schulferien für die Bundesländer BW, BY, BE, BB, HB, HH, HE, MV, NI, NW, RP, SL, SN, ST, SH, TH.
@@ -320,7 +320,7 @@ Plugin Updates
 * telegram:
 
   * documentation updates
-  * pretify thread names for job queue
+  * prettify thread names for job queue
   * Removed error message when welcome_msg or bye_msg is empty
 
 * thz:

@@ -24,6 +24,17 @@ Das Item soll zu bestimmten Zeitpunkten aktualisiert werden:
 
    crontab: <Minute> <Stunde> <Tag> <Wochentag>
 
+
+Das Item soll zu bestimmten Zeitpunkten aktualisiert und auf einen bestimmten Wert gesetzt werden:
+
+.. code-block:: yaml
+
+   crontab: <Minute> <Stunde> <Tag> <Wochentag> = <Wert>
+
+   # Beispiel: Hier wird um 23:59, Jeden Tag, Jeden Wochentag ausgelöst und der Wert 70 gesetzt
+   # crontab: 59 23 * * = 70
+
+
 Für jede dieser Zeiteinheiten (Minuten, Stunde, Tag, Wochentag) werden
 folgende Muster unterstützt (Beispiel jeweils ohne Anführungszeichen verwenden):
 
@@ -59,6 +70,7 @@ Sonnenauf- sowie Sonnenuntergang unterstützt, z.B:
 * den Wert (z.B. “sunset”) und Grad-Offset, z.B. ``crontab = sunset+6``
   (Sonnenuntergang wenn Sonne 6 Grad am Horizont (Altitude der Sonne)
   erreicht)
+
 
 Das Item soll zu einem bestimmten Sonnenstand aktualisiert werden:
 

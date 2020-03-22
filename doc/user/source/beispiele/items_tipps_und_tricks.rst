@@ -43,7 +43,7 @@ invertierte Wert auf den KNX Bus geschrieben.
 Zweite Aufgabenstellung
 -----------------------
 
-Es geht um einen Lausprecher, der über einen GPIO Kontakt des Raspberry
+Es geht um einen Lautsprecher, der über einen GPIO Kontakt des Raspberry
 geschaltet werden soll. Der Wert kommt von einem Item das per knx bedient
 wird und dessen Item Wert nicht verfälscht werden soll.
 
