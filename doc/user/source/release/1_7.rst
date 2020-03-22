@@ -36,9 +36,10 @@ Versionen (3.6 oder 3.7) aufzusetzen.
 
 .. important::
 
-   Mit dem kommenden Release 1.8 werden die unterstützten Python Versionen (wie hier beschrieben) auf **Python 3.6, 3.7,
-   3.8** angehoben. Python 3.6 hat eine Reihe sehr interessanter Features und Verbesserungen gebracht, die dann in
-   SmartHomeNG genutzt werden können.
+   Mit dem kommenden Release 1.8 werden die unterstützten Python Versionen
+   :doc:`(wie hier beschrieben) </installation/anforderungen>` auf **Python 3.6, 3.7, 3.8** angehoben. Python 3.6
+   hat eine Reihe sehr interessanter Features und Verbesserungen gebracht, die dann in SmartHomeNG genutzt
+   werden können.
 
    Sollten solche neuen Features in den Core Einzug halten, wird die **Absolute Minimum Python Version** auf 3.6
    angehoben werden. Sollten die Features nur in Plugins genutzt werden, so können nur solche Plugins nicht genutzt
@@ -58,8 +59,8 @@ Bugfixes in the CORE
 * lib.config: Keeping item order when merging structs; improved error handling when referencing non existing structs
 
 
-Updates im CORE
----------------
+Updates in the CORE
+-------------------
 
 * Implemented command line option to create backups of the configuration of SmartHomeNG and to restore from such a backup
 * .cer and .key files from /etc are backed up, too
@@ -123,7 +124,7 @@ Updates im CORE
 
 
 New Plugins
-------------
+-----------
 
 For details of the changes of the individual plugins, please refer to the documentation of the respective plugin.
 
@@ -341,7 +342,7 @@ Plugin Updates
 
 
 Outdated Plugins
------------------
+----------------
 
 The following plugins were already marked in version v1.6 as *deprecated*. This means that the plugins
 are still working, but are not developed further anymore and are removed from the release of SmartHomeNG
