@@ -45,8 +45,8 @@ Versionen (3.6 oder 3.7) aufzusetzen.
    werden, wenn eine ältere Python Version als 3.6 eingesetzt wird.
 
 
-Bugfixes im CORE
-----------------
+Bugfixes in the CORE
+--------------------
 
 * lib.scheduler: fixes part of issue 335
 * tools.plugin_metadata_checker: Bug fixes
@@ -81,15 +81,15 @@ Updates im CORE
   * Support for dynamic properties. Right now, values of plugin-specific attributes are implemented as r/o properties
 
 
-* Logiken:
+* Logics:
 
-  * Support für MQTT implementiert
+  * Support for MQTT implemented
 
 * lib.config: Ignoring files starting with a '.' that are created when accessing a folder from MacOS
 * lib.config: Bugfix in merge() if itemtree contains pseudo-nodes (nodes without leafs or subnodes)
 * lib.logic: Adjusted log level for triggered logics that are disabled
 
-* Module:
+* Modules:
 
   * http:
 
@@ -116,30 +116,30 @@ Updates im CORE
 
 * Plugins:
 
-  * Konfigurations-Parameter **class_name** und **class_path** in **/etc/plugin.yaml** sind nun DEPRECATED
-  * Support für MQTT implementiert
-  * Webinterfaces: make all tabs sticky on webinterface for better scroll appearance
+  * Configuration parameter **class_name** and **class_path** in **/etc/plugin.yaml** are now DEPRECATED
+  * Support for MQTT implemented
+  * Web interfaces: make all tabs sticky on web interface for better scroll appearance
 
 
 
-Neue Plugins
+New Plugins
 ------------
 
-Für Details zu den inhaltlichen Änderungen der einzelnen Plugins, bitte die Dokumentation des jeweiligen Plugins konsultieren.
+For details of the changes of the individual plugins, please refer to the documentation of the respective plugin.
 
 
-* bose_soundtouch: Plugin zur Integration von Bose Soundtouch Systemen
-* executor: Ausführen von Python Statements im Kontext von SmartHomeNG. Alternative für den Interactive Mode von SmartHomeNG
-* garminconnect: Ermöglicht den Abruf von Daten (Statistiken, Pulswerte) aus Garmin Connect
-* helios_tcp: Erlaubt die Kommunikation über TCP mit Helios KWL Geräten mit Helios Easy Controls
-* ksemmodbus: Anbindung von einem Kostal Smart Energy Meter über Modbus
-* neato: Plugin zur Anbindung von einem Neato/Vorwerk Staubsauger Robotor an SmartHomeNG
-* rpi1wire: Plugin für den Raspberry Pi. Erlaubt den einfachen Zugriff auf 1-Wire Sensoren. Getestet mit Raspberry Pi B und dem Temperatursensor DS18B20
-* shelly: Steuerung von Shelly devices über mqtt (nutzt das neue mqtt Modul)
+* bose_soundtouch: Plugin for the integration of Bose Soundtouch systems
+* executor: Execute Python statements in the context of SmartHomeNG. Alternative to the interactive mode of SmartHomeNG
+* garminconnect: Allows to retrieve data (stats, heart rate) from Garmin Connect
+* helios_tcp: Allows to communicate via TCP with Helios KWL devices via Helios Easy Controls
+* ksemmodbus: Connect a Kostal Smart Energy Meter via Modbus
+* neato: Plugin to connect a Neato/Vorwerk vacuum cleaning robot to SmartHomeNG
+* rpi1wire: Plugin for the Raspberry Pi. Allows for an easy access to 1-Wire sensors. Tested with a Raspberry Pi B and the temperature sensor DS18B20
+* shelly: Control Shelly devices via mqtt (uses the new mqtt module)
 * snmp: SNMP Queries
-* vacations: Ermöglicht den Abruf deutscher Schulferien für die Bundesländer BW, BY, BE, BB, HB, HH, HE, MV, NI, NW, RP, SL, SN, ST, SH, TH.
-* xioami_vac: Zugriff auf Xiaomi Saugroboter
-* yamahayxc: Plugin, um Yamaha MusicCast-Geräte zu kontrollieren
+* vacations: Retrieves German school holidays for the federate states of BW, BY, BE, BB, HB, HH, HE, MV, NI, NW, RP, SL, SN, ST, SH, TH.
+* xioami_vac: Access to a Xiaomi vacuum cleaning robot
+* yamahayxc: Plugin to control Yamaha MusicCast devices
 
 
 
@@ -148,59 +148,59 @@ Plugin Updates
 
 * alexa4p3:
 
-  * fixed naming for plugin
+  * Fixed naming for plugin
   * Added plugin name as source when setting item values
 
 * avdevice:
 
-  * fixes in plugin.yaml
+  * Fixes in plugin.yaml
 
 * avm:
 
-  * added write support for AVM Dec 301 hkrt devices (command set temperature)
+  * Added write support for AVM Dec 301 hkrt devices (command set temperature)
   * Now using one single item for read and write temperature setpoint; fixed filter for items calls by avm plugin
-  * changed name of monitoring service thread
-  * fix for retrieval of HOST data and MultiInstance functionality
-  * bugfixes for MI handling
-  * fixed bug in default value for ssl port
+  * Changed name of monitoring service thread
+  * Fix for retrieval of HOST data and MultiInstance functionality
+  * Bugfixes for MI handling
+  * Fixed bug in default value for ssl port
 
 * blockly:
 
-  * updated blockly to Release Q3 Patch 4
+  * Updated blockly to Release Q3 Patch 4
 
 * darksky:
 
-  * added hourly and daily data to struct
-  * fix for multiple items accessing the same match string
+  * Added hourly and daily data to struct
+  * Fix for multiple items accessing the same match string
   * Quick Fix Webinterface Item, needs more work though
-  * added support for multiple items in a key
-  * compact table appearance, show large text block reduced at first
+  * Added support for multiple items in a key
+  * Compact table appearance, show large text block reduced at first
 
 * Dashbutton:
 
-  * updated from buggy kamene package to scapy package
+  * Updated from buggy kamene package to scapy package
 
 * dmx:
 
-  * converted to SmartPlugin
+  * Converted to SmartPlugin
 
 * gpio:
 
-  * fix problem with slow raspis after reboot
+  * Fix problem with slow raspis after reboot
 
 * ical:
 
   * Fix for recurring event having multiple exceptions
-  * fix problems with long lines that are continued on next line
+  * Fix problems with long lines that are continued on next line
   * Fix for recurring event having multiple exceptions
 
 * kathrein:
 
-  * converted to SmartPlugin
+  * Converted to SmartPlugin
 
 * knx:
 
-  * added hostname support
+  * Added hostname support
 
 * mailrcv:
 
@@ -209,28 +209,28 @@ Plugin Updates
 
 * memlog:
 
-  * improved documentation
+  * Improved documentation
 
 * milight:
 
-  * converted to SmartPlugin
-  * implemented multi-instance
+  * Converted to SmartPlugin
+  * Implemented multi-instance
 
 * miflora:
 
   * Fixed some namings: scheduler methods of SmartPlugin
   * Fixed new init parameter access
-  * added Web Interface with auto update
-  * added support for all 3 Libraries used in Miflora pypi package
-  * new default library: bluepy (which needs a new package to be installed)
-  * only instantiate MifloraPoller once
+  * Added Web Interface with auto update
+  * Added support for all 3 Libraries used in Miflora pypi package
+  * New default library: bluepy (which needs a new package to be installed)
+  * Only instantiate MifloraPoller once
 
 * mqtt:
 
-  * renamed existing mqtt plugin to mqtt1 and set deprecated flag for this plugin
-  * reimplemented mqtt plugin derived from class MqttPlugin for using the new mqtt module
-  * added item attribute **bool_values**: defines which mqtt payload values should be interpreted as True or False
-  * added gui_type: wide_str for appropriate parameters
+  * Renamed existing mqtt plugin to mqtt1 and set deprecated flag for this plugin
+  * Reimplemented mqtt plugin derived from class MqttPlugin for using the new mqtt module
+  * Added item attribute **bool_values**: defines which mqtt payload values should be interpreted as True or False
+  * Added gui_type: wide_str for appropriate parameters
 
 * nuki:
 
@@ -238,17 +238,17 @@ Plugin Updates
 
 * odlinfo:
 
-  * small fixes
+  * Small fixes
 
 * onewire:
 
   * Fixed error handling in case of readout problem (85 °C)
-  * plugin enable use of alias names
-  * added webinterface
-  * reworked internals
-  * fix multiple thread creation after discovery
-  * fix bug with too many threads started
-  * plugin fixed bug with alias adressing
+  * Plugin enable use of alias names
+  * Added webinterface
+  * Reworked internals
+  * Fix multiple thread creation after discovery
+  * Fix bug with too many threads started
+  * Plugin fixed bug with alias adressing
 
 * rcswitch:
 
@@ -256,76 +256,76 @@ Plugin Updates
 
 * roomba:
 
-  * converted to SmartPlugin
+  * Converted to SmartPlugin
 
 * rrd:
 
-  * converted to SmartPlugin
+  * Converted to SmartPlugin
 
 * rtr:
 
-  * bugfix in stop_controller()
-  * fixed stop_item handling
+  * Bugfix in stop_controller()
+  * Fixed stop_item handling
   * Added check of self.alive before accessing items
 
 * russound
 
-  * converted to SmartPlugin
-  * handling of decode error added
+  * Converted to SmartPlugin
+  * Handling of decode error added
 
 * sma_em:
 
   * Added updates for values in web interface via Ajax
   * SMA_EM: reworked whole plugin as requested in issue #319
 
-    * supports multicasts of new versions of energy meter
-    * item naming changed (look at newly introduced struct or README)
-    * new items for info if consume and supply is active
-    * introduced scheduler instead of sleeping thread (needed to show that a plugin updated the item, also better for performance)
+    * Supports multicasts of new versions of energy meter
+    * Item naming changed (look at newly introduced struct or README)
+    * New items for info if consume and supply is active
+    * Introduced scheduler instead of sleeping thread (needed to show that a plugin updated the item, also better for performance)
 
 * smlx:
 
   * Added parameters for CRC check
-  * implement support for Holley DTZ541 (2018 model with faulty CRC implementation)
-  * fixes actualTime calculation issue and provides status properties
+  * Implement support for Holley DTZ541 (2018 model with faulty CRC implementation)
+  * Fixes actualTime calculation issue and provides status properties
   * Fixed issue with calculation of actualTime.
   * Fixed misinterpretation of Client-ID as OBIS code.
   * Added properties for Smartmeter status
 
 * solarlog:
 
-  * converted to SmartPlugin
-  * bugfixes
+  * Converted to SmartPlugin
+  * Bugfixes
 
 * speech:
 
-  * converted to SmartPlugin
+  * Converted to SmartPlugin
 
 * squeezebox:
 
-  * fix repeat and shuffle playlist
-  * various bugfixes
-  * some optimizations
-  * updates play,pause,stop items every time there is a change
+  * Fix repeat and shuffle playlist
+  * Various bugfixes
+  * Some optimizations
+  * Updates play,pause,stop items every time there is a change
 
 * stateengine:
 
-  * improved Stateeninge Graph in Web Interface
-  * documentation updates
-  * various bugfixes
-  * fix immediate action run after leaving state
-  * fix problem running leave actions
-  * improve collision handling when running multiple evals at the same time
+  * Improved Stateeninge Graph in Web Interface
+  * Documentation updates
+  * Various bugfixes
+  * Fix immediate action run after leaving state
+  * Fix problem running leave actions
+  * Improve collision handling when running multiple evals at the same time
 
 * telegram:
 
-  * documentation updates
-  * prettify thread names for job queue
+  * Documentation updates
+  * Prettify thread names for job queue
   * Removed error message when welcome_msg or bye_msg is empty
 
 * thz:
 
-  * added a missing method
+  * Added a missing method
 
 * trovis557x:
 
@@ -333,26 +333,26 @@ Plugin Updates
 
 * uzsu:
 
-  * added error message when using wrong sv widget
-  * various bugfixes
-  * add lastvalue and standard parameters config for interpolation
+  * Added error message when using wrong sv widget
+  * Various bugfixes
+  * Add lastvalue and standard parameters config for interpolation
 
 * visu_websocket:
 
   * Improved exception handling
 
 
-Veraltete Plugins
+Outdated Plugins
 -----------------
 
-Die folgenden Plugins wurden bereits in v1.6 als *deprecated* (veraltet) gekennzeichnet. Dieses Kennzeichen bedeutet,
-dass die Plugins zwar noch funktionieren, aber nicht mehr weiterentwickelt werden und aus dem kommenden Release von
-SmartHomeNG entfernt werden. Nutzer dieser Plugins sollten auf entsprechende Nachfolge-Plugins umstellen.
+The following plugins were already marked in version v1.6 as *deprecated*. This means that the plugins
+are still working, but are not developed further anymore and are removed from the release of SmartHomeNG
+in the next release. User of these plugins should switch to corresponding succeeding plugins.
 
 * System Plugins
 
-  * sqlite - auf das **database** Plugin umstellen
-  * sqlite_visu2_8 - auf das **database** Plugin umstellen
+  * sqlite - switch to the **database** plugin
+  * sqlite_visu2_8 - switch to the **database** plugin
 
 * Gateway Plugins
 
@@ -360,20 +360,19 @@ SmartHomeNG entfernt werden. Nutzer dieser Plugins sollten auf entsprechende Nac
 
 * Interface Plugins
 
-  * netio230b - classic Plugin, laut Umfrage nicht genutzt
-  * smawb - classic Plugin, laut Umfrage nicht genutzt
+  * netio230b - classic plugin, not used according to survey
+  * smawb - classic plugin, not used according to survey
 
 * Web Plugins
 
-  * alexa - auf das **alexa4p3** Plugin umstellen
-  * boxcar - classic Plugin, laut Umfrage nicht genutzt
-  * mail - auf die Plugins **mailsend** bzw. **mailrcv** umstellen
-  * openenergymonitor - classic Plugin, laut Umfrage nicht genutzt
-  * wunderground - das freie API wird durch Wunderground nicht mehr zur Verfügung gestellt
+  * alexa - switch to the **alexa4p3** plugin
+  * boxcar - classic Plugin, not used according to survey
+  * mail - switch to the **mailsend** and **mailrcv** plugin
+  * openenergymonitor - classic plugin, not used according to survey
+  * wunderground - the free API is not provided anymore by Wunderground
 
 
-folgende weitere Plugins werden mit SmartHomeNG v1.7 als *deprecated* (veraltet) gekennzeichnet, da sich keine Nutzer
-bzw. Tester gefunden haben:
+The following plugins are marked as *deprecated* with SmartHomeNG v1.7, because no users and testers has been found:
 
 * Gateway Plugins
 
@@ -395,26 +394,26 @@ bzw. Tester gefunden haben:
   * boxcar
   * nma
 
-Außerdem wurde das bisherige mqtt Plugin umbenannt in mqtt1 und als *deprecated* (veraltet) gekennzeichnet, da das
-neue mqtt Plugin die Funktionalität übernimmt und auf dem mqtt Modul des aktuellen Cores aufsetzt.
+Moreover, the previous mqtt plugin was renamed to mqtt1 and marked as *deprecated*, because the new mqtt
+plugin takes over the functionality. This plugin is based on the mqtt module and the recent core.
 
 
-Dokumentation
+Documentation
 -------------
 
-* Anwender Dokumentation
+* User Documentation
 
-  * sample_module zu /dev hinzugefügt
-  * Neue MQTT Untersützung dokumentiert
-  * Allgemeine Updates und Erweiterungen
-  * Komplettanleitung überarbeitet
-  * Overview Graphik überarbeitet
-  * Arbeiten mit Funktionen in Logiken ergänzt
-  * Abschnitt Beispiele, Tipps & Tricks hinzugefügt (Dank an sisamiwe für die Beispiele)
+  * sample_module added to /dev
+  * New MQTT support documented
+  * Generic updates and extensions
+  * "Komplettanleitung" revised
+  * Overview image revised
+  * "Arbeiten mit Funktionen in Logiken" added
+  * Section "Beispiele, Tipps & Tricks" added (Thanks to sisamiwe for the examples)
 
 
-* Entwickler Dokumentation
+* Developer Documentation
 
-  * Dokumentation zur Erstellung von Webinterfaces für Plugins erweitert
-  * Neue MQTT Untersützung dokumentiert
-  * Allgemeine Updates und Erweiterungen
+  * Documentation how to create web interfaces for plugins
+  * New MQTT support documented
+  * Generic updates and enhancements
