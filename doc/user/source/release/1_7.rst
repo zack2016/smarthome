@@ -8,8 +8,8 @@ Es gibt eine Menge neuer Features im Core von SmartHomeNG und den Plugins.
 
     Diese Release Notes sind ein Arbeitsstand.
 
-     - Berücksichtigt sind Commits im smarthome Repository bis incl. 23. Feb 2020 (Services: Row 'Node-Red service' is only shown, if ...)
-     - Berücksichtigt sind Commits im plugins Repository bis incl. 23. Jan 2020 (msinn: Merge branch 'develop' of https://github.com/smarthomeNG/plugins into…)
+     - Berücksichtigt sind Commits im smarthome Repository bis incl. 21. Mär 2020
+     - Berücksichtigt sind Commits im plugins Repository bis incl. 21. Mär 2020
 
 
 
@@ -19,19 +19,20 @@ Unterstützte Python Versionen
 Die älteste offiziell unterstützte Python Version für SmartHomeNG Release 1.7 ist Python 3.5.
 (Siehe auch *Hard- u. Software Anforderungen* im Abschnitt *Installation* zu unterstützten Python Versionen)
 
-Das bedeutet nicht unbedingt, dass SmartHomeNG ab Release 1.7 nicht mehr unter älteren Python Versionen läuft. Es
-bedeutet, dass SmartHomeNG nicht mehr mit älteren Python Versionen getestet wird und das gemeldete Fehler mit älteren
-Python Versionen nicht mehr zu Buxfixen führen.
+..
+    Das bedeutet nicht unbedingt, dass SmartHomeNG ab Release 1.7 nicht mehr unter älteren Python Versionen läuft. Es
+    bedeutet, dass SmartHomeNG nicht mehr mit älteren Python Versionen getestet wird und das gemeldete Fehler mit älteren
+    Python Versionen nicht mehr zu Buxfixen führen.
 
-Die meisten Funktionen werden auch unter Python 3.4 funktionieren. Es werden jedoch zunehmend Features eingesetzt, die
-erste ab Python 3.5 zur Verfügung stehen.
+    Es werden jedoch zunehmend Features eingesetzt, die erste ab Python 3.5 zur Verfügung stehen.
 
 
 Absolute minimum Python Version
 ===============================
 
-Die Minimum Python Version in der SmartHomeNG startet wurde bei v3.4 belassen. Bei einer Neuinstallation wird jedoch
-empfohlen auf einer der neueren Python Versionen (3.6 oder 3.7) aufzusetzen.
+Die Minimum Python Version in der SmartHomeNG startet wurde auf v3.5 angehoben, da Python 3.4 im Jahr 2019 End-of-Life
+(End of security fixes) gegangen ist. Bei einer Neuinstallation wird jedoch empfohlen auf einer der neueren Python
+Versionen (3.6 oder 3.7) aufzusetzen.
 
 .. important::
 
@@ -54,6 +55,7 @@ Bugfixes im CORE
 * lib.plugin: Removed call to deprecated Python function
 * lib.module: Removed call to deprecated Python function
 * lib.translation: Bugfix
+* lib.config: Keeping item order when merging structs; improved error handling when referencing non existing structs
 
 
 Updates im CORE
@@ -71,6 +73,8 @@ Updates im CORE
 * Implemented installation of needed Python packages
 * env.system.start now a datetime instead of formatted string
 * plugin webinterface showed tabs also if only one tab was defined
+* Implemented nesting of structs
+* structs allow merging of lists in attributes
 
 * Items:
 
@@ -103,6 +107,8 @@ Updates im CORE
     * Additions to system: IPv6 and process ID
     * Items: Display of eval and crontab details corrected
     * Services: Row 'Node-Red service' is only shown, if service is available
+    * Services: YAML syntax checker now resolves structs
+    * List of loaded plugins: Added button which opens list of relevant blog articles
 
   * mqtt:
 
@@ -143,6 +149,7 @@ Plugin Updates
 * alexa4p3:
 
   * fixed naming for plugin
+  * Added plugin name as source when setting item values
 
 * avdevice:
 
@@ -299,6 +306,7 @@ Plugin Updates
   * fix repeat and shuffle playlist
   * various bugfixes
   * some optimizations
+  * updates play,pause,stop items every time there is a change
 
 * stateengine:
 
@@ -364,6 +372,33 @@ SmartHomeNG entfernt werden. Nutzer dieser Plugins sollten auf entsprechende Nac
   * wunderground - das freie API wird durch Wunderground nicht mehr zur Verfügung gestellt
 
 
+folgende weitere Plugins werden mit SmartHomeNG v1.7 als *deprecated* (veraltet) gekennzeichnet, da sich keine Nutzer
+bzw. Tester gefunden haben:
+
+* Gateway Plugins
+
+  * ecmd
+  * elro
+  * iaqstick
+  * snom
+  * tellstick
+
+* Interface Plugins
+
+  * easymeter
+  * netio230b
+  * smawb
+  * vr100
+
+* Web Plugins
+
+  * boxcar
+  * nma
+
+Außerdem wurde das bisherige mqtt Plugin umbenannt in mqtt1 und als *deprecated* (veraltet) gekennzeichnet, da das
+neue mqtt Plugin die Funktionalität übernimmt und auf dem mqtt Modul des aktuellen Cores aufsetzt.
+
+
 Dokumentation
 -------------
 
@@ -375,6 +410,7 @@ Dokumentation
   * Komplettanleitung überarbeitet
   * Overview Graphik überarbeitet
   * Arbeiten mit Funktionen in Logiken ergänzt
+  * Abschnitt Beispiele, Tipps & Tricks hinzugefügt (Dank an sisamiwe für die Beispiele)
 
 
 * Entwickler Dokumentation
