@@ -281,6 +281,8 @@
     "OTHER SCHEDULERS": "Other Schedulers",
     "SCHEDULER": "Scheduler",
     "NEXT EXECUTION": "Next Execution",
+    "PRIO": "Prio",
+    "VALUE": "Value",
     "CYCLE": "Cycle",
     "CRONTAB": "Crontab"
   },

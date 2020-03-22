@@ -280,6 +280,8 @@
     "OTHER SCHEDULERS": "Autres planificateurs",
     "SCHEDULER": "Planificateur",
     "NEXT EXECUTION": "Prochaine exécution",
+    "PRIO": "Prio",
+    "VALUE": "Valeur",
     "CYCLE": "Cycle",
     "CRONTAB": "Crontab"
   },

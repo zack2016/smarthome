@@ -283,6 +283,8 @@
     "OTHER SCHEDULERS": "sonstige Scheduler",
     "SCHEDULER": "Scheduler",
     "NEXT EXECUTION": "nächste Ausführung",
+    "PRIO": "Prio",
+    "VALUE": "Wert",
     "CYCLE": "Cycle",
     "CRONTAB": "Crontab"
   },
