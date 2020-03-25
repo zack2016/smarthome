@@ -58,19 +58,21 @@ master_doc = 'index'
 # To get rid of the ¶ sign on descriptions over a box
 html_add_permalinks = ""
 
-# General information about the project.
-#project = u'SmartHomeNG'
-project = u'Developer Documentation'
-#copyright = u'2011-2013, Marcus Popp; since 2016 SmartHomeNG Team'
-#copyright = u'2016-2017 SmartHomeNG Team, based on smarthome.py © 2011-2014 Marcus Popp'
-copyright = u'2016-2020 SmartHomeNG Team, SmartHomeNG is based on smarthome.py © Marcus Popp'
-
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
 # built documents.
 #
 # The short X.Y version.
 #version = '1.3c'
+version = shngversion.get_shng_main_version()
+
+# General information about the project.
+#project = u'SmartHomeNG'
+project = u'Developer Documentation v' + version
+#copyright = u'2011-2013, Marcus Popp; since 2016 SmartHomeNG Team'
+#copyright = u'2016-2017 SmartHomeNG Team, based on smarthome.py © 2011-2014 Marcus Popp'
+copyright = u'2016-2020 SmartHomeNG Team, SmartHomeNG is based on smarthome.py © Marcus Popp'
+
 if os.path.isfile(os.getcwd()+'/doc_version.flg'):
     release = '1.4.x'
     with open(os.getcwd()+'/doc_version.flg') as f:

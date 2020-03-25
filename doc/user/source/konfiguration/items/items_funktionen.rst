@@ -20,7 +20,7 @@ genutzt werden können.
 |                                | wird. Die Zeitangabe erfolgt in Sekunden. Eine Angabe der Dauer in Minuten     |
 |                                | ist wie in '10m' möglich. Die Bedeutung und Wirkungsweise von **compat** bitte |
 |                                | auf der Seite                                                                  |
-|                                | :doc:`autotimer <./standard_attribute/items_standard_attribute_autotimer>`     |
+|                                | :doc:`autotimer <./standard_attribute/autotimer>`                              |
 |                                | nachlesen.                                                                     |
 +--------------------------------+--------------------------------------------------------------------------------+
 | fade(end, step, delta)         | Blendet das Item mit der definierten Schrittweite (int oder float) und         |
@@ -37,7 +37,7 @@ genutzt werden können.
 +--------------------------------+--------------------------------------------------------------------------------+
 | timer(time, value, compat)     | Funktioniert wir **autotimer()**, ausser dass die Aktion nur einmal ausgeführt |
 |                                | wird. Die Bedeutung und Wirkungsweise von **compat** bitte auf der Seite       |
-|                                | :doc:`autotimer <./standard_attribute/items_standard_attribute_autotimer>`     |
+|                                | :doc:`autotimer <./standard_attribute/autotimer>`                              |
 |                                | nachlesen.                                                                     |
 +--------------------------------+--------------------------------------------------------------------------------+
 

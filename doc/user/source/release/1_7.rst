@@ -8,8 +8,8 @@ Es gibt eine Menge neuer Features im Core von SmartHomeNG und den Plugins.
 
     Diese Release Notes sind ein Arbeitsstand.
 
-     - Berücksichtigt sind Commits im smarthome Repository bis incl. 21. Mär 2020
-     - Berücksichtigt sind Commits im plugins Repository bis incl. 21. Mär 2020
+     - Berücksichtigt sind Commits im smarthome Repository bis incl. 22. Mär 2020
+     - Berücksichtigt sind Commits im plugins Repository bis incl. 22. Mär 2020
 
 
 
@@ -110,6 +110,7 @@ Updates in the CORE
     * Services: Row 'Node-Red service' is only shown, if service is available
     * Services: YAML syntax checker now resolves structs
     * List of loaded plugins: Added button which opens list of relevant blog articles
+    * List of Schedulers: Added priority and value to be set for each scheduler
 
   * mqtt:
 
@@ -150,6 +151,10 @@ Plugin Updates
 
   * Fixed naming for plugin
   * Added plugin name as source when setting item values
+
+* apcups:
+
+  * bugfix for string values with spaces
 
 * avdevice:
 

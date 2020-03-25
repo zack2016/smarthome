@@ -35,7 +35,7 @@ plugin-spezifischen Attribute ist in der Dokumentation des jeweiligen Plugins na
 +=================+========================================================================================+
 | autotimer       | setzt den Wert des Items nach einer Zeitspanne auf einen bestimmten Wert.              |
 |                 | **Ab SmartHomeNG v1.3** werden die Konfigurationsmöglichkeiten erweitert               |
-|                 | (siehe :doc:`autotimer <./items_standard_attribute_autotimer>`).                       |
+|                 | (siehe :doc:`autotimer <./autotimer>`).                                                |
 +-----------------+----------------------------------------------------------------------------------------+
 | cache           | Wenn 'Yes', dann wird der Wert des Items zwischengespeichert und beim                  |
 |                 | erneuten Start von SmartHomeNG wird der alte Wert aus dem Zwischenspeicher             |
