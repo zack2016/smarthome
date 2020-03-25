@@ -361,7 +361,13 @@ def write_rstfile(plgtype='All', plgtype_print='', heading=''):
             plg_readme_link = ':doc:`'+plg['name']+' </plugins/'+plg['name']+'/README.md>`'
             plg_readme_link = ':doc:`'+plg['name']+' <../plugins/'+plg['name']+'/README>`'
             if os.path.isfile(plugin_rst_dir+'/'+'plugins_doc/config/'+plg['name']+'.rst'):
+                # a generated <config>.rst exists
                 plg_readme_link = ':doc:`'+plg['name']+' <config/'+plg['name']+'>`'
+            else:
+                # no generated <config>.rst exists (for english developer documentation
+                # -> test if a README really exists
+                if not os.path.isfile(plg['name']+'/README.md'):
+                    plg_readme_link = plg['name']
 
 #            fh.write('   | {plg:<65.65} | {desc:<165.165} | {maint:<15.15} | {test:<15.15} |\n'.format(plg=plg['name'], desc=plg['desc'][0], maint=plg['maint'][0], test=plg['test'][0]))
             fh.write('   | {plg:<65.65} | {desc:<165.165} | {maint:<15.15} | {test:<15.15} |\n'.format(plg=plg_readme_link, desc=plg['desc'][0], maint=plg['maint'][0], test=plg['test'][0]))

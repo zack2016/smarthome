@@ -10,7 +10,7 @@ Module admin
 This module implements a graphical administration interface for SmartHomeNG plugins.
 
 
-.. automodule:: modules.admin.__init__
+.. automodule:: modules.admin
     :members:
     :undoc-members:
     :show-inheritance:
