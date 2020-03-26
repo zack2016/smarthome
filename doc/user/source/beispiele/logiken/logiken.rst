@@ -32,6 +32,7 @@ Komplexere Beispiele
    :titlesonly:
 
    beispiel_berechnung_zeitdaten.rst
+   beispiel_blinken.rst
 
 
 
