@@ -6,8 +6,8 @@ Items: Tipps und Tricks
 Invertieren eines Item Wertes
 =============================
 
-Erste Aufgabenstellung
-----------------------
+Beispiel 1
+----------
 
 Es geht um einen Reed-Kontakt am Fenster, der über einen 1-Wire
 Multi-I/O-Sensor per 1-Wire-Plugin abgefragt und auf den KNX-Bus
@@ -15,9 +15,6 @@ gesendet wird.
 
 Leider sind die Werte vertauscht, 0 soll 1 sein und umgekehrt, ein
 geschlossenes Fenster wird geöffnet angezeigt und umgekehrt.
-
-Lösung
-~~~~~~
 
 Ein ``eval:`` Attribut zum Item hinzufügen. ``eval = not value`` Value
 ist der Wert, der vom KNX Bus gelesen wird, der eval Ausdruck verändert
@@ -40,17 +37,14 @@ invertierte Wert auf den KNX Bus geschrieben.
 
 
 
-Zweite Aufgabenstellung
------------------------
+Beispiel 2
+----------
 
 Es geht um einen Lautsprecher, der über einen GPIO Kontakt des Raspberry
 geschaltet werden soll. Der Wert kommt von einem Item das per knx bedient
 wird und dessen Item Wert nicht verfälscht werden soll.
 
 Leider sind auch hier die Werte vertauscht, 0 soll 1 sein und umgekehrt.
-
-Lösung
-~~~~~~
 
 Ein Hilfsitem hinzufügen und diesem mit relativer Adressierung auf das Elternelement
 ein ``eval_trigger`` und ein ``eval`` zufügen.
@@ -72,11 +66,6 @@ ein ``eval_trigger`` und ein ``eval`` zufügen.
 
 Item Strukturen bequem kopieren mit Hilfe relativer Item Adressierung
 =====================================================================
-
-.. _aufgabenstellung-1:
-
-Aufgabenstellung
-----------------
 
 Es sollen Fensterkontakte ausgewertet werden (zwei Kontakte je Fenster
 oder z.B. Hoppe Fenstergriffe). Hierbei ergeben zwei Kontakte drei
@@ -131,11 +120,6 @@ Wenn dieser Block für weitere Fenster kopiert wird, muss jedoch außer
 der Anpassung der Adressen für ``Reed1`` und ``Reed2`` auch noch
 ``Buero`` an diversen Stellen ersetzt werden, was einen gewissen Aufwand
 erfordert und auch noch fehlerträchtig ist.
-
-.. _lösung-1:
-
-Lösung
-~~~~~~
 
 Mit relativer Item Adressierung kann das einfacher gelöst werden. Dann
 müssen nach dem Kopieren des Blocks nur noch die Adressen für ``Reed1``
@@ -192,9 +176,6 @@ zu finden.
 
 Nutzung der Tag-/Nacht-Items in KNX
 ===================================
-
-Einleitung
-----------
 
 Ein Tag- oder Nachtobjekt kann zur Ansteuerung von Status-LEDs,
 Präsenzmeldern oder ähnlichem genutzt werden.
@@ -302,3 +283,29 @@ einem Sonnenstand von 4° unter dem Horizont festgelegt:
 Die Triggerung dieser Berechnung wird im *berechnung* - Item durch das
 Attribut *crontab* gesteuert. In diesem Beispiel erfolgt die Berechnung
 4° vor Sonnenaufgang, 4° nach Sonnenuntergang, sowie beim Systemstart.
+
+
+Item-Wert zyklisch aufrufen
+===========================
+
+Oft wird für die Visu oder andere Trigger ein regelmäßiges Aufrufen eines 
+Item´s benötigt, auch wenn sich der Wert selbst nicht ändert. Hierfür ist 
+ein reines "cycle" nicht ausreichend, es wird noch eine eval-Konfiguration 
+benötigt:
+
+.. code-block:: yaml
+
+    beispiel_item:
+        cycle: 7200 = update
+        enforce_updates: True
+        eval: self() if value == "update" else value
+
+Der Wert "update" kann natürlich beliebig geändert werden, muss aber konsistent 
+mit der Angabe im eval-Abschnitt sein. Es empfiehlt sich zudem einen Wert zu 
+verwenden, der normalerweise in diesem Item nicht vorkommen kann, z. B. 
+alphanumerisch bei Zahlenwerten.
+
+Über den Scheduler wird das Item in diesem Beispiel alle zwei Stunden aufgerufen 
+und den Wert "update" zugewiesen. Bevor dieser Wert tatsächlich als finalen Wert 
+für das Item übernommen wird, greift eval und triggert eine Aktualisierung mit 
+dem vorherigen Wert.
