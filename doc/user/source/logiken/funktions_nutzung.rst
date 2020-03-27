@@ -38,7 +38,7 @@ Das folgende Beispiel verdeutlicht das Vorgehen:
 
     def func2(logic=logic):
         logger.warning("Funktion 2")
-        logic.func(2)
+        logic.func1(2)
 
     # Funktionen, welche in Logiken genutzt werden sollen, dem logic Objekt zuweisen
     logic.func1 = func1
