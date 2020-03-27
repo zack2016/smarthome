@@ -185,10 +185,10 @@ und ``Reed2`` angepasst werden:
 achten, dass dort wo Items über ``sh.<item>()`` angesprochen werden (wie
 im ``eval`` Attribut) dann drei statt der erwarteten zwei Punkte stehen.
 
-Ausführliche Informationen zur relativen Item Adressierung sind auf der
-Wiki Seite `Relative Item
-Referenzen <items_attributes_relative_referenzen>`__
+Ausführliche Informationen zur relativen Item Adressierung sind auf :doc:`relative Itemreferenzen <konfiguration/items/items_attributes_relative_referenzen>`
 zu finden.
+
+Das Beispiel ließe sich noch weiter vereinfachen, indem die Einträge durch **structs** referenziert werden. Detaillierte Informationen hierzu gibt es auf :doc:`structs (Item Strukturen) <konfiguration/item_structs>`
 
 Nutzung der Tag-/Nacht-Items in KNX
 ===================================
