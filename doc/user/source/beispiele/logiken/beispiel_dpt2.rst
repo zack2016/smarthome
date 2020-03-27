@@ -14,7 +14,7 @@ Logik
 Diese Logik löst das Problem mit Hilfe eines Hilfsitems und dieser
 Logik:
 
-/usr/local/smarthome/logics/prio.py.py
+/usr/local/smarthome/logics/prio.py
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. code-block:: python
