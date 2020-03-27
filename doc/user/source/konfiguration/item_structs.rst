@@ -27,8 +27,17 @@ Die Item Strukturen/Templates können an zwei verschiedenen Stellen definiert we
   stehen die dann die Strukturen aller konfigurierten Plugins zur Verfügung.
 
 Mit dem **struct**-Attribut kann nicht nur eine Item Struktur in den Item-Tree eingefügt werden, sondern auch mehrere.
-Dazu wird im **struct**-Attribut eine Liste von **struct** Namen angegeben.
+Dazu wird im **struct**-Attribut eine Liste von **struct** Namen angegeben. Wenn eine Liste angegeben wird, werden
+die Template Strukturen in der Reihenfolge angewendet, in der sie in der Liste angegeben wurden.
 
+.. code-block:: yaml
+
+    aussen:
+        struct:
+            - mein_wetter1
+            - mein_wetter2
+            - ....
+                
 Um eine doppelte Namensvergabe zu vermeiden, wird bei der Nutzung den structs, die in Plugins definiert wurden, der
 Name des Plugins vorangestellt. Wenn z.B. die struct **weather** genutzt werden soll, die im Plugin **darksky**
 definiert wurde, so muss als Referenz **darksky.weather** angegeben werden.
@@ -78,9 +87,6 @@ Um nun die ganzen Items für die Wettervorhersage anzulegen, muss nur noch für 
 
 Wenn das Plugin darksky konfiguriert ist, kann man in der Administrationsoberfläche die gesamten Items, die zum
 Wetterbericht gehören, sehen.
-
-Das Attribut **struct** kann dabei ein String oder eine Liste von Strings sein. Wenn eine Liste angegeben wird, werden
-die Template Strukturen in der Reihenfolge angewendet, in der sie in der Liste angegeben wurden.
 
 
 Multi-Instance Unterstützung
@@ -192,7 +198,7 @@ Dazu müssen folgende Voraussetzungen erfüllt sein:
 - Das zu mergende Attribut MUSS im Item als ersten Eintrag **merge\*** oder **merge_unique\*** enthalten
   (Der Stern/Asterix muss direkt, ohne Leerzeichen, auf **merge** bzw. **merge_unique** folgen)
 
-Falls der ersten Listeintrag **merge\*** ist, bleiben doppelte Listeinträge erhalten.
+Falls der erste Listeintrag **merge\*** ist, bleiben doppelte Listeinträge erhalten.
 
 
 Verwendung des *struct* Attributes in *struct* Definitionen
@@ -207,8 +213,8 @@ Unterschiede zum **struct** Attribut in Item Definitionen:
   **struct** "gewinnt", hängt von der Reihenfolge der Definition ab. Falls das entsprechende Attribut vor dem
   **struct** Attribut definiert wird, bleibt der Wert der übergeordneten **struct** erhalten. Anderenfalls bleibt
   der Wert aus der referenzierten **struct** erhalten. Regel: "first wins"
-- Innerhalb der **struct** Definitionen braucht das Attribut **merge\*** nicht angegeben zu werden. Listen werden
-  standardmäßig gemerged.
+- Innerhalb der **struct** Definitionen braucht das Attribut **merge\*** nicht angegeben zu werden. 
+  Listen von structs und sub-structs werden standardmäßig gemerged.
 
 
 
