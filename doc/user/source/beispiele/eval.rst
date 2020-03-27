@@ -161,7 +161,7 @@ Hier wird basierend auf dem Wert eines Items 'windBearing', dass die Windrichtun
             eval_trigger: ..
 
 
-Enumeration über Dictionary mit Lockup-Item
+Enumeration über Dictionary mit Lookup-Item
 -------------------------------------------
 
 .. code-block:: yaml
