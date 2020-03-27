@@ -265,7 +265,7 @@ Dieser errechnete Wert wird dann als Dauer für den **autotimer** verwendet.
    nachschauen. Dort sind auch eine Reihe weiterer hilfreicher Funktionen beschrieben.
 
 
-Importieren weitere Python Module in ein eval
+Importieren weiterer Python Module in ein eval
 ---------------------------------------------
 
 Hier ein Beispiel, wie man weitere (nicht standardmäßig verfügbare) Python Module für ein eval importiert.
