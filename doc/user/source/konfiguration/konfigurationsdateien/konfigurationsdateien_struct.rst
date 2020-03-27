@@ -96,7 +96,7 @@ entsteht im Item-Tree die selbe Struktur, als wenn man folgendes direkt in die i
             ...
 
 
-Beim einfügen der Struktur bleibt das Attribut **struct** erhalten, so dass man zur Laufzeit sehen kann, dass die Struktur
+Beim Einfügen der Struktur bleibt das Attribut **struct** erhalten, so dass man zur Laufzeit sehen kann, dass die Struktur
 zumindest in Teilen aus einem Template stammt.
 
 Der Name, der im Template bereits angegeben war, wird durch die Angabe au der Datei items/item.yaml ersetzt.
