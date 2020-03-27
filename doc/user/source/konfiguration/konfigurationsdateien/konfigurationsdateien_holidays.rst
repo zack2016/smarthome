@@ -15,8 +15,8 @@ holidays.yaml :redsup:`new`
 Ab Version 1.7 unterstützt SmartHomeNG Feiertage. In Logiken und Plugins kann abgefragt werden, ob ein bestimmtes
 Datum ein Feiertag ist und welcher.
 
-Es werden zzt. die Feiertage von 50 Ländern unterstützt. Falls die ein Land regional unterschiedliche Feiertage hat,
-so wird dieses auch unterstützt. Um die richtigen Feiertage in der SmartHomeNG Umgebung zu erhalten, muss das zu
+Es werden zzt. die Feiertage von 50 Ländern unterstützt. Falls ein Land regional unterschiedliche Feiertage hat,
+so wird dieses auch unterstützt. Um die richtigen Feiertage in der SmartHomeNG Umgebung zu erhalten, müssen das zu
 verwendende Land und die Region/Provinz konfiguriert werden.
 
 In der Konfigurationsdatei können auch noch zusätzlich benutzerdefinierte Feiertage konfiguriert werden.
@@ -32,7 +32,7 @@ zur Verfügung.
 Benutzerdefinierte Feiertage
 ============================
 
-Weiterhin können benutzerdefinierte Feiertage definiert werden. Hierzu stehen fünf Felder **holidays_custom**? zur
+Weiters können benutzerdefinierte Feiertage deklariert werden. Hierzu stehen fünf Felder **holidays_custom**? zur
 Verfügung in denen die entsprechenden Regeln hinterlegt werden können. Die Regeln werden in json formuliert (das Format
 entspricht weitestgehend der Definition eines Python **dict**).
 
