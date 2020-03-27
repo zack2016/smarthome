@@ -16,6 +16,13 @@ websocket:
     #wsproto: 4
     #acl: rw
 
+database:
+    plugin_name: database
+    driver: sqlite3
+    connect:
+    -   database:./var/db/smarthomeng.db
+    -   check_same_thread:0
+
 # memlog:
 #     plugin_name: memlog
 #     name: alert
@@ -29,7 +36,6 @@ websocket:
 #     date_ga: 6/0/1    # default none
 #     busmonitor: True  # log all knx messages, default false
 #     readonly: True    ## don't write to knx bus, default false"
-#     instance: default
 
 # ow:
 #     plugin_name: onewire
@@ -71,12 +77,8 @@ websocket:
 #     - db:smarthome
 #     - port:3306
 
-database_sqlite:
-#    plugin_name: database
-#    driver: sqlite3
-#    connect:
-#    -   database:/usr/local/shng_dev/var/db/smarthomeng.db
-#    -   check_same_thread:0
+# sqlite:
+#     plugin_name: sqlite_visu2_8
 
 # apcups:
 #     plugin_name: apcups
@@ -110,6 +112,11 @@ database_sqlite:
 #     call_monitor: 'True'
 #     call_monitor_incoming_filter: "...    ## optional, don't set if you don't want to watch only one specific number with your call monitor"
 #     avm_identifier: fritzbox_1
+
+# boxcar:
+#     plugin_name: boxcar
+#     apikey: abcdefghij123456    # Get it from your Boxcar Account
+#     email: your@mail.org    # Registered with Boxcar
 
 # comfoair:
 #     plugin_name: comfoair
@@ -161,7 +168,7 @@ database_sqlite:
 
 # simulation:
 #     plugin_name: simulation
-#     data_file: /usr/local/smarthome/var/db/simulation.txt
+#     data_file: ./var/db/simulation.txt
 
 # nw:
 #     plugin_name: network
@@ -181,8 +188,3 @@ database_sqlite:
 #     plugin_name: homematic
 #     host: 192.168.50.250
 #     port: 2001
-
-# BackendServer:
-#     plugin_name: backend
-#     #updates_allowed: False
-

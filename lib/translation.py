@@ -204,9 +204,9 @@ def translate(txt, additional_translations=None):
                 else:
                     break
 
-            if translated_txt is None:
-                translated_txt = txt
-                logger.info(" - No translation found for '{}' -> using original text".format(txt))
+        if translated_txt is None:
+            translated_txt = txt
+            logger.info(" - No translation found for '{}' -> using original text".format(txt))
 
     if translated_txt == '=':
         translated_txt = txt

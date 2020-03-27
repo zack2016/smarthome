@@ -13,10 +13,11 @@ Konfiguration
    :hidden:
    :titlesonly:
 
-   konfiguration_admin_gui
-   konfigurationsdateien
-   items.rst
-   module.rst
+   konfiguration_admin_gui/konfiguration_admin_gui
+   konfigurationsdateien/konfigurationsdateien
+   items/items.rst
+   item_structs.rst
+   module/module.rst
    plugins.rst
    logiken.rst
    logging.rst
@@ -158,7 +159,7 @@ angegeben werden.
 
 Außerdem kann der Datentyp einer Wertzuweisung bei der Nutzung von `autotimer` und `cycle` beeinflusst
 werden. Weiterführende Informationen gibt es im Abschnitt **Datentyp der Wertzuweisung** auf der
-Seite :doc:`items_standard_attribute_autotimer`
+Seite :doc:`items/standard_attribute/autotimer`
 
 
 
@@ -243,7 +244,7 @@ Zeiten ausgeführt werden soll. watch_item bestimmt, welche Items die Logik aufr
        - 0,5,10,15,20,25,30,35,40,45,50,55 * * *
 
 
-Detaillierte Infos zur crontab Konfiguration finden sich unter :doc:`items_standard_attribute_crontab`.
+Detaillierte Infos zur crontab Konfiguration finden sich unter :doc:`items/standard_attribute/crontab`.
 
 Für die weitere Konfiguration von Logiken geht es unter :doc:`logiken` weiter.
 
@@ -277,7 +278,7 @@ Dateien im Verzeichnis *../items*
 Hier finden sich die Dateien mit den Items. Es ist egal, wie viele Dateien hier abgelegt wurden.
 Alle Dateien die die Endung .yaml besitzen, werden beim Start von SmartHomeNG gelesen und in die
 Struktur von SmartHomeNG eingebaut.
-Eine genaue Beschreibung des Aufbaus findet sich unter :doc:`items_standard_attribute_eval` .
+Eine genaue Beschreibung des Aufbaus findet sich unter :doc:`items/standard_attribute/eval` .
 
 **Aus Gründen der Übersichtlichkeit macht es durchaus Sinn, die .yaml-Dateien nach Räumen oder
 nach thematischen Gesichtspunkten aufzusplitten und die jeweiligen Items dort zu parametrieren.**
@@ -306,7 +307,7 @@ Der Dienst kann über den entsprechenden Befehl "systemctl" neu gestartet werden
 .. note::
 
    Der Service **smarthome.service** muss vorher eingerichtet werden. Die Einrichtung ist in der
-   Komplettanleitung unter :doc:`../installation/komplettanleitung_shng_daemon` beschrieben.
+   Komplettanleitung unter :doc:`../installation/komplettanleitung/08_shng_daemon` beschrieben.
 
 
 Weiterführende Themen

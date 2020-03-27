@@ -79,6 +79,16 @@ wobei die <Prozess-ID> aus dem Aufruf ps -ef ersichtlich wird, siehe oben.
 SmartHomeNG im Debugmodus starten
 ---------------------------------
 
+Eine einfache Möglichkeit Logeinträge bis zum Level DEBUG zu erhalten, ist es SmartHomeNG im Debug Modus zu starten.
+Allerdings werden dabei aus allen Komponenten und Plugins die Logausgaben bis zum Level DEBUG erweitert. Dieses führt
+zu einer sehr großen Anzahl von Log Einträgen und ist deshalb recht unübersichtlich.
+
+.. note::
+
+    Vorzuziehen ist eine gezielte Aktivierung der DBUG Ausgaben für einzelne Komponenten oder Plugins. Dieses geschieht
+    über die Logging Konfiguration in /etc/logging.yaml bzw. über die GUI des Admin Interfaces.
+
+
 .. code::
 
    cd /usr/local/smarthome/bin
@@ -193,9 +203,9 @@ packages ein Build-Fehler übersehen worden.
 Kann SmartHomeNG schalten?
 --------------------------
 
-Nun kann geprüft werden, ob sich von SmartHomeNG ein Schaltvorgang auslösen läßt. Dazu muß
-zwingend das Plugin CLI installiert und konfiguriert sein (ist es bei den existierenden Anleitungen
-eigentlich immer)
+Nun kann geprüft werden, ob sich von SmartHomeNG ein Schaltvorgang auslösen läßt. Dieses kann über die GUI des
+Adminstrations-Interfaces im Item Tree oder mithilfe des Plugins CLI erfolgen. Zur Nutzung von CLI muß zwingend das
+Plugin installiert und konfiguriert sein.
 
 Dazu wird eine zusätzliche Shell eröffnet (Nein, Windows Telnet funktioniert hier nicht) und
 darin eingegeben

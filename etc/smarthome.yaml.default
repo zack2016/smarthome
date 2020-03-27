@@ -26,4 +26,3 @@ default_language: de     # default_language is used, where multiple languages ar
 #
 # Loggen von Warnungen, falls abgekündigte Funktionen aufgerufen werden (Standard: False)
 #deprecated_warnings: True
-

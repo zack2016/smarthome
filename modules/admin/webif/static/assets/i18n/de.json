@@ -32,6 +32,7 @@
     "SHNG_PLG_VERSION": "SmartHomeNG Plugins Version",
     "HOST": "Host",
     "OS": "Betriebssystem",
+    "PID": "Prozess ID",
     "ARCHITECTURE": "Architektur",
     "USER": "BS Benutzer",
     "PYTHON VERSION": "Python Version",
@@ -67,6 +68,7 @@
     "COMMON_SETTINGS": "Allgemein",
     "HTTP_SETTINGS": "Http Modul",
     "ADMIN_SETTINGS": "Admin Modul",
+    "MQTT_SETTINGS": "MQTT Modul",
     "ADVANCED_SETTINGS": "Advanced",
 
     "SET_PASSWORD": "Passwort setzen",
@@ -83,9 +85,14 @@
   "SERVICES": {
     "SERVICES": "Dienste",
     "LANGUAGE_UI": "Sprache der graphischen Oberfläche",
-    "BACKUP_CONFIG": "Konfiguration sichern",
+    "BACKUP_CONFIG": "Konfiguration - Letzte Sicherung",
     "BACKUP_DONE_TITLE": "Backup der Konfiguration erstellt",
     "BACKUP_DONE": "Ein Zip-Archiv mit den Konfigurationsdaten wurde heruntergeladen.",
+    "RESTORE_TITLE": "Konfiguration wiederherstellen",
+    "RESTORE": "Die Datei mit der wiederherzustellenden Konfiguration auswählen. \nAnschließend den Button 'Hochladen & Wiederherstellen' klicken um die Konfiguration hochladen und wiederherzustellen:",
+    "CHOOSE_FILE": "Datei auswählen",
+    "UPLOAD_RESTORE": "Hochladen & Wiederherstellen",
+    "CANCEL": "Abbrechen",
     "KNX_SUPPORT": "Dienst für die KNX Unterstützung",
     "OW_SUPPORT": "Dienst für die 1-wire Unterstützung",
     "MQTT_SUPPORT": "Broker für die MQTT Unterstützung",
@@ -133,6 +140,8 @@
     "Stopping": "Stoppen",
     "Stopping: Stopping threads": "Stoppen: Threads beenden",
     "Stopped": "Angehalten",
+
+    "Restore: Uploading": "Wiederherstellen: Hochladen",
 
     "Restart clicked": "Neustart ausgelöst",
     "not active": "Nicht aktiv",
@@ -274,6 +283,8 @@
     "OTHER SCHEDULERS": "sonstige Scheduler",
     "SCHEDULER": "Scheduler",
     "NEXT EXECUTION": "nächste Ausführung",
+    "PRIO": "Prio",
+    "VALUE": "Wert",
     "CYCLE": "Cycle",
     "CRONTAB": "Crontab"
   },
@@ -333,7 +344,8 @@
     "OPEN_WEBIF": "Webinterface öffnen",
     "OPEN_CONFIGINFO": "Konfigurationsdokumentation öffnen",
     "OPEN_DOC": "Plugin-Dokumentation öffnen",
-    "OPEN_SUPPORT_THREAD": "Support Thread aufrufen"
+    "OPEN_SUPPORT_THREAD": "Support Thread aufrufen",
+    "OPEN_BLOGS": "Blog Artikel öffnen"
   },
   "SCENES": {
     "SCENE": "Szene",
@@ -411,6 +423,7 @@
     "SAVE_SETTINGS": "Einstellungen sichern",
     "CHECK": "Prüfen",
     "DOWNLOAD": "Herunterladen",
+    "RESTORE": "Wiederherstellen",
     "CLEAR_FILTER": "Filter Löschen",
     "NEW_DEFINITION_FILE": "Neue Datei",
     "NEW_LOGIC": "Neue Logik",

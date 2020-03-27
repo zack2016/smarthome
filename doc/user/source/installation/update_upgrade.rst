@@ -115,14 +115,25 @@ Vom Programmkern benötigte Bibliotheken herunterladen und installieren mit:
 
    .. code-block:: bash
 
-       sudo pip3 install -r requirements/base.txt
+       pip3 install -r requirements/base.txt --user
 
 Und dann für jedes Plugin einzeln die benötigten Bibliotheken herunterladen
 und installieren mit:
 
    .. code-block:: bash
 
-       sudo pip3 install -r plugins/<pluginname>/requirements.txt
+       pip3 install -r plugins/<pluginname>/requirements.txt --user
+
+
+.. attention::
+
+    In früheren Beschreibungen wurde die globale Installation von Python Packages mit dem sudo Kommando
+    beschrieben:
+
+       sudo pip3 install -r requirements/base.txt
+
+    Dieses funktioniert unter Debian Buster **NICHT** mehr. Zumindest unter Buster **muss** die Installation
+    für den entsprechenden User mit **--user** erfolgen (wie oben beschrieben).
 
 
 Zum Abschluss SmarthomeNG dann starten. Um zu prüfen, ob sich vielleicht
@@ -133,11 +144,10 @@ Debugmodus von der Kommandozeile aus machen:
 
     python3 bin/smarthome.py
 
-Jetzt heißt es genau zu schauen, was an **Warning** oder **Error**
-gemeldet wird. Logfiles findet man auch im Verzeichnis ``../var/log``
-(in der Standardinstallation unter ``/usr/local/smarthome/var/log``).
-Von da aus kann man sie mit einem Editor in Ruhe anschauen und auf
-Fehler durchsuchen.
+
+Jetzt heißt es genau zu schauen, was an **WARNING** oder **ERROR** gemeldet wird. Logfiles findet man im
+Verzeichnis ``../var/log`` (in der Standardinstallation unter ``/usr/local/smarthome/var/log``).
+Von da aus kann man sie mit einem Editor in Ruhe anschauen und auf Fehler durchsuchen.
 
 Wenn dann die Konfiguration stimmt, kann man natürlich den automatischen
 Neustart von SmartHomeNG wieder einschalten. In der Komplettanleitung

@@ -1,6 +1,10 @@
-############################
+.. index:: Visualisierung mit smartVISU
+.. index:: smartVISU
+
+============================
 Visualisierung mit smartVISU
-############################
+============================
+
 
 Visu Unterstützung ab SmartHomeNG v1.2
 ======================================
@@ -44,7 +48,7 @@ in der Datei **../etc/plugin.yaml** folgendermaßen konfiguriert:
    #    port: 2424
        smartvisu_dir: /var/www/smartvisu
    #    acl: rw
-   
+
 
 Ab v1.2 sind für die vollständige smartVISU Unterstützung zwei Plugins an Stelle des bisherigen
 visu Plugins zu konfigurieren.
@@ -90,3 +94,5 @@ zu konfigurieren.
    visualisierung_kommunikation
    visualisierung_autogenerierung
    visualisierung_widgets
+   reverse_proxy
+

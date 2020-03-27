@@ -147,6 +147,25 @@ class Items():
         return _items_instance
 
 
+    # -----------------------------------------------------------------------------------------
+    #   Following methods handle structs
+    # -----------------------------------------------------------------------------------------
+
+    struct_merge_lists = True
+
+
+    def merge_structlists(self, l1, l2, key=''):
+        if not self.struct_merge_lists:
+            logger.warning("merge_structlists: Not merging lists, key '{}' value '{}' is ignored'".format(key, l2))
+            return l1       # First wins
+        else:
+            if not isinstance(l1, list):
+                l1 = [l1]
+            if not isinstance(l2, list):
+                l2 = [l2]
+            return l1 + l2
+
+
     def add_struct_definition(self, plugin_name, struct_name, struct):
         """
         Add a struct definition
@@ -167,6 +186,111 @@ class Items():
         logger.info("add_struct_definition: struct '{}' = {}".format(name, struct))
         self._struct_definitions[name] = struct
         return
+
+
+    def merge(self, source, destination, source_name='', dest_name=''):
+        '''
+        Merges an OrderedDict Tree into another one
+
+        :param source: source tree to merge into another one
+        :param destination: destination tree to merge into
+        :type source: OrderedDict
+        :type destination: OrderedDict
+
+        :return: Merged configuration tree
+        :rtype: OrderedDict
+
+        :Example: Run me with nosetests --with-doctest file.py
+
+        .. code-block:: python
+
+            >>> a = { 'first' : { 'all_rows' : { 'pass' : 'dog', 'number' : '1' } } }
+            >>> b = { 'first' : { 'all_rows' : { 'fail' : 'cat', 'number' : '5' } } }
+            >>> merge(b, a) == { 'first' : { 'all_rows' : { 'pass' : 'dog', 'fail' : 'cat', 'number' : '5' } } }
+            True
+
+        '''
+        for key, value in source.items():
+            if isinstance(value, collections.OrderedDict):
+                # get node or create one
+                node = destination.setdefault(key, collections.OrderedDict())
+                if node == 'None':
+                    destination[key] = value
+                else:
+                    self.merge(value, node, source_name, dest_name)
+            else:
+                if isinstance(value, list) or isinstance(destination.get(key, None), list):
+                    if destination.get(key, None) is None:
+                        destination[key] = value
+                    else:
+                        destination[key] = self.merge_structlists(destination[key], value, key)
+                else:
+                    # convert to string and remove newlines from multiline attributes
+                    if destination.get(key, None) is None:
+                        destination[key] = str(value).replace('\n', '')
+        return destination
+
+
+    def resolve_structs(self, struct, struct_name, substruct_names):
+        """
+        Resolve a struct reference
+
+        if the struct definition that is to be inserted contains a struct reference, it is resolved first
+
+        :param struct:          struct that contains a struct reference
+        :param substruct:       sub-struct definition that shall be inserted
+        :param struct_name:     name of the struct that contains a struct reference
+        :param substruct_name:  name of the sub-struct definition that shall be inserted
+        """
+
+        logger.info("resolve_structs: struct_name='{}', substruct_names='{}'".format(struct_name, substruct_names))
+
+        new_struct = collections.OrderedDict()
+        structentry_list = list(struct.keys())
+        for structentry in structentry_list:
+            # copy all existing attributes and sub-entrys of the struct
+            if new_struct.get(structentry, None) is None:
+                logger.info("resolve_struct: - copy attribute structentry='{}', value='{}'".format(structentry, struct[structentry]))
+                new_struct[structentry] = copy.deepcopy(struct[structentry])
+            else:
+                logger.debug("resolve_struct: - key='{}', value is ignored'".format(structentry))
+            if structentry == 'struct':
+                for substruct_name in substruct_names:
+                    # for every substruct
+                    logger.info("resolve_struct: ->substruct_name='{}'".format(substruct_name))
+                    substruct = self._struct_definitions.get(substruct_name, None)
+                    # merge in the sub-struct
+                    for key in substruct:
+                        if new_struct.get(key, None) is None:
+                            logger.info("resolve_struct: - key='{}', value='{}' -> new_struct='{}'".format(key, substruct[key], new_struct))
+                            new_struct[key] = copy.deepcopy(substruct[key])
+                        elif isinstance(new_struct.get(key, None), dict):
+                            logger.info("resolve_struct: - merge key='{}', value='{}' -> new_struct='{}'".format(key, substruct[key], new_struct))
+                            self.merge(substruct[key], new_struct[key], key, struct_name+'.'+key)
+                        elif isinstance(new_struct.get(key, None), list) or isinstance(substruct.get(key, None), list):
+                            new_struct[key] = self.merge_structlists(new_struct[key], substruct[key], key)
+                        else:
+                            logger.debug("resolve_struct: - key='{}', value '{}' is ignored'".format(key, substruct[key]))
+
+        return new_struct
+
+
+    def fill_nested_structs(self):
+        """
+        Resolve struct references in structs and fill in the content of the struct
+
+        :return:
+        """
+        for struct_name in self._struct_definitions:
+            # for every defined struct
+            struct = self._struct_definitions[struct_name]
+            substruct_names = struct.get('struct', None)
+            if substruct_names is not None:
+                # stuct has a sub-struct
+                if isinstance(substruct_names, str):
+                    substruct_names = [substruct_names]
+                struct = self.resolve_structs(struct, struct_name, substruct_names)
+                self._struct_definitions[struct_name] = struct
 
 
     def return_struct_definitions(self):
@@ -202,8 +326,10 @@ class Items():
         #
         # structs are merged into the item tree in lib.config
         #
+        # structs are read in from metadata file of plugins while loading plugins
+        # and from ../etc/struct.yaml
+        #
         # Read in item structs from ../etc/struct.yaml
-        struct_filename = os.path.join(etc_dir, 'struct.yaml')
         struct_definitions = shyaml.yaml_load(os.path.join(etc_dir, 'struct.yaml'), ordered=True, ignore_notfound=True)
         if struct_definitions is not None:
             if isinstance(struct_definitions, collections.OrderedDict):
@@ -211,6 +337,9 @@ class Items():
                     self.add_struct_definition('', key, struct_definitions[key])
             else:
                 logger.error("load_itemdefinitions(): Invalid content in struct.yaml: struct_definitions = '{}'".format(struct_definitions))
+
+        self.fill_nested_structs()
+
         # for Testing: Save structure of joined item structs
         logger.warning("load_itemdefinitions(): For testing the joined item structs are saved to {}".format(os.path.join(etc_dir, 'structs_joined.yaml')))
         shyaml.yaml_save(os.path.join(etc_dir, 'structs_joined.yaml'), self._struct_definitions)
@@ -1571,7 +1700,9 @@ class Item():
         @value.setter
         def value(self, value):
 
-            self._item.set(value, 'assign property')
+            #self._item.set(value, 'assign property')
+            #self._item.__update(value, caller='assign property')
+            self._item(value, caller='assign property')
             return
 
 
@@ -2035,7 +2166,7 @@ class Item():
                         item._items_to_trigger.append(self)
             if self._eval:
                 # Build eval statement from trigger items (joined by given function)
-                items = ['sh.' + x.id() + '()' for x in _items]
+                items = ['sh.' + str(x.id()) + '()' for x in _items]
                 if self._eval == 'and':
                     self._eval = ' and '.join(items)
                 elif self._eval == 'or':

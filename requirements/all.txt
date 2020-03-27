@@ -1,14 +1,14 @@
 
-#   +-----------------------------------------------+
-#   |                 SmartHomeNG                   |
-#   |            DON'T EDIT THIS FILE               |
-#   |           THIS FILE IS GENERATED              |
-#   |              BY lib/shpypi.py                 |
-#   |            ON 23.12.2019 21:01                |
-#   |                                               |
-#   |               INSTALL WITH:                   |
-#   | sudo pip3 install -r requirements/all.txt     |
-#   +-----------------------------------------------+
+#   +--------------------------------------------------+
+#   |                 SmartHomeNG                      |
+#   |            DON'T EDIT THIS FILE                  |
+#   |           THIS FILE IS GENERATED                 |
+#   |              BY lib/shpypi.py                    |
+#   |            ON 16.02.2020 15:37                   |
+#   |                                                  |
+#   |               INSTALL WITH:                      |
+#   | pip3 install -r requirements/all.txt --user      |
+#   +--------------------------------------------------+
 
 # plugin mvg_live
 PyMVGLive>=1.1.4
@@ -16,11 +16,17 @@ PyMVGLive>=1.1.4
 # plugin withings_health
 arrow>=0.12,<=0.13.1
 
+# plugin miflora
+bluepy>=1.3.0
+
 # SmartHomeNG-module http
 cherrypy>=8.1.2
 
 # SmartHomeNG-lib
 ephem>=3.7
+
+# plugin vacations
+ferien-api>=0.3.4
 
 # SmartHomeNG-lib
 holidays>=0.9.11
@@ -28,8 +34,11 @@ holidays>=0.9.11
 # SmartHomeNG-module http
 jinja2>=2.9
 
+# plugin bose_soundtouch
+libsoundtouch>=0.8.0
+
 # plugin miflora
-miflora>=0.4
+miflora>=0.6
 
 # plugin systemair
 minimalmodbus>=0.7
@@ -40,19 +49,29 @@ nokia>=1.0.0,<=1.2.0
 # plugin uzsu
 numpy
 
-# plugin mqtt
+# SmartHomeNG-module mqtt
+# plugin mqtt1
+# configured plugin mqtt1
 paho-mqtt>=1.2.2
 
 # SmartHomeNG-lib
 psutil
 
+# plugin snmp
+puresnmp>=1.7.2
+
 # plugin appletv
 pyatv==0.3.9
 
 # plugin stateengine
+# configured plugin stateengine
 pydotplus
 
+# plugin miflora
+pygatt>=4.0.5
+
 # plugin homematic
+# configured plugin homematic
 pyhomematic>=0.1.28
 
 # plugin jsonread
@@ -62,22 +81,34 @@ pyjq
 pyjwt>=1.6.4
 
 # plugin trovis557x
-pymodbus>=2.2.0
+# plugin kostalmodbus
+# plugin ksemmodbus
+pymodbus>=2.3.0
+
+# plugin helios_tcp
+pymodbus3>=1.0.0
 
 # plugin avdevice
 # plugin priv_lintronic
 # plugin systemair
 # plugin dlms
+# plugin dmx
+# configured plugin dlms
 # plugin thz
 pyserial>=3.4.0
 
 # SmartHomeNG-lib
 # plugin blockly
 # plugin backend
+# configured plugin backend
+# configured plugin blockly
 python-dateutil>=2.5.3
 
 # plugin pushbullet
 python-magic>=0.4.12
+
+# plugin xiaomi_vac
+python-miio
 
 # plugin zwave
 python-openzwave>=0.4.0.35
@@ -106,6 +137,9 @@ requests-oauth>=0.4.1,<0.5
 # plugin withings_health
 requests-oauthlib>=1.0,<1.1
 
+# plugin rrd
+rrdtool>=0.1.15
+
 # SmartHomeNG-lib
 ruamel.yaml>=0.13.7,<=0.15.74;python_version<'3.7'
 
@@ -117,6 +151,9 @@ scapy>=2.4.3
 
 # plugin uzsu
 scipy>=1.1.0
+
+# plugin xiaomi_vac
+setuptools
 
 # plugin harmony
 # plugin xmpp

@@ -819,7 +819,7 @@ class Metadata():
                     value = definitions[definition].get('default')
                 typ = self._get_definition_type(definition, definitions)
                 if value == 'None*':
-                    logger.warning("_get_definition_defaultvalue: default value is 'None*' -> None")
+                    logger.info("_get_definition_defaultvalue: default value is 'None*' -> None")
                     value = None
                 else:
                     if value == None:
