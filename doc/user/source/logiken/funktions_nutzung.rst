@@ -40,11 +40,11 @@ Das folgende Beispiel verdeutlicht das Vorgehen:
         logger.warning("Funktion 2")
         logic.func(2)
 
-    # Funktionen welche in Funktionen genutzt werden sollen dem logic Objekt zuweisen
+    # Funktionen, welche in Logiken genutzt werden sollen, dem logic Objekt zuweisen
     logic.func1 = func1
     logic.func2 = func2
 
-    # Variablen, die in Funktionen genutzt werden sollen dem logic Objekt zuweisen
+    # Variablen, die in Logiken genutzt werden sollen, dem logic Objekt zuweisen
     logic.sh = sh
     logic.myvar1 = 5
     logic.myvar2 = False
