@@ -46,7 +46,7 @@ Mit Hilfe eines **eval** kann der Wert einfach invertiert werden. Man bedient si
         eval: not value
 
 
-Auslesen / Teilen von eines Dictionary
+Auslesen / Teilen eines Dictionary
 --------------------------------------
 
 Hier wird im dictonary des Item 'input' nach den Schlüsseln 'RfReceived' und 'RfKey' gesucht. Ist dieser
