@@ -6,10 +6,10 @@
 Persistente Variablen :bluesup:`update`
 =======================================
 
-Normale Variablen innerhalb von Logiken sind zur für den jeweiligen Lauf gültig. Es ist jedoch
+Normale Variablen innerhalb von Logiken sind nur für den jeweiligen Lauf gültig. Es ist jedoch
 in einigen Fällen notwendig, Werte zwischen verschiedenen Läufen einer Logik zu übergeben.
 
-Solche persistente Variablen sind in in Logiken von SmartHomeNG möglich, es sind jedoch einige
+Solche persistente Variablen sind in Logiken von SmartHomeNG möglich, es sind jedoch einige
 Dinge zu beachten:
 
 - Diese Variablen sind über mehrere Läufe von Logiken persistent. Allerdings gilt das nur während
@@ -19,7 +19,7 @@ Dinge zu beachten:
 - Beim 1. Lauf einer Logik nach dem Start von SmartHomeNG existieren diese Variablen nicht. Der
   erste Zugriff innerhalb einer Logik muss deshalb in einen **if not hasattr():** Ausdruck
   eingebunden werden.
-- Diese Variablen sind **lokal zur Logik**. Sie stehen außerhalb der Logik die sie definiert hat
+- Diese Variablen sind **lokal zur Logik**. Sie stehen außerhalb der Logik, die sie definiert hat,
   nicht zur Verfügung. Wenn die Daten auch außerhalb der Logik verwendet werden, müssen sie in
   Items abgelegt werden. (Ein Sonderfall sind Werte, die zwar außerhalb der definierenden Logik
   verwendet werden sollen, aber nur in Logiken. Hier gibt es eine weitere Möglichkeit, die
@@ -75,7 +75,7 @@ Nutzung selbst definierter Parameter
 ====================================
 
 Es ist möglich eigene Parameter in der Datei **../etc/logic.yaml** zu definieren. Diese Parameter
-stehen in der Logik under **logic.<Parameter>** zur Verfügung. Diese Parameter können als
+stehen in der Logik unter **logic.<Parameter>** zur Verfügung. Diese Parameter können als
 eine bereits initialisierte Variable verstanden/genutzt werden. Sie können in der Logik nicht
 nur gelesen, sondern auch verändert werden. Diese Änderung geht wie beschrieben bei einem
 Neustart von SmartHomeNG verloren.
