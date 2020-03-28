@@ -33,16 +33,8 @@ SmartVISU liefern zu können:
 SmartVISU Quellcode laden
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Stand April 2019 wird die letzte verfügbare Master-Version 2.8 der
-SmartVISU geladen. Seit Dezember 2017 steht die Version 2.9 in den
-Startlöchern. Diese Dokumentation ist nicht tagesaktuell, daher bitte
-vor dem Installieren `auf der Projektseite <http://www.smartvisu.de/>`__
-prüfen, welches der aktuelle Master ist.
-
-Eine alternative Installation der SmartVISU 2.9 ist möglich und auch empfohlen.
-Dazu muß der Branch von **master** auf **develop** gewechselt werden
 Die Dateien der SmartVISU werden in einem Unterverzeichnis abgelegt,
-das für den Apache2 zugänglich ist:
+das für den **Apache2** Webserver zugänglich ist:
 
 .. code-block:: bash
 
@@ -58,24 +50,10 @@ das für den Apache2 zugänglich ist:
     sudo find . -type d -exec chmod g+rwsx {} +
     sudo find . -type f -exec chmod g+r {} +
 
-Umschalten auf die SmartVISU 2.9 develop Version geht über eine
-Shell im Verzeichnis der smartVISU mit
-
-.. code-block:: bash
-
-   cd /var/www/html/smartVISU
-   git checkout develop
-
-umschalten auf den masterbranch ginge entsprechend mit
-
-.. code-block:: bash
-
-   cd /var/www/html/smartVISU
-   git checkout master
-
 Für den ordnungsgemäßen Betrieb braucht die SmartVISU noch das SmartHomeNG Plugin
 **visu_websocket**. Dieses ist in der **plugin.yaml.default** bereits vorkonfiguriert
-und es ist zumeist nicht nötig die Vorgabewerte zu ändern.
+und wird beim ersten Start nach einer frischen Installation in die **plugin.yaml** 
+übernommen.
 
 Zugriff auf die SmartVISU testen
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -92,7 +70,7 @@ Bei I/O Connection **SmartHomeNG** auswählen. Bei Adresse (URL / IP) die IP Adr
 Servers oder den DNS Namen eingeben auf dem SmartHomeNG installiert ist.
 Bei Port ist standardmäßig ``2424`` einzugeben.
 
-**ACHTUNG**: Hier **NICHT** ***localhost*** oder ***127.0.0.1***
+**ACHTUNG**: Hier **NICHT** ``localhost`` oder ``127.0.0.1``
 eingeben, denn diese Adresse wird vom Client Browser benutzt
 (Javascripts) um aktuelle Daten über einen Websocket direkt von
 SmartHomeNG abzufragen.
@@ -111,20 +89,28 @@ Ordners ``pages`` der SmartVISU ein neues Verzeichnis angelegt werden,
 in dem dann die eigenen Seiten z.B. für Räume oder Funktionsbereich
 abgelegt werden. Es existiert im Ordner ``pages`` bereits ein
 Unterordner ``_template``. Dieser wird als Basis der neuen Visu einfach
-kopiert ``cp _template <meineneuevisu>``. Für sollte ***nicht
-smarthome*** gewählt werden wenn später die Visu vom SmartHomeNG Plugin
+kopiert ``cp _template <meineneuevisu>``. Für ``<meineneuevisu>`` sollte 
+**nicht smarthome** gewählt werden wenn später die Visu vom SmartHomeNG Plugin
 **visu\_smartvisu** erstellt werden soll. Die manuell erstellten Seiten
-könnten sonst einfach von SmartHomeNG überschrieben werden. Die Dateien
-für die SmartVISU sind einfache HTML Dateien. Die einzelnen Schalter,
-Buttons, Anzeigen (sogenannte Widgets) sind Makros die mit der
-Makrosprache TWIG definiert sind. Die HTML können auf eigene Bedürfnisse
-beliebig angepasst werden. Im einzelnen ist das `auf der
-Projektseite <http://www.smartvisu.de/>`__ nachzulesen.
+könnten sonst einfach von SmartHomeNG überschrieben werden.
+
+Die Dateien für die SmartVISU sind einfache HTML Dateien. 
+Die einzelnen Bedienelemente wie Buttons, Flips, Werteanzeigen
+(sogenannte Widgets) sind Makros die mit der Makrosprache **TWIG** definiert sind.
+Die HTML können auf eigene Bedürfnisse beliebig angepasst werden.
+Im einzelnen ist das `auf der Projektseite <http://www.smartvisu.de/>`__ nachzulesen.
+Die durch die SmartVISU generierten HTML Seiten sind zwar responsiv aber 
+durchweg statisch. Die Kommunikation zwischen SmartHomeNG und der 
+SmartVISU erfolgt über ein Websocket Plugin für SmartHomeNG und 
+JavaScript Code der in der HTML Seite eingebunden wird. 
+Der Javascript Code manipuliert dann aufgrund der via Websocket
+übermittelten Daten von Items in SmartHomeNG dynamisch den Inhalt
+der Webseite (DOM).
 
 SmartHomeNG Plugin **visu\_smartvisu**
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Mit dem Plugin ***visu\_smartvisu*** können aus der Definition der Items
+Mit dem Plugin **visu\_smartvisu** können aus der Definition der Items
 in SmartHomeNG automatisch Visuseiten erstellt werden. Diese Visu Seiten
 werden im Verzeichnis ``smarthome`` erstellt. Dazu bitte beim
 entsprechenden Plugin die Doku lesen.
