@@ -16,7 +16,7 @@ gesendet wird.
 Leider sind die Werte vertauscht, 0 soll 1 sein und umgekehrt, ein
 geschlossenes Fenster wird geöffnet angezeigt und umgekehrt.
 
-Ein ``eval:`` Attribut zum Item hinzufügen. ``eval = not value`` Value
+Ein ``eval:`` Attribut zum Item hinzufügen. ``eval: not value`` Value
 ist der Wert, der vom KNX Bus gelesen wird, der eval Ausdruck verändert
 diesen Wert, bevor er in das Item geschrieben wird. Damit wird dann der
 invertierte Wert auf den KNX Bus geschrieben.
@@ -169,10 +169,12 @@ und ``Reed2`` angepasst werden:
 achten, dass dort wo Items über ``sh.<item>()`` angesprochen werden (wie
 im ``eval`` Attribut) dann drei statt der erwarteten zwei Punkte stehen.
 
-Ausführliche Informationen zur relativen Item Adressierung sind auf :doc:`relative Itemreferenzen <konfiguration/items/items_attributes_relative_referenzen>`
+Ausführliche Informationen zur relativen Item Adressierung sind auf :doc:`relative Itemreferenzen </konfiguration/items/items_attributes_relative_referenzen>`
 zu finden.
 
-Das Beispiel ließe sich noch weiter vereinfachen, indem die Einträge durch **structs** referenziert werden. Detaillierte Informationen hierzu gibt es auf :doc:`structs (Item Strukturen) <konfiguration/item_structs>`
+Das Beispiel ließe sich noch weiter vereinfachen, indem die Einträge durch **structs** referenziert werden. Detaillierte
+Informationen hierzu gibt es auf :doc:`structs (Item Strukturen) </konfiguration/item_structs>`
+
 
 Nutzung der Tag-/Nacht-Items in KNX
 ===================================
@@ -288,9 +290,9 @@ Attribut *crontab* gesteuert. In diesem Beispiel erfolgt die Berechnung
 Item-Wert zyklisch aufrufen
 ===========================
 
-Oft wird für die Visu oder andere Trigger ein regelmäßiges Aufrufen eines 
-Item´s benötigt, auch wenn sich der Wert selbst nicht ändert. Hierfür ist 
-ein reines "cycle" nicht ausreichend, es wird noch eine eval-Konfiguration 
+Oft wird für die Visu oder andere Trigger ein regelmäßiges Aufrufen eines
+Item´s benötigt, auch wenn sich der Wert selbst nicht ändert. Hierfür ist
+ein reines "cycle" nicht ausreichend, es wird noch eine eval-Konfiguration
 benötigt:
 
 .. code-block:: yaml
@@ -300,12 +302,12 @@ benötigt:
         enforce_updates: True
         eval: self() if value == "update" else value
 
-Der Wert "update" kann natürlich beliebig geändert werden, muss aber konsistent 
-mit der Angabe im eval-Abschnitt sein. Es empfiehlt sich zudem einen Wert zu 
-verwenden, der normalerweise in diesem Item nicht vorkommen kann, z. B. 
+Der Wert "update" kann natürlich beliebig geändert werden, muss aber konsistent
+mit der Angabe im eval-Abschnitt sein. Es empfiehlt sich zudem einen Wert zu
+verwenden, der normalerweise in diesem Item nicht vorkommen kann, z. B.
 alphanumerisch bei Zahlenwerten.
 
-Über den Scheduler wird das Item in diesem Beispiel alle zwei Stunden aufgerufen 
-und den Wert "update" zugewiesen. Bevor dieser Wert tatsächlich als finalen Wert 
-für das Item übernommen wird, greift eval und triggert eine Aktualisierung mit 
+Über den Scheduler wird das Item in diesem Beispiel alle zwei Stunden aufgerufen
+und den Wert "update" zugewiesen. Bevor dieser Wert tatsächlich als finalen Wert
+für das Item übernommen wird, greift eval und triggert eine Aktualisierung mit
 dem vorherigen Wert.

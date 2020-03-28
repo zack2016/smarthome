@@ -15,7 +15,7 @@ Diese Logik löst das Problem mit Hilfe eines Hilfsitems und dieser
 Logik:
 
 /usr/local/smarthome/logics/prio.py
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. code-block:: python
 
@@ -37,7 +37,7 @@ Logik:
 
    if has_zwang:
        if prio == 0:
-           source_item.zwangsstellung([0,0]) 
+           source_item.zwangsstellung([0,0])
        elif prio == 1:
            source_item.zwangsstellung([0,1])
        elif prio == 2:

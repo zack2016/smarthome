@@ -30,7 +30,7 @@ Mit Hilfe eines **eval** kann auch eine Datenbankabfrage (Plugin **database**) r
 
     item:
         type: num
-        eval: eval: sh...db('min', '24h')
+        eval: sh...db('min', '24h')
         crontab: 0 1 * *
 
 
@@ -47,7 +47,7 @@ Mit Hilfe eines **eval** kann der Wert einfach invertiert werden. Man bedient si
 
 
 Auslesen / Teilen eines Dictionary
---------------------------------------
+----------------------------------
 
 Hier wird im dictonary des Item 'input' nach den Schlüsseln 'RfReceived' und 'RfKey' gesucht. Ist dieser
 gleich 4 wird, das item 'received_key4' auf True gesetzt.
@@ -266,7 +266,7 @@ Dieser errechnete Wert wird dann als Dauer für den **autotimer** verwendet.
 
 
 Importieren weiterer Python Module in ein eval
----------------------------------------------
+----------------------------------------------
 
 Hier ein Beispiel, wie man weitere (nicht standardmäßig verfügbare) Python Module für ein eval importiert.
 

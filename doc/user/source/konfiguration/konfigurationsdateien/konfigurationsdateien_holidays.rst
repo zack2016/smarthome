@@ -32,7 +32,7 @@ zur Verfügung.
 Benutzerdefinierte Feiertage
 ============================
 
-Weiters können benutzerdefinierte Feiertage deklariert werden. Hierzu stehen fünf Felder **holidays_custom**? zur
+Des weiteren können benutzerdefinierte Feiertage deklariert werden. Hierzu stehen fünf Felder **holidays_custom**? zur
 Verfügung in denen die entsprechenden Regeln hinterlegt werden können. Die Regeln werden in json formuliert (das Format
 entspricht weitestgehend der Definition eines Python **dict**).
 
