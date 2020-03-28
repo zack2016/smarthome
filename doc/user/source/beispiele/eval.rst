@@ -30,7 +30,7 @@ Mit Hilfe eines **eval** kann auch eine Datenbankabfrage (Plugin **database**) r
 
     item:
         type: num
-        eval:
+        eval: eval: sh...db('min', '24h')
         crontab: 0 1 * *
 
 
