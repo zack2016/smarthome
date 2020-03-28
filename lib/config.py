@@ -288,6 +288,7 @@ def merge(source, destination, source_name='', dest_name='', filename=''):
         True
 
     '''
+    
 #    if struct_merging_active:
     if filename == 'test_struct.yaml':
         logger.warning("merge: source={}, destination={}, source_name={}, dest_name={}".format(dict(source), dict(destination), source_name, dest_name))
