@@ -161,6 +161,8 @@ class ConfigController(RESTResource):
             result['admin']['meta'] = self.admin_conf
             result['mqtt'] = {}
             result['mqtt']['data'] = self.module_confdata.get('mqtt', {})
+            if result['mqtt']['data'].get('enabled', None) is None:
+                result['mqtt']['data']['enabled'] = True
             result['mqtt']['meta'] = self.mqtt_conf
             self.logger.info("  - index: core = {}".format(result))
             return json.dumps(result)
@@ -185,6 +187,8 @@ class ConfigController(RESTResource):
 
         if id == 'mqtt':
             result['data'] = self.module_confdata.get('mqtt', {})
+            if result['mqtt']['data'].get('enabled', None) is None:
+                result['mqtt']['data']['enabled'] = True
             result['meta'] = self.mqtt_conf
             self.logger.info("  - index: admin = {}".format(result))
             return json.dumps(result)
