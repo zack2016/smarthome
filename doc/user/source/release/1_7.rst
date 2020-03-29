@@ -8,8 +8,10 @@ Es gibt eine Menge neuer Features im Core von SmartHomeNG und den Plugins.
 
     Diese Release Notes sind ein Arbeitsstand.
 
-     - Berücksichtigt sind Commits im smarthome Repository bis incl. 22. Mär 2020
-     - Berücksichtigt sind Commits im plugins Repository bis incl. 22. Mär 2020
+     - Berücksichtigt sind Commits im smarthome Repository bis incl. 29. Mär 2020
+       (module admin: Added handling for enabled attribute for modules)
+     - Berücksichtigt sind Commits im plugins Repository bis incl. 28. Mär 2020
+       (Added restart of SmartHomeNG if knx plugin stalles with error 'problem unpacking length')
 
 
 
@@ -80,7 +82,8 @@ Updates in the CORE
 * Items:
 
   * Support for dynamic properties. Currently values of plugin-specific attributes are implemented as readonly properties
-
+  * Function to expand relative pathes extended. Now plugins can hand over parapeters as list to expand multiple
+    definition in one call
 
 * Logics:
 
@@ -89,6 +92,7 @@ Updates in the CORE
 * lib.config: Ignoring files starting with a ´´.´´ that are created when accessing a folder from MacOS
 * lib.config: Bugfix in merge() if itemtree contains pseudo-nodes (nodes without leafs or subnodes)
 * lib.logic: Adjusted log level for triggered logics that are disabled
+* lib.module: Improved error handling when loading modules
 
 * Modules:
 
@@ -111,6 +115,8 @@ Updates in the CORE
     * Services: YAML syntax checker now resolves structs
     * List of loaded plugins: Added button which opens list of relevant blog articles
     * List of Schedulers: Added priority and value to be set for each scheduler
+    * Updated npm packages for Angular gui
+    * Added handling for module parameter **enabled**
 
   * mqtt:
 
@@ -205,6 +211,8 @@ Plugin Updates
 * knx:
 
   * Added hostname support
+  * Added a CRITICAL log message, if the plugin shuts down due to a 'problem unpacking length' error and invoke
+    a restart of SmartHomeNG
 
 * mailrcv:
 
@@ -319,7 +327,8 @@ Plugin Updates
   * Various bugfixes
   * Fix immediate action run after leaving state
   * Fix problem running leave actions
-  * Improve collision handling when running multiple evals at the same time
+  * Improved collision handling when running multiple evals at the same time
+  * Improved widgets for smartVISU
 
 * telegram:
 
@@ -344,6 +353,7 @@ Plugin Updates
 * visu_websocket:
 
   * Improved exception handling
+  * visu_websocket: Added warning "Probably no database plugin is configued" if an invalid series for env.* items is requested
 
 
 Outdated Plugins
