@@ -49,7 +49,7 @@ import os
 import lib.config
 import lib.translation as translation
 from lib.constants import (KEY_CLASS_NAME, KEY_CLASS_PATH, KEY_INSTANCE,CONF_FILE)
-#from lib.utils import Utils
+from lib.utils import Utils
 from lib.metadata import Metadata
 
 logger = logging.getLogger(__name__)
@@ -74,6 +74,7 @@ class Modules():
 
     def __init__(self, smarthome, configfile):
         self._sh = smarthome
+        self._basedir = smarthome.get_basedir()
 #        self._sh._moduledict = {}
 
         global _modules_instance
@@ -93,14 +94,17 @@ class Modules():
         for module in _conf:
             logger.debug("Modules, section: {}".format(module))
             module_name, self.meta = self._get_modulename_and_metadata(module, _conf[module])
-            if self.meta.test_shngcompatibility():
-                args = self._get_conf_args(_conf[module])
-                classname, classpath = self._get_classname_and_classpath(_conf[module], module_name)
-                if not self._test_duplicate_configuration(module, classname):
-                    try:
-                        self._load_module(module, classname, classpath, args)
-                    except Exception as e:
-                        logger.exception("Module {0} exception: {1}".format(module, e))
+            if module_name != '' and self.meta is not None:
+                if self.meta.test_shngcompatibility():
+                    args = self._get_conf_args(_conf[module])
+                    classname, classpath = self._get_classname_and_classpath(_conf[module], module_name)
+                    if not self._test_duplicate_configuration(module, classname):
+                        try:
+                            self._load_module(module, classname, classpath, args)
+                        except Exception as e:
+                            logger.exception("Module {0} exception: {1}".format(module, e))
+            else:
+                logger.warning("Section '{}' ignored".format(module))
 
         logger.info('Loaded Modules: {}'.format( str( self.return_modules() ) ) )
 
@@ -121,16 +125,21 @@ class Modules():
         :rtype: string, object
         """
         module_name = mod_conf.get('module_name','').lower()
+        meta = None
         if module_name != '':
-            meta = Metadata(self._sh, module_name, 'module')
+            module_dir = os.path.join(self._basedir, 'modules', module_name)
+            if os.path.isdir(module_dir):
+                meta = Metadata(self._sh, module_name, 'module')
+            else:
+                logger.warning("Section '{}': No module directory {} found".format(module, module_dir))
         else:
             classpath = mod_conf.get(KEY_CLASS_PATH,'')
             if classpath != '':
                 module_name = classpath.split('.')[len(classpath.split('.'))-1].lower()
-                logger.info("Module '{}': module_name '{}' was extracted from classpath '{}'".format(module, module_name, classpath))
+                logger.info("Section '{}': module_name '{}' was extracted from classpath '{}'".format(module, module_name, classpath))
+                meta = Metadata(self._sh, module_name, 'module', classpath)
             else:
-                logger.error("Module '{}': No module_name found in configuration".format(module))
-            meta = Metadata(self._sh, module_name, 'module', classpath)
+                logger.info("Section '{}': No attribute 'module_name' found in configuration".format(module))
         return (module_name, meta)
 
 
@@ -215,8 +224,13 @@ class Modules():
         :rtype: object
         """
         logger.debug('_load_module: Section {}, Module {}, classpath {}'.format( name, classname, classpath ))
-        logger.info("Loading module '{}': args = '{}'".format(name, args))
 
+        enabled = Utils.strip_quotes(args.get('enabled', 'true').lower())
+        if enabled == 'false':
+            logger.warning("Not loading module {} from section '{}': Module is disabled".format(classname, name))
+            return
+
+        logger.info("Loading module '{}': args = '{}'".format(name, args))
         # Load an instance of the module
         try:
             exec("import {0}".format(classpath))
@@ -243,7 +257,7 @@ class Modules():
         #logger.warning("- self.args = '{}'".format(self.args))
 
         # get list of argument used names, if they are defined in the module's class
-        logger.debug("Module '{}': args = '{}'".format(classname, str(args)))
+        logger.info("Module '{}': args = '{}'".format(classname, str(args)))
         arglist = [name for name in self.args if name in args]
         argstring = ",".join(["{}={}".format(name, args[name]) for name in arglist])
 
