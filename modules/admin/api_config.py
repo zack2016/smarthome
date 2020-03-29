@@ -223,7 +223,19 @@ class ConfigController(RESTResource):
             self.module_confdata = shyaml.yaml_load_roundtrip(os.path.join(self.etc_dir, 'module.yaml'))
             self.update_configdict(self.module_confdata['http'], data, 'http')
             self.update_configdict(self.module_confdata['admin'], data, 'admin')
+
+            if self.module_confdata.get('mqtt', None) is None:
+                self.module_confdata['mqtt'] = {}
+                self.module_confdata['mqtt']['module_name'] = 'mqtt'
             self.update_configdict(self.module_confdata['mqtt'], data, 'mqtt')
+            self.logger.warning("Update: self.mqtt_conf = {}".format(self.mqtt_conf))
+            if self.module_confdata['mqtt'].get('enabled', None) is None:
+                self.module_confdata['mqtt']['enabled'] = False
+            if self.module_confdata['mqtt']['enabled']:
+                self.module_confdata['mqtt'].pop('enabled', None)
+            self.logger.warning("Update: ['mqtt'] = {}".format(self.module_confdata['mqtt']))
+            self.logger.warning("Update: enabled = {}".format(self.module_confdata['mqtt'].get('enabled', None)))
+
             shyaml.yaml_save_roundtrip(os.path.join(self.etc_dir, 'module.yaml'), self.module_confdata, create_backup=True)
 
             result = {"result": "ok"}

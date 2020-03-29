@@ -326,6 +326,10 @@ class PluginsInfoController(RESTResource):
                             plugin_name = plugin.get_shortname()
                             if temp_blog_urls.get(plugin_name, None) is None:
                                 # add link to blog, if articles exist, that have the pluginname as a tag
+                                #   example: Blog articles with tag 'backend'
+                                #   - https://www.smarthomeng.de/tag/backend
+                                #   alternative example: Blog articles with category 'plugins' and tag 'backend'
+                                #   - https://www.smarthomeng.de/category/plugins?tag=backend
                                 temp_blog_urls[plugin_name] = 'https://www.smarthomeng.de/tag/' + plugin_name
                                 r = requests.get(temp_blog_urls[plugin_name])
                                 if r.status_code == 404:
