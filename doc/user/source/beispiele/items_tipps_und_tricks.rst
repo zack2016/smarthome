@@ -286,28 +286,3 @@ Die Triggerung dieser Berechnung wird im *berechnung* - Item durch das
 Attribut *crontab* gesteuert. In diesem Beispiel erfolgt die Berechnung
 4° vor Sonnenaufgang, 4° nach Sonnenuntergang, sowie beim Systemstart.
 
-
-Item-Wert zyklisch aufrufen
-===========================
-
-Oft wird für die Visu oder andere Trigger ein regelmäßiges Aufrufen eines
-Item´s benötigt, auch wenn sich der Wert selbst nicht ändert. Hierfür ist
-ein reines "cycle" nicht ausreichend, es wird noch eine eval-Konfiguration
-benötigt:
-
-.. code-block:: yaml
-
-    beispiel_item:
-        cycle: 7200 = update
-        enforce_updates: True
-        eval: self() if value == "update" else value
-
-Der Wert "update" kann natürlich beliebig geändert werden, muss aber konsistent
-mit der Angabe im eval-Abschnitt sein. Es empfiehlt sich zudem einen Wert zu
-verwenden, der normalerweise in diesem Item nicht vorkommen kann, z. B.
-alphanumerisch bei Zahlenwerten.
-
-Über den Scheduler wird das Item in diesem Beispiel alle zwei Stunden aufgerufen
-und den Wert "update" zugewiesen. Bevor dieser Wert tatsächlich als finalen Wert
-für das Item übernommen wird, greift eval und triggert eine Aktualisierung mit
-dem vorherigen Wert.
