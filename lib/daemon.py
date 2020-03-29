@@ -200,7 +200,7 @@ def kill(pidfile, waittime=15):
             except Exception as e:
                 pass
             if p.is_running():
-                logger.warning("Killing process")
+                logger.warning("Trying to terminate SmartHomeNG timed out, killing process")
                 p.kill()
                 try:
                     p.wait(timeout=5)
