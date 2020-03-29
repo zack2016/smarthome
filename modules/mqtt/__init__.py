@@ -669,10 +669,12 @@ class Mqtt(Module):
 
             return
 
-        self.logger.warning("Connection returned result '{}': {} (client={}, userdata={}, self._client={})".format( str(rc), mqtt.connack_string(rc), client, userdata, self._client ))
+        msg = "Connection returned result '{}': {} (client={}, userdata={}, self._client={})".format( str(rc), mqtt.connack_string(rc), client, userdata, self._client )
         if rc == 5:
+            self.logger.error(msg)
             self._disconnect_from_broker()
-
+        else:
+            self.logger.warning(msg)
 
     def _on_disconnect(self, client, userdata, rc):
         """

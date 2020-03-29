@@ -12,6 +12,13 @@ module:
 parameters:
     # Definition of parameters to be configured in etc/module.yaml
 
+    enabled:
+        type: bool
+        default: False
+        description:
+            de: 'MQTT Unterstützung aktivieren oder deaktivieren'
+            en: 'Enable or disable MQTT support'
+
     broker_host:
         type: ip
         default: '127.0.0.1'
