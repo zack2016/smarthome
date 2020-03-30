@@ -1,7 +1,8 @@
-.. index:: module
+
+.. index:: Module; Konfigurationsdatei
 
 module.yaml
-###########
+===========
 
 Module sind eine Erweiterung des Cores und stellen den Plugins zusätzliche Funktionalitäten
 zur Verfügung. Sie bilden also eine erweiterte API für Plugin-Entwickler.

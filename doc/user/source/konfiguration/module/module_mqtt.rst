@@ -1,6 +1,6 @@
 
 .. index:: mqtt; Modul
-.. index:: modules; mqtt
+.. index:: Module; mqtt
 .. index:: mqtt; Konfiguration
 
 .. role:: redsup

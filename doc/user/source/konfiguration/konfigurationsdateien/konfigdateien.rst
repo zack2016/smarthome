@@ -64,15 +64,15 @@ Logik Code im Verzeichnis *../logics*
    :maxdepth: 4
    :hidden:
 
-   konfigurationsdateien_aufbau.md
-   konfigurationsdateien_yaml_syntax.rst
-   konfigurationsdateien_smarthome.rst
-   konfigurationsdateien_holidays.rst
-   konfigurationsdateien_module.rst
-   konfigurationsdateien_plugin.rst
-   konfigurationsdateien_logic.rst
-   konfigurationsdateien_logging.rst
-   konfigurationsdateien_items.rst
-   konfigurationsdateien_struct.rst
-   konfigurationsdateien_logics.rst
-   konfigurationsdateien_scenes.rst
+   aufbau.md
+   yaml_syntax.rst
+   smarthome.rst
+   holidays.rst
+   module.rst
+   plugin.rst
+   logic.rst
+   logging.rst
+   items.rst
+   struct.rst
+   logics.rst
+   scenes.rst

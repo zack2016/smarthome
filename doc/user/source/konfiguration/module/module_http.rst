@@ -1,6 +1,6 @@
 
 .. index:: http; Modul
-.. index:: modules; http
+.. index:: Module; http
 .. index:: http; Konfiguration
 
 .. index:: Webinterfaces; Konfiguration

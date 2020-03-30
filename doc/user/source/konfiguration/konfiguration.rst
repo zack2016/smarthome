@@ -13,8 +13,8 @@ Konfiguration
    :hidden:
    :titlesonly:
 
-   konfiguration_admin_gui/konfiguration_admin_gui
-   konfigurationsdateien/konfigurationsdateien
+   admin_gui/admin_gui
+   konfigurationsdateien/konfigdateien
    items/items.rst
    item_structs.rst
    module/module.rst

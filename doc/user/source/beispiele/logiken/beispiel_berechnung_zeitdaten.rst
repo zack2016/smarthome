@@ -1,3 +1,4 @@
+
 Berechnung von Zeitdaten
 ========================
 
@@ -28,7 +29,7 @@ der Verbrauch seit Mitternacht berechnet werden:
        eval: sh.knx.cellar.utility_room.water_meter.db('count>0', sh.minute.since.midnight.dbstr(), 'now')
        eval_trigger: knx.cellar.utility_room.water_meter
        database@mysqldb: init
-    
+
 
 Logik
 -----

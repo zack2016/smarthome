@@ -1,7 +1,6 @@
-.. index:: Standard-Attribute; eval_trigger
-.. index:: eval_trigger
-.. index:: Standard-Attribute; eval
-.. index:: eval
+
+.. index:: Beispiele; Logiken
+.. index:: Logiken; Beispiele
 
 =======
 Logiken

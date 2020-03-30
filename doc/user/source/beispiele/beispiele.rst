@@ -1,5 +1,3 @@
-.. index:: Beispiele
-.. index:: Tipps & Tricks
 
 .. role:: bluesup
 .. role:: redsup
@@ -21,4 +19,6 @@ Dokumentation des jeweiligen Plugins im Abschnitt  :doc:`Plugins </plugins_all>`
    eval.rst
    items_tipps_und_tricks.rst
    logiken/logiken.rst
+   structs.rst
+
 

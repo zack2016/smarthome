@@ -21,9 +21,9 @@ werden können.
 Um eine SmartHomeNG Installation zu erhalten die etwas sinnvolles tun kann, müssen mindestens folgende Konfigurationen
 durchgeführt werden:
 
-- :doc:`Systemkonfiguration </konfiguration/konfiguration_admin_gui/konfiguration_admin_gui_system>`
-- :doc:`Konfiguration von Plugins </konfiguration/konfiguration_admin_gui/konfiguration_admin_gui_plugins>`
-- :doc:`Konfiguration von Items </konfiguration/konfiguration_admin_gui/konfiguration_admin_gui_items>`
+- :doc:`Systemkonfiguration </konfiguration/admin_gui/admin_gui_system>`
+- :doc:`Konfiguration von Plugins </konfiguration/admin_gui/admin_gui_plugins>`
+- :doc:`Konfiguration von Items </konfiguration/admin_gui/admin_gui_items>`
 
 
 Konfigurations-Dialoge
@@ -63,9 +63,9 @@ werden können.
    :hidden:
    :titlesonly:
 
-   konfiguration_admin_gui_system
-   konfiguration_admin_gui_plugins
-   konfiguration_admin_gui_items
+   admin_gui_system
+   admin_gui_plugins
+   admin_gui_items
 
 
 

@@ -1,4 +1,7 @@
 
+.. index:: Beispiele; Tipps & Tricks
+.. index:: Tipps & Tricks
+
 =======================
 Items: Tipps und Tricks
 =======================
@@ -169,7 +172,7 @@ und ``Reed2`` angepasst werden:
 achten, dass dort wo Items über ``sh.<item>()`` angesprochen werden (wie
 im ``eval`` Attribut) dann drei statt der erwarteten zwei Punkte stehen.
 
-Ausführliche Informationen zur relativen Item Adressierung sind auf :doc:`relative Itemreferenzen </konfiguration/items/items_attributes_relative_referenzen>`
+Ausführliche Informationen zur relativen Item Adressierung sind auf :doc:`relative Itemreferenzen </konfiguration/items/attributes_relative_referenzen>`
 zu finden.
 
 Das Beispiel ließe sich noch weiter vereinfachen, indem die Einträge durch **structs** referenziert werden. Detaillierte

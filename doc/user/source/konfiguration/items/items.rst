@@ -1,3 +1,4 @@
+
 Items
 =====
 
@@ -9,12 +10,12 @@ Items
    :hidden:
 
    initiale_itemkonfiguration
-   standard_attribute/standard_attribute
-   items_plugin_attribute
-   items_attributes_relative_referenzen
-   items_properties
-   items_funktionen
-   items_systemitems
+   standard_attribute/standard_attr
+   plugin_attribute
+   attributes_relative_referenzen
+   properties
+   funktionen
+   systemitems
 
 
 Überblick
@@ -90,8 +91,8 @@ unterstützt.)
    **Ab SmartHomeNG v1.3** wird ein neues Dateiformat für Konfigurationsdateien
    unterstützt. Das bisherige Format der Konfigurationsdateien wird vorerst weiter unterstützt.
 
-   Informationen zum :doc:`alten und neuen Dateiformat </konfiguration/konfigurationsdateien/konfigurationsdateien_aufbau>`
-   finden Sie :doc:`hier </konfiguration/konfigurationsdateien/konfigurationsdateien_aufbau>`.
+   Informationen zum :doc:`alten und neuen Dateiformat </konfiguration/konfigurationsdateien/aufbau>`
+   finden Sie :doc:`hier </konfiguration/konfigurationsdateien/aufbau>`.
 
 
 Properties und Funktionen
@@ -101,6 +102,6 @@ Properties und Funktionen von Items dienen dazu auf Item Informationen während 
 Sie werden in Plugins, Logiken oder eval-Ausdrücken genutzt.
 
 Viele Attribute stehen zur Laufzeit als Properties zur Verfügung und können gelesen (und zum Teil auch geschrieben) werden.
-Um herauszufinden, wie der Zugriff zur Laufzeit funktioniert, bitte auf der Seite :doc:`Properties eines Items <./items_properties>`
+Um herauszufinden, wie der Zugriff zur Laufzeit funktioniert, bitte auf der Seite :doc:`Properties eines Items <./properties>`
 nachsehen.
 

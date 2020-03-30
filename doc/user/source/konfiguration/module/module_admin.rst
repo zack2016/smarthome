@@ -1,7 +1,7 @@
 
 .. index:: admin; Modul
-.. index:: modules; admin
-.. index:: Admin Modul; Konfiguration
+.. index:: Module; admin
+.. index:: Admin Modul; Konfigurationsdatei
 
 .. role:: redsup
 .. role:: bluesup

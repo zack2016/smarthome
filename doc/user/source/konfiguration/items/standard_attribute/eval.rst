@@ -194,7 +194,7 @@ Kinderitems des Temperatur-Items zum Evaluieren des Items führen. Oder
 Namen “Trigger” aktualisiert werden kann, also z.B. durch
 Temperatur.Trigger, Licht.OG.Trigger, etc.
 
-Seit SmartHomeNG v1.3 können für **eval_trigger** auch :doc:`Relative Item Referenzen </konfiguration/items/items_attributes_relative_referenzen>`
+Seit SmartHomeNG v1.3 können für **eval_trigger** auch :doc:`Relative Item Referenzen </konfiguration/items/attributes_relative_referenzen>`
 
 `Relative
 Item

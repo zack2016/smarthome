@@ -23,7 +23,7 @@ Der Button ```Core neu starten``` wir erst aktiv, wenn geänderte Einstellungen 
 
 
 .. index:: Konfiguration; http
-.. index:: http; Konfiguration
+.. index:: http; Konfiguration (Admin GUI)
 
 Http Modul
 ==========

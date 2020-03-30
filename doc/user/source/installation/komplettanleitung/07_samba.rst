@@ -1,6 +1,5 @@
 
 .. index:: Samba installieren
-.. index:: Mosquitto installieren
 
 .. role:: bluesup
 .. role:: redsup

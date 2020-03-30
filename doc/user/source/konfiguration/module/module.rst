@@ -1,4 +1,5 @@
-.. index:: Module
+
+.. index:: Module; Konfiguration
 
 .. role:: redsup
 .. role:: bluesup

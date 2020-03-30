@@ -1,6 +1,9 @@
 
 .. index:: eval_trigger; Beispiele
+.. index:: Beispiele; eval_trigger
 .. index:: eval; Beispiele
+.. index:: Beispiele; eval
+
 
 Items: eval und eval_trigger
 ============================

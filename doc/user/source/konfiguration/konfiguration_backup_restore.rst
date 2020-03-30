@@ -1,4 +1,4 @@
-.. index:: Konfiguration
+
 .. index:: Konfiguration; Sichern und Wiederherstellen
 
 .. role:: redsup

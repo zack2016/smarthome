@@ -1,3 +1,4 @@
+
 Berechnung der Windstärke
 =========================
 
@@ -59,7 +60,7 @@ else).
         sh.knx_global.weather.wind.beaufort(7)
     elif sh.knx_global.weather.wind() >= 17.2 and sh.knx_global.weather.wind() < 20.8:
         sh.knx_global.weather.wind.string("stürmischer Wind")
-        sh.knx_global.weather.wind.beaufort(8) 
+        sh.knx_global.weather.wind.beaufort(8)
     elif sh.knx_global.weather.wind() >= 20.8 and sh.knx_global.weather.wind() < 24.5:
         sh.knx_global.weather.wind.string("Sturm")
         sh.knx_global.weather.wind.beaufort(9)
@@ -103,7 +104,7 @@ implementiert ist und aus dieser aufgerufen wird.
        :parameter speed: windspeed in meter per second
        :return: a tuple of a string with the (german) description and an integer with beaufort speed
        """
-       if speed < 0.3:  
+       if speed < 0.3:
            return("Windstille",0)
        elif speed >= 0.3 and speed < 1.6:
            return("leiser Zug",1)
