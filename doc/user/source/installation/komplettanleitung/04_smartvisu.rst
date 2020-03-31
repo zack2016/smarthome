@@ -40,11 +40,11 @@ das für den **Apache2** Webserver zugänglich ist:
 
     cd /var/www/html
     sudo rm index.html
-    sudo mkdir smartVISU
-    sudo chown smarthome:www-data smartVISU
+    sudo mkdir smartvisu
+    sudo chown smarthome:www-data smartvisu
     # guid setzen
-    chmod g+rws smartVISU/
-    cd smartVISU
+    chmod g+rws smartvisu/
+    cd smartvisu
     git clone git://github.com/Martin-Gleiss/smartvisu.git .
     # Apache2 Zugriff erlauben
     sudo find . -type d -exec chmod g+rwsx {} +
