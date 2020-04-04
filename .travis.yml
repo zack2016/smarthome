@@ -16,7 +16,6 @@ before_install:
 install:
     - pip install tox-travis virtualenv
     - pip install sphinx sphinx_rtd_theme recommonmark
-    - pip install -r requirements/base.txt
 
 script:
     - sh .travis.sh
