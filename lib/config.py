@@ -157,7 +157,7 @@ def remove_keys(ydata, func, remove=[REMOVE_ATTR], level=0, msg=None, key_prefix
                 key_remove = REMOVE_PATH in remove and func(key_str)
             if key_remove:
                 if msg:
-                    logger.warn(msg.format(key_prefix+key_str))
+                    logger.warning(msg.format(key_prefix+key_str))
                 ydata.pop(key)
             elif key_dict:
                 remove_keys(ydata[key], func, remove, level+1, msg, key_prefix+key_str+'.')
