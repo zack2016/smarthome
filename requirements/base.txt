@@ -4,7 +4,7 @@
 #   |            DON'T EDIT THIS FILE                  |
 #   |           THIS FILE IS GENERATED                 |
 #   |              BY lib/shpypi.py                    |
-#   |            ON 04.04.2020 09:37                   |
+#   |            ON 04.04.2020 11:06                   |
 #   |                                                  |
 #   |               INSTALL WITH:                      |
 #   | pip3 install -r requirements/base.txt --user     |
@@ -42,3 +42,4 @@ ruamel.yaml>=0.13.7,<=0.15.74;python_version<'3.7'
 
 # SmartHomeNG-lib
 ruamel.yaml>0.15.0,<=0.15.74;python_version>='3.7'
+

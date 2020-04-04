@@ -4,7 +4,7 @@
 #   |            DON'T EDIT THIS FILE                  |
 #   |           THIS FILE IS GENERATED                 |
 #   |              BY lib/shpypi.py                    |
-#   |            ON 04.04.2020 09:37                   |
+#   |            ON 04.04.2020 11:06                   |
 #   |                                                  |
 #   |               INSTALL WITH:                      |
 #   | pip3 install -r requirements/all.txt --user      |
@@ -101,10 +101,10 @@ python-dateutil>=2.5.3
 python-magic>=0.4.12
 
 # plugin xiaomi_vac
-python-miio ; python_version>='3.6'
+python-miio==0.4.6;python_version<'3.6'
 
 # plugin xiaomi_vac
-python-miio==0.4.6;python_version python_version < '3.6'
+python-miio;python_version>='3.6'
 
 # plugin zwave
 python-openzwave>=0.4.0.35
@@ -169,3 +169,4 @@ websocket-client>=0.44.0
 
 # plugin sonos
 xmltodict>=0.11.0
+
