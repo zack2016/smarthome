@@ -4,7 +4,7 @@
 #   |            DON'T EDIT THIS FILE                  |
 #   |           THIS FILE IS GENERATED                 |
 #   |              BY lib/shpypi.py                    |
-#   |            ON 28.03.2020 12:24                   |
+#   |            ON 04.04.2020 09:37                   |
 #   |                                                  |
 #   |               INSTALL WITH:                      |
 #   | pip3 install -r requirements/base.txt --user     |
@@ -23,27 +23,15 @@ holidays>=0.9.11
 jinja2>=2.9
 
 # SmartHomeNG-module mqtt
-# configured plugin mqtt1
 paho-mqtt>=1.2.2
 
 # SmartHomeNG-lib
 psutil
 
-# configured plugin stateengine
-pydotplus
-
-# configured plugin homematic
-pyhomematic>=0.1.28
-
 # SmartHomeNG-module admin
 pyjwt>=1.6.4
 
-# configured plugin dlms
-pyserial>=3.2.1
-
 # SmartHomeNG-lib
-# configured plugin backend
-# configured plugin blockly
 python-dateutil>=2.5.3
 
 # SmartHomeNG-lib
@@ -54,4 +42,3 @@ ruamel.yaml>=0.13.7,<=0.15.74;python_version<'3.7'
 
 # SmartHomeNG-lib
 ruamel.yaml>0.15.0,<=0.15.74;python_version>='3.7'
-
