@@ -169,4 +169,3 @@ websocket-client>=0.44.0
 
 # plugin sonos
 xmltodict>=0.11.0
-

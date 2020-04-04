@@ -50,9 +50,11 @@ das für den **Apache2** Webserver zugänglich ist:
     sudo find . -type d -exec chmod g+rwsx {} +
     sudo find . -type f -exec chmod g+r {} +
 
+Bitte auf den **Punkt** am Ende des **git clone** Kommandos achten!
+
 Für den ordnungsgemäßen Betrieb braucht die SmartVISU noch das SmartHomeNG Plugin
 **visu_websocket**. Dieses ist in der **plugin.yaml.default** bereits vorkonfiguriert
-und wird beim ersten Start nach einer frischen Installation in die **plugin.yaml** 
+und wird beim ersten Start nach einer frischen Installation in die **plugin.yaml**
 übernommen.
 
 Zugriff auf die SmartVISU testen
@@ -89,20 +91,20 @@ Ordners ``pages`` der SmartVISU ein neues Verzeichnis angelegt werden,
 in dem dann die eigenen Seiten z.B. für Räume oder Funktionsbereich
 abgelegt werden. Es existiert im Ordner ``pages`` bereits ein
 Unterordner ``_template``. Dieser wird als Basis der neuen Visu einfach
-kopiert ``cp _template <meineneuevisu>``. Für ``<meineneuevisu>`` sollte 
+kopiert ``cp _template <meineneuevisu>``. Für ``<meineneuevisu>`` sollte
 **nicht smarthome** gewählt werden wenn später die Visu vom SmartHomeNG Plugin
 **visu\_smartvisu** erstellt werden soll. Die manuell erstellten Seiten
 könnten sonst einfach von SmartHomeNG überschrieben werden.
 
-Die Dateien für die SmartVISU sind einfache HTML Dateien. 
+Die Dateien für die SmartVISU sind einfache HTML Dateien.
 Die einzelnen Bedienelemente wie Buttons, Flips, Werteanzeigen
 (sogenannte Widgets) sind Makros die mit der Makrosprache **TWIG** definiert sind.
 Die HTML können auf eigene Bedürfnisse beliebig angepasst werden.
 Im einzelnen ist das `auf der Projektseite <http://www.smartvisu.de/>`__ nachzulesen.
-Die durch die SmartVISU generierten HTML Seiten sind zwar responsiv aber 
-durchweg statisch. Die Kommunikation zwischen SmartHomeNG und der 
-SmartVISU erfolgt über ein Websocket Plugin für SmartHomeNG und 
-JavaScript Code der in der HTML Seite eingebunden wird. 
+Die durch die SmartVISU generierten HTML Seiten sind zwar responsiv aber
+durchweg statisch. Die Kommunikation zwischen SmartHomeNG und der
+SmartVISU erfolgt über ein Websocket Plugin für SmartHomeNG und
+JavaScript Code der in der HTML Seite eingebunden wird.
 Der Javascript Code manipuliert dann aufgrund der via Websocket
 übermittelten Daten von Items in SmartHomeNG dynamisch den Inhalt
 der Webseite (DOM).
@@ -112,5 +114,18 @@ SmartHomeNG Plugin **visu\_smartvisu**
 
 Mit dem Plugin **visu\_smartvisu** können aus der Definition der Items
 in SmartHomeNG automatisch Visuseiten erstellt werden. Diese Visu Seiten
-werden im Verzeichnis ``smarthome`` erstellt. Dazu bitte beim
+wurden im Verzeichnis ``smarthome`` erstellt. Ab SmartHomeNG v1.7 werden
+die Visu Seiten im Verzeichnis ``smarthomeng`` erstellt! Dazu bitte beim
 entsprechenden Plugin die Doku lesen.
+
+.. important::
+
+   Änderung ab SmartHomeNG v1.7:
+
+   Ab SmartHomeNG v1.7 werden die Visu Seiten nicht mehr im Verzeichnis ``pages/smarthome``, sondern
+   im Verzeichnis ``pages/smarthomeng`` erstellt.
+
+   Ein evtl. existierendes Verzeichnis ``smarthome`` im ``pages`` Verzeichnis der smartVISU bitte löschen
+   um Verwechselungen und den Aufruf veralteter Visu Seiten zu vermeiden.
+
+

@@ -42,4 +42,3 @@ ruamel.yaml>=0.13.7,<=0.15.74;python_version<'3.7'
 
 # SmartHomeNG-lib
 ruamel.yaml>0.15.0,<=0.15.74;python_version>='3.7'
-
