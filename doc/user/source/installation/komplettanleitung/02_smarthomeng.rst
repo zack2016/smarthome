@@ -56,7 +56,7 @@ unter dem später SmartHomeNG laufen soll, **nicht als root**.
    git clone git://github.com/smarthomeNG/smarthome.git .
    git clone git://github.com/smarthomeNG/plugins.git plugins
 
-Bitte auf den Punkt am Ende des ersten **git clone** Kommandos achten!
+Bitte auf den **Punkt** am Ende des ersten **git clone** Kommandos achten!
 
 
 Weitere Python Bibliotheken installieren
