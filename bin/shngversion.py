@@ -52,9 +52,10 @@ import plugins.__init__ as plugin_vers
 # Update auf 1.6B wg. ÄNnderung bei RelativsPath Auflösung & Doku Änderungen
 
 # Update auf 1.7 wg. Release
+# Update auf 1.7a wg. Kennzeichnung des Stands als "nach dem v1.6 Release"
 
-shNG_version = '1.7'
-shNG_branch = 'master'
+shNG_version = '1.7a'
+shNG_branch = 'develop'
 
 # ---------------------------------------------------------------------------------
 FileBASE = None
