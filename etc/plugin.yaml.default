@@ -12,7 +12,7 @@ websocket:
     plugin_name: visu_websocket
     #ip: 0.0.0.0
     #port: 2424
-    #tls: no
+    #tls: False
     #wsproto: 4
     #acl: rw
 

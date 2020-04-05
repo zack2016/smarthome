@@ -19,7 +19,7 @@ SmartHomeNG.
 
 
 zusätzliche Pakete installieren
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+===============================
 
 Der Apache2 braucht noch ein paar Pakete wie PHP um die Webseiten der
 SmartVISU liefern zu können:
@@ -31,7 +31,7 @@ SmartVISU liefern zu können:
 
 
 SmartVISU Quellcode laden
-~~~~~~~~~~~~~~~~~~~~~~~~~
+=========================
 
 Die Dateien der SmartVISU werden in einem Unterverzeichnis abgelegt,
 das für den **Apache2** Webserver zugänglich ist:
@@ -57,8 +57,9 @@ Für den ordnungsgemäßen Betrieb braucht die SmartVISU noch das SmartHomeNG Pl
 und wird beim ersten Start nach einer frischen Installation in die **plugin.yaml**
 übernommen.
 
+
 Zugriff auf die SmartVISU testen
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+================================
 
 Mit einem Browser kann nun erstmals auf die SmartVISU zugegriffen
 werden: Hierbei ist ``<ip-des-servers>`` natürlich mit der IP oder dem
@@ -83,8 +84,9 @@ Demoseiten.
 
 Um die Einstellungen zu sichern bitte **Save** auswählen.
 
+
 Eigene Visu Seiten anlegen
-^^^^^^^^^^^^^^^^^^^^^^^^^^
+==========================
 
 Um mit der SmartVISU eine eigene Visu anzulegen, muß innerhalb des
 Ordners ``pages`` der SmartVISU ein neues Verzeichnis angelegt werden,
@@ -109,23 +111,33 @@ Der Javascript Code manipuliert dann aufgrund der via Websocket
 übermittelten Daten von Items in SmartHomeNG dynamisch den Inhalt
 der Webseite (DOM).
 
+
 SmartHomeNG Plugin **visu\_smartvisu**
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+======================================
 
-Mit dem Plugin **visu\_smartvisu** können aus der Definition der Items
-in SmartHomeNG automatisch Visuseiten erstellt werden. Diese Visu Seiten
-wurden im Verzeichnis ``smarthome`` erstellt. Ab SmartHomeNG v1.7 werden
-die Visu Seiten im Verzeichnis ``smarthomeng`` erstellt! Dazu bitte beim
-entsprechenden Plugin die Doku lesen.
+Mit dem Plugin **visu\_smartvisu** können aus der Definition der Items in SmartHomeNG automatisch Visuseiten
+erstellt werden. Diese Visu Seiten werden im Verzeichnis ``smarthome`` des ``pages`` Verzeichnisses der
+smartVISU erstellt. Das Plugin unterstützt smartVISU Versionen von v2.7 bis zur releasten v2.9 (master branch).
 
-.. important::
 
-   Änderung ab SmartHomeNG v1.7:
+.. Ab SmartHomeNG v1.7.x werden
+    die Visu Seiten im Verzeichnis ``smarthomeng`` erstellt! Dazu bitte beim
+    entsprechenden Plugin die Doku lesen.
 
-   Ab SmartHomeNG v1.7 werden die Visu Seiten nicht mehr im Verzeichnis ``pages/smarthome``, sondern
-   im Verzeichnis ``pages/smarthomeng`` erstellt.
+.. .. important::
+       Änderung ab SmartHomeNG v1.7.x:
 
-   Ein evtl. existierendes Verzeichnis ``smarthome`` im ``pages`` Verzeichnis der smartVISU bitte löschen
-   um Verwechselungen und den Aufruf veralteter Visu Seiten zu vermeiden.
+       Ab SmartHomeNG v1.7.x werden die Visu Seiten nicht mehr im Verzeichnis ``pages/smarthome``, sondern
+       im Verzeichnis ``pages/smarthomeng`` erstellt.
 
+       Ein evtl. existierendes Verzeichnis ``smarthome`` im ``pages`` Verzeichnis der smartVISU bitte löschen
+       um Verwechselungen und den Aufruf veralteter Visu Seiten zu vermeiden.
+
+
+Mischung von generierten und manuell erstellten Seiten
+------------------------------------------------------
+
+Es ist möglich automatisch generierte und manuell erstellte Seiten zu mischen. Das Vorgehen hierzu ist
+in unter :doc:`/visualisierung/visu_partlyauto` und in der
+:doc:`Dokumentation des Plugins </plugins/visu_smartvisu/user_doc>` beschrieben.
 
