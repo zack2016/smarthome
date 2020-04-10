@@ -328,7 +328,7 @@ class SmartHome():
 
         base_reqs = self.shpypi.test_base_requirements()
         if base_reqs == 0:
-            self.restart('SmastHomeNG (Python package installation)')
+            self.restart('SmartHomeNG (Python package installation)')
             exit(0)
         elif base_reqs == -1:
             self._logger.critical("Python package requirements for modules are not met and unable to install base requirements")
@@ -337,7 +337,7 @@ class SmartHome():
 
         plugin_reqs = self.shpypi.test_conf_plugins_requirements(self._plugin_conf_basename, self._plugins_dir)
         if plugin_reqs == 0:
-            self.restart('SmastHomeNG (Python package installation)')
+            self.restart('SmartHomeNG (Python package installation)')
             exit(0)
         elif plugin_reqs == -1:
             self._logger.critical("Python package requirements for configured plugins are not met and unable to install base requirements")
