@@ -40,7 +40,7 @@ class SamplePlugin(SmartPlugin):
     the update functions for the items
     """
 
-    PLUGIN_VERSION = '1.7.0'
+    PLUGIN_VERSION = '1.7.0'    # (must match the version specified in plugin.yaml)
 
     def __init__(self, sh):
         """
