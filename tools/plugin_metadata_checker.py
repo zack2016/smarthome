@@ -32,8 +32,10 @@ The result is printed to stdout
 import os
 import argparse
 
+VERSION = '1.7.1'
+
 print('')
-print(os.path.basename(__file__) + ' - Checks the care status of plugin metadata')
+print(os.path.basename(__file__) + ' v' + VERSION + ' - Checks the care status of plugin metadata')
 print('')
 start_dir = os.getcwd()
 
@@ -44,7 +46,6 @@ os.chdir(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, '..')
 sys.path.insert(0, '../lib')
 import shyaml
-
 
 
 type_unclassified = 'unclassified'
@@ -158,7 +159,7 @@ def list_plugins(option):
             sectionPlg = 'Ok'
             version = metadata['plugin'].get('version', '-')
             plgstate = metadata['plugin'].get('state', '-')
-            if not plgstate in ['qa-passed', 'ready', 'develop', 'deprecated', '-']:
+            if not plgstate in ['qa-passed', 'ready', 'develop', 'deprecated']:
                 plgstate = 'INVALID'
         plgtype = get_plugintype(plg)
         if plgtype == 'Smart':
@@ -214,7 +215,7 @@ def list_plugins(option):
 
         if (option == 'all') or \
            (option == plgtype.lower()) or \
-           (option == 'inc' and (sectionPlg == MISSING_TEXT or sectionParam == MISSING_TEXT or sectionIAttr == MISSING_TEXT or sectionFunc == MISSING_TEXT or sectionLogics == MISSING_TEXT)) or \
+           (option == 'inc' and (plgstate == 'INVALID' or sectionPlg == MISSING_TEXT or sectionParam == MISSING_TEXT or sectionIAttr == MISSING_TEXT or sectionFunc == MISSING_TEXT or sectionLogics == MISSING_TEXT)) or \
            (option == 'compl' and (plgtype.lower() != 'classic' and sectionPlg != MISSING_TEXT and sectionParam != MISSING_TEXT and sectionIAttr != MISSING_TEXT and sectionFunc != MISSING_TEXT) and (sectionLogics != MISSING_TEXT)) or \
            (option == 'inc_para' and sectionParam == MISSING_TEXT) or (option == 'inc_attr' and sectionIAttr == MISSING_TEXT):
             if not header_displayed:
