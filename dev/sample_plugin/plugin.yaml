@@ -24,8 +24,8 @@ parameters:
     param1:
         type: str
         description:
-            de: 'Demo Parameter mit Gültigkeitsliste und Standardwert'
-            en: 'Demonstration parameter with valid-list and default value'
+            de: 'Demo Parameter'
+            en: 'Parameter for demonstration purposes'
 
     param2:
         type: str
@@ -37,8 +37,8 @@ parameters:
             - 'value4'
             - 'value5'
         description:
-            de: 'Demo Parameter'
-            en: 'Parameter for demonstration purposes'
+            de: 'Demo Parameter mit Gültigkeitsliste und Standardwert'
+            en: 'Demonstration parameter with valid-list and default value'
 
     param3:
         type: str
