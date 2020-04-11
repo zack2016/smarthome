@@ -1,17 +1,19 @@
-===========================
-Release 1.x - tt. mmm 2020
-===========================
+==============================
+Release 1.7.1 - tt. April 2020
+==============================
 
-Es gibt eine Menge neuer Features im Core von SmartHomeNG und den Plugins.
+Dieses ist ein Hotfix Release. Die vollständigen Änderungen der Version v1.7 bitte :doc:`hier <release/1_7>`
+nachlesen.
+
 
 .. note::
 
     Diese Release Notes sind ein Arbeitsstand.
 
-     - Berücksichtigt sind Commits im smarthome Repository bis incl. ...
-       (...)
-     - Berücksichtigt sind Commits im plugins Repository bis incl. ...
-       (...)
+     - Berücksichtigt sind Commits im smarthome Repository bis incl. 11. April 2020
+       (sample_plugin: Bugfix)
+     - Berücksichtigt sind Commits im plugins Repository bis incl. 11. April 2020
+       (Div. plugins: Updated metadata (e.g. added state attribute))
 
 
 
@@ -51,7 +53,15 @@ Versionen (3.6 oder 3.7) aufzusetzen.
 Bugfixes in the CORE
 --------------------
 
-* ...
+* lib.shpypi:
+
+  * Fixed bug for requirements that are python-version specific and do not contain complete version requirements
+
+* Modules:
+
+  * admin:
+
+    * Fixed bug in scheduler display which showed, if a crontab definition was assigning the value None
 
 
 Updates in the CORE
@@ -67,17 +77,24 @@ Updates in the CORE
 
   * ...
 
-* lib....:
+* lib.shpypi:
+
+  * Added way to configure PIP3 command to use, if problems arise with multiple Python3 environments on the computer
+
 * Modules:
 
-  * ...:
+  * admin:
 
-    * ...
+    * shngadmin: Plugins page - added icon to signal if a plugin is still in development mode
 
 * Plugins:
 
   * ...
 
+* tools:
+
+  * Updated plugin_metadata_checker
+  * Added Check for **mandantory** and **default** used together
 
 
 New Plugins
@@ -92,9 +109,31 @@ For details of the changes of the individual plugins, please refer to the docume
 Plugin Updates
 --------------
 
-* <name>:
+* Div. plugins
 
-  * ...
+  * Updated metadata (e.g. added or adjusted **state** attribute)
+
+* comfoair
+
+  * Changes port to type int
+
+* iCal
+
+  * reworked date extraction including proper time zone handling. Fixes various problems in start and end time handling
+    due to incomplete time zone handling. Plugin now outputs all dates/times in local time zone defined by smarthomeNG
+    config
+
+* influxdb
+
+  * Quick fix to allow configuration of non-standard port number
+
+* Russound
+
+   * improve log and fix caller origin bug
+
+* yamahayxc
+
+  * Update to 1.0.6 includes minor fixes and alarm clock functionality for supported devices
 
 
 Outdated Plugins
@@ -155,6 +194,10 @@ plugin takes over the functionality. This plugin is based on the mqtt module and
 
 Documentation
 -------------
+
+* Sample Plugin:
+
+  * Updated with parameter-examples in metadata
 
 * User Documentation
 
