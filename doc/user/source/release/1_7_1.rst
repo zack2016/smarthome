@@ -1,20 +1,9 @@
 ==============================
-Release 1.7.1 - tt. April 2020
+Release 1.7.1 - 14. April 2020
 ==============================
 
 Dieses ist ein Hotfix Release. Die vollständigen Änderungen der Version v1.7 bitte :doc:`hier <release/1_7>`
 nachlesen.
-
-
-.. note::
-
-    Diese Release Notes sind ein Arbeitsstand.
-
-     - Berücksichtigt sind Commits im smarthome Repository bis incl. 13. April 2020
-       (exclude database plugin from tests)
-     - Berücksichtigt sind Commits im plugins Repository bis incl. 12. April 2020
-       (alexa4p3: Changed documentation link back to user_doc page in metadata))
-
 
 
 Unterstützte Python Versionen
@@ -71,14 +60,6 @@ Updates in the CORE
 
 * Updated .gitignore
 
-* Items:
-
-  * ...
-
-* Logics:
-
-  * ...
-
 * lib.shpypi:
 
   * Added way to configure PIP3 command to use, if problems arise with multiple Python3 environments on the computer
@@ -88,10 +69,6 @@ Updates in the CORE
   * admin:
 
     * shngadmin: Plugins page - added icon to signal if a plugin is still in development mode
-
-* Plugins:
-
-  * ...
 
 * tools:
 
@@ -161,7 +138,7 @@ Plugin Updates
 
 * onewire
 
- * add Support Thread link to plugin.yaml
+  * add Support Thread link to plugin.yaml
 
 * Prowl
 
@@ -256,10 +233,3 @@ Documentation
 
   * Updated with parameter-examples in metadata
 
-* User Documentation
-
-  * ...
-
-* Developer Documentation
-
-  * ...
