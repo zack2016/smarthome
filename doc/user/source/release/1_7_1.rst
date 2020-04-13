@@ -10,10 +10,10 @@ nachlesen.
 
     Diese Release Notes sind ein Arbeitsstand.
 
-     - Berücksichtigt sind Commits im smarthome Repository bis incl. 11. April 2020
-       (sample_plugin: Bugfix)
-     - Berücksichtigt sind Commits im plugins Repository bis incl. 11. April 2020
-       (Div. plugins: Updated metadata (e.g. added state attribute))
+     - Berücksichtigt sind Commits im smarthome Repository bis incl. 13. April 2020
+       (exclude database plugin from tests)
+     - Berücksichtigt sind Commits im plugins Repository bis incl. 12. April 2020
+       (alexa4p3: Changed documentation link back to user_doc page in metadata))
 
 
 
@@ -62,12 +62,14 @@ Bugfixes in the CORE
   * admin:
 
     * Fixed bug in scheduler display which showed, if a crontab definition was assigning the value None
+    * shngadmin: Fixed bug where the instance name of a multi-instance plugin could not be configured, if the plugin
+      had no parameters defined
 
 
 Updates in the CORE
 -------------------
 
-* ...
+* Updated .gitignore
 
 * Items:
 
@@ -95,6 +97,7 @@ Updates in the CORE
 
   * Updated plugin_metadata_checker
   * Added Check for **mandantory** and **default** used together
+  * Added script to get pid of running SmartHomeNG instance
 
 
 New Plugins
@@ -102,8 +105,7 @@ New Plugins
 
 For details of the changes of the individual plugins, please refer to the documentation of the respective plugin.
 
-* <Name>: ...
-
+* alexarc4shng: AlexaRc4ShNG - Plugin zur Steuerung von Amazon Echo Geräten Zugriff via Web-Browser API und Cookie
 
 
 Plugin Updates
@@ -113,23 +115,78 @@ Plugin Updates
 
   * Updated metadata (e.g. added or adjusted **state** attribute)
 
+* alexa4p3
+
+  * Version 1.0.2: New Features (including web interface)
+
+* co2meter
+
+  * migrated to get_parameter_value
+
 * comfoair
 
   * Changes port to type int
 
-* iCal
+* database
+
+  * switched to parameter handling via get_parameter_value()
+
+* enigma2
+
+  * switched init method to new get_parameter_value
+  * adjusted port in eval example, as port is int now
+
+* enocean
+
+  * switched from argument passing to get_parameter_value function; added doc and support thread links.
+
+* homematic
+
+  * Changed some log entries from WARNING to INFO
+
+* ical
 
   * reworked date extraction including proper time zone handling. Fixes various problems in start and end time handling
     due to incomplete time zone handling. Plugin now outputs all dates/times in local time zone defined by smarthomeNG
     config
+  * added handling of logging login data in calendar uris
 
 * influxdb
 
   * Quick fix to allow configuration of non-standard port number
 
-* Russound
+* logo
+
+  * updates parameter passing in init
+
+* onewire
+
+ * add Support Thread link to plugin.yaml
+
+* Prowl
+
+  * updates init param passing
+
+* rcswitch
+
+  * update to prevent Errors if not all parameters are configured
+
+* russound
 
    * improve log and fix caller origin bug
+
+* uzsu
+
+  * update error message if uzsu dict is wrong
+
+* webservices
+
+  * adjusted init method to get_parameter_value and other small changes
+
+* xiaomi_vac
+
+  * fix metadata and small issues
+  * added docu and locale
 
 * yamahayxc
 
