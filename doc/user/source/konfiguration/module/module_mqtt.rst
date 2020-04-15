@@ -6,9 +6,9 @@
 .. role:: redsup
 .. role:: bluesup
 
-=========================
-Module mqtt :redsup:`Neu`
-=========================
+===========
+Module mqtt
+===========
 
 Dieses Modul erlaubt es SmartHomeNG über das MQTT Protokoll zu kommunizieren. Es stellt ein einfach zu nutzendes
 Interface für Logiken und Plugins zur Verfügung. Dabei kann das mqtt Modul von mehreren Logiken und/oder Plugins

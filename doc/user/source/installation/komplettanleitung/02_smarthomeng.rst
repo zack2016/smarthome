@@ -5,9 +5,9 @@
 .. role:: bluesup
 .. role:: redsup
 
-==========================================
-SmartHomeNG installieren :bluesup:`update`
-==========================================
+========================
+SmartHomeNG installieren
+========================
 
 SmartHomeNG ist eine in Python erstellte Anwendung. Daher muss bevor SmartHomeNG genutzt werden kann,
 Python installiert werden. Außerdem muß der git Client installert werden, um SmartHomeNG von Github

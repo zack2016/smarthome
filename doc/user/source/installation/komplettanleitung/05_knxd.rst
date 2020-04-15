@@ -4,9 +4,9 @@
 .. role:: bluesup
 .. role:: redsup
 
-===================================
-knxd installieren :bluesup:`update`
-===================================
+=================
+knxd installieren
+=================
 
 Der knxd implementiert Zugriffe auf verschiedenste Schnittstellen zum KNX Bus (z.B. IP-Router, IP-Schnittstelle,
 USB-Schnittstelle, etc.) und bietet dafür eine dokumentierte Softwareschnittstelle für Programme an. SmartHomeNG

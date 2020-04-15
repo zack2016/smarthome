@@ -2,7 +2,7 @@
 Release 1.7.1 - 14. April 2020
 ==============================
 
-Dieses ist ein Hotfix Release. Die vollständigen Änderungen der Version v1.7 bitte :doc:`hier <release/1_7>`
+Dieses ist ein Hotfix Release. Die vollständigen Änderungen der Version v1.7 bitte :doc:`hier </release/1_7>`
 nachlesen.
 
 

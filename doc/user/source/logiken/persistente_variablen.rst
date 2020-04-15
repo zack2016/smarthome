@@ -2,9 +2,9 @@
 
 .. role:: bluesup
 
-=======================================
-Persistente Variablen :bluesup:`update`
-=======================================
+=====================
+Persistente Variablen
+=====================
 
 Normale Variablen innerhalb von Logiken sind nur für den jeweiligen Lauf gültig. Es ist jedoch
 in einigen Fällen notwendig, Werte zwischen verschiedenen Läufen einer Logik zu übergeben.

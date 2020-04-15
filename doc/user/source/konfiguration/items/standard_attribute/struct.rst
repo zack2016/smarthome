@@ -10,8 +10,8 @@
 .. role:: bluesup
 .. role:: redesup
 
-`struct` :bluesup:`Update`
---------------------------
+struct
+------
 
 Eine Reihe von Plugins benötigt eine bestimmte Item Struktur bzw. eine größere Zahl an Items um sinnvoll zu funktionieren.
 Diese Items müssen dazu innerhalb des Item-Trees als Teilbaum angelegt werden (zum Teil auch mehrfach).

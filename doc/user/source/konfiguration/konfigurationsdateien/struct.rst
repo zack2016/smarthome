@@ -4,8 +4,8 @@
 
 .. index:: structs; struct.yaml
 
-struct.yaml :bluesup:`update`
-=============================
+struct.yaml
+===========
 
 In dieser Konfigurationsdatei können eigene Item-Strukturen angelegt werden, die über das **struct** Attribut als
 Template verwendet werden können.

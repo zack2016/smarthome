@@ -4,9 +4,9 @@
 .. role:: redsup
 .. role:: bluesup
 
-====================================
-Nutzung von Funktionen :redsup:`Neu`
-====================================
+======================
+Nutzung von Funktionen
+======================
 
 Bei der Nutzung von Funktionen in Logiken ist eine Besonderheit zu beachten:
 

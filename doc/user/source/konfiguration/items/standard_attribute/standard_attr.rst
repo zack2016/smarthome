@@ -20,8 +20,8 @@
 
 .. role:: bluesup
 
-Standard Attribute :bluesup:`update`
-====================================
+Standard Attribute
+==================
 
 
 In SmartHomeNG werden eine Reihe von Standard Attributen unterstützt. Diese sind in der folgenden

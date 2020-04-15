@@ -4,9 +4,9 @@
 .. role:: redsup
 .. role:: bluesup
 
-=========================================
-Nutzung von MQTT in Logiken :redsup:`Neu`
-=========================================
+===========================
+Nutzung von MQTT in Logiken
+===========================
 
 Die Nutzung des MQTT Protokolls in Logiken wird durch das mqtt Modul von SmartHomeNG möglich, welches ab Version 1.7
 zur Verfügung steht. Zur Nutzung muss das mqtt Modul geladen und konfiguiert sein und der konfigurierte MQTT Broker
