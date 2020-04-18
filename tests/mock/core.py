@@ -80,7 +80,7 @@ class MockSmartHome():
 
 
     def __init__(self):
-        VERSION = '1.4c.'
+        VERSION = '1.7a.'
         VERSION += '0.man'
         self.version = VERSION
         self.__logs = {}
@@ -176,7 +176,8 @@ class MockSmartHome():
         return self.items.return_items()
 
     def return_plugins(self):
-        return self.plugins.get_module(name)
+        #return self.plugins.get_module(name) ???
+        return self.plugins
 
     def return_modules(self):
         return self.modules.return_modules()
