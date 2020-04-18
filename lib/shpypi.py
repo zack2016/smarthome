@@ -69,6 +69,7 @@ class Shpypi:
 
         self.sh = sh
         if sh is None:
+            self.logger.debug("SmartHomeNG is None")
             if base:
                 self._sh_dir = base
                 self._error = False
@@ -76,6 +77,7 @@ class Shpypi:
             self._sh_dir = sh.get_basedir()    # anders bestimmen für tools/build_requirements.py
 
             self._error = False
+        self.logger.debug("SmartHomeNG is using '{}' as base directory".format(self._sh_dir))
         return
 
 
@@ -900,6 +902,7 @@ class Requirements_files():
 
         self._conf_plugin_files = []
         self.sh_basedir = os.sep.join(os.path.realpath(__file__).split(os.sep)[:-2])
+        self.logger.debug("Requirements_files is using '{}' as base directory".format(self.sh_basedir))
         return
 
 
@@ -992,14 +995,27 @@ class Requirements_files():
 
 
     def _get_filelist(self, selection):
-
+        """
+        returns a list of files with all paths for a requirements.txt within a 
+        certain selection subpath.
+        Currently selection is one of 'modules', 'lib', 'plugins'
+        When testing with travis the self.sh_basedir will be something like "/home/travis/build/<repo owner>/smarthome"
+        On a native Linux without specialities this is normally "/usr/local/smarthome"
+        When inspecting the plugins then all requirements.txt for previous plugin versions should be omitted from the list.
+        The names of previous plugins subdirectories start with "_pv"
+        """
+        self.logger.debug("_get_filelist for '{}'".format(selection))
         file_list = []
+        basedir_level = self.sh_basedir.count(os.sep)
         for root, dirnames, filenames in os.walk(self.sh_basedir + os.sep + selection):
             level = root.count(os.sep)
-            if level < 6:  # don't search for requirements in _pv (previous versions)
+            #self.logger.debug("level = {}: root = {}".format(level, root))
+            if (selection == "plugins" and "_pv" not in root) or (level < basedir_level + 3):
                 for filename in fnmatch.filter(filenames, 'requirements.txt'):
                     # print("level = {}: root = {}".format(level, root))
                     file_list.append(os.path.join(root, filename))
+                    self.logger.debug("found '{}'".format(os.path.join(root, filename)))
+        self.logger.debug("_get_filelist found '{}'".format(file_list))
         return file_list
 
 
@@ -1153,13 +1169,17 @@ class Requirements_files():
 
         filename = 'requirements' + os.sep + selection + '.txt'
         complete_filename = self.sh_basedir + os.sep + filename
-        with open(complete_filename, 'w') as outfile:
-            self._write_header(outfile, filename)
+        
+        if len(packagelist_consolidated) > 0:
+            with open(complete_filename, 'w') as outfile:
+                self._write_header(outfile, filename)
 
-            for pkg in packagelist_consolidated:
-                for req in pkg['used_by']:
-                    outfile.write('# {}\n'.format(req))
-                outfile.write('{}\n\n'.format(pkg['requests']))
+                for pkg in packagelist_consolidated:
+                    for req in pkg['used_by']:
+                        outfile.write('# {}\n'.format(req))
+                    outfile.write('{}\n\n'.format(pkg['requests']))
+        else:
+            self.logger.error("Req_files: _consolidate_requirements: packagelist_consolidated is empty".format())
 
         return complete_filename
 
@@ -1184,6 +1204,7 @@ class Requirements_files():
 
         # build list of all packages
         selection = selection.lower()
+        self.logger.debug("create_requirementsfile for '{}'".format(selection))
         self._build_filelists(selection)
 
         requirements = self.__read_requirementfiles()
