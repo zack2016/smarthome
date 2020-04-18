@@ -1,3 +1,13 @@
+#   +--------------------------------------------------+
+#   |                 SmartHomeNG                      |
+#   |            This file contains all                |
+#   |            requirements needed for               |
+#   |              automated testing                   |
+#   |             by travis/tox/pytest                 |
+#   |                                                  |
+#   |               INSTALL WITH:                      |
+#   | pip3 install -r requirements/test.txt --user     |
+#   +--------------------------------------------------+
 
 flake8>=2.5.1
 pylint>=1.5.3
