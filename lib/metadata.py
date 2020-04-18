@@ -376,11 +376,11 @@ class Metadata():
 
         if min_shngversion != '':
             if min_shngversion > shng_version:
-                logger.error("{0} '{1}': The version of SmartHomeNG is too old for this {0}. It requires at least version v{2}. The {0} was not loaded.".format(self._addon_type, self._addon_name, min_shngversion))
+                logger.error("{0} '{1}': The version {3} of SmartHomeNG is too old for this {0}. It requires at least version v{2}. The {0} was not loaded.".format(self._addon_type, self._addon_name, min_shngversion, shng_version))
                 return False
         if max_shngversion != '':
             if max_shngversion < shng_version:
-                logger.error("{0} '{1}': The version of SmartHomeNG is too new for this {0}. It requires a version up to v{2}. The {0} was not loaded.".format(self._addon_type, self._addon_name, max_shngversion))
+                logger.error("{0} '{1}': The version {3} of SmartHomeNG is too new for this {0}. It requires a version up to v{2}. The {0} was not loaded.".format(self._addon_type, self._addon_name, max_shngversion, shng_version))
                 return False
         return True
 
