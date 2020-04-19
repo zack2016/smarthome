@@ -58,6 +58,8 @@ class SmartPlugin(SmartObject, Utils):
 
     logger = logging.getLogger(__name__)
 
+    alive = False
+
 
     # Initialization of SmartPlugin class called by super().__init__() from the plugin's __init__() method
     def __init__(self, **kwargs):
