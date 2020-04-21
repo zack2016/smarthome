@@ -32,26 +32,25 @@ Das folgende Beispiel verdeutlicht das Vorgehen:
 
 .. code-block:: python
 
-    # Funktionen definieren
-    def func1(wert, logic=logic):
-        logger.warning("Funktion 1: wert = {}".format(wert))
-
-    def func2(logic=logic):
-        logger.warning("Funktion 2")
-        logic.func1(2)
-
-    # Funktionen, welche in Logiken genutzt werden sollen, dem logic Objekt zuweisen
-    logic.func1 = func1
-    logic.func2 = func2
-
-    # Variablen, die in Logiken genutzt werden sollen, dem logic Objekt zuweisen
+    # Variablen, die in Funktionen genutzt werden sollen, müssen dem logic Objekt zugewiesen werden
     logic.sh = sh
     logic.myvar1 = 5
     logic.myvar2 = False
 
-    # Code der Logik
-    func1(1)
-    func2()
+    # Funktionen definieren und anschließend dem logic Objekt zuweisen
+    def func1(wert, logic=logic):
+        logger.warning("Funktion 1: wert = {}".format(wert))
+    logic.func1 = func1
+
+    def func2(logic=logic):
+        logger.warning("Funktion 2")
+        logic.func1(2)
+    logic.func2 = func2
+
+
+    # Main Routine der Logik
+    logic.func1(1)
+    logic.func2()
 
 Um aus Funktionen heraus auf das **sh** Objekt zugreifen zu können, solte auch dieses (wie im obigen Beispiel) als
 Variable im **logic** Objekt abgelegt werden.
