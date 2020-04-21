@@ -326,10 +326,10 @@ class Scheduler(threading.Thread):
         :param next:
         :param from_smartplugin: Only to set to True, if called from the internal method in SmartPlugin class
         """
-        # Todo: Why the following 4 lines? self.shtime is set within __init__
+        # set shtime and items if they were initialized to None in __init__  (potenital timing problem in init of shng)
         if self.shtime == None:
             self.shtime = Shtime.get_instance()
-        if self.shtime == None:
+        if self.items == None:
             self.items = Items.get_instance()
         self._lock.acquire()
         if isinstance(cron, str):
@@ -509,13 +509,20 @@ class Scheduler(threading.Thread):
                 source_details = source.get('details', '')
                 source = source.get('item', '')
             trigger = {'by': by, 'source': source, 'source_details': source_details, 'dest': dest, 'value': value}  # noqa
-            logic = obj  # noqa
-            logics = obj._logics
 
             #following variables are assigned to be available during logic execution
             sh = self._sh  # noqa
             shtime = self.shtime
             items = self.items
+
+            # set the logic environment here (for use within functions in logics):
+            logic = obj  # noqa
+            logic.sh = sh
+            logic.logger = logger
+            logic.shtime = shtime
+            logic.items = items
+
+            logics = obj._logics
 
             if not self.mqtt:
                 if _lib_modules_found:
