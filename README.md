@@ -1,6 +1,9 @@
 
 
 # SmartHomeNG
+
+![Github Tag](https://img.shields.io/github/tag/smarthomeNG/smarthome.svg)
+![Made with Python](https://img.shields.io/badge/made%20with-python-blue.svg)
 [![Build Status on TravisCI](https://travis-ci.org/smarthomeNG/smarthome.svg?branch=develop)](https://travis-ci.org/smarthomeNG/smarthome)
 [![Join the chat at https://gitter.im/smarthomeNG/smarthome](https://badges.gitter.im/smarthomeNG/smarthome.svg)](https://gitter.im/smarthomeNG/smarthome?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
