@@ -46,6 +46,8 @@ class Database():
     'fetchone()' - execute statement and return first row from result
     'fetchall()' - execute statement and reeturn all rows from result
     'cursor()' - create a cursor object to execute multiple statements
+    'commit()' - commit a transaction (if the selcted database supports it)
+    'rollback()' - rollback a transaction (if the selcted database supports it)
     'lock()' - acquire the database lock (prevent simultaneous reads/writes)
     'release()' - release the database lock
     'verify()' - check database connection and reconnect if required
@@ -131,7 +133,7 @@ class Database():
         if the database structure is up to date) and logging.
 
         Use the 'dbapi' parameter to specify the DB-API2 module of the
-        database type to use (e.g. import the sqlite3 module and pass it 
+        database type to use (e.g. import the sqlite3 module and pass it
         directly as parameter or as name 'sqlite3').
 
         How the database is accessed is specified by the 'connect' parameter

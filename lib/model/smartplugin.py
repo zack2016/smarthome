@@ -649,6 +649,45 @@ class SmartPlugin(SmartObject, Utils):
         return lib_translate(txt, additional_translations='plugin/'+self.get_shortname())
 
 
+    def init_webinterface(self, WebInterface=None):
+        """"
+        Initialize the web interface for this plugin
+
+        This method is only needed if the plugin is implementing a web interface
+        """
+        if WebInterface is None:
+            return False
+
+        try:
+            self.mod_http = Modules.get_instance().get_module(
+                'http')  # try/except to handle running in a core version that does not support modules
+        except:
+            self.mod_http = None
+        if self.mod_http == None:
+            self.logger.error("Plugin '{}': Not initializing the web interface".format(self.get_shortname()))
+            return False
+
+        # set application configuration for cherrypy
+        webif_dir = self.path_join(self.get_plugin_dir(), 'webif')
+        config = {
+            '/': {
+                'tools.staticdir.root': webif_dir,
+            },
+            '/static': {
+                'tools.staticdir.on': True,
+                'tools.staticdir.dir': 'static'
+            }
+        }
+
+        # Register the web interface as a cherrypy app
+        self.mod_http.register_webif(WebInterface(webif_dir, self),
+                                     self.get_shortname(),
+                                     config,
+                                     self.get_classname(), self.get_instance_name(),
+                                     description='')
+
+        return True
+
 
 try:
     from jinja2 import Environment, FileSystemLoader
