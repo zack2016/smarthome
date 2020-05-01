@@ -63,6 +63,7 @@ import locale
 import logging
 import logging.handlers
 import logging.config
+import platform
 import shutil
 import re
 import signal
@@ -298,7 +299,7 @@ class SmartHome():
         # Write startup message to log(s)
         pid = lib.daemon.read_pidfile(PIDFILE)
         self._logger.warning("--------------------   Init SmartHomeNG {}   --------------------".format(VERSION))
-        self._logger.warning("Running in Python interpreter 'v{}' (pid={}) on {} platform".format(PYTHON_VERSION, pid, sys.platform))
+        self._logger.warning("Running in Python interpreter 'v{}' on {} (pid={})".format(PYTHON_VERSION, platform.platform(), pid))
 
         if self._extern_conf_dir != BASE:
             self._logger.warning("Using config dir {}".format(self._extern_conf_dir))
