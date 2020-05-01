@@ -321,7 +321,8 @@ class Shpypi:
             print()
             print("Installing "+req_type_display+" requirements for the current user, please wait...")
 
-        pip_command = 'pip3'
+        python_bin_path = os.path.split(os.environ['_'])[0]
+        pip_command = os.path.join(python_bin_path, 'pip3')
         try:
             pip_command = self.sh._pip_command
             if logging:
@@ -996,7 +997,7 @@ class Requirements_files():
 
     def _get_filelist(self, selection):
         """
-        returns a list of files with all paths for a requirements.txt within a 
+        returns a list of files with all paths for a requirements.txt within a
         certain selection subpath.
         Currently selection is one of 'modules', 'lib', 'plugins'
         When testing with travis the self.sh_basedir will be something like "/home/travis/build/<repo owner>/smarthome"
@@ -1169,7 +1170,7 @@ class Requirements_files():
 
         filename = 'requirements' + os.sep + selection + '.txt'
         complete_filename = self.sh_basedir + os.sep + filename
-        
+
         if len(packagelist_consolidated) > 0:
             with open(complete_filename, 'w') as outfile:
                 self._write_header(outfile, filename)
