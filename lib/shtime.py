@@ -37,7 +37,7 @@ import os
 
 import lib.shyaml as shyaml
 from lib.constants import (YAML_FILE)
-from lib.translation import translate
+#from lib.translation import translate
 from lib.translation import translate as lib_translate
 
 
@@ -103,7 +103,7 @@ class Shtime:
             return _shtime_instance
 
 
-    def translate(self, txt):
+    def translate(self, txt, vars=None):
         """
         Returns translated text
 
@@ -115,7 +115,7 @@ class Shtime:
         """
         txt = str(txt)
 
-        return lib_translate(txt, additional_translations='lib/shtime')
+        return lib_translate(txt, vars, additional_translations='lib/shtime')
 
 
     def set_tz(self, tz):

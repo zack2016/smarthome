@@ -638,15 +638,15 @@ class SmartPlugin(SmartObject, Utils):
         raise NotImplementedError("'Plugin' subclasses should have a 'stop()' method")
 
 
-    def translate(self, txt, block=None):
+    def translate(self, txt, vars=None, block=None):
         """
         Returns translated text
         """
         txt = str(txt)
         if block:
-            self.logger.warning("unsuported 2. parameter '{}' used in translation function _( ... )".format(block))
+            self.logger.warning("unsuported 3. parameter '{}' used in translation function _( ... )".format(block))
 
-        return lib_translate(txt, additional_translations='plugin/'+self.get_shortname())
+        return lib_translate(txt, vars, additional_translations='plugin/'+self.get_shortname())
 
 
     def init_webinterface(self, WebInterface=None):
@@ -713,7 +713,8 @@ class SmartPluginWebIf():
         tplenv = Environment(loader=FileSystemLoader([mytemplates,globaltemplates]))
 
         tplenv.globals['isfile'] = self.is_staticfile
-        tplenv.globals['_'] = self.translate
+        tplenv.globals['_'] = self.plugin.translate
+        tplenv.globals['len'] = len
         return tplenv
 
 
