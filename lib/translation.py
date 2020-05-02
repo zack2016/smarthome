@@ -230,7 +230,7 @@ def translate(txt, vars= None, additional_translations=None):
     if vars is not None:
         # replace parameters in the translated text
         if isinstance(vars, dict):
-            logger.warning("translate: Trying to use parameters {} for string '{}'".format(vars, translated_txt))
+            logger.info("translate: Trying to use parameters {} for string '{}'".format(vars, translated_txt))
             try:
                 translated_txt = translated_txt.format(**vars)
             except Exception as e:
