@@ -696,18 +696,18 @@ class Mqtt(Module):
         :return: caller type ('Plugin' | 'Logic' | 'Unknown')
         :rtype: str
         """
-        self.logger.debug("_get_caller_type: inspect.stack()[2][1] = '{}', split = {}".format(inspect.stack()[2][1], inspect.stack()[2][1].split('/')))
-        if inspect.stack()[2][1].split('/')[4] == 'lib' and inspect.stack()[2][1].split('/')[5] == 'model':
+        caller = inspect.stack()[2][1]
+        split = caller.split('/')        
+        self.logger.debug("_get_caller_type: inspect.stack()[2][1] = '{}', split = {}".format(caller, split))
+        if split[-3] == 'lib' and split[-2] == 'model':
             source_type = 'Plugin'
-        elif inspect.stack()[2][1].split('/')[4] == 'plugins':
+        elif split[-3] == 'plugins':
             source_type = 'Plugin'
-        elif inspect.stack()[2][1].split('/')[4] == 'logics':
+        elif split[-3] == 'logics':
             source_type = 'Logic'
         else:
             source_type = 'Unknown'
-            self.logger.info("_get_caller_type: inspect.stack()[2][1] = '{}', split = {}".format(inspect.stack()[2][1],
-                                                                                                  inspect.stack()[2][
-                                                                                                      1].split('/')))
+            self.logger.info("_get_caller_type: inspect.stack()[2][1] = '{}', split = {}".format(caller, split))
 
         return source_type
 
