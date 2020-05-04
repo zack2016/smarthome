@@ -7,7 +7,7 @@ jobs:
       - python: 3.7
         dist: xenial
       - python: 3.8
-        dist: xenial
+        dist: focal
 
 env:
     - REPOSITORY_ORIGIN=smarthome
