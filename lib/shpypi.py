@@ -771,10 +771,43 @@ class Shpypi:
                 if self._compare_versions(pyversion, version, operator):
                     result_list.append(self._split_requirement_to_min_max(requirement[0]))
 
-        if len(result_list) > 1:
+        if len(result_list) > 2:
             # Hier sollten die Einträge noch konsolidiert werden
             # Vorübergehend: Eine Liste von dicts zurückliefern
             return result_list
+
+        if len(result_list) == 2:
+            result = {}
+
+            #consolidate minimum values (only '*' at the moment)
+            val0 = result_list[0].get('min', None)
+            val1 = result_list[1].get('min', None)
+            if  val0 is not None and val1 is not None:
+                # Consolidate minimum requirements
+                if val0 == '*':
+                    result['min'] = val1
+                elif val1 == '*':
+                    result['min'] = val0
+            elif val0 is None:
+                result['min'] = val1
+            elif val1 is None:
+                result['min'] = val0
+
+            #consolidate maximum values (only '*' at the moment)
+            val0 = result_list[0].get('max', None)
+            val1 = result_list[1].get('max', None)
+            if  val0 is not None and val1 is not None:
+                # Consolidate minimum requirements
+                if val0 == '*':
+                    result['max'] = val1
+                elif val1 == '*':
+                    result['max'] = val0
+            elif val0 is None:
+                result['max'] = val1
+            elif val1 is None:
+                result['max'] = val0
+
+            return result
 
         if len(result_list) == 0:
             return {}
@@ -1054,7 +1087,11 @@ class Requirements_files():
             for line in ifile:
                 if len(line.rstrip()) != 0:
                     #                self.setdefault(line.rstrip(), []).append('SmartHomeNG ' + package)
-                    requirements.setdefault(line.rstrip(), []).append(add_info + package)
+                    if add_info.endswith(' '):
+                        info = add_info + "'" + package + "'"
+                    else:
+                        info = add_info + package
+                    requirements.setdefault(line.rstrip(), []).append(info)
         return
 
 
