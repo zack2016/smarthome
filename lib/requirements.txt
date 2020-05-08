@@ -16,5 +16,5 @@ requests>=2.20.0
 # otherwise inconsistent requirements will occur in Travis/Tox/Testing
 # lib.shyaml:
 ruamel.yaml>=0.13.7,<=0.15.74;python_version<'3.7'
-ruamel.yaml>=0.15.0,<=0.15.74;python_version>='3.7' and python_version<'3.8'
+ruamel.yaml>=0.15.0,<=0.15.74;python_version=='3.7'
 ruamel.yaml>=0.15.78,<=0.15.100;python_version>='3.8'
