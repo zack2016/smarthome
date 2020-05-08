@@ -17,12 +17,10 @@ pytest-cov>=2.2.0
 pytest-timeout>=1.0.0
 betamax==0.5.1
 pydocstyle>=1.0.0
-virtualenv<14.0.0;python_version=='3.2'
-coverage<4.0.0;python_version=='3.2'
 beautifulsoup4>=4.1.0
 
 # the following needs to be exactly the same as in requirements/base.txt
 # otherwise inconsistent requirements will occur in Travis/Tox/Testing
 ruamel.yaml>=0.13.7,<=0.15.74;python_version<'3.7'
 ruamel.yaml>=0.15.0,<=0.15.74;python_version=='3.7'
-ruamel.yaml>=0.15.78,<=0.15.78;python_version>'3.7'
+ruamel.yaml>=0.15.78,<=0.16.8;python_version>='3.8'

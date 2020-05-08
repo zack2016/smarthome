@@ -17,4 +17,4 @@ requests>=2.20.0
 # lib.shyaml:
 ruamel.yaml>=0.13.7,<=0.15.74;python_version<'3.7'
 ruamel.yaml>=0.15.0,<=0.15.74;python_version=='3.7'
-ruamel.yaml>=0.15.78,<=0.15.78;python_version>'3.7'
+ruamel.yaml>=0.15.78,<=0.16.8;python_version>='3.8'
