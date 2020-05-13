@@ -161,7 +161,7 @@ class Shpypi:
 
     def test_requirements(self, filepath, logging=True, hard_requirement=True):
         if logging:
-            self.logger.info("test_requirements: filepath '{}' is checked".format(filepath))
+            self.logger.info("test_requirements: filepath '{}' is being checked".format(filepath))
 
         req_dict = self.parse_requirementsfile(filepath)
         inst_dict = self.get_installed_packages()
@@ -984,7 +984,7 @@ class Requirements_files():
             packaged['pkg'] = wrk[0].strip()
             if packaged['pkg'].startswith('#'):
                 continue
-            self.logger.debug("Req_files: - key: '{}', wrk = '{}', packaged = '{}'".format(key, wrk, packaged))
+            self.logger.debug("_build_packagelist: Req_files: - key: '{}', wrk = '{}', packaged = '{}'".format(key, wrk, packaged))
 
             pkg = key[len(packaged['pkg']):]
             if pkg.find(';') == -1:
@@ -1125,6 +1125,7 @@ class Requirements_files():
 
         # sort = <package>+<python-version req (if specified)+reqversion>
         packagelist_sorted = sorted(packagelist, key=lambda k: k['sort'])
+        self.logger.info("_consolidate_requirements: packagelist_sorted={}".format(packagelist_sorted))
 
         packagelist_consolidated = []
         self.logger.debug("Req_files: _consolidate_requirements: packagelist_sorted = '{}'".format(packagelist_sorted))
@@ -1171,9 +1172,19 @@ class Requirements_files():
                                   package_consolidated['req'][0][1] + ' is incompatible to ' + p['req'][0][0] + p['req'][0][
                                       1])
                             packagelist_consolidated.append(p)
-
                     elif p['req'][0][0] == '==':
                         print('p Gleichheit ' + package_consolidated['req'][0][1] + ' / ' + p['req'][0][1])
+                    elif package_consolidated['req'][0][0] == '':
+                        # if consolidated version has no special requirements
+                        self.logger.debug("_consolidate_requirements: package_consolidated requirement w/o version - pkg={}".format(package_consolidated['pkg']))
+                        # join list of plugins that use the package
+                        pl = package_consolidated['used_by']
+                        pl.extend(p['used_by'])
+                        p['used_by'] = pl
+                        packagelist_consolidated[idx] = p
+                        break
+
+
             else:
                 packagelist_consolidated.append(p)
 
@@ -1217,9 +1228,10 @@ class Requirements_files():
                         outfile.write('# {}\n'.format(req))
                     outfile.write('{}\n\n'.format(pkg['requests']))
         else:
-            self.logger.error("Req_files: _consolidate_requirements: packagelist_consolidated is empty".format())
+            self.logger.error("_write_resultfile: packagelist_consolidated is empty".format())
 
         return complete_filename
+
 
     def set_conf_plugin_files(self, conf_plugin_filelist):
         self._conf_plugin_files = conf_plugin_filelist
@@ -1252,6 +1264,9 @@ class Requirements_files():
 
         # consolidate requirements
         packagelist_consolidated = self._consolidate_requirements(packagelist)
+
+        self.logger.info("create_requirementsfile: selection={}, packagelist={}".format(selection, packagelist))
+        self.logger.info("create_requirementsfile: selection={}, packagelist_consolidated={}".format(selection, packagelist_consolidated))
 
         return self._write_resultfile(selection, packagelist_consolidated, requirements)
 
