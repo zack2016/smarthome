@@ -730,26 +730,27 @@ class SmartHome():
     #################################################################
     # Log Methods
     #################################################################
+    """
+    SmartHomeNG internally keeps a list of logs which can be extended
+    Currently these logs are created by several plugins
+    (plugins memlog, operationlog and visu_websocket) and initMemLog function of SmartHomeNG
+    """
     def add_log(self, name, log):
         """
-        Function to add a log to the list of logs (deprecated? -> old logging!)
+        Adds a log to the list of logs
 
         :param name: Name of log
-        :param log: Log object
-        :type name: str
-        :type log: object
+        :param log: Log object, essentially an object based of a double ended queue
         """
-
         self.__logs[name] = log
 
     def return_logs(self):
         """
-        Function to the list of logs (deprecated? -> old logging!)
+        Function to the list of logs
 
         :return: List of logs
         :rtype: list
         """
-
         return self.__logs
 
 
