@@ -20,5 +20,4 @@ Dokumentation des jeweiligen Plugins im Abschnitt  :doc:`Plugins </plugins_all>`
    items_tipps_und_tricks.rst
    logiken/logiken.rst
    structs.rst
-
-
+   knxd.rst
