@@ -61,9 +61,10 @@ Die einzelnen Konfigurationseinträge haben die folgende Bedeutung:
 |                 | evaluiert werden:                                                                                  |
 |                 | - name: Loggername (z.B. lib.item)                                                                 |
 |                 | - module: Loggermodul, va. bei Plugins u.U. relevant (z.B. item)                                   |
-|                 | - msg: Der tatsächliche Logeintrag (z.B. Result = (.\*) \(for attribute 'eval'\))                  |
+|                 | - timestamp: Uhrzeit/Datum (z.B. "23:00")                                                          |
+|                 | - msg: Der tatsächliche Logeintrag (z.B. "Result = (.\*) \(for attribute 'eval'\)")                |
 |                 | Durch die Angabe von invert: True werden NUR die passenden Messages geloggt und sonst nichts.      |
-|                 | Ein Beispiel ist unter :doc:`Logging - Best Practices <logging_best_practices>` zu finden.         |  
+|                 | Ein Beispiel ist unter :doc:`Logging - Best Practices <logging_best_practices>` zu finden.         |
 +-----------------+----------------------------------------------------------------------------------------------------+
 | **loggers:**    | Hier werden die einzelnen Logger definiert und was mit diesen Einträgen passiert,                  |
 |                 | welche Handler und formatter verwendet werden. Das Level konfiguriert dabei die                    |
