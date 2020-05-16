@@ -8,9 +8,9 @@ Es gibt eine Menge neuer Features im Core von SmartHomeNG und den Plugins.
 
     Diese Release Notes sind ein Arbeitsstand.
 
-     - Berücksichtigt sind Commits im smarthome Repository bis incl. May 13, 2020
+     - Berücksichtigt sind Commits im smarthome Repository bis incl. May 14, 2020
        (Merge branch 'develop' of https://github.com/smarthomeNG/smarthome in…)
-     - Berücksichtigt sind Commits im plugins Repository bis incl. May 7, 2020
+     - Berücksichtigt sind Commits im plugins Repository bis incl. May 11, 2020
        (...)
 
 
@@ -77,6 +77,7 @@ Updates in the CORE
   * lib.connection: Bugfix in Client.close()
   * lib.db: Changed error handling, if api initialization fails
   * lib.shpypi: Changed to avoid loading the wrong PIP command for package installation
+  * lib.scheduler: Implemented restart of SmartHomeNG if number of worker threads goes through the roof
 
 * Modules:
 
@@ -120,6 +121,7 @@ Plugin Updates
 
   * new arguments for hkr_device added
   * Fixed instance handling for hkr dect devices
+  * added instance name to examples in README.md
 
 * Buderus:
 
@@ -151,6 +153,9 @@ Plugin Updates
 * executor:
 
   * update plugin.yaml
+  * translation corrected
+  * include possibility to test evals with relative items
+  * added user_doc
 
 * gpio:
 
@@ -159,6 +164,7 @@ Plugin Updates
   * added gpio_invert parameter to invert gpio levels
   * fixed errors, completed documentation
   * log current value of output on startup
+  * logging and reporting streamlined
 
 * helios:
 
@@ -229,6 +235,8 @@ Plugin Updates
 * onewire:
 
   * Fixes ValueError: cannot switch from automatic field numbering to manual field specification
+  * Fixes for some debug string formats
+  * should be able to run as multiinstance plugin now
 
 * rrd:
 

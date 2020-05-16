@@ -6,7 +6,7 @@ python-dateutil>=2.5.3
 holidays>=0.9.11
 
 # lib.daemon:
-psutil
+psutil<=5.4.5
 
 # lib.network:
 #requests: Requirements update to >=2.20.0 due to CVE-2018-18074
