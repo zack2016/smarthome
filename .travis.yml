@@ -20,6 +20,7 @@ before_install:
 install:
     - pip install tox-travis virtualenv>=20.0.8 --upgrade
     - pip install sphinx sphinx_rtd_theme recommonmark
+    - pip install psutil
 
 script:
     - sh .travis.sh
