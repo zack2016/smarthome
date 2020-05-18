@@ -15,12 +15,13 @@ env:
     - REPOSITORY_ORIGIN=smarthome
 
 before_install:
+    - sudo apt-get update
     - sudo apt-get install libudev-dev
     - sudo apt-get install librrd-dev libpython3-dev
+    - sudo apt-get install gcc --only-upgrade
 install:
     - pip install tox-travis virtualenv>=20.0.8 --upgrade
     - pip install sphinx sphinx_rtd_theme recommonmark
-    - pip install psutil
 
 script:
     - sh .travis.sh
