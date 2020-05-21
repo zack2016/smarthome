@@ -272,24 +272,25 @@ class Shpypi:
         plugin_conf = shyaml.yaml_load(plugin_conf_basename + YAML_FILE, ordered=False)
 
         req_dict = {}
-        for plugin_instance in plugin_conf:
-            plugin_name = plugin_conf[plugin_instance].get('plugin_name', None)
-            class_path = plugin_conf[plugin_instance].get('class_path', None)
-            plugin = ''
-            if class_path:
-                if class_path.startswith('plugins.'):
-                    sp = class_path.split('.')
-                    if len(sp) == 2:
-                        plugin = sp[1]
-            if plugin == '' and plugin_name:
-                plugin = plugin_name
+        if plugin_conf is not None:
+            for plugin_instance in plugin_conf:
+                plugin_name = plugin_conf[plugin_instance].get('plugin_name', None)
+                class_path = plugin_conf[plugin_instance].get('class_path', None)
+                plugin = ''
+                if class_path:
+                    if class_path.startswith('plugins.'):
+                        sp = class_path.split('.')
+                        if len(sp) == 2:
+                            plugin = sp[1]
+                if plugin == '' and plugin_name:
+                    plugin = plugin_name
 
-            filename = os.path.join(plugins_dir, plugin, 'requirements.txt')
-            if not os.path.isfile(filename):
-                filename = ''
-            else:
-                if plugin != '':
-                    req_dict[plugin] = filename
+                filename = os.path.join(plugins_dir, plugin, 'requirements.txt')
+                if not os.path.isfile(filename):
+                    filename = ''
+                else:
+                    if plugin != '':
+                        req_dict[plugin] = filename
 
         self._conf_plugin_filelist = []
         for plugin in req_dict:
@@ -323,11 +324,15 @@ class Shpypi:
 
         python_bin_path = os.path.split(os.environ['_'])[0]
         pip_command = os.path.join(python_bin_path, 'pip3')
+        if not os.path.isfile(pip_command):
+            # to find the right pip command when using 'update-alternatives'
+            python_bin_path, python_bin_executable = os.path.split(os.__file__)
+            pip_command = os.path.join(python_bin_path[:python_bin_path.find('/lib')], 'bin', ('pip' + python_bin_path[-3:]))
         try:
             pip_command = self.sh._pip_command
             if logging:
                 self.logger.warning("PIP command read from smarthome.yaml: '{}'".format(pip_command))
-        except: pass
+        except: self.logger.warning("Using PIP command: '{}'".format(pip_command))
         self.logger.info('> '+pip_command+' install -r requirements/'+req_type+'.txt --user --no-warn-script-location')
 
         stdout, stderr = Utils.execute_subprocess(pip_command+' install -r requirements/'+req_type+'.txt --user --no-warn-script-location')
