@@ -260,7 +260,11 @@ class SmartHome():
                 if not isinstance(config[attr], dict):  # ignore sub items
                     vars(self)['_' + attr] = config[attr]
             del(config)  # clean up
-
+        else:
+            # no valid smarthome.yaml found
+            print("No base configuration - terminating SmartHomeNG")
+            print("Hint: Are Language (preferably: DE_de) and character (UTF-8) set configured in operating system?")
+            exit(1)
         if hasattr(self, '_module_paths'):
             sys.path.extend(self._module_paths if type(self._module_paths) is list else [self._module_paths])
 
@@ -692,13 +696,16 @@ class SmartHome():
         """
         This method is used to restart the python interpreter and SmartHomeNG
         """
-        self.shng_status = {'code': 30, 'text': 'Restarting'}
-        if source != '':
-            source = ', initiated by ' + source
-        self._logger.warning("SmartHomeNG restarting"+source)
-        command = sys.executable + ' ' + os.path.join(self._base_dir, 'bin', 'smarthome.py') + ' -r'
-        self._logger.info("Restart command = '{}'".format(command))
-        p = subprocess.Popen(command, shell=True)
+        if self.shng_status['code'] == 30:
+            self._logger.warning("Another RESTART is issued, while SmartHomeNG is restarting. Reason: "+source)
+        else:
+            self.shng_status = {'code': 30, 'text': 'Restarting'}
+            if source != '':
+                source = ', initiated by ' + source
+            self._logger.warning("SmartHomeNG restarting"+source)
+            command = sys.executable + ' ' + os.path.join(self._base_dir, 'bin', 'smarthome.py') + ' -r'
+            self._logger.info("Restart command = '{}'".format(command))
+            p = subprocess.Popen(command, shell=True)
 
 
     def list_threads(self, txt):
