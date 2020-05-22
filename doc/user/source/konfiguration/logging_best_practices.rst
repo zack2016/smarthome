@@ -304,6 +304,7 @@ ein Leerzeichen und der relevante Filtercode. '2[0-4]{1}' filtert alles zwischen
 20 und 24 Uhr und '0[0-8]{1}' alles zwischen 00 und 08 Uhr.
 
 .. code-block:: yaml
+
   filter:
       filter_abend_mai:
           (): lib.logutils.Filter
@@ -312,7 +313,7 @@ ein Leerzeichen und der relevante Filtercode. '2[0-4]{1}' filtert alles zwischen
 Erläuterung der RegEx:
 Da das Datum als YYYY-MM-DD HH:MM:SS angegeben wird, können natürlich auch
 nur in bestimmten Monaten Einträge geschrieben werden. Für die Fälle, in denen
-jemand gerne eine Logdatei pro Kalendermonat hätte ;)  
+jemand gerne eine Logdatei pro Kalendermonat hätte ;)
 
 Erweitertes Logging für die Plugin Entwicklung
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

@@ -38,7 +38,8 @@ extensions = [
   'sphinx.ext.todo',
   'sphinx.ext.ifconfig',
   'sphinx.ext.viewcode',
-  'sphinx.ext.githubpages' ]
+  'sphinx.ext.githubpages',
+  'recommonmark']
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -49,10 +50,10 @@ from recommonmark.parser import CommonMarkParser
 #import recommonmark
 #from recommonmark.transform import AutoStructify
 
-source_parsers = { '.md': CommonMarkParser }
+# deprecated: source_parsers = { '.md': CommonMarkParser }
 
 # The suffix of source filenames.
-source_suffix = ['.md','.rst']
+# deprecated: source_suffix = ['.md','.rst']
 
 # The encoding of source files.
 source_encoding = 'utf-8-sig'
