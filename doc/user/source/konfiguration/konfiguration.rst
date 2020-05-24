@@ -8,10 +8,12 @@
 Konfiguration
 =============
 
+..    :maxdepth: 5
+..    :titlesonly:
+
+
 .. toctree::
-   :maxdepth: 5
    :hidden:
-   :titlesonly:
 
    admin_gui/admin_gui
    konfigurationsdateien/konfigdateien

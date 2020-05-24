@@ -1,4 +1,4 @@
-:tocdepth: 6
+:tocdepth: 1
 
 ===========
 SmartHomeNG
@@ -24,8 +24,8 @@ Das System kann flexibel durch Plugins erweitert werden, wobei die Plugins in fo
 
 Diese Dokumentation reflektiert das aktuelle Release:
 
-- Version des Core: |release|
-- Version der Plugins: |version|
+- **Version des Core**: |release|
+- **Version der Plugins**: |version|
 
 Die Entwickler-Dokumentation (für Entwickler von Plugins und den Core von SmartHomeNG), sowie
 die READMEs der Plugins sind in Englisch gehalten.
@@ -43,11 +43,11 @@ oder im `Chat auf gitter.im <https://gitter.im/smarthomeNG/smarthome>`_ .
 
 .. [#f1] SmartHomeNG © Copyright 2016-2020 SmartHomeNG Team, basiert auf smarthome.py © 2011-2014 Marcus Popp.
 
+..    :titlesonly:
 
 .. toctree::
-   :maxdepth: 5
+   :maxdepth: 1
    :hidden:
-   :titlesonly:
 
    einleitung.md
    installation/installation.rst
@@ -64,5 +64,6 @@ oder im `Chat auf gitter.im <https://gitter.im/smarthomeNG/smarthome>`_ .
    release/release
    genindex
    impressum
+   datenschutz
 
 

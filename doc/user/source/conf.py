@@ -153,7 +153,8 @@ pygments_style = 'sphinx'
 # -- Options for HTML output ---------------------------------------------------
 
 def setup(app):
-    app.add_stylesheet('custom.css')
+# deprecated in Sphinx 4: app.add_stylesheet('custom.css')
+    app.add_css_file('custom.css')
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
@@ -225,7 +226,7 @@ html_static_path = ["_static", "_static/img","_static/css"]
 #html_split_index = False
 
 # If true, links to the reST sources are added to the pages.
-#html_show_sourcelink = True
+html_show_sourcelink = False
 
 # If true, "Created using Sphinx" is shown in the HTML footer. Default is True.
 html_show_sphinx = False
