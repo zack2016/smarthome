@@ -82,7 +82,7 @@ In die Datei folgendes einfügen:
    directory mask = 0775
 
    [smartVISU]
-   path = /var/www/html/smartVISU
+   path = /var/www/html/smartvisu
    comment = smartVISU Directories
    available = yes
    browseable = yes

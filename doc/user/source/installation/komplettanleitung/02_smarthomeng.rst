@@ -29,13 +29,12 @@ Zunächst müssen einige zusätzlichen Pakete installiert werden:
    sudo apt-get install python3-pip
 
 
-.. admonition:: Folgendes ist vor dem Release noch zu prüfen
-
-    Dann sollte Pythons Paketmanager PIP auf den neuesten Stand gebracht werden:
+    Dann sollte evtl. noch Pythons Paketmanager PIP auf den neuesten Stand gebracht werden. Die installierte
+    Version von PIP sollte jedoch bereits ausreichend sein:
 
     .. code-block:: bash
 
-       sudo python3 -m pip install --upgrade pip
+       python3 -m pip install --upgrade pip
 
 
 SmartHomeNG Quellcode laden
