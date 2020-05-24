@@ -14,12 +14,13 @@ structs (Item Strukturen)
 =========
 
 Seit SmartHomeNG v1.6 werden Item-Struktur-Templates unterstützt, mit denen sich wiederholende Itemstrukturen einfach realisieren lassen.
-Die Anwendung erfolgt mit Hilfe des **struct**-Attributes mit dem jeweiligen Namen des Item-Templates. Dies wird bei dem Item definiert, 
-unter dem die definierte Struktur (Teil-Item-Baum) eingefügt werden soll. 
+Die Anwendung erfolgt mit Hilfe des **struct**-Attributes mit dem jeweiligen Namen des Item-Templates. Dies wird bei dem Item definiert,
+unter dem die definierte Struktur (Teil-Item-Baum) eingefügt werden soll.
 
 Prinzipiell gibt es 2 Anwendungsfälle:
+
  - Der Nutzer kann selbst entsprechende Item-Struktur-Templates anlegen und verwenden
- - Eine Reihe von Plugins benötigt eine bestimmte Item Struktur bzw. eine größere Zahl an Items um sinnvoll zu funktionieren. 
+ - Eine Reihe von Plugins benötigt eine bestimmte Item Struktur bzw. eine größere Zahl an Items um sinnvoll zu funktionieren.
 
 Demzufolge können die Item-Struktur-Templates an zwei verschiedenen Stellen definiert werden:
 
@@ -275,11 +276,11 @@ Grundsätzlich werden alle Attribute zu einem Item, dass in mehreren Item YAML-D
     Gibt es eine Attributdefinition an mehreren Stellen, gelten folgende Regeln:
      - Beim Lesen der Item Definition gewinnt die Attributdefinition, welche zuletzt eingelesen wird. Regel: **"last wins"**
      - In Struktur- /Unterstrukturdefinitionen gewinnt die zuerst eingelesene Attributdefinition. Regel: **"first wins"**
-     - Wenn ein Attribut in einem struct-Template und in den Item Definitionen definiert wird, "gewinnt" die Angabe aus der 
+     - Wenn ein Attribut in einem struct-Template und in den Item Definitionen definiert wird, "gewinnt" die Angabe aus der
        Item Definition. Regel: **"Item wins"**
 
 Beim Auflösen von Unterstrukturen gewinnt die Definition der Struktur der oberen Ebene, wenn das Attribut
-in der Struktur der oberen Ebene vor dem **struct**-Attribut definiert ist. Dies ermöglicht ein "Überschreiben" 
+in der Struktur der oberen Ebene vor dem **struct**-Attribut definiert ist. Dies ermöglicht ein "Überschreiben"
 von Attributwerten, die in einer Unterstruktur definiert wurden. Wenn das Attribut nach dem
 **struct**-Attribut definiert ist, gewinnt die Definition in der Unterstruktur. Regel: **"first wins"**
 
@@ -293,8 +294,8 @@ Das Verhalten bei Re-Definieren von list-Attributen ist abhängig von der Anwend
 
 .. note::
     Gibt es eine Attributdefinition mit Listen an mehreren Stellen, gelten folgende Regeln:
-      - Bei structs/substructs werden Listen immer gemergt. 
-      - Bei Items/structs nur, wenn dort Am Anfang einer der Spezialeinträge steht. 
+      - Bei structs/substructs werden Listen immer gemergt.
+      - Bei Items/structs nur, wenn dort Am Anfang einer der Spezialeinträge steht.
 
 
 Verhalten bei struct in einem Item

@@ -17,6 +17,7 @@ for i in sys.path:
     print(i)
 
 import bin.shngversion as shngversion
+import plugins as pluginsversion
 
 import datetime
 now = datetime.datetime.now()
@@ -135,7 +136,8 @@ pygments_style = 'sphinx'
 # -- Options for HTML output ---------------------------------------------------
 
 def setup(app):
-    app.add_stylesheet('custom.css')
+    # deprecated in Sphinx 4: app.add_stylesheet('custom.css')
+    app.add_css_file('custom.css')
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
