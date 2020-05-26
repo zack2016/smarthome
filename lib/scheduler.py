@@ -241,6 +241,11 @@ class Scheduler(threading.Thread):
                     break
             if not self._lock.acquire(timeout=1):
                 logger.critical("Scheduler: Deadlock!")
+                tn = {}
+                for t in threading.enumerate():
+                    tn[t.name] = tn.get(t.name, 0) + 1
+                logger.warning('Threads: ' + ', '.join("{0}: {1}".format(k, v) for (k, v) in list(tn.items())))
+                self._sh.restart('SmartHomeNG (scheduler encountered a deadlock')
                 continue
             for name in self._scheduler:
                 task = self._scheduler[name]
