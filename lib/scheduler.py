@@ -166,6 +166,41 @@ class Scheduler(threading.Thread):
             return _scheduler_instance
 
 
+    def get_worker_count(self):
+        """
+        Get number of worker threads initialized by scheduler
+
+        :return: number of worker threads
+        """
+        return len(self._workers)
+
+
+    def get_idle_worker_count(self):
+        """
+        Get number of idle worker threads
+
+        :return: number of worker threads
+        """
+        idle_count = 0
+        for w in self._workers:
+            if w.name == 'idle':
+                idle_count +=1
+        return idle_count
+
+
+    def get_worker_names(self):
+        """
+        Get names on non-idle worker threads
+
+        :return: list with names of worker threads
+        """
+        worker_names = []
+        for w in self._workers:
+            if w.name != 'idle':
+                worker_names.append(w.name)
+        return worker_names
+
+
     def run(self):
         self.alive = True
         logger.debug("creating {0} workers".format(self._worker_num))
@@ -525,6 +560,7 @@ class Scheduler(threading.Thread):
             logic.logger = logger
             logic.shtime = shtime
             logic.items = items
+            logic.trigger_dict = trigger    # logic.trigger has naming conflict with method logic.trigger of lib.item
 
             logics = obj._logics
 
@@ -532,6 +568,7 @@ class Scheduler(threading.Thread):
                 if _lib_modules_found:
                     self.mqtt = Modules.get_instance().get_module('mqtt')
             mqtt = self.mqtt
+            logic.mqtt = mqtt
 
             try:
                 if logic.enabled:

@@ -22,3 +22,17 @@ env:
             type: num
             sqlite: init
             database: init
+
+        scheduler:
+            worker_threads:
+                type: num
+                sqlite: init
+                database: init
+
+            idle_threads:
+                type: num
+                sqlite: init
+                database: init
+
+            worker_names:
+                type: list
