@@ -38,7 +38,7 @@ from math import *
 from lib.plugin import Plugins
 from lib.shtime import Shtime
 
-from lib.constants import (ITEM_DEFAULTS, FOO, KEY_ENFORCE_UPDATES, KEY_CACHE, KEY_CYCLE, KEY_CRONTAB, KEY_EVAL,
+from lib.constants import (ITEM_DEFAULTS, FOO, KEY_ENFORCE_UPDATES, KEY_ENFORCE_CHANGE, KEY_CACHE, KEY_CYCLE, KEY_CRONTAB, KEY_EVAL,
                            KEY_EVAL_TRIGGER, KEY_TRIGGER, KEY_CONDITION, KEY_NAME, KEY_TYPE, KEY_STRUCT,
                            KEY_VALUE, KEY_INITVALUE, PLUGIN_PARSE_ITEM, KEY_AUTOTIMER, KEY_ON_UPDATE, KEY_ON_CHANGE,
                            KEY_LOG_CHANGE, KEY_THRESHOLD,
@@ -103,6 +103,7 @@ class Item():
         self._crontab = None
         self._cycle = None
         self._enforce_updates = False
+        self._enforce_change = False
         self._eval = None				    # -> KEY_EVAL
         self._eval_unexpanded = ''
         self._eval_trigger = False
@@ -183,7 +184,7 @@ class Item():
                     setattr(self, '_' + attr, value)
                 elif attr in [KEY_EVAL]:
                     self._process_eval(value)
-                elif attr in [KEY_CACHE, KEY_ENFORCE_UPDATES]:  # cast to bool
+                elif attr in [KEY_CACHE, KEY_ENFORCE_UPDATES, KEY_ENFORCE_CHANGE]:  # cast to bool
                     try:
                         setattr(self, '_' + attr, cast_bool(value))
                     except:
@@ -1140,7 +1141,7 @@ class Item():
         self.__last_update = self.shtime.now()
         self.__updated_by = "{0}:{1}".format(caller, source)
         trigger_source_details = self.__updated_by
-        if value != self._value:
+        if value != self._value or self._enforce_change:
             _changed = True
             self.__prev_value = self.__last_value
             self.__last_value = self._value

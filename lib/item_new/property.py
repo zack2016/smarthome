@@ -126,6 +126,31 @@ class Property:
             return
 
     @property
+    def enforce_change(self):
+        """
+        Property: enforce_change
+
+        Available in SmartHomeNG v1.6 and above
+
+        :param value: enforce_change state of the item
+        :type value: bool
+
+        :return: enforce_change state of the item
+        :rtype: bool
+        """
+        return self._item._enforce_change
+
+    @enforce_change.setter
+    def enforce_change(self, value):
+
+        if isinstance(value, bool):
+            self._item._enforce_change = value
+            return
+        else:
+            self._type_error('non-boolean')
+            return
+
+    @property
     def eval(self):
         """
         Property: eval expression
