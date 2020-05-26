@@ -1,3 +1,10 @@
-printf "The PID of the running instance of SmartHomeNG is "
-cat /usr/local/shng_dev/var/run/smarthome.pid
+#!/bin/bash
+PIDFILE=/usr/local/shng_dev/var/run/smarthome.pid
+if test -f "$PIDFILE"; then
+	printf "The PID of the running instance of SmartHomeNG is "
+	cat "$PIDFILE"
+else
+        printf "No instance of SmartHomeNG is running"
+fi
 echo ""
+
