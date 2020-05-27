@@ -219,7 +219,7 @@ class Scheduler(threading.Thread):
                         for t in threading.enumerate():
                             tn[t.name] = tn.get(t.name, 0) + 1
                         logger.info('Threads: ' + ', '.join("{0}: {1}".format(k, v) for (k, v) in list(tn.items())))
-                        if len(self._workers) > self._sh._restart_on_num_workers:
+                        if len(self._workers) > int(self._sh._restart_on_num_workers):
                             self._add_worker()
                         else:
                             logger.warning('Threads: ' + ', '.join("{0}: {1}".format(k, v) for (k, v) in list(tn.items())))
