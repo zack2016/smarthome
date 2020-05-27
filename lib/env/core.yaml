@@ -48,7 +48,7 @@ env:
                 eval_trigger:
                     - ..worker_threads
                     - ..idle_threads
-                enforce_updates: True
+                enforce_change: True
                 sqlite: init
                 database: init
                 database_maxage: 31

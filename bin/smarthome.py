@@ -213,6 +213,9 @@ class SmartHome():
     _default_language = 'de'
     _fallback_language_order = 'en,de'
 
+    _restart_on_deadlock = True
+    _restart_on_num_workers = 30
+
     plugin_load_complete = False
     item_load_complete = False
     plugin_start_complete = False
