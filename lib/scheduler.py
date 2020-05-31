@@ -221,28 +221,31 @@ class Scheduler(threading.Thread):
                             tn[t.name] = tn.get(t.name, 0) + 1
                         logger.info('Worker-Threads: ' + ', '.join("{0}: {1}".format(k, v) for (k, v) in list(tn.items())))
 
-                        if (int(self._sh._restart_on_num_workers) > self._worker_max) and (len(self._workers) >= int(self._sh._restart_on_num_workers)):
-                            # only restart, if a reasonable restart-number of workers has been configured
-                            logger.warning('Worker-Threads: ' + ', '.join("{0}: {1}".format(k, v) for (k, v) in list(tn.items())))
-                            self._sh.restart('SmartHomeNG (scheduler started too many worker threads ('+str(len(self._workers))+'))')
-                        else:
+                        if int(self._sh._restart_on_num_workers) < self._worker_max:
+                            # do no restart
                             self._add_worker()
+                        else:
+                            if len(self._workers) < int(self._sh._restart_on_num_workers):
+                                self._add_worker()
+                            else:
+                                logger.warning('Worker-Threads: ' + ', '.join("{0}: {1}".format(k, v) for (k, v) in list(tn.items())))
+                                self._sh.restart('SmartHomeNG (scheduler started too many worker threads ({}))'.format(len(self._workers)))
 
-        while self._triggerq.qsize() > 0:
-            try:
-                (dt, prio), (name, obj, by, source, dest, value) = self._triggerq.get()
-            except Exception as e:
-                logger.warning("Trigger queue exception: {0}".format(e))
-                break
+            while self._triggerq.qsize() > 0:
+                try:
+                    (dt, prio), (name, obj, by, source, dest, value) = self._triggerq.get()
+                except Exception as e:
+                    logger.warning("Trigger queue exception: {0}".format(e))
+                    break
 
-            if dt < now:  # run it
-                self._runc.acquire()
-                self._runq.insert(prio, (name, obj, by, source, dest, value))
-                self._runc.notify()
-                self._runc.release()
-            else:  # put last entry back and break while loop
-                self._triggerq.insert((dt, prio), (name, obj, by, source, dest, value))
-                break
+                if dt < now:  # run it
+                    self._runc.acquire()
+                    self._runq.insert(prio, (name, obj, by, source, dest, value))
+                    self._runc.notify()
+                    self._runc.release()
+                else:  # put last entry back and break while loop
+                    self._triggerq.insert((dt, prio), (name, obj, by, source, dest, value))
+                    break
             if not self._lock.acquire(timeout=1):
                 logger.critical("Scheduler: Deadlock!")
                 tn = {}
@@ -844,4 +847,3 @@ class Scheduler(threading.Thread):
             day = now + dateutil.relativedelta.relativedelta(weekday=wday(+2))
             result.append(day.strftime("%d"))
         return result
-
