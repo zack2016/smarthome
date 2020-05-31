@@ -220,13 +220,15 @@ class Scheduler(threading.Thread):
                         for t in self._workers:
                             tn[t.name] = tn.get(t.name, 0) + 1
                         logger.info('Worker-Threads: ' + ', '.join("{0}: {1}".format(k, v) for (k, v) in list(tn.items())))
-                        if len(self._workers) <= int(self._sh._restart_on_num_workers):
-                            self._add_worker()
-                        elif int(self._sh._restart_on_num_workers) > self._worker_max:
+
+                        if (int(self._sh._restart_on_num_workers) > self._worker_max) and (len(self._workers) >= int(self._sh._restart_on_num_workers)):
                             # only restart, if a reasonable restart-number of workers has been configured
                             logger.warning('Worker-Threads: ' + ', '.join("{0}: {1}".format(k, v) for (k, v) in list(tn.items())))
                             self._sh.restart('SmartHomeNG (scheduler started too many worker threads ('+str(len(self._workers))+'))')
-            while self._triggerq.qsize() > 0:
+                        else:
+                            self._add_worker()
+
+        while self._triggerq.qsize() > 0:
                 try:
                     (dt, prio), (name, obj, by, source, dest, value) = self._triggerq.get()
                 except Exception as e:
