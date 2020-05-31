@@ -229,20 +229,20 @@ class Scheduler(threading.Thread):
                             self._add_worker()
 
         while self._triggerq.qsize() > 0:
-                try:
-                    (dt, prio), (name, obj, by, source, dest, value) = self._triggerq.get()
-                except Exception as e:
-                    logger.warning("Trigger queue exception: {0}".format(e))
-                    break
+            try:
+                (dt, prio), (name, obj, by, source, dest, value) = self._triggerq.get()
+            except Exception as e:
+                logger.warning("Trigger queue exception: {0}".format(e))
+                break
 
-                if dt < now:  # run it
-                    self._runc.acquire()
-                    self._runq.insert(prio, (name, obj, by, source, dest, value))
-                    self._runc.notify()
-                    self._runc.release()
-                else:  # put last entry back and break while loop
-                    self._triggerq.insert((dt, prio), (name, obj, by, source, dest, value))
-                    break
+            if dt < now:  # run it
+                self._runc.acquire()
+                self._runq.insert(prio, (name, obj, by, source, dest, value))
+                self._runc.notify()
+                self._runc.release()
+            else:  # put last entry back and break while loop
+                self._triggerq.insert((dt, prio), (name, obj, by, source, dest, value))
+                break
             if not self._lock.acquire(timeout=1):
                 logger.critical("Scheduler: Deadlock!")
                 tn = {}
