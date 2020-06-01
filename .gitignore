@@ -51,7 +51,7 @@ requirements/conf_all.txt
 
 # ignore users tools settings
 /.idea
-/.vscode
+**/.vscode/
 /custom_plugins
 /priv_tools
 
