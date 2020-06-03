@@ -36,6 +36,13 @@ mem_info = p.memory_info()
 mem = mem_info.rss
 sh.env.core.memory(mem, logic.lname)
 
+# System Memory
+swap_info = psutil.swap_memory()
+sh.env.system.swap(swap_info.used, logic.lname)
+sysmem_info = psutil.virtual_memory()
+sh.env.system.memory.used(sysmem_info.used, logic.lname)
+sh.env.system.memory.percent(sysmem_info.percent, logic.lname)
+
 # Load
 l1, l5, l15 = os.getloadavg()
 sh.env.system.load(round(l5, 2), logic.lname)

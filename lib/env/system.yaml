@@ -12,6 +12,24 @@ env:
             database: init
             database_maxage: 31
 
+        memory:
+            used:
+                type: num
+                enforce_change: True
+                database: init
+                database_maxage: 31
+            percent:
+                type: num
+                enforce_change: True
+                database: init
+                database_maxage: 31
+
+        swap:
+            type: num
+            enforce_change: True
+            database: init
+            database_maxage: 31
+
         name:
             type: str
 
