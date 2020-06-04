@@ -247,14 +247,15 @@ class Scheduler(threading.Thread):
                     self._triggerq.insert((dt, prio), (name, obj, by, source, dest, value))
                     break
             # For debugging
-            task_count = 0
-            for name in self._scheduler:
-                task = self._scheduler[name]
-                if task['next'] is not None:
-                    task_count += 1
+            # task_count = 0
+            # for name in self._scheduler:
+            #     task = self._scheduler[name]
+            #     if task['next'] is not None:
+            #         task_count += 1
             # End for debugging
             if not self._lock.acquire(timeout=1):
-                logger.critical("Scheduler: Deadlock! - Task Count to enter run queue: {}".format(task_count))
+            #     logger.critical("Scheduler: Deadlock! - Task Count to enter run queue: {}".format(task_count))
+                logger.critical("Scheduler: Deadlock!")
                 continue
             for name in self._scheduler:
                 task = self._scheduler[name]
