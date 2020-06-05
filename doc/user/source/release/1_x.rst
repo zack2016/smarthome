@@ -10,9 +10,9 @@ Es gibt eine Menge neuer Features im Core von SmartHomeNG und den Plugins.
 
     Diese Release Notes sind ein Arbeitsstand.
 
-     - Berücksichtigt sind Commits im smarthome Repository bis incl. May 14, 2020
-       (Merge branch 'develop' of https://github.com/smarthomeNG/smarthome in…)
-     - Berücksichtigt sind Commits im plugins Repository bis incl. May 11, 2020
+     - Berücksichtigt sind Commits im smarthome Repository bis incl. June 4th, 2020
+       (...)
+     - Berücksichtigt sind Commits im plugins Repository bis incl. June 2nd, 2020
        (...)
 
 
@@ -82,16 +82,39 @@ Updates in the CORE
 
   * Added sh, items, shtime to context 'logic' to increase support for functions in logics
 
-* lib....:
+* lib:
 
   * class SmartPlugin: variable self.alive is initialized (even before __init__ is called)
   * class SmartPlugin: init_webinterface() added
   * lib.connection: Bugfix in Client.close()
   * lib.db: Changed error handling, if api initialization fails
-  * lib.shpypi: Changed to avoid loading the wrong PIP command for package installation
-  * lib.scheduler: Implemented restart of SmartHomeNG if number of worker threads goes through the roof
+  * lib.env:
+
+    * Added env items for scheduler's worker thread information
+    * Added enfoce_change to Items written to database
+    * Added items with information for system swap and memory use
+
+  * lib.item: Added enforce_change attribute
+  * lib.scheduler:
+
+    * Implemented restart of SmartHomeNG if number of worker threads goes through the roof
+    * Added methods to export worker thread information to env items
+
+  * lib.shpypi:
+
+    * Changed to avoid loading the wrong PIP command for package installation
+    * Bugfix for existing etc/plugin.yaml without any configured plugin
 
 * Modules:
+
+  * admin:
+
+    * shngadmin:
+
+      * Implemented chart for scheduler workers
+      * shngadmin: Adjusted Resource-Graph tab to fit on iPad in landscape mode
+      * Added charts with system memory ans swap used
+      * Chart tab changed to css grid layout
 
   * http:
 
@@ -140,10 +163,12 @@ Plugin Updates
 * Buderus:
 
   * now supports get_param_value and start/stop
+  * Bugfix:  Removed wrong (duplicate) if statement in line 169
 
 * darksky:
 
   * redesigned structs (use of sub-structs); choice if data is written to database
+  * Fixed bug 'dictionary keys changed during iteration' that showed under Python 3.8
 
 * database:
 
@@ -159,6 +184,9 @@ Plugin Updates
   * Corrected logging
   * Changed translations to use variable parameters in text
   * fixed bug that wrote value to database for items with attribute database_acl set to ro
+  * Fixed bug when trying to read cache value on initialization and log table has no entries for item
+  * Clarified warning message when skipping dumps
+  * Added multiple entry parsing in series duration parsing for visu_websocket ('1w 2y 3h 1d 39i 15s')
 
 * dlms:
 
@@ -194,6 +222,10 @@ Plugin Updates
 
   * Support Thread added to metadata
 
+* ical:
+
+  * Added shtime call for tzinfo()
+
 * indego:
 
   * update plugin.yaml
@@ -225,6 +257,15 @@ Plugin Updates
 * kodi:
 
   * Removed instance parameter from metadata (is globally defined for MI plugins)
+  * extended update command to initiate connect if necessary
+  * check parameter value for type conformance to bounds, convert if necessary, fixed error in _update_status()
+  * set power item on connect/disconnect
+  * final adjustments and fixes, update struct definitions, adjust documentation for autoreconnect features
+  * changes to handling of stale commands, reduced redundant info queries
+
+* kostalmodbus:
+
+  * Added minimum Python Version to metadata
 
 * lirc:
 
@@ -251,6 +292,10 @@ Plugin Updates
   * Fixes ValueError: cannot switch from automatic field numbering to manual field specification
   * Fixes for some debug string formats
   * should be able to run as multiinstance plugin now
+
+* pushover:
+
+  * Missing assignement to self.alive added in run() and stop()
 
 * rrd:
 
@@ -282,10 +327,20 @@ Plugin Updates
 
   * Removed instance parameter from metadata (is globally defined for MI plugins)
 
+* snap7_logo:
+
+  * Dummy translation file added
+
+* squeezebox:
+
+  * struct tweaks and playstop optimize
+
 * stateengine:
 
   * cast values for evals correctly
   * webinterface translation
+  * Improvement of struct definitions and documentation
+  * don't update manual item (for suspend) when change comes from stateengine plugin.
 
 * telegram:
 
@@ -314,6 +369,10 @@ Plugin Updates
 
   * updated struct definition with relativ item references
   * fixed plugin.yaml
+
+* Several plugins:
+
+  * Changed README.md and other files to conform with new Sphinx / recommonmark versions
 
 
 Outdated Plugins
@@ -378,7 +437,9 @@ Documentation
 * User Documentation
 
   * fix of wrong description of knxd router setup in komplettanleitung
+  * Updated build process to work with actual versions of sphinx and recommonmark
+  * Reworked documentation to implement better navigation though sidebar
 
 * Developer Documentation
 
-  * ...
+  * Updated build process to work with actual versions of sphinx and recommonmark
