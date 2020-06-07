@@ -102,6 +102,7 @@ class SamplePlugin(SmartPlugin):
         Stop method for the plugin
         """
         self.logger.debug("Stop method called")
+        self.scheduler_remove('poll_device')
         self.alive = False
 
     def parse_item(self, item):
