@@ -57,15 +57,8 @@ def get_process_info(command, wait=True, append_error=False):
     if wait:
         ## Wait for date to terminate. Get return returncode ##
         p_status = p.wait()
-    if append_error and err:
-        res_txt = str(result, encoding='utf-8', errors='strict')
-        err_txt = str(err, encoding='utf-8', errors='strict')
-        if res_txt == '' or err_txt == '':
-            return res_txt + err_txt
-        else:
-            return res_txt + '|' + err_txt
-    else:
-        return str(result, encoding='utf-8', errors='strict')
+
+    return str(result, encoding='utf-8', errors='strict')
 
 
 # ======================================================================
@@ -158,7 +151,6 @@ class ServerController(RESTResource):
                 daemon = 'knxd'
                 # get version of installed knx daemon (knxd v0.14.30 outputs version to stderr instead of stdout)
                 wrk = get_process_info("knxd -l?V|grep knxd", append_error=True)
-                self.logger.warning("get_knx_daemon: wrk='{}'".format(wrk))
                 wrk = wrk.split()
                 wrk = wrk[1].split(':')
                 if wrk != []:
