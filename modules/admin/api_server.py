@@ -35,7 +35,7 @@ import lib.backup as backup
 # ======================================================================
 #  Functions to be moved to utils
 #
-def get_process_info(command, wait=True):
+def get_process_info(command, wait=True, append_error=False):
     """
     returns output from executing a given command via the shell.
     """
@@ -54,7 +54,15 @@ def get_process_info(command, wait=True):
     if wait:
         ## Wait for date to terminate. Get return returncode ##
         p_status = p.wait()
-    return str(result, encoding='utf-8', errors='strict')
+    if append_error and err:
+        res_txt = str(result, encoding='utf-8', errors='strict')
+        err_txt = str(err, encoding='utf-8', errors='strict')
+        if res_txt == '' or err_txt == '':
+            return res_txt + err_txt
+        else:
+            return res_txt + '|' + err_txt
+    else:
+        return str(result, encoding='utf-8', errors='strict')
 
 
 # ======================================================================
@@ -146,7 +154,8 @@ class ServerController(RESTResource):
             else:
                 daemon = 'knxd'
                 # get version of installed knx daemon
-                wrk = get_process_info("knxd -l?V|grep knxd")
+                wrk = get_process_info("knxd -l?V|grep knxd", append_error=True)
+                self.logger.warning("get_knx_daemon: wrk'{}'".format(wrk))
                 wrk = wrk.split()
                 wrk = wrk[1].split(':')
                 if wrk != []:
@@ -188,10 +197,10 @@ class ServerController(RESTResource):
         if get_process_info("ps cax|grep node-red") != '':
             daemon = 'node-red'
         # get version of installed node-red
-        wrk = get_process_info("node-red --help|grep version")
+        wrk = get_process_info("node-red --help|grep Node-RED")
         wrk = wrk.split()
         if wrk != []:
-            daemon += ' v' + wrk[1]
+            daemon += ' ' + wrk[1]
         return daemon
 
 
