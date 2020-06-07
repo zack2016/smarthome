@@ -43,7 +43,10 @@ def get_process_info(command, wait=True, append_error=False):
     import subprocess
 
     ## call date command ##
-    p = subprocess.Popen(command, stdout=subprocess.PIPE, shell=True)
+    if append_error:
+        p = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, shell=True)
+    else:
+        p = subprocess.Popen(command, stdout=subprocess.PIPE, shell=True)
 
     # Talk with date command i.e. read data from stdout and stderr. Store this info in tuple ##
     # Interact with process: Send data to stdin. Read data from stdout and stderr, until end-of-file is reached.
@@ -153,9 +156,9 @@ class ServerController(RESTResource):
                 daemon += ' and knxd'
             else:
                 daemon = 'knxd'
-                # get version of installed knx daemon
+                # get version of installed knx daemon (knxd v0.14.30 outputs version to stderr instead of stdout)
                 wrk = get_process_info("knxd -l?V|grep knxd", append_error=True)
-                self.logger.warning("get_knx_daemon: wrk'{}'".format(wrk))
+                self.logger.warning("get_knx_daemon: wrk='{}'".format(wrk))
                 wrk = wrk.split()
                 wrk = wrk[1].split(':')
                 if wrk != []:
