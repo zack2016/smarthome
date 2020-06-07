@@ -145,6 +145,12 @@ class ServerController(RESTResource):
                 daemon += ' and knxd'
             else:
                 daemon = 'knxd'
+                # get version of installed knx daemon
+                wrk = get_process_info("knxd -l?V|grep knxd")
+                wrk = wrk.split()
+                wrk = wrk[1].split(':')
+                if wrk != []:
+                    daemon += ' v' + wrk[0]
         return daemon
 
 
@@ -163,8 +169,14 @@ class ServerController(RESTResource):
         Tests it 1wire are running
         """
         daemon = 'SERVICES.INACTIVE'
+        # test id mqtt broker is running
         if get_process_info("ps cax|grep mosquitto") != '':
             daemon = 'mosquitto'
+            # get version of installed mosquitto broker
+            wrk = get_process_info("/usr/sbin/mosquitto -h|grep version")
+            wrk = wrk.split()
+            if wrk != []:
+                daemon += ' v' + wrk[2]
         return daemon
 
 
@@ -175,6 +187,11 @@ class ServerController(RESTResource):
         daemon = 'SERVICES.INACTIVE'
         if get_process_info("ps cax|grep node-red") != '':
             daemon = 'node-red'
+        # get version of installed node-red
+        wrk = get_process_info("node-red --help|grep version")
+        wrk = wrk.split()
+        if wrk != []:
+            daemon += ' v' + wrk[1]
         return daemon
 
 
