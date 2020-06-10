@@ -43,7 +43,7 @@ hashed password for the web access. By default empty. Without a hashed password 
 
 #### service_user (optional
 
-username for the access to webervices. By default username `serviceuser` is used.
+username for the access to webservices. By default username `serviceuser` is used.
 
 #### service_password (optional)
 
