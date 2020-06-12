@@ -191,11 +191,11 @@ class ServerController(RESTResource):
         daemon = 'SERVICES.INACTIVE'
         if get_process_info("ps cax|grep node-red") != '':
             daemon = 'node-red'
-        # get version of installed node-red
-        wrk = get_process_info("node-red --help|grep Node-RED")
-        wrk = wrk.split()
-        if wrk != []:
-            daemon += ' ' + wrk[1]
+            # get version of installed node-red
+            wrk = get_process_info("node-red --help|grep Node-RED")
+            wrk = wrk.split()
+            if wrk != []:
+                daemon += ' ' + wrk[1]
         return daemon
 
 
