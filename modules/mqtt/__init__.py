@@ -31,6 +31,7 @@ import json
 import os
 import socket    # for gethostbyname
 import inspect
+import datetime
 
 import paho.mqtt.client as mqtt
 
@@ -38,14 +39,17 @@ from lib.model.module import Module
 from lib.module import Modules
 from lib.shtime import Shtime
 from lib.utils import Utils
+from lib.scheduler import Scheduler
 
 
 class Mqtt(Module):
-    version = '1.7.0'
+    version = '1.7.1'
     longname = 'MQTT module for SmartHomeNG'
 
     __plugif_CallbackTopics = {}         # for plugin interface
     __plugif_Sub = None
+
+    scheduler = None
 
     _broker_version = '?'
     _broker = {}
@@ -156,7 +160,9 @@ class Mqtt(Module):
         # if self.at_instance_name != '':
         #     self.at_instance_name = '@' + self.at_instance_name
 
+        self.scheduler = Scheduler.get_instance()
 
+        self._network_connected_to_broker = False
         self._connected = False
         self._connect_result = ''
 
@@ -164,8 +170,9 @@ class Mqtt(Module):
         # ca_certs ...
 
         if not self._connect_to_broker():
-            self._init_complete = False
-            return
+            # self._init_complete = False
+            # return
+            pass
 
 
         ip = _get_local_ipv4_address()
@@ -230,12 +237,34 @@ class Mqtt(Module):
         self._client.on_disconnect = self._on_disconnect
         self._client.on_log = self._on_mqtt_log
         self._client.on_message = self._on_mqtt_message
+
+        self._network_connected_to_broker = False
+        if not self._network_connect_to_broker(from_init=True):
+            self.logger.warning("MQTT broker can not be reached. No messages are sent/received until the broker can be reached")
+        return
+
+
+    def _network_connect_to_broker(self, from_init=False):
+        """
+        Esteblish network connect to broker
+
+        :return: success
+        """
         try:
             self._client.connect(self.broker_ip, self.broker_port, 60)
             self.logger.debug("- Sending connect request to broker")
         except Exception as e:
-            self.logger.error('Connection error: {0}'.format(e))
+            if from_init:
+                self.logger.error('Connection error: {0}'.format(e))
+
+            # schedule a task that is run once to try to connecg
+            next = self.shtime.now() + datetime.timedelta(seconds=10)
+            self.scheduler.add('module.mqtt: connect to broker', self._network_connect_to_broker, next=next)
             return False
+
+        if not from_init:
+            self.logger.warning("MQTT broker has been reached. Connection is starting")
+        self._network_connected_to_broker = True
         return True
 
 
@@ -697,7 +726,7 @@ class Mqtt(Module):
         :rtype: str
         """
         caller = inspect.stack()[2][1]
-        split = caller.split('/')        
+        split = caller.split('/')
         self.logger.debug("_get_caller_type: inspect.stack()[2][1] = '{}', split = {}".format(caller, split))
         if split[-3] == 'lib' and split[-2] == 'model':
             source_type = 'Plugin'
