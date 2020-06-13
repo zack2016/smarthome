@@ -43,7 +43,7 @@ from lib.scheduler import Scheduler
 
 
 class Mqtt(Module):
-    version = '1.7.1'
+    version = '1.7.2'
     longname = 'MQTT module for SmartHomeNG'
 
     __plugif_CallbackTopics = {}         # for plugin interface
@@ -367,7 +367,7 @@ class Mqtt(Module):
         return
 
 
-    def subscribe_topic(self, source, topic, callback=None, qos=None, payload_type='str', bool_values=None):
+    def subscribe_topic(self, source, topic, callback=None, qos=None, payload_type='str', item_type=None, bool_values=None):
         """
         method to subscribe to a topic
 
@@ -375,20 +375,24 @@ class Mqtt(Module):
 
         :param source:       name of plugin or logic which want's to publish a topic
         :param topic:        topic to subscribe to
+        :param callback:     plugin callback function or name of logic for logics-callbacks
         :param qos:          Optional: quality of service (0-2) otherwise the default of the mqtt plugin will be used
         :param payload_type: Optional: 'str', 'num', 'bool', 'list', 'dict', 'scene', 'bytes'
-        :param callback:     plugin callback function or name of logic for logics-callbacks
+        :param item_type:    Type of item (used for casting)
+        :param bool_values:  List with values used for representation of bool items
         :type source:        str
         :type topic:         str
+        :type callback:      str (if logic) or function (if called from MqttPlugin class)
         :type qos:           int
         :type payload_type:  str
-        :type callback:      str (if logic) or function (if called from MqttPlugin class)
+        :type item_type:     str or None
+        :type bool_values:   list or None
         """
         if bool_values is None:
             bool_values = self.bool_values
 
         source_type = self._get_caller_type()
-        self.logger.info("'{}()' - called from {} by '{}()'".format(inspect.stack()[0][3], source_type, inspect.stack()[1][3]))
+        self.logger.debug("'{}()' - called from {} by '{}()'".format(inspect.stack()[0][3], source_type, inspect.stack()[1][3]))
         #self.logger.debug("subscribe_topic: inspect.stack()[2][3] = '{}', inspect.stack()[3][3] = '{}'".format(inspect.stack()[2][3], inspect.stack()[3][3]))
 
         if qos == None:
@@ -403,7 +407,8 @@ class Mqtt(Module):
             self.logger.warning("Invalid payload-datatype specified for {} '{}', ignored".format(source_type, callback))
 
         if not self._subscribed_topics.get(topic, None):
-            self.logger.info("subscribe_topic: NO MQTT Subscription to topic '{}' exists yet, adding topic".format(topic))
+            # self.logger.info("subscribe_topic: No MQTT Subscription to topic '{}' exists yet, adding topic".format(topic))
+            self.logger.info("subscribe_topic: Adding topic '{}'".format(topic))
             # lock
             self._subscribed_topics_lock.acquire()
             try:
@@ -441,7 +446,7 @@ class Mqtt(Module):
         :param topic:        topic to unsubscribe from
         """
         source_type = self._get_caller_type()
-        self.logger.info("'{}()' - called from {} by '{}()'".format(inspect.stack()[0][3], source_type, inspect.stack()[1][3]))
+        self.logger.debug("'{}()' - called from {} by '{}()'".format(inspect.stack()[0][3], source_type, inspect.stack()[1][3]))
 
         if not self._subscribed_topics.get(topic, None):
             # the topic is not subscribed
@@ -453,7 +458,7 @@ class Mqtt(Module):
             self.logger.info("unsubscribe_topic: Topic '{}' is not subscribed by '{}'".format(topic, source))
             return
 
-        self.logger.debug("unsubscribe_topic: Subscription to topic '{}' for '{}' is removed".format(topic, source))
+        self.logger.info("unsubscribe_topic: Subscription to topic '{}' for '{}' is removed".format(topic, source))
         # lock
         self._subscribed_topics_lock.acquire()
         try:
@@ -497,7 +502,7 @@ class Mqtt(Module):
 
     def _callback_to_plugin(self, plugin_name, subscription_dict, topic, payload, qos, retain):
         """
-        This method is called by on_mqtt_message to callback the rigth plugin
+        This method is called by on_mqtt_message to callback the right plugin
 
         :param plugin_name:       Name of the plugin with the callback function
         :param subscription_dict:
@@ -515,16 +520,14 @@ class Mqtt(Module):
         plugin = subscription_dict.get('callback', None)
 
         subscription_found = False
-        try:
-            if plugin:
-                self.logger.info("_callback_to_plugin: Using topic '{}', payload '{}' (type {}) for callback to plugin '{}' {}".format(topic, payload, datatype, plugin_name, plugin))
-                #self._sh.logics.trigger_logic(logic, source='mqtt', by=topic, value=payload)
-                plugin(topic, payload, qos, retain)
-                subscription_found = True
-            else:
-                self.logger.error("_callback_to_plugin: callback for plugin '{}' not defined".format(plugin_name))
-        except Exception as e:
-            self.logger.error("_callback_to_plugin Exception {}".format(e))
+        if plugin:
+            self.logger.info("_callback_to_plugin: Using topic '{}', payload '{}' (type {}) for callback to plugin '{}' {}".format(topic, payload, datatype, plugin_name, plugin))
+
+            #self._sh.logics.trigger_logic(logic, source='mqtt', by=topic, value=payload)
+            plugin(topic, payload, qos, retain)
+            subscription_found = True
+        else:
+            self.logger.error("_callback_to_plugin: callback for plugin '{}' not defined".format(plugin_name))
 
         return subscription_found
 
@@ -550,7 +553,7 @@ class Mqtt(Module):
                     topic_dict = self._subscribed_topics[topic]
 
                     for subscription in topic_dict:
-                        self.logger.info("_on_mqtt_message: subscription '{}': {}".format(subscription, topic_dict[subscription]))
+                        self.logger.debug("_on_mqtt_message: subscription '{}': {}".format(subscription, topic_dict[subscription]))
                         subscriber_type = topic_dict[subscription].get('subscriber_type', None)
                         if subscriber_type == 'plugin':
                             subscription_found = self._callback_to_plugin(subscription, topic_dict[subscription], message.topic, message.payload, message.qos, message.retain)
@@ -558,18 +561,12 @@ class Mqtt(Module):
                             subscription_found = self._trigger_logic(topic_dict[subscription], message.topic, message.payload)
                         else:
                             self.logger.error("_on_mqtt_message: received topic for unknown subscriber_type '{}'".format(subscriber_type))
+
         finally:
             # unlock
             self._subscribed_topics_lock.release()
 
-        item = self._subscribed_topics.get(message.topic, None)
-        if item != None:
-            payload = self.cast_from_mqtt(item.type(), message.payload)
-            self.logger.info(
-                "Received topic '{}', payload '{}' (type {}), QoS '{}', retain '{}' for item '{}'".format(message.topic, payload, item.type(), message.qos, message.retain, item.id()))
-            item(payload, 'MQTT')
-
-        if (not subscription_found) and (item == None):
+        if not subscription_found:
             if not self._handle_broker_infos(message):
                 self.logger.error("_on_mqtt_message: Received topic '{}', payload '{}', QoS '{}', retain '{}' WITHOUT matching item/logic".format( message.topic, message.payload, message.qos, message.retain))
 
@@ -792,7 +789,11 @@ class Mqtt(Module):
         """
         if bool_values is None:
             bool_values = self.bool_values
-        str_data = raw_data.decode('utf-8')
+        if isinstance(raw_data, bytes):
+            str_data = raw_data.decode('utf-8')
+        else:
+            self.logger.info("cast_from_mqtt: type(raw_data)={}".format(type(raw_data)))
+            str_data = str(raw_data)
         if datatype == 'bytes':
             data = raw_data
         if datatype == 'str':
