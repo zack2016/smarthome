@@ -147,10 +147,8 @@ class Mqtt(Module):
         #
 
         self._subscribed_topics_lock = threading.Lock()
-        self._subscribed_topics = {}
+        self._subscribed_topics = {}  # subscribed topics
 
-
-        self.topics = {}  # subscribed topics
         self.logicpayloadtypes = {}  # payload types for subscribed topics for triggering logics
 
 
@@ -274,8 +272,8 @@ class Mqtt(Module):
         """
         self._unsubscribe_broker_infos()
 
-        for topic in self.topics:
-            item = self.topics[topic]
+        for topic in self._subscribed_topics:
+            item = self._subscribed_topics[topic]
             self.logger.debug("Unsubscribing topic '{}' for item '{}'".format(str(topic), str(item.id())))
             self._client.unsubscribe(topic)
 
@@ -516,8 +514,8 @@ class Mqtt(Module):
         payload = self.cast_from_mqtt(datatype, payload, bool_values)
         plugin = subscription_dict.get('callback', None)
 
+        subscription_found = False
         try:
-            subscription_found = False
             if plugin:
                 self.logger.info("_callback_to_plugin: Using topic '{}', payload '{}' (type {}) for callback to plugin '{}' {}".format(topic, payload, datatype, plugin_name, plugin))
                 #self._sh.logics.trigger_logic(logic, source='mqtt', by=topic, value=payload)
@@ -564,7 +562,7 @@ class Mqtt(Module):
             # unlock
             self._subscribed_topics_lock.release()
 
-        item = self.topics.get(message.topic, None)
+        item = self._subscribed_topics.get(message.topic, None)
         if item != None:
             payload = self.cast_from_mqtt(item.type(), message.payload)
             self.logger.info(
@@ -689,12 +687,12 @@ class Mqtt(Module):
             self._subscribe_broker_infos()
 
             # subscribe to topics to listen for items
-            for topic in self.topics:
-                item = self.topics[topic]
+            for topic in self._subscribed_topics:
+                item = self._subscribed_topics[topic]
                 self._client.subscribe(topic, qos=self._get_qos_forTopic(item) )
                 self.logger.info("Listening on topic '{}' for item '{}'".format( topic, item.id() ))
 
-            self.logger.info("self.topics = {}".format(self.topics))
+            self.logger.info("self._subscribed_topics = {}".format(self._subscribed_topics))
 
             return
 
