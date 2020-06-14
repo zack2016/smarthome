@@ -57,7 +57,7 @@ import plugins.__init__ as plugin_vers
 # Update auf 1.7.1 wg. Release
 # Update auf 1.7a  wg. Kennzeichnung des Stands als "nach dem v1.7.1 Release"
 
-shNG_version = '1.7b'
+shNG_version = '1.7.1b'
 shNG_branch = 'develop'
 
 # ---------------------------------------------------------------------------------

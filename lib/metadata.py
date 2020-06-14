@@ -365,14 +365,23 @@ class Metadata():
         """
         l = str(self._sh.version).split('.')
         shng_version = l[0]+'.'+l[1]
+        if len(l) > 2:
+            shng_version += '.'+l[2]
+
         l = str(self.get_string('sh_minversion')).split('.')
         min_shngversion = l[0]
         if len(l) > 1:
             min_shngversion += '.'+l[1]
+        if len(l) > 2:
+            min_shngversion += '.'+l[2]
+
         l = str(self.get_string('sh_maxversion')).split('.')
         max_shngversion = l[0]
         if len(l) > 1:
             max_shngversion += '.'+l[1]
+        if len(l) > 2:
+            max_shngversion += '.'+l[2]
+
         mod_version = self.get_string('version')
 
         if min_shngversion != '':
