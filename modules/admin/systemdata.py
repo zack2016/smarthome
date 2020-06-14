@@ -255,6 +255,7 @@ class SystemData:
         response['uptime'] = time.mktime(datetime.datetime.now().timetuple()) - psutil.boot_time()
         response['sh_uptime'] = sh_runtime_seconds
         response['pyversion'] = pyversion
+        response['pypath'] = self._sh.python_bin
         response['ip'] = ip
         response['ipv6'] = ipv6
         response['pid'] = str(lib.daemon.read_pidfile(self._sh._pidfile))
