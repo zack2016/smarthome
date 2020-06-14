@@ -48,6 +48,9 @@ class MockSmartHome():
     base_dir = _base_dir     # for external modules using that var (backend, ...?)
     _default_language = 'de'
 
+    _restart_on_deadlock = True
+    _restart_on_num_workers = 30
+
     _etc_dir = os.path.join(_base_dir, 'tests', 'resources', 'etc')
 #    _var_dir = os.path.join(_base_dir, 'var')
     _lib_dir = os.path.join(_base_dir, 'lib')
@@ -83,6 +86,7 @@ class MockSmartHome():
         VERSION = '1.7a.'
         VERSION += '0.man'
         self.version = VERSION
+        self.python_bin = os.environ['_']
         self.__logs = {}
 #        self.__item_dict = {}
 #        self.__items = []
@@ -94,7 +98,7 @@ class MockSmartHome():
 
         self.scheduler = MockScheduler()
         self.connections = lib.connection.Connections()
-        
+
         if self.shtime is None:
             lib.shtime._shtime_instance = self.shtime = Shtime(self)
         # Start()
@@ -106,7 +110,7 @@ class MockSmartHome():
             self.items = lib.item.Items(self)
         if self.plugins is None:
             self.with_plugins_from(self._plugin_conf_basename)
-        
+
 
     def get_defaultlanguage(self):
         return self._default_language
@@ -159,7 +163,7 @@ class MockSmartHome():
     # ------------------------------------------------------------
     #  Deprecated methods
     # ------------------------------------------------------------
-    
+
     def now(self):
         return self.shtime.now()
 
