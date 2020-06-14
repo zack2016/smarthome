@@ -226,7 +226,7 @@ class SmartHome():
         """
         self.shng_status = {'code': 0, 'text': 'Initalizing'}
 
-        self.python_bin = os.environ['_']
+        self.python_bin = os.environ.get('_','')
 
         self._extern_conf_dir = extern_conf_dir
 
