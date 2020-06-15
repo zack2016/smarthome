@@ -322,8 +322,10 @@ class Shpypi:
             print()
             print("Installing "+req_type_display+" requirements for the current user, please wait...")
 
-        #python_bin_path = os.path.split(os.environ['_'])[0]
-        python_bin_path = os.path.split(self.sh.python_bin)[0]
+        if self.sh:
+            python_bin_path = os.path.split(self.sh.python_bin)[0]
+        else:
+            python_bin_path = os.path.split(os.environ['_'])[0]
         pip_command = os.path.join(python_bin_path, 'pip3')
         if not os.path.isfile(pip_command):
             # to find the right pip command when using 'update-alternatives'
