@@ -25,7 +25,6 @@
 #
 #########################################################################
 
-from lib.module import Modules
 from lib.model.smartplugin import *
 from lib.item import Items
 
@@ -42,8 +41,7 @@ class SamplePlugin(SmartPlugin):
     the update functions for the items
     """
 
-    # Use VERSION = '1.0.0' for your initial plugin Release
-    PLUGIN_VERSION = '1.7.1'    # (must match the version specified in plugin.yaml)
+    PLUGIN_VERSION = '1.7.1'    # (must match the version specified in plugin.yaml), use '1.0.0' for your initial plugin Release
 
     def __init__(self, sh):
         """
