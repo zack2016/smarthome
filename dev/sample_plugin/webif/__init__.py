@@ -28,6 +28,7 @@
 import datetime
 import time
 import os
+import logging
 
 from lib.item import Items
 from lib.model.smartplugin import SmartPluginWebIf
