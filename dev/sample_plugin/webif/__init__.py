@@ -56,7 +56,7 @@ class WebInterface(SmartPluginWebIf):
         self.webif_dir = webif_dir
         self.plugin = plugin
         self.tplenv = self.init_template_environment()
-
+        self.logger = plugin.logger
         self.items = Items.get_instance()
 
     @cherrypy.expose
