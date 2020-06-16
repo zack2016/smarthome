@@ -10,10 +10,10 @@ Es gibt eine Menge neuer Features im Core von SmartHomeNG und den Plugins.
 
     Diese Release Notes sind ein Arbeitsstand.
 
-     - Berücksichtigt sind Commits im smarthome Repository bis incl. June 4th, 2020
-       (...)
-     - Berücksichtigt sind Commits im plugins Repository bis incl. June 2nd, 2020
-       (...)
+     - Berücksichtigt sind Commits im smarthome Repository bis incl. June 15th, 2020
+       (lib.shpypi: Fix for installation of basic packages (before sh object ...)
+     - Berücksichtigt sind Commits im plugins Repository bis incl. June 16th, 2020
+       (robonect: added return statement ...)
 
 
 Überblick
@@ -95,6 +95,8 @@ Updates in the CORE
     * Added items with information for system swap and memory use
 
   * lib.item: Added enforce_change attribute
+  * lib.metadata: Added py_minversion an py_maxversion to plugin and module metadata for pluguins/modules that are
+    not compatible with every Python version that is supported by SmartHomeNG
   * lib.scheduler:
 
     * Implemented restart of SmartHomeNG if number of worker threads goes through the roof
@@ -115,14 +117,17 @@ Updates in the CORE
       * shngadmin: Adjusted Resource-Graph tab to fit on iPad in landscape mode
       * Added charts with system memory ans swap used
       * Chart tab changed to css grid layout
+      * Improvements to system information
+      * Improvements to services information
 
   * http:
 
     * Disabled cherrypy logging to screen; Added instance name to title of web interface
 
-* Plugins:
+  * mqtt:
 
-  * ...
+    * Changed initialization in case the broker is not running/reachable on startup of SmartHomeNG
+    * Fix for subscriptions placed before connection initialization with broker was complete
 
 
 Änderungen bei Plugins
@@ -134,11 +139,18 @@ New Plugins
 For details of the changes of the individual plugins, please refer to the documentation of the respective plugin.
 
 * casambi: Gateway plugin for controlling and reading Casambi devices via the Casambi backend API
+* Robonect: Plugin for reading data from Husqvarna, Gardena, Flymo or McCulloch robotic lawnmowers, equipped with
+  the Robonect Hx module
+* deebot_ozmo: This plugin can control and monitor an Ecovacs Deebot Ozmo series vaccum cleaner robot
 
 
 
 Plugin Updates
 --------------
+
+* alexarc4shng:
+
+  * Added some french translations
 
 * apcups:
 
@@ -187,6 +199,7 @@ Plugin Updates
   * Fixed bug when trying to read cache value on initialization and log table has no entries for item
   * Clarified warning message when skipping dumps
   * Added multiple entry parsing in series duration parsing for visu_websocket ('1w 2y 3h 1d 39i 15s')
+  * Ignore negative duration in timestamp/duration parser
 
 * dlms:
 
@@ -225,6 +238,11 @@ Plugin Updates
 * ical:
 
   * Added shtime call for tzinfo()
+  * scheduler_add to assign icalUpdate and Refresh schedulers correctly
+  * import all methods from smartplugin API
+  * scheduler use smartplugin method
+  * init super on start
+  * remove schedulers on stop
 
 * indego:
 
@@ -334,17 +352,30 @@ Plugin Updates
 * squeezebox:
 
   * struct tweaks and playstop optimize
+  * fix logging when having problems with connection
+  * re-fix stop and pause handling
+  * fix delay at plugin startup for sending commands
 
 * stateengine:
 
   * cast values for evals correctly
   * webinterface translation
   * Improvement of struct definitions and documentation
-  * don't update manual item (for suspend) when change comes from stateengine plugin.
+  * don't update manual item (for suspend) when change comes from stateengine plugin
+  * replace condition re.match by re.fullmatch to allow more specific conditionset regex
+  * change "original changed by" evaluation to "original updated by" (used for manual item check)
+  * fix cycle and crontab check at startup
+  * all schedulers are now correctly defined as smartplugin schedulers
+  * adjust crontab and cycle entries for SE item correctly
 
 * telegram:
 
   * ids must be int, fixed some bugs, validate commands
+
+* visu_websocket:
+
+  * avoid error when monitor item does not exist
+  * Added command 'series_cancel' to websocket protocol
 
 * volkszaehler:
 
@@ -353,6 +384,7 @@ Plugin Updates
 * withings_health:
 
   * Removed instance parameter from metadata (is globally defined for MI plugins)
+  * Changed plugin logo
 
 * wunderground:
 
@@ -364,6 +396,9 @@ Plugin Updates
 
   * enable segment clean
   * updated struct definitions
+  * assign scheduler correctly to the plugin by using smartplugin method scheduler_add
+  * remove scheduler on stop method
+  * update_item only if plugin is alive
 
 * yamahayxc:
 
@@ -439,6 +474,7 @@ Documentation
   * fix of wrong description of knxd router setup in komplettanleitung
   * Updated build process to work with actual versions of sphinx and recommonmark
   * Reworked documentation to implement better navigation though sidebar
+  * Updates to sample plugins
 
 * Developer Documentation
 
