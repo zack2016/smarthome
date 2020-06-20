@@ -403,8 +403,8 @@ class Mqtt(Module):
                 self.logger.warning("subscribe_topic: topic '{}', source '{}': Invalid bool_values specified ('{}') - Ignoring bool_values".format( topic, source, bool_values))
 
         if not payload_type.lower() in ['str', 'num', 'bool', 'list', 'dict', 'scene', 'bytes']:
+            self.logger.warning("Invalid payload-datatype '{}' specified for {} '{}', ignored".format(payload_type, source_type, callback))
             payload_type = 'str'
-            self.logger.warning("Invalid payload-datatype specified for {} '{}', ignored".format(source_type, callback))
 
         if not self._subscribed_topics.get(topic, None):
             # self.logger.info("subscribe_topic: No MQTT Subscription to topic '{}' exists yet, adding topic".format(topic))
@@ -421,8 +421,11 @@ class Mqtt(Module):
                 self._subscribed_topics_lock.release()
 
             # subscribe to topic
-            result, mid = self._client.subscribe(topic, qos=qos)
-            self.logger.info("subscribe_topic: mqtt module is subscribing to topic '{}' with qos={} at broker (result={}, mid={})".format(topic, qos, result, mid))
+            try:
+                result, mid = self._client.subscribe(topic, qos=qos)
+                self.logger.info("subscribe_topic: mqtt module is subscribing to topic '{}' with qos={} at broker (result={}, mid={})".format(topic, qos, result, mid))
+            except Exception as e:
+                self.logger.critical("subscribe_topic: mqtt module tried to subscribe to topic '{}' for callback {}, exception: {}".format(topic, callback, e))
         else:
             self.logger.info("subscribe_topic: A MQTT Subscription to topic '{}' already exists".format(topic))
             # lock
@@ -545,11 +548,30 @@ class Mqtt(Module):
 
         # lock
         self._subscribed_topics_lock.acquire()
+        subscibed_topics = list(self._subscribed_topics.keys())
+        # unlock
+        self._subscribed_topics_lock.release()
+
         try:
             # look for subscriptions to the received topic
             subscription_found = False
-            for topic in self._subscribed_topics:
-                if topic == message.topic:
+            for topic in subscibed_topics:
+                topics_equal = False
+                if (topic.find('+') != -1) or (topic.find('#') != -1):
+                    topics_equal = False
+                    wc_topic = topic.split('/')
+                    msg_topic = message.topic.split('/')
+
+                    equal = False
+                    if (len(wc_topic) == len(msg_topic)) or (wc_topic[len(wc_topic)-1] == '#' and (len(wc_topic) <= len(msg_topic))):
+                        equal = True
+                        for i in range(len(wc_topic)):
+                            if not (wc_topic[i] == msg_topic[i] or wc_topic[i] == '+' or wc_topic[i] == '#'):
+                                equal = False
+                        if equal:
+                            topics_equal = True
+
+                if (topic == message.topic) or topics_equal:
                     topic_dict = self._subscribed_topics[topic]
 
                     for subscription in topic_dict:
@@ -564,7 +586,8 @@ class Mqtt(Module):
 
         finally:
             # unlock
-            self._subscribed_topics_lock.release()
+            #self._subscribed_topics_lock.release()
+            pass
 
         if not subscription_found:
             if not self._handle_broker_infos(message):
@@ -870,7 +893,7 @@ class Mqtt(Module):
             elif isinstance(data, dict):
                 payload_data = json.dumps(data)
             else:
-                self.logger.warning("cast_from_mqtt: Casting '{}' type = '{}' to payload fat is not implemented".format(data, type(data)))
+                self.logger.warning("cast_to_mqtt: Casting '{}' type = '{}' to payload fat is not implemented".format(data, type(data)))
                 payload_data = str(data)
         except Exception as e:
             self.logger.error("cast_to_mqtt: Cast exception'{}'".format(e))
