@@ -1,19 +1,10 @@
 :tocdepth: 2
 
 =============================
-Release 1.7.2 - tt. June 2020
+Release 1.7.2 - 23. June 2020
 =============================
 
 Es gibt eine Menge neuer Features im Core von SmartHomeNG und den Plugins.
-
-.. note::
-
-    Diese Release Notes sind ein Arbeitsstand.
-
-     - Berücksichtigt sind Commits im smarthome Repository bis incl. June 23rd, 2020
-       (smartplugin: Don't log warning if plugin uses translations but has no ...)
-     - Berücksichtigt sind Commits im plugins Repository bis incl. June 16th, 2020
-       (psilo: Merge remote-tracking branch 'origin/develop' into develop ...)
 
 
 Überblick
