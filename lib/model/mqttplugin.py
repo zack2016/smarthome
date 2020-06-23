@@ -106,13 +106,16 @@ class MqttPlugin(SmartPlugin):
         payload_type = self._subscribed_topics[topic][item_path].get('payload_type', None)
         callback = self._subscribed_topics[topic][item_path].get('callback', None)
         bool_values = self._subscribed_topics[topic][item_path].get('bool_values', None)
-        self.logger.info("_start_subscription: Subscribing to topic {} for item {} (callback={})".format(topic, item_path, callback))
+        self.logger.info("_start_subscription: Subscribing to topic {}, payload_type '{}' for item {} (callback={})".format(topic, payload_type, item_path, callback))
         self.mod_mqtt.subscribe_topic(self.get_shortname() + '-' + current, topic, callback=callback,
                                       qos=qos, payload_type=payload_type, bool_values=bool_values)
         return
 
     def add_subscription(self, topic, payload_type, bool_values=None, item=None, callback=None):
         """
+        Add mqtt subscription to subscribed_topics list
+
+        subscribing is done directly, if subscriptions have been started by self.start_subscriptions()
 
         :param topic:        topic to subscribe to
         :param payload_type: payload type of the topic (for this subscription to the topic)
@@ -155,6 +158,17 @@ class MqttPlugin(SmartPlugin):
 
 
     def publish_topic(self, topic, payload, item=None, qos=None, retain=False, bool_values=None):
+        """
+        Publish a topic to mqtt
+
+        :param topic:        topic to publish
+        :param payload:      payload to publish
+        :param item:         item (if relevant)
+        :param qos:          qos for this message (optional)
+        :param retain:       retain flag for this message (optional)
+        :param bool_values:  bool values (for publishing this topic, optional)
+        :return:
+        """
         self.mod_mqtt.publish_topic(self.get_shortname(), topic, payload, qos, retain, bool_values)
         if item is not None:
             self.logger.info("publish_topic: Item '{}' -> topic '{}', payload '{}', QoS '{}', retain '{}'".format(item.id(), topic,  payload, qos, retain))
@@ -187,8 +201,8 @@ class MqttPlugin(SmartPlugin):
         if self.shtime is None:
             self.shtime = Shtime.get_instance()
         try:
-            return self.shtime.seconds_to_displaysting(int(self._broker['uptime']))
-        except:
+            return self.shtime.seconds_to_displaystring(int(self._broker['uptime']))
+        except Exception as e:
             return '-'
 
 

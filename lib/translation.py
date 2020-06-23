@@ -182,7 +182,7 @@ def _get_translation(translation_lang, txt, additional_translations=None):
         if additional_translations in _translations.keys():
             translations = _translations[additional_translations].get(txt, {})
         else:
-            logger.error("Trying to use undefined aditional_translations '{}'".format(additional_translations))
+            logger.warning("Trying to use undefined aditional_translations '{}'".format(additional_translations))
 
     if translations == {}:
         if 'global' in _translations.keys():

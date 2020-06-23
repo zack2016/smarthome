@@ -255,7 +255,7 @@ def merge_structlists(l1, l2, key=''):
 
         if (len(l1) > 0 and l1[0] == 'merge*') or (len(l2) > 0 and l2[0] == 'merge*'):
             logger.debug("merge_structlists: l1 or l2 contain merge* l1={}, l2={}".format(l1,l2))
-            logger.warning("merge_structlists: a list contains 'merge*' - l1={}, l2={}, key={}".format(l1, l2, key))
+            #logger.warning("merge_structlists: a list contains 'merge*' - l1={}, l2={}, key={}".format(l1, l2, key))
             pass
         return l2       # Last wins
 
