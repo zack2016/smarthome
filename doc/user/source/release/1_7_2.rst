@@ -1,8 +1,8 @@
 :tocdepth: 2
 
-==========================
-Release 1.x - tt. mmm 2020
-==========================
+=============================
+Release 1.7.2 - tt. June 2020
+=============================
 
 Es gibt eine Menge neuer Features im Core von SmartHomeNG und den Plugins.
 
@@ -10,10 +10,10 @@ Es gibt eine Menge neuer Features im Core von SmartHomeNG und den Plugins.
 
     Diese Release Notes sind ein Arbeitsstand.
 
-     - Berücksichtigt sind Commits im smarthome Repository bis incl. June 15th, 2020
-       (lib.shpypi: Fix for installation of basic packages (before sh object ...)
+     - Berücksichtigt sind Commits im smarthome Repository bis incl. June 23rd, 2020
+       (smartplugin: Don't log warning if plugin uses translations but has no ...)
      - Berücksichtigt sind Commits im plugins Repository bis incl. June 16th, 2020
-       (robonect: added return statement ...)
+       (psilo: Merge remote-tracking branch 'origin/develop' into develop ...)
 
 
 Überblick
@@ -128,6 +128,8 @@ Updates in the CORE
 
     * Changed initialization in case the broker is not running/reachable on startup of SmartHomeNG
     * Fix for subscriptions placed before connection initialization with broker was complete
+    * Bugfix for topics with wildcards ('+' and '#')
+    * Bugfix for multiple plugins subscribing to the same topic
 
 
 Änderungen bei Plugins
@@ -139,9 +141,11 @@ New Plugins
 For details of the changes of the individual plugins, please refer to the documentation of the respective plugin.
 
 * casambi: Gateway plugin for controlling and reading Casambi devices via the Casambi backend API
-* Robonect: Plugin for reading data from Husqvarna, Gardena, Flymo or McCulloch robotic lawnmowers, equipped with
-  the Robonect Hx module
 * deebot_ozmo: This plugin can control and monitor an Ecovacs Deebot Ozmo series vaccum cleaner robot
+* raumfeld_ng: Alternative plugin to contol raumfeld devices
+* robonect: Plugin for reading data from Husqvarna, Gardena, Flymo or McCulloch robotic lawnmowers, equipped with
+  the Robonect Hx module (STILL UNDER DEVELOPMENT)
+* tasmota: New plugin to control devices with tasmota firmware (STILL UNDER DEVELOPMENT)
 
 
 
@@ -198,8 +202,9 @@ Plugin Updates
   * fixed bug that wrote value to database for items with attribute database_acl set to ro
   * Fixed bug when trying to read cache value on initialization and log table has no entries for item
   * Clarified warning message when skipping dumps
-  * Added multiple entry parsing in series duration parsing for visu_websocket ('1w 2y 3h 1d 39i 15s')
-  * Ignore negative duration in timestamp/duration parser
+  * Added multiple entry parsing in series duration parsing for visu_websocket ('1w 2y 3h 1d 39i 15s') - for smartVISU requesting series
+  * Ignore negative duration in timestamp/duration parser - for SV requesting series
+  * Modified timestamp/duration parser to ignore timestamps inthe future (return now insteead) - for smartVISU requesting series
 
 * dlms:
 
@@ -220,6 +225,7 @@ Plugin Updates
   * fixed errors, completed documentation
   * log current value of output on startup
   * logging and reporting streamlined
+  * added english translation for web interface
 
 * helios:
 
@@ -310,6 +316,8 @@ Plugin Updates
   * Fixes ValueError: cannot switch from automatic field numbering to manual field specification
   * Fixes for some debug string formats
   * should be able to run as multiinstance plugin now
+  * Log warning about unknown 1-wire device only once
+  * Added a further submodel of multisensor (xf7) for test purpose
 
 * pushover:
 
@@ -324,14 +332,16 @@ Plugin Updates
 
   * update plugin.yaml
 
-* Russound:
+* russound:
 
   * fixes a str conversion bug in _decode()
 
-* Plugin Sonos:
+* shelly:
 
-  * Fixed proper plugin shutdown.
-  * Adapted plugin parameter handling to recommended get_parameter_value function.
+  * Added documentation how to configure a shelly device for use with mqtt
+  * Addes item-structs for shellyplug and shellyplug-s
+  * sorted shelly Items in web interface
+  * Correction to display discovered shelly devices even if they are not configured in items
 
 * slack:
 
@@ -348,6 +358,11 @@ Plugin Updates
 * snap7_logo:
 
   * Dummy translation file added
+
+* sonos:
+
+  * Fixed proper plugin shutdown.
+  * Adapted plugin parameter handling to recommended get_parameter_value function.
 
 * squeezebox:
 
