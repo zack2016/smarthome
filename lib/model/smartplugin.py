@@ -52,7 +52,7 @@ class SmartPlugin(SmartObject, Utils):
     _pluginname_prefix = 'plugins.'
 
     _itemlist = []		# List of items, that trigger update methods of this plugin (filled by lib.item); :Warning: Don't change!
-
+    _add_translation = None
 
     _parameters = {}    # Dict for storing the configuration parameters read from /etc/plugin.yaml
 
@@ -64,8 +64,6 @@ class SmartPlugin(SmartObject, Utils):
     # Initialization of SmartPlugin class called by super().__init__() from the plugin's __init__() method
     def __init__(self, **kwargs):
         pass
-
-
 
     def _append_to_itemlist(self, item):
         self._itemlist.append(item)
@@ -646,7 +644,15 @@ class SmartPlugin(SmartObject, Utils):
         if block:
             self.logger.warning("unsuported 3. parameter '{}' used in translation function _( ... )".format(block))
 
-        return lib_translate(txt, vars, additional_translations='plugin/'+self.get_shortname())
+        if self._add_translation is None:
+            # test initially, if plugin has additional translations
+            translation_fn = os.path.join(self._plugin_dir, 'locale.yaml')
+            self._add_translation = os.path.isfile(translation_fn)
+
+        if self._add_translation:
+            return lib_translate(txt, vars, additional_translations='plugin/'+self.get_shortname())
+        else:
+            return lib_translate(txt, vars)
 
 
     def init_webinterface(self, WebInterface=None):
@@ -659,8 +665,8 @@ class SmartPlugin(SmartObject, Utils):
             return False
 
         try:
-            self.mod_http = Modules.get_instance().get_module(
-                'http')  # try/except to handle running in a core version that does not support modules
+            # try/except to handle running in a core version that does not support modules
+            self.mod_http = Modules.get_instance().get_module('http')
         except:
             self.mod_http = None
         if self.mod_http == None:
@@ -738,7 +744,7 @@ class SmartPluginWebIf():
             complete_path = self.plugin.path_join(self.webif_dir, path)
         from os.path import isfile as isfile
         result = isfile(complete_path)
-        self.logger.debug("is_staticfile: path={}, complete_path={}, result={}".format(path, complete_path, result))
+        # self.logger.debug("is_staticfile: path={}, complete_path={}, result={}".format(path, complete_path, result))
         return result
 
 
