@@ -45,16 +45,16 @@ logger = logging.getLogger(__name__)
 
 class TestItem(unittest.TestCase):
 
-    def props(self,cls):   
+    def props(self,cls):
         return [i for i in cls.__dict__.keys() if i[:1] != '_']
 
-        
+
     def test__begin(self):
         logger.warning('')
         logger.warning('=== Begin Item Tests:')
 
 
-    def test_zz_end(self):    
+    def test_zz_end(self):
         logger.warning('')
         logger.warning('=== End Item Tests.')
 
@@ -102,9 +102,9 @@ class TestItem(unittest.TestCase):
         if verbose == True:
             logger.warning('')
             logger.warning('===== test_item_relative_references:')
-       
+
         # -----------------------------------------------------------------
-        
+
 #        if verbose == True:
 #            logger.warning('')
 
@@ -177,7 +177,7 @@ class TestItem(unittest.TestCase):
         # test both values of list (first w/o relative path, second with relative path)
         self.assertEqual(it.conf['sv_widget'][0], "{{ basic.switch('id_schreibtischleuchte1', 'item_tree.grandparent.parent.my_item.child.onoff') }}")
         self.assertEqual(it.conf['sv_widget'][1], "{{ basic.switch('id_schreibtischleuchte2', 'item_tree.grandparent.parent.my_item.child.onoff') }}")
-        
+
         # Attribute w/o relative references
         it = self.sh.items.return_item("item_tree.grandparent.parent.my_item.child")
         orig = it.conf['sv_widget']
@@ -203,20 +203,20 @@ class TestItem(unittest.TestCase):
             logger.warning('===== test_item_autotimers:')
 #        if verbose == True:
 #            logger.warning('')
-        
+
         self.load_items('item_timers')
 
         # -----------------------------------------------------------------
-        
+
         # Compatibility mode: No value casting for SmartHome v1.2 and older
         it = self.sh.items.return_item("item_tree.timertests.test_item01")		# autotimer = 5m = 42 = compat_1.2
         self.assertIsNotNone(it)
         self.assertEqual(it._autotimer[0], (300, '42'))
-        
+
         it = self.sh.items.return_item("item_tree.timertests.test_item02")		# autotimer = 5s = = compat_1.2
         self.assertIsNotNone(it)
         self.assertEqual(it._autotimer[0], (5, ''))
-        
+
         it = self.sh.items.return_item("item_tree.timertests.test_item03")		# autotimer = 5s = None = compat_1.2
         self.assertIsNotNone(it)
         self.assertEqual(it._autotimer[0], (5, 'None'))
@@ -288,7 +288,7 @@ class TestItem(unittest.TestCase):
         it = self.sh.items.return_item("item_tree.timertests.test_item51")		# sh..dauer() = 42 = latest
         self.assertIsNotNone(it)
         self.assertEqual(it._autotimer[2], 'item_tree.timertests.test_item51.dauer')
-        
+
         it = self.sh.items.return_item("item_tree.timertests.test_item52")		# 5m = sh..wert() = latest
         self.assertIsNotNone(it)
         self.assertEqual(it._autotimer[3], 'item_tree.timertests.test_item52.wert')
@@ -406,7 +406,7 @@ class TestItem(unittest.TestCase):
         self.assertEqual(100, item._value)
 
     def test_set(self):
-        
+
         if verbose == True:
             logger.warning('')
             logger.warning('===== test_set:')
@@ -537,7 +537,7 @@ class TestItem(unittest.TestCase):
         #logger.warning(lib.item._join_duration_value_string(12,123))
         #(time, value, compat=''):
         pass
-        
+
     def test_cachewrite_readjson(self):
         import datetime
         from lib.constants import CACHE_JSON
@@ -577,10 +577,10 @@ class TestItem(unittest.TestCase):
         TZ = gettz('UTC')
         fn = 'test.cache'
 
-        lib.item._cache_write(value=v, filename=fn, cformat=f)
+        lib.item.cache_write(value=v, filename=fn, cformat=f)
 
         date = cachedvalue = None
-        date, cachedvalue = lib.item._cache_read(filename=fn, tz=TZ, cformat=f)
+        date, cachedvalue = lib.item.cache_read(filename=fn, tz=TZ, cformat=f)
         #logger.warning(type(cachedvalue))
         self.assertEqual(v, cachedvalue)
 

@@ -48,7 +48,6 @@ class MockSmartHome():
     base_dir = _base_dir     # for external modules using that var (backend, ...?)
     _default_language = 'de'
 
-    _restart_on_deadlock = True
     _restart_on_num_workers = 30
 
     _etc_dir = os.path.join(_base_dir, 'tests', 'resources', 'etc')
