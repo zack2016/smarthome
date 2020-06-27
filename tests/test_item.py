@@ -328,7 +328,7 @@ class TestItem(unittest.TestCase):
             self.assertEqual(255, lib.item.helpers.cast_scene(""))
 
         with self.assertRaises(ValueError):
-            self.assertEqual(1, lib.item.cast_scene('l'))
+            self.assertEqual(1, lib.item.helpers.cast_scene('l'))
 
     def test_cast_num(self):
         self.assertEqual(0, lib.item.helpers.cast_num(''))
@@ -390,7 +390,7 @@ class TestItem(unittest.TestCase):
         #(item, dest, step, delta):
         sh = MockSmartHome()
         conf = {'type': 'num', 'autotimer': '5m = 42 = compat_1.2'}
-        item = lib.item.Item(config=conf, parent=sh, smarthome=sh, path='test_item01' )
+        item = lib.item.item.Item(config=conf, parent=sh, smarthome=sh, path='test_item01' )
         item(10)
         item._fading = True
         lib.item.helpers.fadejob(item, 0, 5, 1)
@@ -429,12 +429,12 @@ class TestItem(unittest.TestCase):
         sh = MockSmartHome()
         conf = {'type': 'num', 'autotimer': '5m = 42 = compat_1.2'}
         item = lib.item.item.Item(config=conf, parent=sh, smarthome=sh, path='test_item01')
-        self.assertEqual(300, item.cast_duration('5m'))
-        self.assertEqual(23, item.cast_duration('23s'))
-        self.assertEqual(42, item.cast_duration(42))
-        self.assertEqual(42, item.cast_duration('42'))
-        self.assertFalse(item.cast_duration('aa'))
-        self.assertFalse(item.cast_duration(None))
+        self.assertEqual(300, item.item._cast_duration('5m'))
+        self.assertEqual(23, item.item._cast_duration('23s'))
+        self.assertEqual(42, item.item._cast_duration(42))
+        self.assertEqual(42, item.item._cast_duration('42'))
+        self.assertFalse(item.item._cast_duration('aa'))
+        self.assertFalse(item.item._cast_duration(None))
 
     def test_call(self):
         if verbose == True:
@@ -510,7 +510,7 @@ class TestItem(unittest.TestCase):
         import time
         sh = MockSmartHome()
         conf = {'type': 'num'}
-        item = lib.item.Item(config=conf, parent=sh, smarthome=sh, path='test_item01')
+        item = lib.item.item.Item(config=conf, parent=sh, smarthome=sh, path='test_item01')
         sec1 = datetime.datetime.now().time().second
         self.assertEqual(sec1,item.last_change().time().second)
         time.sleep(2)
@@ -531,7 +531,7 @@ class TestItem(unittest.TestCase):
 
 
     def test_split_duration_value_string(self):
-        lib.item._split_duration_value_string("")
+        lib.item.helpers.split_duration_value_string("")
 
     def test_join_duration_value_string(self):
         #logger.warning(lib.item._join_duration_value_string(12,123))
