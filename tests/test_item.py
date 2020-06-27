@@ -82,7 +82,7 @@ class TestItem(unittest.TestCase):
             if isinstance(value, dict):
                 child_path = attr
                 try:
-                    child = lib.item.Item(self.sh, self.sh, child_path, value)
+                    child = lib.item.item.Item(self.sh, self.sh, child_path, value)
                 except Exception as e:
                     logger.error("Item {}: problem creating: {}".format(child_path, e))
                 else:
@@ -296,12 +296,12 @@ class TestItem(unittest.TestCase):
 
     def test_cast_str(self):
         with self.assertRaises(ValueError):
-            self.assertTrue(lib.item._cast_str(1))
+            self.assertTrue(lib.item.helpers.cast_str(1))
         with self.assertRaises(ValueError):
-            self.assertTrue(lib.item._cast_str(["ee","ww"]))
+            self.assertTrue(lib.item.helpers.cast_str(["ee","ww"]))
 
         str = 'qwe'
-        self.assertEqual(str, lib.item._cast_str(str))
+        self.assertEqual(str, lib.item.helpers.cast_str(str))
 
     def test_cast_list(self):
         with self.assertRaises(ValueError):
@@ -412,7 +412,7 @@ class TestItem(unittest.TestCase):
             logger.warning('===== test_set:')
         sh = MockSmartHome()
         conf = {'type': 'num', 'autotimer': '5m = 42 = compat_1.2'}
-        item = lib.item.Item(config=conf, parent=sh, smarthome=sh, path='test_item01')
+        item = lib.item.item.Item(config=conf, parent=sh, smarthome=sh, path='test_item01')
         item.set(12)
         self.assertEqual(12, item._value)
 
@@ -428,7 +428,7 @@ class TestItem(unittest.TestCase):
             logger.warning('===== test_item_relative_references:')
         sh = MockSmartHome()
         conf = {'type': 'num', 'autotimer': '5m = 42 = compat_1.2'}
-        item = lib.item.Item(config=conf, parent=sh, smarthome=sh, path='test_item01')
+        item = lib.item.item.Item(config=conf, parent=sh, smarthome=sh, path='test_item01')
         self.assertEqual(300, item._cast_duration('5m'))
         self.assertEqual(23, item._cast_duration('23s'))
         self.assertEqual(42, item._cast_duration(42))
@@ -442,12 +442,12 @@ class TestItem(unittest.TestCase):
             logger.warning('===== test_call:')
         sh = MockSmartHome()
         conf = {'type': 'num', 'autotimer': '5m = 42 = compat_1.2'}
-        item = lib.item.Item(config=conf, parent=sh, smarthome=sh, path='test_item01')
+        item = lib.item.item.Item(config=conf, parent=sh, smarthome=sh, path='test_item01')
         item(12)
         self.assertEqual(12, item._value)
         self.assertEqual(12, item())
         conf = {'type': 'num', 'eval': '2'}
-        item = lib.item.Item(config=conf, parent=sh, smarthome=sh, path='test_item01')
+        item = lib.item.item.Item(config=conf, parent=sh, smarthome=sh, path='test_item01')
         item(12)
         self.assertEqual(0, item())
         item.set(12)
@@ -456,7 +456,7 @@ class TestItem(unittest.TestCase):
     def test_run_eval(self):
         sh = MockSmartHome()
         conf = {'type': 'num', 'eval': '2'}
-        item = lib.item.Item(config=conf, parent=sh, smarthome=sh, path='test_item01')
+        item = lib.item.item.Item(config=conf, parent=sh, smarthome=sh, path='test_item01')
         item._Item__run_eval()
         self.assertEqual(2,item())
         item._eval = 'bla'
@@ -466,7 +466,7 @@ class TestItem(unittest.TestCase):
     def test_jsonvars(self):
         sh = MockSmartHome()
         conf = {'type': 'num', 'eval': '2'}
-        item = lib.item.Item(config=conf, parent=sh, smarthome=sh, path='test_item01')
+        item = lib.item.item.Item(config=conf, parent=sh, smarthome=sh, path='test_item01')
         item.set('42')
 
         self.assertDictEqual(item.jsonvars(),{'attributes': {}, 'value': 42, 'type': 'num', 'children': [], 'id': 'test_item01', 'name': 'test_item01'})
@@ -475,7 +475,7 @@ class TestItem(unittest.TestCase):
         import json
         sh = MockSmartHome()
         conf = {'type': 'num', 'eval': '2'}
-        item = lib.item.Item(config=conf, parent=sh, smarthome=sh, path='test_item01')
+        item = lib.item.item.Item(config=conf, parent=sh, smarthome=sh, path='test_item01')
         item.set('42')
         expected = json.dumps({'attributes': {}, 'value': 42, 'type': 'num', 'children': [], 'id': 'test_item01', 'name': 'test_item01'}, sort_keys=True, indent=2)
         self.assertEqual(item.to_json(), expected)
@@ -483,7 +483,7 @@ class TestItem(unittest.TestCase):
     def test_type(self):
         sh = MockSmartHome()
         conf = {'type': 'num', 'eval': '2'}
-        item = lib.item.Item(config=conf, parent=sh, smarthome=sh, path='test_item01')
+        item = lib.item.item.Item(config=conf, parent=sh, smarthome=sh, path='test_item01')
         self.assertEqual(item.type(), 'num')
         item._type= 'foo'
         self.assertNotEqual(item.type(), 'num')
@@ -492,7 +492,7 @@ class TestItem(unittest.TestCase):
     def test_prev_value(self):
         sh = MockSmartHome()
         conf = {'type': 'num'}
-        item = lib.item.Item(config=conf, parent=sh, smarthome=sh, path='test_item01')
+        item = lib.item.item.Item(config=conf, parent=sh, smarthome=sh, path='test_item01')
 
         self.assertEqual(0,item.prev_value())
 
