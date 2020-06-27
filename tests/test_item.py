@@ -577,10 +577,10 @@ class TestItem(unittest.TestCase):
         TZ = gettz('UTC')
         fn = 'test.cache'
 
-        lib.item.cache_write(value=v, filename=fn, cformat=f)
+        lib.item.item.cache_write(value=v, filename=fn, cformat=f)
 
         date = cachedvalue = None
-        date, cachedvalue = lib.item.cache_read(filename=fn, tz=TZ, cformat=f)
+        date, cachedvalue = lib.item.item.cache_read(filename=fn, tz=TZ, cformat=f)
         #logger.warning(type(cachedvalue))
         self.assertEqual(v, cachedvalue)
 
