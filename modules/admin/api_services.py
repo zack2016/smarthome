@@ -158,7 +158,7 @@ class ServicesController(RESTResource):
             # Test if the loaded data items with 'struct' attribute
             config = collections.OrderedDict()
             self.items = Items.get_instance()
-            struct_dict = self.items._struct_definitions
+            struct_dict = self.items.structs._struct_definitions
             shconfig.search_for_struct_in_items(ydata, struct_dict, config)
             self.logger.info("ydata = {}".format(ydata))
             self.logger.info("config = {}".format(config))
