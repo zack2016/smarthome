@@ -305,42 +305,42 @@ class TestItem(unittest.TestCase):
 
     def test_cast_list(self):
         with self.assertRaises(ValueError):
-            self.assertTrue(lib.item._cast_list(1))
-        self.assertIsNotNone(lib.item._cast_list([1,2]))
+            self.assertTrue(lib.item.helpers.cast_list(1))
+        self.assertIsNotNone(lib.item.helpers.cast_list([1,2]))
         with self.assertRaises(ValueError):
-            self.assertIsNotNone(lib.item._cast_list({1, 2}))
+            self.assertIsNotNone(lib.item.helpers.cast_list({1, 2}))
 
     def test_cast_dict(self):
         with self.assertRaises(ValueError):
-            self.assertTrue(lib.item._cast_dict(1))
-        self.assertIsNotNone(lib.item._cast_dict({1:1, 2:2}))
-        self.assertIsNotNone(lib.item._cast_dict({'1':1 , '2': 2}))
+            self.assertTrue(lib.item.helpers.cast_dict(1))
+        self.assertIsNotNone(lib.item.helpers.cast_dict({1:1, 2:2}))
+        self.assertIsNotNone(lib.item.helpers.cast_dict({'1':1 , '2': 2}))
 
         with self.assertRaises(ValueError):
-            self.assertIsNotNone(lib.item._cast_dict({1, 2}))
+            self.assertIsNotNone(lib.item.helpers.cast_dict({1, 2}))
 
     def test_cast_scene(self):
-        self.assertEqual(1, lib.item._cast_scene('1'))
-        self.assertNotEqual(1, lib.item._cast_scene('2'))
-        self.assertEqual(255, lib.item._cast_scene(0xff))
+        self.assertEqual(1, lib.item.helpers.cast_scene('1'))
+        self.assertNotEqual(1, lib.item.helpers.cast_scene('2'))
+        self.assertEqual(255, lib.item.helpers.cast_scene(0xff))
 
         with self.assertRaises(ValueError):
-            self.assertEqual(255, lib.item._cast_scene(""))
+            self.assertEqual(255, lib.item.helpers.cast_scene(""))
 
         with self.assertRaises(ValueError):
-            self.assertEqual(1, lib.item._cast_scene('l'))
+            self.assertEqual(1, lib.item.cast_scene('l'))
 
     def test_cast_num(self):
-        self.assertEqual(0, lib.item._cast_num(''))
-        self.assertEqual(0, lib.item._cast_num(' '))
-        self.assertEqual(1, lib.item._cast_num(' 1 '))
-        self.assertEqual(1, lib.item._cast_num('1'))
-        self.assertEqual(1.2, lib.item._cast_num('1.2'))
-        self.assertEqual(1.2, lib.item._cast_num(1.2))
-        self.assertEqual(1, lib.item._cast_num(int(1.2)))
-        self.assertEqual(1.2, lib.item._cast_num(float(1.2)))
+        self.assertEqual(0, lib.item.helpers.cast_num(''))
+        self.assertEqual(0, lib.item.helpers.cast_num(' '))
+        self.assertEqual(1, lib.item.helpers.cast_num(' 1 '))
+        self.assertEqual(1, lib.item.helpers.cast_num('1'))
+        self.assertEqual(1.2, lib.item.helpers.cast_num('1.2'))
+        self.assertEqual(1.2, lib.item.helpers.cast_num(1.2))
+        self.assertEqual(1, lib.item.helpers.cast_num(int(1.2)))
+        self.assertEqual(1.2, lib.item.helpers.cast_num(float(1.2)))
         with self.assertRaises(ValueError):
-            self.assertEqual(10, lib.item._cast_num(' 0x0a'))
+            self.assertEqual(10, lib.item.helpers.cast_num(' 0x0a'))
 
     def test_cast_bool(self):
         """
@@ -350,41 +350,41 @@ class TestItem(unittest.TestCase):
         :return:
         """
         # true string values
-        self.assertTrue(lib.item._cast_bool('yes'))
-        self.assertTrue(lib.item._cast_bool('true'))
-        self.assertTrue(lib.item._cast_bool('1'))
-        self.assertTrue(lib.item._cast_bool('on'))
+        self.assertTrue(lib.item.helpers.cast_bool('yes'))
+        self.assertTrue(lib.item.helpers.cast_bool('true'))
+        self.assertTrue(lib.item.helpers.cast_bool('1'))
+        self.assertTrue(lib.item.helpers.cast_bool('on'))
         # true numeric values
-        self.assertTrue(lib.item._cast_bool(1))
-        self.assertTrue(lib.item._cast_bool(int(1)))
-        self.assertTrue(lib.item._cast_bool(float(1)))
-        self.assertTrue(lib.item._cast_bool(bool(1)))
+        self.assertTrue(lib.item.helpers.cast_bool(1))
+        self.assertTrue(lib.item.helpers.cast_bool(int(1)))
+        self.assertTrue(lib.item.helpers.cast_bool(float(1)))
+        self.assertTrue(lib.item.helpers.cast_bool(bool(1)))
 
         # exceptions
         with self.assertRaises(ValueError):
-            self.assertTrue(lib.item._cast_bool(float(99)))
+            self.assertTrue(lib.item.helpers.cast_bool(float(99)))
         with self.assertRaises(ValueError):
-            self.assertTrue(lib.item._cast_bool(2))
+            self.assertTrue(lib.item.helpers.cast_bool(2))
         with self.assertRaises(ValueError):
-            self.assertTrue(lib.item._cast_bool(-2))
+            self.assertTrue(lib.item.helpers.cast_bool(-2))
 
         with self.assertRaises(TypeError):
-            self.assertTrue(lib.item._cast_bool([]))
+            self.assertTrue(lib.item.helpers.cast_bool([]))
 
         with self.assertRaises(TypeError):
-            self.assertTrue(lib.item._cast_bool(None))
+            self.assertTrue(lib.item.helpers.cast_bool(None))
 
         #false numeric values
-        self.assertFalse(lib.item._cast_bool(0))
-        self.assertFalse(lib.item._cast_bool(int(0)))
-        self.assertFalse(lib.item._cast_bool(float(0)))
-        self.assertFalse(lib.item._cast_bool(bool(0)))
+        self.assertFalse(lib.item.helpers.cast_bool(0))
+        self.assertFalse(lib.item.helpers.cast_bool(int(0)))
+        self.assertFalse(lib.item.helpers.cast_bool(float(0)))
+        self.assertFalse(lib.item.helpers.cast_bool(bool(0)))
         # false string values
-        self.assertFalse(lib.item._cast_bool(""))
-        self.assertFalse(lib.item._cast_bool('no'))
-        self.assertFalse(lib.item._cast_bool('off'))
-        self.assertFalse(lib.item._cast_bool('false'))
-        self.assertFalse(lib.item._cast_bool('0'))
+        self.assertFalse(lib.item.helpers.cast_bool(""))
+        self.assertFalse(lib.item.helpers.cast_bool('no'))
+        self.assertFalse(lib.item.helpers.cast_bool('off'))
+        self.assertFalse(lib.item.helpers.cast_bool('false'))
+        self.assertFalse(lib.item.helpers.cast_bool('0'))
 
     def test_fadejob(self):
         #(item, dest, step, delta):
@@ -393,16 +393,16 @@ class TestItem(unittest.TestCase):
         item = lib.item.Item(config=conf, parent=sh, smarthome=sh, path='test_item01' )
         item(10)
         item._fading = True
-        lib.item._fadejob(item, 0, 5, 1)
+        lib.item.helpers.fadejob(item, 0, 5, 1)
         self.assertEqual(10, item._value)
         item._fading = False
-        lib.item._fadejob(item,0, 5, 0.1)
+        lib.item.helpers.fadejob(item,0, 5, 0.1)
         self.assertEqual(0,item._value)
 
-        lib.item._fadejob(item, 10, 5, 0.1)
+        lib.item.helpers.fadejob(item, 10, 5, 0.1)
         self.assertEqual(10, item._value)
 
-        lib.item._fadejob(item, 100, 200, 1)
+        lib.item.helpers.fadejob(item, 100, 200, 1)
         self.assertEqual(100, item._value)
 
     def test_set(self):
@@ -429,12 +429,12 @@ class TestItem(unittest.TestCase):
         sh = MockSmartHome()
         conf = {'type': 'num', 'autotimer': '5m = 42 = compat_1.2'}
         item = lib.item.item.Item(config=conf, parent=sh, smarthome=sh, path='test_item01')
-        self.assertEqual(300, item._cast_duration('5m'))
-        self.assertEqual(23, item._cast_duration('23s'))
-        self.assertEqual(42, item._cast_duration(42))
-        self.assertEqual(42, item._cast_duration('42'))
-        self.assertFalse(item._cast_duration('aa'))
-        self.assertFalse(item._cast_duration(None))
+        self.assertEqual(300, item.cast_duration('5m'))
+        self.assertEqual(23, item.cast_duration('23s'))
+        self.assertEqual(42, item.cast_duration(42))
+        self.assertEqual(42, item.cast_duration('42'))
+        self.assertFalse(item.cast_duration('aa'))
+        self.assertFalse(item.cast_duration(None))
 
     def test_call(self):
         if verbose == True:
