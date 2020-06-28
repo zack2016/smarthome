@@ -82,6 +82,10 @@ class Item():
         if items_instance:
             _items_instance = items_instance
 
+        # get instance if running tests (pytest tests in test_item.py call Item() without 5. parameter (items_instance)
+        if _items_instance is None:
+            _items_instance = smarthome.items
+
         self._sh = smarthome
         self._use_conditional_triggers = False
         try:

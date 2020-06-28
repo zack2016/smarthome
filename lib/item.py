@@ -394,6 +394,7 @@ class Items():
 
         if path not in self.__items:
             self.__items.append(path)
+        print("\nitems.add_item: path={}, item={} -> {}".format(path, item, self.__items))
         self.__item_dict[path] = item
 
     # aus bin/smarthome.py
