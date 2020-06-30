@@ -352,7 +352,7 @@ class PluginsInfoController(RESTResource):
                 self.logger.exception("_test_for_blog_articles: Exception {}".format(e))
             self.blog_urls = temp_blog_urls
             end = time.time()
-            self.logger.warning("_test_for_blog_articles_task: Used time: {} - blog_urls = {}".format(end - start, self.blog_urls))
+            self.logger.info("_test_for_blog_articles_task: Used time: {} - blog_urls = {}".format(end - start, self.blog_urls))
         else:
             self.logger.debug("_test_for_blog_articles: Plugin initialization not finished")
         return
