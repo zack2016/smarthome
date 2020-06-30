@@ -216,6 +216,6 @@ class Structs():
         self.fill_nested_structs()
 
         # for Testing: Save structure of joined item structs
-        self.logger.warning("load_itemdefinitions(): For testing the joined item structs are saved to {}".format(os.path.join(etc_dir, 'structs_joined.yaml')))
+        self.logger.info("load_itemdefinitions(): For testing the joined item structs are saved to {}".format(os.path.join(etc_dir, 'structs_joined.yaml')))
         shyaml.yaml_save(os.path.join(etc_dir, 'structs_joined.yaml'), self._struct_definitions)
 

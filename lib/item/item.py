@@ -101,7 +101,7 @@ class Item():
         self._cache = False
         self.cast = cast_bool
         self.__changed_by = 'Init:None'
-        self.__updated_by = 'Init:None'
+        self.__updated_by = self.__changed_by
         self.__children = []
         self.conf = {}
         self._crontab = None
@@ -128,12 +128,12 @@ class Item():
         self._fading = False
         self._items_to_trigger = []
         self.__last_change = self.shtime.now()
-        self.__last_update = self.shtime.now()
+        self.__last_update = self.__last_change
+        self.__prev_change = self.__last_change
+        self.__prev_update = self.__prev_change
         self._lock = threading.Condition()
         self.__logics_to_trigger = []
         self._name = path
-        self.__prev_change = self.shtime.now()
-        self.__prev_update = self.shtime.now()
         self.__methods_to_trigger = []
         self.__parent = parent
         self._path = path
@@ -159,10 +159,13 @@ class Item():
         #    if len(self.__history) > 5:
         #        self.__history.pop(0)
         #
+
+        #  if 'item_change_log' is set in etc/smarthome.yaml, set loglevel for logging every item change to INFO (instead of DEBUG)
         if hasattr(smarthome, '_item_change_log'):
             self._change_logger = logger.info
         else:
             self._change_logger = logger.debug
+
         #############################################################
         # Initialize attribute assignment compatibility
         #############################################################
@@ -177,6 +180,7 @@ class Item():
                     logger.warning("Global configuration: '{}' has invalid value '{}'.".format(KEY_ATTRIB_COMPAT, str(config_attrib)))
             if ATTRIB_COMPAT_DEFAULT == '':
                 ATTRIB_COMPAT_DEFAULT = ATTRIB_COMPAT_DEFAULT_FALLBACK
+
         #############################################################
         # Item Attributes
         #############################################################
@@ -281,42 +285,58 @@ class Item():
                     vars(self)[attr] = child
                     _items_instance.add_item(child_path, child)
                     self.__children.append(child)
+
+        #############################################################
+        # Type
+        #############################################################
+        #__defaults = {'num': 0, 'str': '', 'bool': False, 'list': [], 'dict': {}, 'foo': None, 'scene': 0}
+        if self._type is None:
+            self._type = FOO  # Every item has a type, type is FOO, if not defined in item
+        if self._type not in ITEM_DEFAULTS:
+            logger.error("Item {}: type '{}' unknown. Please use one of: {}.".format(self._path, self._type, ', '.join(list(ITEM_DEFAULTS.keys()))))
+            raise AttributeError
+        self.cast = globals()['cast_' + self._type]
+
+        #############################################################
+        # Value
+        #############################################################
+        initial_value = False
+        if self._value is None:
+            initial_value = False
+            self._value = ITEM_DEFAULTS[self._type]
+        else:
+            initial_value = True
+        try:
+            self._value = self.cast(self._value)
+            if initial_value:
+                self.__changed_by = 'Init:Initial_Value'
+                self.__updated_by = self.__changed_by
+                # Write item value to log, if Item has attribute log_change set
+                self._log_on_change(self._value, 'Init', 'Initial_Value', None)
+        except:
+            logger.error("Item {}: value {} does not match type {}.".format(self._path, self._value, self._type))
+            raise
+        self.__prev_value = self.__last_value
+        self.__last_value = self._value
+
         #############################################################
         # Cache
         #############################################################
         if self._cache:
             self._cache = self._sh._cache_dir + self._path
             try:
+                self.__changed_by = 'Init:Cache'
                 self.__last_change, self._value = cache_read(self._cache, self.shtime.tzinfo())
-                self.__last_update = self.__last_change
                 self.__prev_change = self.__last_change
-                self.__prev_update = self.__last_change
-                self.__changed_by = 'Cache:None'
-                self.__updated_by = 'Cache:None'
+                self.__updated_by = self.__changed_by
+                self.__last_update = self.__last_change
+                self.__prev_update = self.__prev_change
+
+                # Write item value to log, if Item has attribute log_change set
+                self._log_on_change(self._value, 'Init', 'Cache', None)
             except Exception as e:
                 logger.warning("Item {}: problem reading cache: {}".format(self._path, e))
-        #############################################################
-        # Type
-        #############################################################
-        #__defaults = {'num': 0, 'str': '', 'bool': False, 'list': [], 'dict': {}, 'foo': None, 'scene': 0}
-        if self._type is None:
-            self._type = FOO  # MSinn
-        if self._type not in ITEM_DEFAULTS:
-            logger.error("Item {}: type '{}' unknown. Please use one of: {}.".format(self._path, self._type, ', '.join(list(ITEM_DEFAULTS.keys()))))
-            raise AttributeError
-        self.cast = globals()['cast_' + self._type]
-        #############################################################
-        # Value
-        #############################################################
-        if self._value is None:
-            self._value = ITEM_DEFAULTS[self._type]
-        try:
-            self._value = self.cast(self._value)
-        except:
-            logger.error("Item {}: value {} does not match type {}.".format(self._path, self._value, self._type))
-            raise
-        self.__prev_value = self.__last_value
-        self.__last_value = self._value
+
         #############################################################
         # Cache write/init
         #############################################################
@@ -324,6 +344,7 @@ class Item():
             if not os.path.isfile(self._cache):
                 cache_write(self._cache, self._value)
                 logger.warning("Item {}: Created cache for item: {}".format(self._cache, self._cache))
+
         #############################################################
         # Plugins
         #############################################################
@@ -1122,6 +1143,21 @@ class Item():
                 self._run_on_xxx(self._path, value, on_change_dest, on_change_eval, 'on_change')
 
 
+    def _log_on_change(self, value, caller, source=None, dest=None):
+        """
+        Write log, if Item has attribute log_change set
+        :return:
+        """
+        if self._log_change_logger is not None:
+            log_src = ''
+            if source is not None:
+                log_src += ' (' + source + ')'
+            log_dst = ''
+            if dest is not None:
+                log_dst += ', dest: ' + dest
+            self._log_change_logger.info("Item Change: {} = {}  -  caller: {}{}{}".format(self._path, value, caller, log_src, log_dst))
+
+
     def __trigger_logics(self, source_details=None):
         source={'item': self._path, 'details': source_details}
         for logic in self.__logics_to_trigger:
@@ -1129,6 +1165,48 @@ class Item():
             logic.trigger(by='Item', source=source, value=self._value)
 
     # logic.trigger(by='Logic', source=None, value=None, dest=None, dt=None):
+
+
+    def _set_value(self, value, caller, source=None, dest=None, prev_change=None, last_change=None):
+        """
+        Set item value, update last aund prev information and perform log_change for item
+
+        :param value:
+        :param caller:
+        :param source:
+        :param dest:
+        :param prev_change:
+        :param last_change:
+        :return:
+        """
+        self.__prev_value = self.__last_value
+        self.__last_value = self._value
+        self._value = value
+
+        if prev_change is None:
+            self.__prev_change = self.__last_change
+        else:
+            self.__prev_change = prev_change
+        if last_change is None:
+            self.__last_change = self.shtime.now()
+        else:
+            self.__last_change = last_change
+
+        self.__prev_update = self.__last_update
+        self.__last_update = self.__last_change
+
+        self.__changed_by = "{0}:{1}".format(caller, source)
+        self.__updated_by = "{0}:{1}".format(caller, source)
+
+        if caller != "fader":
+            # log every item change to standard logger, if level is DEBUG
+            # log with level INFO, if 'item_change_log' is set in etc/smarthome.yaml
+            self._change_logger("Item {} = {} via {} {} {}".format(self._path, value, caller, source, dest))
+
+            # Write item value to log, if Item has attribute log_change set
+            self._log_on_change(value, caller, source, dest)
+        return
+
 
     def __update(self, value, caller='Logic', source=None, dest=None):
         try:
@@ -1141,32 +1219,47 @@ class Item():
             return
         self._lock.acquire()
         _changed = False
-        self.__prev_update = self.__last_update
-        self.__last_update = self.shtime.now()
-        self.__updated_by = "{0}:{1}".format(caller, source)
         trigger_source_details = self.__updated_by
         if value != self._value or self._enforce_change:
             _changed = True
-            self.__prev_value = self.__last_value
-            self.__last_value = self._value
-            self._value = value
-            self.__prev_change = self.__last_change
-            self.__last_change = self.__last_update
-            self.__changed_by = "{0}:{1}".format(caller, source)
+
+            self._set_value(value, caller, source, dest, prev_change=None, last_change=None)
+#---
+            # self.__prev_value = self.__last_value
+            # self.__last_value = self._value
+            # self._value = value
+            #
+            # self.__prev_change = self.__last_change
+            # self.__last_change = self.__last_update
+            #
+            # #self.__prev_update = self.__last_update
+            # #self.__last_update = self.shtime.now()
+            # self.__prev_update = self.__last_update
+            # self.__last_update = self.__last_change
+            #
+            # self.__changed_by = "{0}:{1}".format(caller, source)
+            # self.__updated_by = "{0}:{1}".format(caller, source)
+# ---
+
             trigger_source_details = self.__changed_by
             if caller != "fader":
                 self._fading = False
                 self._lock.notify_all()
-                self._change_logger("Item {} = {} via {} {} {}".format(self._path, value, caller, source, dest))
-                if self._log_change_logger is not None:
-                    log_src = ''
-                    if source is not None:
-                        log_src += ' (' + source + ')'
-                    log_dst = ''
-                    if dest is not None:
-                        log_dst += ', dest: ' + dest
-                    self._log_change_logger.info("Item Change: {} = {}  -  caller: {}{}{}".format(self._path, value, caller, log_src, log_dst))
+# ---
+                # # log every item change to standard logger, if level is DEBUG
+                # # log with level INFO, if 'item_change_log' is set in etc/smarthome.yaml
+                # self._change_logger("Item {} = {} via {} {} {}".format(self._path, value, caller, source, dest))
+                #
+                # # Write item value to log, if Item has attribute log_change set
+                # self._log_on_change(value, caller, source, dest)
+#---
+        else:
+            self.__prev_update = self.__last_update
+            self.__last_update = self.shtime.now()
+            self.__updated_by = "{0}:{1}".format(caller, source)
+
         self._lock.release()
+
         # ms: call run_on_update() from here
         self.__run_on_update(value)
         if _changed or self._enforce_updates or self._type == 'scene':
@@ -1274,7 +1367,21 @@ class Item():
     def return_parent(self):
         return self.__parent
 
+
     def set(self, value, caller='Logic', source=None, dest=None, prev_change=None, last_change=None):
+        """
+        Set an Item value and optionally set prev_change and last_change timestamps
+
+        (This method is called eg. by the database plugin to initialize items from the database on start)
+
+        :param value:
+        :param caller:
+        :param source:
+        :param dest:
+        :param prev_change:
+        :param last_change:
+        :return:
+        """
         try:
             value = self.cast(value)
         except:
@@ -1284,19 +1391,10 @@ class Item():
                 pass
             return
         self._lock.acquire()
-        self._value = value
-        if prev_change is None:
-            self.__prev_change = self.__last_change
-        else:
-            self.__prev_change = prev_change
-        if last_change is None:
-            self.__last_change = self.shtime.now()
-        else:
-            self.__last_change = last_change
-        self.__changed_by = "{0}:{1}".format(caller, None)
-        self.__updated_by = "{0}:{1}".format(caller, None)
+        self._set_value(value, caller, source, dest, prev_change, last_change)
         self._lock.release()
-        self._change_logger("Item {} = {} via {} {} {}".format(self._path, value, caller, source, dest))
+        return
+
 
     def timer(self, time, value, auto=False, compat=ATTRIB_COMPAT_DEFAULT):
         time = self._cast_duration(time)

@@ -94,7 +94,7 @@ class Items():
         _items_instance = self
         self.structs = Structs()
 
-        self.logger.warning(">>> Working with refactored version of lib.item <<<")
+        self.logger.warning("Develop: Working with NEW refactored version of lib.item")
 
 
     # -----------------------------------------------------------------------------------------
