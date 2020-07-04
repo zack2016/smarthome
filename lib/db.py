@@ -146,6 +146,7 @@ class Database():
 
         self._name = name
         self._dbapi = dbapi
+        self._dbapi_name = dbapi
         self._format_input = formatting
         self._connected = False
         self._conn = None
@@ -203,7 +204,7 @@ class Database():
         try:
             self._conn = self._dbapi.connect(**self._params)
         except Exception as e:
-            self.logger.error("Database [{}]: Could not connect to the database: {}".format(self._name, e))
+            self.logger.error("Database [{}]: Could not connect to the database using '{}': {}".format(self._name, self._dbapi_name, e))
             raise
         finally:
             self.release()
