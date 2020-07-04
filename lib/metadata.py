@@ -31,6 +31,7 @@ from lib.constants import (YAML_FILE, FOO, META_DATA_TYPES, META_DATA_DEFAULTS)
 META_MODULE_PARAMETER_SECTION = 'parameters'
 META_PLUGIN_PARAMETER_SECTION = 'parameters'
 META_PLUGIN_ITEMATTRIBUTE_SECTION = 'item_attributes'
+META_PLUGIN_ITEMATTRIBUTEPREFIX_SECTION = 'item_attribute_prefixes'
 META_PLUGIN_LOGIC_PARAMETER_SECTION = 'logic_parameters'
 META_PLUGIN_FUNCTION_SECTION = 'plugin_functions'
 
@@ -101,6 +102,7 @@ class Metadata():
             else:
                 self.parameters = self.meta.get(META_PLUGIN_PARAMETER_SECTION)
                 self.itemdefinitions = self.meta.get(META_PLUGIN_ITEMATTRIBUTE_SECTION)
+                self.itemprefixdefinitions = self.meta.get(META_PLUGIN_ITEMATTRIBUTEPREFIX_SECTION)
                 self.itemstructs = self.meta.get(META_STRUCT_SECTION)
                 self.logic_parameters = self.meta.get(META_PLUGIN_LOGIC_PARAMETER_SECTION)
                 self.plugin_functions = self.meta.get(META_PLUGIN_FUNCTION_SECTION)

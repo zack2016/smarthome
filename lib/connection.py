@@ -175,6 +175,9 @@ class Connections(Base):
             del( self._connections[-1])
 
         for fileno in self._connections:
+        # Fix for: "RuntimeError: dictionary changed size during iteration"
+        #connections_keys = self._connections.keys()
+        #for fileno in connections_keys:
             if fileno not in self._servers:
                 if hasattr(select, 'epoll'):
                     if self._connections[fileno].outbuffer:

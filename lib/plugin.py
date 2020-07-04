@@ -117,6 +117,20 @@ class Plugins():
             logger.debug("Plugins, section: {}".format(plugin))
             plugin_name, self.meta = self._get_pluginname_and_metadata(plugin, _conf[plugin])
 
+            # test if plugin defines item attributes
+            item_attributes = self.meta.itemdefinitions
+            if item_attributes is not None:
+                attribute_keys = list(item_attributes.keys())
+                for attribute_name in attribute_keys:
+                    self._sh.items.add_plugin_attribute(plugin_name, attribute_name, item_attributes[attribute_name])
+
+            # test if plugin defines item attribute prefixes (e.g. stateengine)
+            item_attribute_prefixes = self.meta.itemprefixdefinitions
+            if item_attribute_prefixes is not None:
+                attribute_prefixes_keys = list(item_attribute_prefixes.keys())
+                for attribute_prefix in attribute_prefixes_keys:
+                    self._sh.items.add_plugin_attribute_prefix(plugin_name, attribute_prefix, item_attribute_prefixes[attribute_prefix])
+
             # Test if plugin defines item structs
             item_structs = self.meta.itemstructs
             if item_structs is not None:
