@@ -197,6 +197,11 @@ class Items():
                     self._children.append(child)
         del(item_conf)  # clean up
 
+        # Test if all used attributes are defined in configuread plugins
+        for item in self.return_items():
+            item._test_attribute_existance()
+
+
         # --------------------------------------------------------------------
         # prepare loaded items for run phase of SmartHomeNG
         #

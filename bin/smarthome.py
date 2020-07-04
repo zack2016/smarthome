@@ -642,7 +642,7 @@ class SmartHome():
         # Main Loop
         #############################################################
         self.shng_status = {'code': 20, 'text': 'Running'}
-        self._logger.warning("Initialization finished")
+        self._logger.warning("SmartHomeNG initialization finished")
 
         while self.alive:
             try:

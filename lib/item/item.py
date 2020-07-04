@@ -278,13 +278,6 @@ class Item():
                         # logger.warning("Item rel. from (grand)parent: fromitem = {}, fromattr = {}, self.conf[attr] = {}".format(fromitem, fromattr, self.conf[attr]))
                     #else:
                     #    self.conf[attr] = value
-                    # test attribute (without instance) for existance
-                    if not self._sh.items.plugin_attribute_exists(attr.split('@')[0]):
-                        log_msg = "Undefined attribute '{}' with value '{}' used by item {}".format(attr, value, self._path)
-                        if hasattr(self._sh, '_undef_item_attr_loglevel_info') and self._sh._undef_item_attr_loglevel_info:
-                            logger.info(log_msg)
-                        else:
-                            logger.warning(log_msg)
                     self.conf[attr] = value
 
         self.property.init_dynamic_properties()
@@ -994,6 +987,24 @@ class Item():
 
     def __repr__(self):
         return "Item: {}".format(self._path)
+
+
+    def _test_attribute_existance(self):
+        """
+
+        :return:
+        """
+        for attr in self.conf:
+            if not self._sh.items.plugin_attribute_exists(attr.split('@')[0]):
+                if not (self._path.startswith('env')):
+                    value = self.conf[attr]
+                    log_msg = "Undefined attribute '{}' with value '{}' used by item {}".format(attr, value, self._path)
+                    if self._filename:
+                        log_msg += " (defined in {})".format(self._filename)
+                    if hasattr(self._sh, '_undef_item_attr_loglevel_info') and self._sh._undef_item_attr_loglevel_info:
+                        logger.info(log_msg)
+                    else:
+                        logger.warning(log_msg)
 
 
     def _init_prerun(self):
