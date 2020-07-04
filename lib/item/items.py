@@ -73,10 +73,14 @@ class Items():
     :type smarthome: object
     """
 
-    __items = []                # list with the paths of all items that are defined
-    __item_dict = {}            # dict with all the items that are defined in the form: {"<item-path>": "<item-object>", ...}
+    __items = []                     # list with the paths of all items that are defined
+    __item_dict = {}                 # dict with all the items that are defined in the form: {"<item-path>": "<item-object>", ...}
 
-    _children = []              # List of top level items
+    _children = []                   # List of top level items
+
+    plugin_attributes = {}           # dict with all item attributes, that are defined by plugins
+    plugin_attribute_prefixes = {}   # dict with all item attribute-prefixes, that are defined by plugins
+    plugin_prefixes_tuple = None     # tuple for finding if an attribute name starts with one of the prefixes
 
     structs = None
 
@@ -196,11 +200,14 @@ class Items():
         # --------------------------------------------------------------------
         # prepare loaded items for run phase of SmartHomeNG
         #
+
+        # Build eval expressions from special functions and triggers before first run
         for item in self.return_items():
             item._init_prerun()
-        # starting schedulers (for crontab and cycle attributes) moved to the end of the initialization in SmartHomeNG v1.6
+        # Start schedulers of the items which have a crontab or a cycle attribute
         for item in self.return_items():
             item._init_start_scheduler()
+        # Run initial eval to set an initial value for the item
         for item in self.return_items():
             item._init_run()
 
@@ -398,3 +405,78 @@ class Items():
             self.__item_dict[item]._fading = False
 
 
+    def add_plugin_attribute(self, plugin_name, attribute_name, attribute):
+        """
+        Add an attribute definition to the dict of plugin specific item-attributes
+
+        :param plugin_name:    Name of the plugin that defines the attribute
+        :param attribute_name: Name of the attribute
+        :param attribute:      Metadata that defines the attribute
+        :return:
+        """
+        attribute_name = attribute_name.lower()
+        if self.plugin_attributes.get(attribute_name, None) is None:
+            self.plugin_attributes[attribute_name] = {}
+            self.plugin_attributes[attribute_name]['plugin'] = plugin_name
+            self.plugin_attributes[attribute_name]['meta'] = dict(attribute)
+            self.logger.info("add_plugin_attribute: {} ({}) -> {}".format(attribute_name, plugin_name, dict(attribute)))
+        else:
+            if plugin_name != self.plugin_attributes[attribute_name]['plugin']:
+                if self.plugin_attributes[attribute_name]['meta']['type'] != attribute['type']:
+                    self.logger.error("Plugins '{}' and '{}' define the same item-attribute '{}' with different type definitions {}/{}".format(self.plugin_attributes[attribute_name]['plugin'], plugin_name, attribute_name, self.plugin_attributes[attribute_name]['meta']['type'], attribute['type']))
+                else:
+                    self.logger.warning("Plugins '{}' and '{}' define the same item-attribute '{}'".format(self.plugin_attributes[attribute_name]['plugin'], plugin_name, attribute_name))
+
+
+    def add_plugin_attribute_prefix(self, plugin_name, prefix_name, prefix):
+        """
+        Add an attribute-prefix definition to the dict of plugin specific item-attribute prefixes
+
+        :param plugin_name: Name of the plugin that defines the attribute
+        :param prefix_name: Name of the attribute-prefix
+        :param prefix:      Metadata that defines the attribute-prefix
+        :return:
+        """
+        prefix_name = prefix_name.lower()
+        if self.plugin_attribute_prefixes.get(prefix_name, None) is None:
+            self.plugin_attribute_prefixes[prefix_name] = {}
+            self.plugin_attribute_prefixes[prefix_name]['plugin'] = plugin_name
+            self.plugin_attribute_prefixes[prefix_name]['meta'] = dict(prefix)
+            self.logger.info("add_plugin_attribute_prefix: {} ({}) -> {}".format(prefix_name, plugin_name, dict(prefix)))
+        else:
+            if plugin_name != self.plugin_attribute_prefixes[prefix_name]['plugin']:
+                self.logger.error("Plugins '{}' and '{}' define the same item-attribute-prefix '{}'".format(self.plugin_attribute_prefixes[prefix_name]['plugin'], plugin_name, prefix_name))
+
+
+    def plugin_attribute_exists(self, attribute_name):
+        """
+        Returns the type of the attribute's value
+
+        :param attribute_name: Name of the attribute
+        :return:               Type of the attribute's value or None
+        """
+        meta = self.plugin_attributes.get(attribute_name.lower(), None)
+        if meta is not None:
+            return True
+
+        if self.plugin_prefixes_tuple is None:
+            # Generate tuple on first call to this method
+            self.plugin_prefixes_tuple = tuple(self.plugin_attribute_prefixes.keys())
+        if attribute_name.startswith(self.plugin_prefixes_tuple):
+            return True
+
+        return False
+
+
+    def get_plugin_attribute_type(self, attribute_name):
+        """
+        Returns the type of the attribute's value
+
+        :param attribute_name: Name of the attribute
+        :return:               Type of the attribute's value or None
+        """
+        meta = self.plugin_attributes.get(attribute_name.lower, None)
+        if meta is None:
+            return None
+        else:
+            return meta['type']

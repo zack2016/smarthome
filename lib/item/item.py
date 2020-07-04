@@ -39,7 +39,7 @@ from lib.plugin import Plugins
 from lib.shtime import Shtime
 
 from lib.constants import (ITEM_DEFAULTS, FOO, KEY_ENFORCE_UPDATES, KEY_ENFORCE_CHANGE, KEY_CACHE, KEY_CYCLE, KEY_CRONTAB, KEY_EVAL,
-                           KEY_EVAL_TRIGGER, KEY_TRIGGER, KEY_CONDITION, KEY_NAME, KEY_TYPE, KEY_STRUCT,
+                           KEY_EVAL_TRIGGER, KEY_TRIGGER, KEY_CONDITION, KEY_NAME, KEY_TYPE, KEY_STRUCT, KEY_REMARK, KEY_INSTANCE,
                            KEY_VALUE, KEY_INITVALUE, PLUGIN_PARSE_ITEM, KEY_AUTOTIMER, KEY_ON_UPDATE, KEY_ON_CHANGE,
                            KEY_LOG_CHANGE, KEY_THRESHOLD,
                            KEY_ATTRIB_COMPAT, ATTRIB_COMPAT_V12, ATTRIB_COMPAT_LATEST)
@@ -246,10 +246,18 @@ class Item():
                     self._threshold_data[1] = self.__th_high
                     self._threshold_data[2] = self.__th_crossed
                     logger.debug("Item {}: set threshold => low: {} high: {}".format(self._path, self.__th_low, self.__th_high))
+                elif attr == KEY_REMARK:
+                    pass
+                elif attr == KEY_INSTANCE:
+                    pass
                 elif attr == '_filename':
                     # name of file, which defines this item
                     setattr(self, attr, value)
                 else:
+                    #------------------------------------------------------------
+                    # Plugin-specific Item Attributes
+                    #------------------------------------------------------------
+
                     # the following code is executed for plugin specific attributes:
                     #
                     # get value from attribute of other (relative addressed) item
@@ -260,14 +268,24 @@ class Item():
                         if fromattr in ['', '.']:
                             fromattr = attr
                         if fromitem == '..':
-                            self.conf[attr] = self._get_attr_from_parent(fromattr)
+                            #self.conf[attr] = self._get_attr_from_parent(fromattr)
+                            value = self._get_attr_from_parent(fromattr)
                         elif fromitem == '...':
-                            self.conf[attr] = self._get_attr_from_grandparent(fromattr)
-                        else:
-                            self.conf[attr] = value
+                            #self.conf[attr] = self._get_attr_from_grandparent(fromattr)
+                            value = self._get_attr_from_grandparent(fromattr)
+                        #else:
+                        #    self.conf[attr] = value
                         # logger.warning("Item rel. from (grand)parent: fromitem = {}, fromattr = {}, self.conf[attr] = {}".format(fromitem, fromattr, self.conf[attr]))
-                    else:
-                        self.conf[attr] = value
+                    #else:
+                    #    self.conf[attr] = value
+                    # test attribute (without instance) for existance
+                    if not self._sh.items.plugin_attribute_exists(attr.split('@')[0]):
+                        log_msg = "Undefined attribute '{}' with value '{}' used by item {}".format(attr, value, self._path)
+                        if hasattr(self._sh, '_undef_item_attr_loglevel_info') and self._sh._undef_item_attr_loglevel_info:
+                            logger.info(log_msg)
+                        else:
+                            logger.warning(log_msg)
+                    self.conf[attr] = value
 
         self.property.init_dynamic_properties()
 
@@ -1217,47 +1235,21 @@ class Item():
             except:
                 pass
             return
+
         self._lock.acquire()
         _changed = False
         trigger_source_details = self.__updated_by
         if value != self._value or self._enforce_change:
             _changed = True
-
             self._set_value(value, caller, source, dest, prev_change=None, last_change=None)
-#---
-            # self.__prev_value = self.__last_value
-            # self.__last_value = self._value
-            # self._value = value
-            #
-            # self.__prev_change = self.__last_change
-            # self.__last_change = self.__last_update
-            #
-            # #self.__prev_update = self.__last_update
-            # #self.__last_update = self.shtime.now()
-            # self.__prev_update = self.__last_update
-            # self.__last_update = self.__last_change
-            #
-            # self.__changed_by = "{0}:{1}".format(caller, source)
-            # self.__updated_by = "{0}:{1}".format(caller, source)
-# ---
-
             trigger_source_details = self.__changed_by
             if caller != "fader":
                 self._fading = False
                 self._lock.notify_all()
-# ---
-                # # log every item change to standard logger, if level is DEBUG
-                # # log with level INFO, if 'item_change_log' is set in etc/smarthome.yaml
-                # self._change_logger("Item {} = {} via {} {} {}".format(self._path, value, caller, source, dest))
-                #
-                # # Write item value to log, if Item has attribute log_change set
-                # self._log_on_change(value, caller, source, dest)
-#---
         else:
             self.__prev_update = self.__last_update
             self.__last_update = self.shtime.now()
             self.__updated_by = "{0}:{1}".format(caller, source)
-
         self._lock.release()
 
         # ms: call run_on_update() from here
