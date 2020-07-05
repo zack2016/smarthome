@@ -86,6 +86,7 @@ class Metadata():
         self.parameters = None
         self._paramlist = []
         self.itemdefinitions = None
+        self.itemprefixdefinitions = None
         self._itemdeflist = []
         self.itemstructs = None
         self._itemstructlist = []
