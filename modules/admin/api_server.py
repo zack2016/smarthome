@@ -123,6 +123,8 @@ class ServerController(RESTResource):
         response['websocket_host'] = self.module.websocket_host
         response['websocket_port'] = self.module.websocket_port
         response['log_chunksize'] = self.module.log_chunksize
+        response['developer_mode'] = self.module.developer_mode
+
         response['daemon_knx'] = self.get_knx_daemon()
         response['daemon_ow'] = self.get_1wire_daemon()
         response['daemon_mqtt'] = self.get_mqtt_daemon()

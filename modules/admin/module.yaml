@@ -77,3 +77,11 @@ parameters:
             de: 'Größe der gelesenen Blöcke bei der Anzeige großer Logdateien'
             en: 'Size of blocks (chunks) read when displaying large logfiles'
             fr: "Taille des morceaux lus lors de l'affichage de fichiers journaux volumineux"
+
+    developer_mode:
+        type: bool
+        default: False
+        description:
+            de: 'Entwickler Modus aktivieren'
+            en: 'Activate developer mode'
+
