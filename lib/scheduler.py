@@ -30,6 +30,7 @@ import traceback
 import threading
 import random
 import inspect
+import copy
 
 from lib.shtime import Shtime
 from lib.item import Items
@@ -100,7 +101,23 @@ class _PriorityQueue:
             self.lock.release()
 
     def qsize(self):
+        """
+        Returns the actual size of the queue
+        :return: Size of the queue
+        """
         return len(self.queue)
+
+    def dump(self):
+        """
+        Returns all entries of the queue as a list
+        :return: list of all queue entries
+        """
+        queue_list = []
+        self.lock.acquire()
+        for entry in self.queue:
+            queue_list.append(entry)
+        self.lock.release()
+        return queue_list
 
 
 class Scheduler(threading.Thread):
@@ -109,8 +126,9 @@ class Scheduler(threading.Thread):
     _worker_num = 5
     _worker_max = 20
     _worker_delta = 60  # wait 60 seconds before adding another worker thread
-    _scheduler = {}
-    _runq = _PriorityQueue()            # holds tuples of priority and (name, obj, by, source, dest, value) for immediate execution
+    _scheduler = {}                     # holder schedulers, key is the scheduler name. Each scheduler is stored in a dict
+                                        # (keys are 'obj', 'active', 'prio', 'next', 'value', 'cycle', 'cron')
+    _runq = _PriorityQueue()            # holds priority and a tuple of (name, obj, by, source, dest, value) for immediate execution
     _triggerq = _PriorityQueue()        # holds tuples of (datetime, priority) and (name, obj, by, source, dest, value)
                                         # to be put in the run queue when time is due
 

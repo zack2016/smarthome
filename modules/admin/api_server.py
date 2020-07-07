@@ -131,7 +131,7 @@ class ServerController(RESTResource):
         response['daemon_node_red'] = self.get_node_red_daemon()
         response['last_backup'] = backup.get_lastbackuptime()
         # response['pid'] = str(lib.daemon.read_pidfile(self._sh._pidfile))
-        self.logger.info("ServerController.onfo(): response = {}".format(response))
+        self.logger.info("ServerController.info(): response = {}".format(response))
         return json.dumps(response)
 
 
