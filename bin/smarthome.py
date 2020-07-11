@@ -190,6 +190,15 @@ class SmartHome():
     _cache_dir = os.path.join(_var_dir,'cache'+os.path.sep)
     _log_conf_basename = os.path.join(_etc_dir,'logging')
 
+    if not os.path.exists(_var_dir):
+        os.makedirs(_var_dir)
+        os.makedirs(os.path.join(_var_dir, 'backup'))
+        os.makedirs(_cache_dir)
+        os.makedirs(os.path.join(_var_dir, 'db'))
+        os.makedirs(os.path.join(_var_dir, 'log'))
+        os.makedirs(os.path.join(_var_dir, 'run'))
+
+
     # the APIs available though the smarthome object instance:
     shtime = None
 
