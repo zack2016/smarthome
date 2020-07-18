@@ -35,21 +35,6 @@ Das smartVISU Plugin implementiert:
 Änderungen ab Version 1.2
 =========================
 
-In den bisherigen Releases von smarthome bzw. SmartHomeNG wurde die Visualisierungsunterstützung
-in der Datei **../etc/plugin.yaml** folgendermaßen konfiguriert:
-
-.. code-block:: yaml
-   :caption: Ausschnitt aus **../etc/plugin.yaml**
-
-   visu:
-       plugin_name: WebSocket
-       class_path: plugins.visu
-   #    ip: 0.0.0.0
-   #    port: 2424
-       smartvisu_dir: /var/www/smartvisu
-   #    acl: rw
-
-
 Ab SmartHomeNG v1.2 sind für die vollständige smartVISU Unterstützung zwei Plugins an Stelle des bisherigen
 visu Plugins zu konfigurieren.
 
@@ -107,9 +92,7 @@ Das Plugin **visu_websocket** muss in **../etc/plugin.yaml** konfiguriert werden
    :caption: Ausschnitt aus **../etc/plugin.yaml**
 
    websocket:
-       class_name: WebSocket
-       class_path: plugins.visu_websocket
-   #    plugin_name: visu_websocket
+       plugin_name: visu_websocket
    #    ip: 0.0.0.0
    #    port: 2424
    #    tls: no
@@ -119,11 +102,7 @@ Das Plugin **visu_websocket** muss in **../etc/plugin.yaml** konfiguriert werden
 +-------------+-----------------------------------------------------------------------------------+
 | Parameter   | Beschreibung                                                                      |
 +=============+===================================================================================+
-| class_name  | class_name muss wie im obigen Beispiel angegeben werden. Kann ab SmartHomeNG v1.4 |
-|             | durch den Parameter plugin_name ersetzt werden.                                   |
-+-------------+-----------------------------------------------------------------------------------+
-| class_path  | class_path muss wie im obigen Beispiel angegeben werden. Kann ab SmartHomeNG v1.4 |
-|             | durch den Parameter plugin_name ersetzt werden.                                   |
+| plugin_name | eferenziert das gewählte Plugin (hie visu_websocket).                             |
 +-------------+-----------------------------------------------------------------------------------+
 | ip          | Muss normalerweise nicht angegeben werden. Hiermit wird für Computer mit mehreren |
 |             | ip Adressen festgelegt, auf welcher Adresse das Plugin hört. Wenn ip nicht        |

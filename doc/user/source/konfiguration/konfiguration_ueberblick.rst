@@ -150,36 +150,35 @@ Die Datei **plugin.yaml** enthält die Konfigurationsanweisungen für alle Plugi
 
    # plugin.yaml
    knx:
-      class_name: KNX
-      class_path: plugins.knx
+      plugin_name: knx
       host: 127.0.0.1
       port: 6720
    #   send_time: 600 # update date/time every 600 seconds, default none
    #   time_ga: 1/1/1 # default none
    #   date_ga: 1/1/2 # default none
    visu:
-       class_name: WebSocket
-       class_path: plugins.visu_websocket
+       plugin_name: visu_websocket
    cli:
-       class_name: CLI
-       class_path: plugins.cli
+       plugin_name: cli
        ip: 0.0.0.0
        update: True
    sql:
-       class_name: SQL
-       class_path: plugins.sqlite
+       plugin_name: sqlite_visu2_8
 
 
 Seit Version 1.2 (Master Branch) gibt es ein neues Plugin (Backend) für SmartHomeNG. Dabei kann
-man über einen Browser das gleiche (und mehr) erreichen, wie früher über das CLI-Plugin. Das
-Backend Plugin bindet man folgendermaßen ein:
+man über einen Browser das gleiche (und mehr) erreichen, wie früher über das CLI-Plugin.
+
+Allerdings ist das Plugin inzwischen veraltet und wird in einer der kommenden Versionen von SmartHomeNG entfernt, da
+es inzwischen ein erheblich leistungsfähigeres Administrationsinterface für SmartHomeNG gibt.
+
+Das Backend Plugin bindet man folgendermaßen ein:
 
 .. code-block:: yaml
    :caption: Auszug aus ../etc/plugin.yaml
 
    BackendServer:
-       class_name: BackendServer
-       class_path: plugins.backend
+       plugin_name: backend
        updates_allowed: True
        user: admin
        password: xxxx
