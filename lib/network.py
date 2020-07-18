@@ -673,8 +673,8 @@ class Tcp_client(object):
                 self._socket.send(message)
             else:
                 return False
-        except:
-            self.logger.warning("No connection to {}, cannot send data {}".format(self._host, msg))
+        except Exception as e:
+            self.logger.warning("No connection to {}, cannot send data {}. Error: {}".format(self._host, message, e))
             return False
         return True
 
