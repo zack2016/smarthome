@@ -124,6 +124,7 @@ class ServerController(RESTResource):
         response['websocket_port'] = self.module.websocket_port
         response['log_chunksize'] = self.module.log_chunksize
         response['developer_mode'] = self.module.developer_mode
+        response['click_dropdown_header'] = self.module.click_dropdown_header
 
         response['daemon_knx'] = self.get_knx_daemon()
         response['daemon_ow'] = self.get_1wire_daemon()

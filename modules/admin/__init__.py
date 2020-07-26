@@ -107,6 +107,7 @@ class Admin(Module):
             self.websocket_port = self._parameters['websocket_port']
             self.log_chunksize = self._parameters['log_chunksize']
             self.developer_mode = self._parameters['developer_mode']
+            self.click_dropdown_header = self._parameters['click_dropdown_header']
         except:
             self.logger.critical(
                 "Module '{}': Inconsistent module (invalid metadata definition)".format(self._shortname))
