@@ -27,8 +27,9 @@ import logging
 import os
 import sys
 import psutil
-import fcntl
 import errno
+if os.name != 'nt':
+    import fcntl
 
 logger = logging.getLogger(__name__)
 
@@ -46,6 +47,8 @@ def daemonize(pidfile,stdin='/dev/null', stdout='/dev/null', stderr=None):
     :type stdout: string
     :type stderr: string
     """
+    if os.name == 'nt':
+        return
 
     # use stdout file if stderr is none
     if (not stderr):
@@ -119,12 +122,15 @@ def write_pidfile(pid, pidfile):
     fd.close()
 
     # lock pidfile:
-    try:
-        fd = os.open(pidfile, os.O_RDONLY)
-        fcntl.flock(fd, fcntl.LOCK_EX | fcntl.LOCK_NB)
+    if os.name != 'nt':
+        try:
+            fd = os.open(pidfile, os.O_RDONLY)
+            fcntl.flock(fd, fcntl.LOCK_EX | fcntl.LOCK_NB)
         # don't close fd or lock is gone
-    except OSError as e:
-        print("Could not lock pid file: %d (%s)" % (e.errno, e.strerror) , file=sys.stderr)
+        except OSError as e:
+            print("Could not lock pid file: %d (%s)" % (e.errno, e.strerror) , file=sys.stderr)
+    else:
+        print("Could not lock pid file with windows os")
 
 def read_pidfile(pidfile):
     """
@@ -161,7 +167,7 @@ def check_sh_is_running(pidfile):
 
     pid = read_pidfile(pidfile)
     isRunning = False
-    if pid > 0 and psutil.pid_exists(pid):
+    if pid > 0 and psutil.pid_exists(pid) and os.name != 'nt':
         try:
             fd = os.open(pidfile, os.O_RDONLY)
             fcntl.flock(fd, fcntl.LOCK_EX | fcntl.LOCK_NB)

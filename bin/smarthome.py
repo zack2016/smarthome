@@ -235,7 +235,10 @@ class SmartHome():
         """
         self.shng_status = {'code': 0, 'text': 'Initalizing'}
 
-        self.python_bin = os.environ.get('_','')
+        if os.name != 'nt':
+            self.python_bin = os.environ.get('_','')
+        else:
+            self.python_bin = sys.executable
 
         self._extern_conf_dir = extern_conf_dir
 
@@ -392,13 +395,14 @@ class SmartHome():
         self.initMemLog()
 
         # test if a valid locale is set in the operating system
-        try:
-            if not any(utf in os.environ['LANG'].lower() for utf in ['utf-8', 'utf8']):
-                self._logger.error("Locale for the enviroment is not set to a valid value. Set the LANG environment variable to a value supporting UTF-8")
-        except:
-            self._logger.error("Locale for the enviroment is not set. Defaulting to en_US.UTF-8")
-            os.environ["LANG"] = 'en_US.UTF-8'
-            os.environ["LC_ALL"] = 'en_US.UTF-8'
+        if os.name != 'nt':
+            try:
+                if not any(utf in os.environ['LANG'].lower() for utf in ['utf-8', 'utf8']):
+                    self._logger.error("Locale for the enviroment is not set to a valid value. Set the LANG environment variable to a value supporting UTF-8")
+            except:
+                self._logger.error("Locale for the enviroment is not set. Defaulting to en_US.UTF-8")
+                os.environ["LANG"] = 'en_US.UTF-8'
+                os.environ["LC_ALL"] = 'en_US.UTF-8'
 
         #############################################################
         # Link Tools
@@ -821,10 +825,10 @@ class SmartHome():
     # Helper Methods
     #################################################################
     def _maintenance(self):
-        self._logger.debug("_maintenace: Started")
+        self._logger.debug("_maintenance: Started")
         self._garbage_collection()
         references = sum(self._object_refcount().values())
-        self._logger.debug("_maintenace: Object references: {}".format(references))
+        self._logger.debug("_maintenance: Object references: {}".format(references))
 
     def _excepthook(self, typ, value, tb):
         mytb = "".join(traceback.format_tb(tb))

@@ -24,7 +24,8 @@ import os
 import sys
 import socket
 import platform
-import pwd
+if os.name != 'nt':
+    import pwd
 import psutil
 import datetime
 import time
@@ -218,13 +219,20 @@ class SystemData:
         arch = platform.machine()
         # node = platform.node()
         node = socket.getfqdn()
-        user = pwd.getpwuid(os.geteuid()).pw_name  # os.getlogin()
+        if os.name != 'nt':
+            user = pwd.getpwuid(os.geteuid()).pw_name  # os.getlogin()
+        else:
+            user = os.getlogin()
 
         ipv6 = Utils.get_local_ipv6_address()
         ip = Utils.get_local_ipv4_address()
 
-        space = os.statvfs(self._sh.base_dir)
-        freespace = space.f_frsize * space.f_bavail / 1024 / 1024
+        if os.name != 'nt':
+            space = os.statvfs(self._sh.base_dir)
+            freespace = space.f_frsize * space.f_bavail / 1024 / 1024
+        else:
+            space = psutil.disk_usage(self._sh.base_dir)
+            freespace = space.free / 1024 / 1024
 
         rt = Shtime.get_instance().runtime_as_dict()
         sh_runtime_seconds = rt['total_seconds']
