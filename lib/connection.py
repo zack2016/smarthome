@@ -92,6 +92,7 @@ class Connections(Base):
             self._kqueue = select.kqueue()
         else:
             logger.warning("Init connections using IOWait")
+            self._connections_found = 0
             self._waitobj = IOWait()
 
     def register_server(self, fileno, obj):
@@ -191,7 +192,6 @@ class Connections(Base):
             logger.error("fileno -1 was found, please report to SmartHomeNG team")
             del( self._connections[-1])
 
-        logger.warning("lib/connection.py poll() for len(self._connections)={}".format(len(self._connections)))
         if hasattr(select, 'epoll') or hasattr(select, 'kqueue'):
             for fileno in self._connections:
             # Fix for: "RuntimeError: dictionary changed size during iteration"
@@ -297,6 +297,11 @@ class Connections(Base):
                                     pass
         else:
             # not using  epoll or kqueue
+            n_connections = len(self._connections)
+            if self._connections_found != n_connections:
+                logger.warning("lib/connection.py poll() for len(self._connections)={}".format(n_connections))
+                self._connections_found = n_connections
+
             watched = self._waitobj.get_watched()
             nwatched = len(watched)
             logger.warning("iowait in alpha status with {} watched connections".format(nwatched))
