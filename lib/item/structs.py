@@ -99,6 +99,7 @@ class Structs():
             True
 
         '''
+        #self.logger.warning("merge: source_name='{}', dest_name='{}'".format(source_name, dest_name))
         for key, value in source.items():
             if isinstance(value, collections.OrderedDict):
                 # get node or create one
@@ -146,7 +147,7 @@ class Structs():
             if structentry == 'struct':
                 for substruct_name in substruct_names:
                     # for every substruct
-                    self.merge_substruct_to_struct(new_struct, substruct_name)
+                    self.merge_substruct_to_struct(new_struct, substruct_name, struct_name)
                     # self.logger.info("resolve_struct: ->substruct_name='{}'".format(substruct_name))
                     # substruct = self._struct_definitions.get(substruct_name, None)
                     # # merge in the sub-struct
@@ -167,7 +168,7 @@ class Structs():
         return new_struct
 
 
-    def merge_substruct_to_struct(self, main_struct, substruct_name):
+    def merge_substruct_to_struct(self, main_struct, substruct_name, main_struct_name='?'):
 
         if substruct_name.startswith('test_'):
             self.logger.info("merge_substruct_to_struct: ->substruct_name='{}'".format(substruct_name))
@@ -182,7 +183,7 @@ class Structs():
                 if substruct_name.startswith('test_'):
                     self.logger.info("merge_substruct_to_struct: - merge key='{}', value='{}' -> new_struct='{}'".format(key, substruct
                 [key], main_struct))
-                self.merge(substruct[key], main_struct[key], key, main_struct + '. ' + key)
+                self.merge(substruct[key], main_struct[key], substruct_name + '.' + key, main_struct_name + '.' + key)
             elif isinstance(main_struct.get(key, None), list) or isinstance(substruct.get(key, None), list):
                 main_struct[key] = self.merge_structlists(main_struct[key], substruct[key], key)
             else:
