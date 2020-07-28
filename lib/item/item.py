@@ -382,8 +382,9 @@ class Item():
         :rtype: str, str
         """
         dest_item = ''
-        # Check if assignment operator ('=') exists
-        if value.find('=') != -1:
+        # Check if assignment operator ('=') exists ('=' before first '(')
+        if ((value.find('=') != -1) and (value.find('(') == -1)) or \
+           ((value.find('=') != -1) and (value.find('=') < value.find('('))):
             # If delimiter exists, check if equal operator exists
             if value.find('==') != -1:
                 # equal operator exists
@@ -1119,15 +1120,30 @@ class Item():
 
         :param path: path to this item
 
-        :param attr: Descriptive text for origin of update of item
+        :param attr: Descriptive text for origin of update of item ('on_change', 'on_update')
         :type: path: str
 
         :type attr: str
         """
-        if self._path == 'wohnung.flur.szenen_helper':
-            logger.info("_run_on_xxx: item = {}, value = {}".format(self._path, value))
         sh = self._sh
         logger.info("Item {}: '{}' evaluating {} = {}".format(self._path, attr, on_dest, on_eval))
+
+        # if syntax without '=' is used, add caller and source to the item assignement
+        if on_dest == '':
+            on_eval = on_eval.strip()
+            if on_eval[-1] == ')':
+                test = on_eval.replace(' ', '')
+                if test.lower().find(',caller=') == -1 and test.lower().find(',source=') == -1:
+                    # if neither 'caller' nor 'source' is given
+                    on_eval = on_eval[:-1] + ", caller='" + attr + "', source='" + self._path + "')"
+                if test.lower().find(',caller=') > -1 and test.lower().find(',source=') == -1:
+                    # if only 'caller' is given
+                    on_eval = on_eval[:-1] + ", source='" + self._path + "')"
+                if test.lower().find(',caller=') == -1 and test.lower().find(',source=') > -1:
+                    # if only 'source' is given
+                    on_eval = on_eval[:-1] + ", caller='" + attr + "')"
+        # try if on_eval contains a valid eval expression
+        # Attention: This already assignes the value, if syntax without '=' is used
         try:
             dest_value = eval(on_eval)       # calculate to test if expression computes and see if it computes to None
         except Exception as e:
@@ -1158,7 +1174,7 @@ class Item():
             sh = self._sh  # noqa
 #            logger.info("Item {}: 'on_update' evaluating {} = {}".format(self._path, self._on_update_dest_var, self._on_update))
             for on_update_dest, on_update_eval in zip(self._on_update_dest_var, self._on_update):
-                self._run_on_xxx(self._path, value, on_update_dest, on_update_eval, 'on_update')
+                self._run_on_xxx(self._path, value, on_update_dest, on_update_eval, 'On_Update')
 
 
     def __run_on_change(self, value=None):
@@ -1169,7 +1185,7 @@ class Item():
             sh = self._sh  # noqa
 #            logger.info("Item {}: 'on_change' evaluating lists {} = {}".format(self._path, self._on_change_dest_var, self._on_change))
             for on_change_dest, on_change_eval in zip(self._on_change_dest_var, self._on_change):
-                self._run_on_xxx(self._path, value, on_change_dest, on_change_eval, 'on_change')
+                self._run_on_xxx(self._path, value, on_change_dest, on_change_eval, 'On_Change')
 
 
     def _log_on_change(self, value, caller, source=None, dest=None):
