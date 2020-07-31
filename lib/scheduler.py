@@ -436,14 +436,11 @@ class Scheduler(threading.Thread):
             cycle = {cycle: None}
         elif isinstance(cycle, str):
             cycle, __, _value = cycle.partition('=')
-            if _value.lower() == 'none':
-                _value = ''
-            else:
-                try:
-                    cycle = int(cycle.strip())
-                except Exception:
-                    logger.warning("Scheduler: invalid cycle entry for {0} {1}".format(name, cycle))
-                    return
+            try:
+                cycle = int(cycle.strip())
+            except Exception:
+                logger.warning("Scheduler: Invalid cycle entry for {0} {1}".format(name, cycle))
+                return
             if _value != '':
                 _value = _value.strip()
             else:
@@ -501,15 +498,15 @@ class Scheduler(threading.Thread):
                         elif isinstance(kwargs[key], int):
                             _cycle = {kwargs[key]: None}
                         elif isinstance(kwargs[key], str):
-                            _cycle, __, _value = kwargs[key].partition('=')
-                            if _value.lower() == 'none':
-                                _value = ''
-                            else:
-                                try:
-                                    _cycle = int(_cycle.strip())
-                                except Exception:
-                                    logger.warning("scheduler.change: Invalid cycle entry for {0} {1}".format(name, _cycle))
-                                    return
+                            _param = kwargs[key].strip()
+                            if _param[0] == '{' and _param[-1] == '}':
+                                _param = _param[1:-1]
+                            _cycle, __, _value = _param.partition(':')
+                            try:
+                                _cycle = int(_cycle.strip())
+                            except Exception:
+                                logger.warning("scheduler.change: Invalid cycle entry for {} {}".format(name, _cycle))
+                                return
                             if _value != '':
                                 _value = _value.strip()
                             else:
