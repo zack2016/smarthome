@@ -491,6 +491,26 @@ class Scheduler(threading.Thread):
                                 kwargs[key] = None
                             else:
                                 kwargs[key] = _cron
+                    elif key == 'cycle':
+                        if isinstance(kwargs[key], dict):
+                            _cycle = kwargs[key]
+                        elif isinstance(kwargs[key], int):
+                            _cycle = {kwargs[key]: None}
+                        elif isinstance(kwargs[key], str):
+                            _cycle, __, _value = kwargs[key].partition('=')
+                            try:
+                                _cycle = int(_cycle.strip())
+                            except Exception:
+                                logger.warning("scheduler.change: Invalid cycle entry for {0} {1}".format(name, _cycle))
+                                return
+                            if _value != '':
+                                _value = _value.strip()
+                            else:
+                                _value = None
+                            _cycle = {_cycle: _value}
+                        logger.warning("scheduler.change: {}: {}, type = type(kwargs[key])={}".format(name, kwargs[key], type(kwargs[key])))
+                        kwargs[key] = _cycle
+                        logger.warning("scheduler.change: {}: cycle entry {}".format(name, _cycle))
                     elif key == 'active':
                         if kwargs['active'] and not self._scheduler[name]['active']:
                             logger.info("Activating logic: {0}".format(name))
