@@ -42,6 +42,12 @@ META_STRUCT_SECTION = 'item_structs'
 
 logger = logging.getLogger(__name__)
 
+
+# global variables to take definitions of multiple plugins
+all_itemdefinitions = {}
+all_itemprefixdefinitions = {}
+all_prefixes_tuple = None
+
 class Metadata():
 
     _version = '?'
@@ -60,6 +66,9 @@ class Metadata():
         :type addon_type: str
         :type classpath: str
         """
+        global all_itemdefinitions
+        global all_itemprefixdefinitions
+
         self._sh = sh
         self._addon_name = addon_name.lower()
         self._addon_type = addon_type
@@ -87,6 +96,7 @@ class Metadata():
         self._paramlist = []
         self.itemdefinitions = None
         self.itemprefixdefinitions = None
+        self.all_itemprefixdefinitions = {}
         self._itemdeflist = []
         self.itemstructs = None
         self._itemstructlist = []
@@ -131,6 +141,32 @@ class Metadata():
                 self._test_definitions(self._itemdeflist, self.itemdefinitions)
             else:
                 logger.debug(self._log_premsg+"has no item definitions in metadata")
+
+            # test validity of item-prefix definition section
+            if self.itemprefixdefinitions is not None:
+                if self.itemprefixdefinitions == 'NONE':
+                    self.itemprefixdefinitions = None
+                else:
+                    self._itemprefixdeflist = list(self.itemprefixdefinitions.keys())
+                    logger.info(self._log_premsg+"Metadata itemprefixdeflist = '{}'".format( str(self._itemprefixdeflist) ) )
+            if  self.itemprefixdefinitions is not None:
+                self._test_definitions(self._itemprefixdeflist, self.itemprefixdefinitions)
+            else:
+                logger.debug(self._log_premsg+"has no item definitions in metadata")
+
+            # build dict for checking of item attributes and their values
+            if self.itemdefinitions is not None:
+                for attr_name in self.itemdefinitions:
+                    all_itemdefinitions[attr_name] = self.itemdefinitions[attr_name]
+                    all_itemdefinitions[attr_name]['_addon_name'] = self._addon_name
+                    all_itemdefinitions[attr_name]['_addon_type'] = self._addon_type
+
+            # build dict for checking of item attributes and their values
+            if self.itemprefixdefinitions is not None:
+                for prefix_name in self.itemprefixdefinitions:
+                    all_itemprefixdefinitions[prefix_name] = self.itemprefixdefinitions[prefix_name]
+                    all_itemprefixdefinitions[prefix_name]['_addon_name'] = self._addon_name
+                    all_itemprefixdefinitions[prefix_name]['_addon_type'] = self._addon_type
 
             # test validity of logic-parameter definition section
             if self.logic_parameters is not None:
@@ -983,3 +1019,137 @@ class Metadata():
                             logger.error(self._log_premsg+"Found invalid value '{}' for parameter '{}' (type {}) in /etc/{}, using default value '{}' instead".format(value, param, self.parameters[param]['type'], self._addon_type+YAML_FILE, str(addon_params[param])))
 
         return (addon_params, allparams_ok, hide_params)
+
+
+    def check_itemattribute(self, item, attribute, value, defined_in_file=None):
+        """
+        Checks the value of a plugin-specific item attribute
+        and returnes the checked value or the default value if needed
+
+        attribute name is checked
+        - against list of valid attributes-names (defined by section 'item_attributes' of configured plugins)
+        - against list of valid attribute-name prefixes (defined by section 'item_attribute_prefixes' of configured plugins)
+
+        :param item: item object
+        :param attribute:
+        :param value:
+        :return:
+        """
+        global all_prefixes_tuple
+
+        if all_prefixes_tuple is None:
+            # Generate tuple on first call to this method
+            all_prefixes_tuple = tuple(all_itemprefixdefinitions.keys())
+
+        try:
+            logged = self.ia_logged
+        except:
+            logged = False
+
+        if not logged:
+            #logger.warning("check_itemattribute: all_itemdefinitions = {}".format(list(all_itemdefinitions.keys())))
+            #logger.warning("check_itemattribute: all_itemprefixdefinitions = {}".format(list(all_itemprefixdefinitions.keys())))
+            #logger.warning("check_itemattribute: all_itemdefinitions['knx_dpt'] = {}".format(dict(all_itemdefinitions['knx_dpt'])))
+            #logger.warning("check_itemattribute: all_itemdefinitions['shelly_attr'] = {}".format(dict(all_itemdefinitions['shelly_attr'])))
+            self.ia_logged = True
+
+
+        attr_definition = all_itemdefinitions.get(attribute, None)
+        if attr_definition is None:
+            for prefix in all_itemprefixdefinitions.keys():
+                if attribute.startswith(prefix):
+                    attr_definition = dict(all_itemprefixdefinitions[prefix])
+                    attr_definition['_prefix'] = True
+                    break
+            if not(attribute.startswith(all_prefixes_tuple)):
+                if not (item.id().startswith('env.core.') or item.id().startswith('env.system.')):
+                    if defined_in_file is None:
+                        def_in = ''
+                    else:
+                        def_in = '(defined in ' + defined_in_file + ')'
+                    logger.warning("Undefined item attribute '{}' with value '{}' is configured for item '{}' {}".format(attribute, value, item.id(), def_in))
+                return value
+
+
+        #value = Utils.strip_quotes(args.get(param))
+        # mandatory and default value don't work this way (when checking attribute by attribute
+#        if value is None:
+#            default_value = attr_definition.get('default')
+#            value = default_value
+#            logger.warning("check_itemattribute: Attribute '{}' set to default '{}' for item '{}'".format(attribute, default_value, item.id()))
+#            return value
+
+        attr_type = attr_definition.get('type', 'foo')
+
+        """
+        If a parameter is defined as a list, but the value is of a basic datatype,
+        value is expanded to a list. In all other cases, the value is returned nuchanged
+        """
+        if (attr_type == 'list') and (not isinstance(value, list)):
+            result = Utils.string_to_list(value)
+            #if (attr_type == 'list'):
+            #    logger.warning("check_itemattribute: _expand_listvalues: value = >{}<, type(value) = >{}<, result = >{}<, type(result) = >{}< for item {}".format(value, type(value), result, type(result), item.id()))
+            value = result
+
+
+
+        """
+        Returns the subtype of a parameter
+
+        If the defined datatype is 'foo', None is returned
+        If no subtype is defined (or definable), an empty string is returned
+
+        :param param: Name of the parameter
+        :type param: str
+
+        :return: subtype of the parameter
+        :rtype: str
+        """
+        attr_subtype = ''
+        if attr_type == 'list':
+            attr_subtype = attr_definition.get('listtype', ['?'])
+
+
+
+        """
+        Returns True, if the value can be converted to specified type
+        """
+        if not self._test_valuetype(attr_type, attr_subtype, value):
+            additional_text = ''
+            default_value = attr_definition.get('default', None)
+            if default_value is not None:
+                additional_text = ", using default value '" + str(default_value) + "' instead"
+            logger.warning("Item '{}', attribute '{}': value '{}' can not be converted to type '{}'{}".format(item.id(), attribute, value, attr_type, additional_text))
+            if default_value is None:
+                value = ''
+            else:
+                value = default_value
+
+        # if self._test_value(param, value):
+        #     addon_params[param] = self._convert_value(param, value)
+        #
+        #     if self.parameters[param] is None:
+        #         hide_params[param] = None
+        #     else:
+        #         hide_params[param] = Utils.to_bool(self.parameters[param].get('hide'), default=False)
+        #     logger.debug(self._log_premsg+"Found '{}' with value '{}' in /etc/{}".format(param, value, self._addon_type+YAML_FILE))
+        # else:
+        #     if self.parameters[param].get('mandatory') is True:
+        #         logger.error(self._log_premsg+"'{}' is mandatory, but no valid value was found in /etc/{}".format(param, self._addon_type+YAML_FILE))
+        #         allparams_ok = False
+        #     else:
+        #         addon_params[param] = self.get_parameter_defaultvalue(param)
+        #         hide_params[param] = Utils.to_bool(self.parameters[param].get('hide'), default=False)
+        #         logger.error(self._log_premsg+"Found invalid value '{}' for parameter '{}' (type {}) in /etc/{}, using default value '{}' instead".format(value, param, self.parameters[param]['type'], self._addon_type+YAML_FILE, str(addon_params[param])))
+
+
+
+
+
+        #if item.id().startswith('test.'):
+        #    logger.warning("check_itemattribute: Checking '{}', attr='{}', val='{}'".format(item.id(), attribute, value))
+        #    logger.warning("check_itemattribute: - attr_definition='{}'".format(attr_definition))
+
+        return value
+
+

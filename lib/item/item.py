@@ -35,8 +35,9 @@ import math             # for calls to math in eval
 from math import *
 
 
-from lib.plugin import Plugins
 from lib.shtime import Shtime
+from lib.plugin import Plugins
+from lib.metadata import Metadata
 
 from lib.constants import (ITEM_DEFAULTS, FOO, KEY_ENFORCE_UPDATES, KEY_ENFORCE_CHANGE, KEY_CACHE, KEY_CYCLE, KEY_CRONTAB, KEY_EVAL,
                            KEY_EVAL_TRIGGER, KEY_TRIGGER, KEY_CONDITION, KEY_NAME, KEY_TYPE, KEY_STRUCT, KEY_REMARK, KEY_INSTANCE,
@@ -184,6 +185,7 @@ class Item():
         #############################################################
         # Item Attributes
         #############################################################
+        self._filename = dict(config.items()).get('_filename', None)
         for attr, value in config.items():
             if not isinstance(value, dict):
                 if attr in [KEY_CYCLE, KEY_NAME, KEY_TYPE, KEY_STRUCT, KEY_VALUE, KEY_INITVALUE]:
@@ -273,11 +275,10 @@ class Item():
                         elif fromitem == '...':
                             #self.conf[attr] = self._get_attr_from_grandparent(fromattr)
                             value = self._get_attr_from_grandparent(fromattr)
-                        #else:
-                        #    self.conf[attr] = value
-                        # logger.warning("Item rel. from (grand)parent: fromitem = {}, fromattr = {}, self.conf[attr] = {}".format(fromitem, fromattr, self.conf[attr]))
-                    #else:
-                    #    self.conf[attr] = value
+
+                    # Test if the plugin-specific attribute contains a valid value
+                    # and set the default value, if needed
+                    value = self.plugins.meta.check_itemattribute(self, attr.split('@')[0], value, self._filename)
                     self.conf[attr] = value
 
         self.property.init_dynamic_properties()
@@ -1142,6 +1143,7 @@ class Item():
                 if test.lower().find(',caller=') == -1 and test.lower().find(',source=') > -1:
                     # if only 'source' is given
                     on_eval = on_eval[:-1] + ", caller='" + attr + "')"
+
         # try if on_eval contains a valid eval expression
         # Attention: This already assignes the value, if syntax without '=' is used
         try:

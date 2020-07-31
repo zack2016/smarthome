@@ -98,8 +98,6 @@ class Items():
         _items_instance = self
         self.structs = Structs()
 
-        self.logger.warning("Develop: Working with NEW refactored version of lib.item")
-
 
     # -----------------------------------------------------------------------------------------
     #   Following (static) method of the class Items implement the API for Items in SmartHomeNG
