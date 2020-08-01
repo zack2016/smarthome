@@ -687,7 +687,6 @@ class Metadata():
                     if self._test_value(valid_min, definition):
                         if result < self._convert_valuetotype(definition.get('type', 'foo'), valid_min):
                             if is_default == False:
-#                                result = self.get_parameter_defaultvalue(param)   # instead of valid_min
                                 result = valid_min
                             else:
                                 result = valid_min
@@ -696,7 +695,6 @@ class Metadata():
                     if self._test_value(valid_max, definition):
                         if result > self._convert_valuetotype(definition.get('type', 'foo'), valid_max):
                             if is_default == False:
-#                                result = self.get_parameter_defaultvalue(param)   # instead of valid_max
                                 result = valid_max
                             else:
                                 result = valid_max
@@ -725,7 +723,6 @@ class Metadata():
                     if self._test_value(valid_min, self.parameters[param]):
                         if result < self._convert_valuetotype(self.get_parameter_type(param), valid_min):
                             if is_default == False:
-#                                result = self.get_parameter_defaultvalue(param)   # instead of valid_min
                                 result = valid_min
                             else:
                                 result = valid_min
@@ -734,7 +731,6 @@ class Metadata():
                     if self._test_value(valid_max, self.parameters[param]):
                         if result > self._convert_valuetotype(self.get_parameter_type(param), valid_max):
                             if is_default == False:
-#                                result = self.get_parameter_defaultvalue(param)   # instead of valid_max
                                 result = valid_max
                             else:
                                 result = valid_max
@@ -985,11 +981,11 @@ class Metadata():
         """
         return self._get_definition_defaultvalue(param, self.parameters, self._paramlist)
 
-    def get_itemdefinition_defaultvalue(self, definition):
-        """
-        Returns the default value for an item attribute definition
-        """
-        return self._get_definition_defaultvalue(definition, self.itemdefinitions, self._itemdeflist)
+#    def get_itemdefinition_defaultvalue(self, definition):
+#        """
+#        Returns the default value for an item attribute definition
+#        """
+#        return self._get_definition_defaultvalue(definition, self.itemdefinitions, self._itemdeflist)
 
     def _get_definitioninfo(self, definition, key, definitions):
         """
