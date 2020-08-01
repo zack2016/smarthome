@@ -37,7 +37,6 @@ from math import *
 
 from lib.shtime import Shtime
 from lib.plugin import Plugins
-from lib.metadata import Metadata
 
 from lib.constants import (ITEM_DEFAULTS, FOO, KEY_ENFORCE_UPDATES, KEY_ENFORCE_CHANGE, KEY_CACHE, KEY_CYCLE, KEY_CRONTAB, KEY_EVAL,
                            KEY_EVAL_TRIGGER, KEY_TRIGGER, KEY_CONDITION, KEY_NAME, KEY_TYPE, KEY_STRUCT, KEY_REMARK, KEY_INSTANCE,
@@ -254,7 +253,8 @@ class Item():
                     pass
                 elif attr == '_filename':
                     # name of file, which defines this item
-                    setattr(self, attr, value)
+                    #setattr(self, attr, value)    # assignment moved to top (before for loop)
+                    pass
                 else:
                     #------------------------------------------------------------
                     # Plugin-specific Item Attributes
@@ -991,22 +991,23 @@ class Item():
         return "Item: {}".format(self._path)
 
 
-    def _test_attribute_existance(self):
-        """
-
-        :return:
-        """
-        for attr in self.conf:
-            if not self._sh.items.plugin_attribute_exists(attr.split('@')[0]):
-                if not (self._path.startswith('env')):
-                    value = self.conf[attr]
-                    log_msg = "Undefined attribute '{}' with value '{}' used by item {}".format(attr, value, self._path)
-                    if self._filename:
-                        log_msg += " (defined in {})".format(self._filename)
-                    if hasattr(self._sh, '_undef_item_attr_loglevel_info') and self._sh._undef_item_attr_loglevel_info:
-                        logger.info(log_msg)
-                    else:
-                        logger.warning(log_msg)
+    # feature moved to lib.metadata
+    # def _test_attribute_existance(self):
+    #     """
+    #
+    #     :return:
+    #     """
+    #     for attr in self.conf:
+    #         if not self._sh.items.plugin_attribute_exists(attr.split('@')[0]):
+    #             if not (self._path.startswith('env')):
+    #                 value = self.conf[attr]
+    #                 log_msg = "Undefined attribute '{}' with value '{}' used by item {}".format(attr, value, self._path)
+    #                 if self._filename:
+    #                     log_msg += " (defined in {})".format(self._filename)
+    #                 if hasattr(self._sh, '_undef_item_attr_loglevel_info') and self._sh._undef_item_attr_loglevel_info:
+    #                     logger.info(log_msg)
+    #                 else:
+    #                     logger.warning(log_msg)
 
 
     def _init_prerun(self):

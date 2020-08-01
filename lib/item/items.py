@@ -196,8 +196,9 @@ class Items():
         del(item_conf)  # clean up
 
         # Test if all used attributes are defined in configuread plugins
-        for item in self.return_items():
-            item._test_attribute_existance()
+        #feature moved to lib.metadata
+        #for item in self.return_items():
+        #    item._test_attribute_existance()
 
 
         # --------------------------------------------------------------------

@@ -123,6 +123,9 @@ class Metadata():
                 if self.parameters == 'NONE':
                     self.parameters = None
                 else:
+                    for param_name in self.parameters.keys():
+                        self.parameters[param_name]['_name'] = param_name
+                        self.parameters[param_name]['_type'] = 'parameter'
                     self._paramlist = list(self.parameters.keys())
                     logger.info(self._log_premsg+"Metadata paramlist = '{}'".format( str(self._paramlist) ) )
             if  self.parameters is not None:
@@ -160,6 +163,8 @@ class Metadata():
                     all_itemdefinitions[attr_name] = self.itemdefinitions[attr_name]
                     all_itemdefinitions[attr_name]['_addon_name'] = self._addon_name
                     all_itemdefinitions[attr_name]['_addon_type'] = self._addon_type
+                    all_itemdefinitions[attr_name]['_name'] = attr_name
+                    all_itemdefinitions[attr_name]['_type'] = 'attribute'
 
             # build dict for checking of item attributes and their values
             if self.itemprefixdefinitions is not None:
@@ -167,6 +172,8 @@ class Metadata():
                     all_itemprefixdefinitions[prefix_name] = self.itemprefixdefinitions[prefix_name]
                     all_itemprefixdefinitions[prefix_name]['_addon_name'] = self._addon_name
                     all_itemprefixdefinitions[prefix_name]['_addon_type'] = self._addon_type
+                    all_itemprefixdefinitions[prefix_name]['_name'] = prefix_name
+                    all_itemprefixdefinitions[prefix_name]['_type'] = 'prefix'
 
             # test validity of logic-parameter definition section
             if self.logic_parameters is not None:
@@ -514,7 +521,7 @@ class Metadata():
 
 
     # ------------------------------------------------------------------------
-    # Methods for parameter checking
+    # Methods for parameter/attribute checking
     #
 
     def _test_valuetype(self, typ, subtype, value):
@@ -570,27 +577,44 @@ class Metadata():
             return True
 
 
-    def _test_value(self, param, value):
+    def _test_value(self, value, definition):
         """
         Returns True, if the value can be converted to specified type
+
+        :param value: value to be checked
+        :param definition: definition dict of parameter/attribute
+        :type value: str
+        :type definition: dict
+
+        :return: True, if value can be converted
+        :rtype: bool
         """
-        if param in self._paramlist:
-            typ = self.get_parameter_type(param)
-            subtype = self.get_parameter_subtype(param)
-#            if subtype != '':
-#                logger.warning("_test_value '{}': before _test_valuetype(): typ = {}, subtype = {}, value = {}".format(param, typ, subtype, value))
+        if definition is not None:
+            typ = definition.get('type', 'foo')
+            subtype = ''
+            if typ == 'list':
+                subtype = definition.get('listtype', ['?'])
+            #    if subtype != '':
+            #        logger.warning("_test_value '{}': before _test_valuetype(): typ = {}, subtype = {}, value = {}".format(param, typ, subtype, value))
             return self._test_valuetype(typ, subtype, value)
         return False
 
 
-    def _expand_listvalues(self, param, value):
+    def _expand_listvalues(self, value, definition):
         """
         If a parameter is defined as a list, but the value is of a basic datatype,
         value is expanded to a list. In all other cases, the value is returned nuchanged
+
+        :param value: value to be expanded
+        :param definition: definition dict of parameter/attribute
+        :type value: str
+        :type definition: dict
+
+        :return: expanded value
         """
         result = value
-        if param in self._paramlist:
-            typ = self.get_parameter_type(param)
+        if definition is not None:
+            typ = definition.get('type', 'foo')
             if (typ == 'list') and (not isinstance(value, list)):
                 result = Utils.string_to_list(value)
 #            if (typ == 'list'):
@@ -628,41 +652,76 @@ class Metadata():
         return result
 
 
-    def _convert_value(self, param, value, is_default=False):
+    def _convert_value(self, value, definition, is_default=False):
         """
         Returns the value converted to the parameters type
         """
         result = False
-        if param in self._paramlist:
-            typ = self.get_parameter_type(param)
+        if definition is not None:
+            typ = definition.get('type', 'foo')
             result = self._convert_valuetotype(typ, value)
 
             orig = result
-            result = self._test_validity(param, result, is_default)
+            result = self._test_validity('', result, definition, is_default)
             if result != orig:
                 # Für non-default Prüfung nur Warning
                 if is_default:
-                    logger.error(self._log_premsg+"Invalid default '{}' in metadata file '{}' for parameter '{}' -> using '{}' instead".format( orig, self.relative_filename, param, result ) )
+                    logger.error(self._log_premsg+"Invalid default '{}' in metadata file '{}' for {} '{}' -> using '{}' instead".format( orig, self.relative_filename, definition['_type'], definition['_name'], result ) )
                 else:
-                    logger.warning(self._log_premsg+"Invalid value '{}' in plugin configuration file for parameter '{}' -> using '{}' instead".format( orig, param, result ) )
+                    logger.warning(self._log_premsg+"Invalid value '{}' for {} -> using '{}' instead {}".format( orig, definition['_type'], result, definition.get('_def_in', '') ) )
         return result
 
-#  plugin 'hue': Invalid default '2' in metadata file 'plugins/hue/plugin.yaml' for parameter 'cycle_lamps' -> using '10' instead
 
-
-
-    def _test_validity(self, param, value, is_default=False):
+    def _test_validity(self, param, value, definition=None, is_default=False):
         """
         Checks the value against a list of valid values.
         If valid, it returns the value.
         Otherwise it returns the first entry of the list of valid values.
         """
         result = value
-        if self.parameters[param] != None:
+        if definition is not None:
+            if definition.get('type', 'foo') in ['int', 'float', 'num', 'scene']:
+                valid_min = definition.get('valid_min')
+                if valid_min != None:
+                    if self._test_value(valid_min, definition):
+                        if result < self._convert_valuetotype(definition.get('type', 'foo'), valid_min):
+                            if is_default == False:
+#                                result = self.get_parameter_defaultvalue(param)   # instead of valid_min
+                                result = valid_min
+                            else:
+                                result = valid_min
+                valid_max = definition.get('valid_max')
+                if valid_max != None:
+                    if self._test_value(valid_max, definition):
+                        if result > self._convert_valuetotype(definition.get('type', 'foo'), valid_max):
+                            if is_default == False:
+#                                result = self.get_parameter_defaultvalue(param)   # instead of valid_max
+                                result = valid_max
+                            else:
+                                result = valid_max
+            elif definition.get('type', 'foo') in ['list']:
+                 if definition['listlen'] > 0:
+                     if definition['listlen'] != len(value):
+                        logger.warning(self._log_premsg+"Invalid value '{}' in plugin configuration file for parameter '{}' -> length of list is not {}".format( value, param, self.parameters[param]['listlen'] ) )
+                        while len(value) < definition['listlen']:
+                            value.append('')
+                        result = value
+            valid_list = definition.get('valid_list', None)
+            if (valid_list is None) or (len(valid_list) == 0):
+                pass
+            else:
+                if result in valid_list:
+                    pass
+                else:
+                    result = valid_list[0]
+            return result
+
+        elif self.parameters[param] != None:
+            logger.warning("_test_validity: old version for param={}, value={}".format(param, value))
             if self.parameters[param].get('type') in ['int', 'float', 'num', 'scene']:
                 valid_min = self.parameters[param].get('valid_min')
                 if valid_min != None:
-                    if self._test_value(param, valid_min):
+                    if self._test_value(valid_min, self.parameters[param]):
                         if result < self._convert_valuetotype(self.get_parameter_type(param), valid_min):
                             if is_default == False:
 #                                result = self.get_parameter_defaultvalue(param)   # instead of valid_min
@@ -671,7 +730,7 @@ class Metadata():
                                 result = valid_min
                 valid_max = self.parameters[param].get('valid_max')
                 if valid_max != None:
-                    if self._test_value(param, valid_max):
+                    if self._test_value(valid_max, self.parameters[param]):
                         if result > self._convert_valuetotype(self.get_parameter_type(param), valid_max):
                             if is_default == False:
 #                                result = self.get_parameter_defaultvalue(param)   # instead of valid_max
@@ -902,17 +961,17 @@ class Metadata():
                 else:
                     if value is None:
                         value = self._get_default_if_none(typ)
-                    value = self._expand_listvalues(definition, value)
-                    if not self._test_value(definition, value):
+                    value = self._expand_listvalues(value, self.parameters[definition])
+                    if not self._test_value(value, self.parameters[definition]):
                         # Für non-default Prüfung nur Warning
                         logger.error(self._log_premsg+"Invalid data for type '{}' in metadata file '{}': default '{}' for parameter '{}' -> using '{}' instead".format( definitions[definition].get('type'), self.relative_filename, value, definition, self._get_default_if_none(typ) ) )
                         value = None
                     if value is None:
                         value = self._get_default_if_none(typ)
-                    value = self._convert_value(definition, value, is_default=True)
+                    value = self._convert_value(value, self.parameters[definition], is_default=True)
 
                     orig_value = value
-                    value = self._test_validity(definition, value, is_default=True)
+                    value = self._test_validity('', value, self.parameters[definition], is_default=True)
                     if value != orig_value:
                         # Für non-default Prüfung nur Warning
                         logger.error(self._log_premsg+"Invalid default '{}' in metadata file '{}' for parameter '{}' -> using '{}' instead".format( orig_value, self.relative_filename, definition, value ) )
@@ -1000,9 +1059,9 @@ class Metadata():
                             logger.info(self._log_premsg+"value not found in plugin configuration file for parameter '{}' -> using default value '{}' instead".format(param, addon_params[param] ) )
         #                    logger.warning(self._log_premsg+"'{}' not found in /etc/{}, using default value '{}'".format(param, self._addon_type+YAML_FILE, addon_params[param]))
                 else:
-                    value = self._expand_listvalues(param, value)
-                    if self._test_value(param, value):
-                        addon_params[param] = self._convert_value(param, value)
+                    value = self._expand_listvalues(value, self.parameters[param])
+                    if self._test_value(value, self.parameters[param]):
+                        addon_params[param] = self._convert_value(value, self.parameters[param])
 
                         if self.parameters[param] is None:
                             hide_params[param] = None
@@ -1037,22 +1096,16 @@ class Metadata():
         """
         global all_prefixes_tuple
 
+        self._log_premsg = "Item '{}', attribute '{}': ".format(item.id(), attribute)
+
         if all_prefixes_tuple is None:
             # Generate tuple on first call to this method
             all_prefixes_tuple = tuple(all_itemprefixdefinitions.keys())
 
-        try:
-            logged = self.ia_logged
-        except:
-            logged = False
-
-        if not logged:
-            #logger.warning("check_itemattribute: all_itemdefinitions = {}".format(list(all_itemdefinitions.keys())))
-            #logger.warning("check_itemattribute: all_itemprefixdefinitions = {}".format(list(all_itemprefixdefinitions.keys())))
-            #logger.warning("check_itemattribute: all_itemdefinitions['knx_dpt'] = {}".format(dict(all_itemdefinitions['knx_dpt'])))
-            #logger.warning("check_itemattribute: all_itemdefinitions['shelly_attr'] = {}".format(dict(all_itemdefinitions['shelly_attr'])))
-            self.ia_logged = True
-
+        if defined_in_file is None:
+            def_in = ''
+        else:
+            def_in = '(defined in ' + defined_in_file + ')'
 
         attr_definition = all_itemdefinitions.get(attribute, None)
         if attr_definition is None:
@@ -1063,92 +1116,28 @@ class Metadata():
                     break
             if not(attribute.startswith(all_prefixes_tuple)):
                 if not (item.id().startswith('env.core.') or item.id().startswith('env.system.')):
-                    if defined_in_file is None:
-                        def_in = ''
-                    else:
-                        def_in = '(defined in ' + defined_in_file + ')'
-                    logger.warning("Undefined item attribute '{}' with value '{}' is configured for item '{}' {}".format(attribute, value, item.id(), def_in))
+                    logger.warning("Item '{}', attribute '{}': Attribute is undefined and has value '{}' {}".format(item.id(), attribute, value, def_in))
                 return value
 
-
-        #value = Utils.strip_quotes(args.get(param))
-        # mandatory and default value don't work this way (when checking attribute by attribute
-#        if value is None:
-#            default_value = attr_definition.get('default')
-#            value = default_value
-#            logger.warning("check_itemattribute: Attribute '{}' set to default '{}' for item '{}'".format(attribute, default_value, item.id()))
-#            return value
-
+        attr_definition['_def_in'] = def_in
         attr_type = attr_definition.get('type', 'foo')
 
-        """
-        If a parameter is defined as a list, but the value is of a basic datatype,
-        value is expanded to a list. In all other cases, the value is returned nuchanged
-        """
-        if (attr_type == 'list') and (not isinstance(value, list)):
-            result = Utils.string_to_list(value)
-            #if (attr_type == 'list'):
-            #    logger.warning("check_itemattribute: _expand_listvalues: value = >{}<, type(value) = >{}<, result = >{}<, type(result) = >{}< for item {}".format(value, type(value), result, type(result), item.id()))
-            value = result
-
-
-
-        """
-        Returns the subtype of a parameter
-
-        If the defined datatype is 'foo', None is returned
-        If no subtype is defined (or definable), an empty string is returned
-
-        :param param: Name of the parameter
-        :type param: str
-
-        :return: subtype of the parameter
-        :rtype: str
-        """
-        attr_subtype = ''
-        if attr_type == 'list':
-            attr_subtype = attr_definition.get('listtype', ['?'])
-
-
-
-        """
-        Returns True, if the value can be converted to specified type
-        """
-        if not self._test_valuetype(attr_type, attr_subtype, value):
+        # If a parameter is defined as a list, but the value is of a basic datatype, value is expanded to a list.
+        value = self._expand_listvalues(value, attr_definition)
+        # test if value can be converted into defined type
+        if self._test_value(value, attr_definition):
+            value = self._convert_value(value, attr_definition)
+        else:
+            # handle invalid value that cannot be converted to defined type
             additional_text = ''
             default_value = attr_definition.get('default', None)
             if default_value is not None:
                 additional_text = ", using default value '" + str(default_value) + "' instead"
-            logger.warning("Item '{}', attribute '{}': value '{}' can not be converted to type '{}'{}".format(item.id(), attribute, value, attr_type, additional_text))
+            logger.warning("Item '{}', attribute '{}': value '{}' can not be converted to type '{}'{} {}".format(item.id(), attribute, value, attr_type, additional_text, def_in))
             if default_value is None:
                 value = ''
             else:
                 value = default_value
-
-        # if self._test_value(param, value):
-        #     addon_params[param] = self._convert_value(param, value)
-        #
-        #     if self.parameters[param] is None:
-        #         hide_params[param] = None
-        #     else:
-        #         hide_params[param] = Utils.to_bool(self.parameters[param].get('hide'), default=False)
-        #     logger.debug(self._log_premsg+"Found '{}' with value '{}' in /etc/{}".format(param, value, self._addon_type+YAML_FILE))
-        # else:
-        #     if self.parameters[param].get('mandatory') is True:
-        #         logger.error(self._log_premsg+"'{}' is mandatory, but no valid value was found in /etc/{}".format(param, self._addon_type+YAML_FILE))
-        #         allparams_ok = False
-        #     else:
-        #         addon_params[param] = self.get_parameter_defaultvalue(param)
-        #         hide_params[param] = Utils.to_bool(self.parameters[param].get('hide'), default=False)
-        #         logger.error(self._log_premsg+"Found invalid value '{}' for parameter '{}' (type {}) in /etc/{}, using default value '{}' instead".format(value, param, self.parameters[param]['type'], self._addon_type+YAML_FILE, str(addon_params[param])))
-
-
-
-
-
-        #if item.id().startswith('test.'):
-        #    logger.warning("check_itemattribute: Checking '{}', attr='{}', val='{}'".format(item.id(), attribute, value))
-        #    logger.warning("check_itemattribute: - attr_definition='{}'".format(attr_definition))
 
         return value
 
