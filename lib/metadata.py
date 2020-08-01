@@ -1070,13 +1070,14 @@ class Metadata():
                             hide_params[param] = Utils.to_bool(self.parameters[param].get('hide'), default=False)
                         logger.debug(self._log_premsg+"Found '{}' with value '{}' in /etc/{}".format(param, value, self._addon_type+YAML_FILE))
                     else:
-                        if bool(self.parameters[param].get('mandatory', False)) is True:
-                            logger.error(self._log_premsg+"'{}' is mandatory, but no valid value was found in /etc/{}".format(param, self._addon_type+YAML_FILE))
-                            allparams_ok = False
-                        else:
-                            addon_params[param] = self.get_parameter_defaultvalue(param)
-                            hide_params[param] = Utils.to_bool(self.parameters[param].get('hide'), default=False)
-                            logger.error(self._log_premsg+"Found invalid value '{}' for parameter '{}' (type {}) in /etc/{}, using default value '{}' instead".format(value, param, self.parameters[param]['type'], self._addon_type+YAML_FILE, str(addon_params[param])))
+                        if self.parameters.get(param) is not None:
+                            if bool(self.parameters[param].get('mandatory', False)) is True:
+                                logger.error(self._log_premsg+"'{}' is mandatory, but no valid value was found in /etc/{}".format(param, self._addon_type+YAML_FILE))
+                                allparams_ok = False
+                            else:
+                                addon_params[param] = self.get_parameter_defaultvalue(param)
+                                hide_params[param] = Utils.to_bool(self.parameters[param].get('hide'), default=False)
+                                logger.error(self._log_premsg+"Found invalid value '{}' for parameter '{}' (type {}) in /etc/{}, using default value '{}' instead".format(value, param, self.parameters[param]['type'], self._addon_type+YAML_FILE, str(addon_params[param])))
 
         return (addon_params, allparams_ok, hide_params)
 
