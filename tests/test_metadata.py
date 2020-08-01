@@ -39,11 +39,11 @@ class LibMetadataTest(unittest.TestCase):
 #        self.modules = self.sh.with_modules_from(common.BASE + "/tests/resources/module")
 
 #    def test_check_parameters(self):
-    
+
     def test_meta_is_registered(self):
         logger.warning('')
         logger.warning('=== Begin Metadata Tests:')
-        
+
         self.sh = MockSmartHome()
         self.meta = Metadata(self.sh, 'test_resources', 'module', 'tests.resources.test_metadata')
         print()
@@ -55,7 +55,7 @@ class LibMetadataTest(unittest.TestCase):
         (processed_args, allparams_ok, hide_params) = self.meta.check_parameters(args)
 
         # Test default values for datatypes
-        self.assertIsNone(processed_args.get('notype_nodefault'))
+        self.assertIsNone(processed_args.get('notype_nodefault', None))
         self.assertEqual(False, processed_args['bool_nodefault'])
         self.assertEqual(0, processed_args['int_nodefault'])
         self.assertEqual(2, processed_args['int_validmin_nodefault'])
@@ -89,17 +89,17 @@ class LibMetadataTest(unittest.TestCase):
         self.assertEqual(42, processed_args['foo_default'])
 
         args = {
-            'notype_nodefault': True, 'bool_nodefault': '42', 'int_nodefault': -24, 'pint_nodefault': 24, 
+            'notype_nodefault': True, 'bool_nodefault': '42', 'int_nodefault': -24, 'pint_nodefault': 24,
             'float_nodefault': -24.2, 'pfloat_nodefault': 24.3, 'str_nodefault': 'answer', 'str_validlist_nodefault': 'string2',
             'str_validlist_default': 'x', 'str_validlist_invalid_default': 'string2',
-            'list_nodefault': [24,42], 'dict_nodefault': {'question': 24, 'answer': '42'}, 
+            'list_nodefault': [24,42], 'dict_nodefault': {'question': 24, 'answer': '42'},
             'ip_nodefault': '1.2.3.4', 'mac_nodefault': 'aa:ab:ac:ad:ae:af',
-            'foo_nodefault': [4, 2], 
-            'notype_default1': '24', 'notype_default2': 24, 'bool_default': True, 'int_default': '-x', 'pint_default': -24, 
+            'foo_nodefault': [4, 2],
+            'notype_default1': '24', 'notype_default2': 24, 'bool_default': True, 'int_default': '-x', 'pint_default': -24,
             'float_default': '-x', 'pfloat_default': -24.2, 'str_default': 25,
-            'list_default': "[24,'42', 4.2, '4.2']", 'dict_default': {24, '42'}, 
+            'list_default': "[24,'42', 4.2, '4.2']", 'dict_default': {24, '42'},
             'ip_default': '1.2.3.256', 'mac_default': 'aa:ab:ac:ad:ae:ag',
-            'foo_default': ['4', 2, [4, '2']] 
+            'foo_default': ['4', 2, [4, '2']]
         }
         # (processed_args, allparams_ok) = self.meta.check_parameters(args)
         (processed_args, allparams_ok, hide_params) = self.meta.check_parameters(args)
@@ -138,7 +138,7 @@ class LibMetadataTest(unittest.TestCase):
         self.assertEqual(['4', 2, [4, '2']], processed_args['foo_default'])   # accepts any data (no default is taken, if a value is specified)
 
         logger.warning('=== End metadata Tests')
-        
+
 
 
 if __name__ == '__main__':
