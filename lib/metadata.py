@@ -124,8 +124,9 @@ class Metadata():
                     self.parameters = None
                 else:
                     for param_name in self.parameters.keys():
-                        self.parameters[param_name]['_name'] = param_name
-                        self.parameters[param_name]['_type'] = 'parameter'
+                        if self.parameters.get(param_name, None) is not None:
+                            self.parameters[param_name]['_name'] = param_name
+                            self.parameters[param_name]['_type'] = 'parameter'
                     self._paramlist = list(self.parameters.keys())
                     logger.info(self._log_premsg+"Metadata paramlist = '{}'".format( str(self._paramlist) ) )
             if  self.parameters is not None:
