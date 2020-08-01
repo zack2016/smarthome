@@ -1070,7 +1070,7 @@ class Metadata():
                             hide_params[param] = Utils.to_bool(self.parameters[param].get('hide'), default=False)
                         logger.debug(self._log_premsg+"Found '{}' with value '{}' in /etc/{}".format(param, value, self._addon_type+YAML_FILE))
                     else:
-                        if self.parameters[param].get('mandatory') is True:
+                        if self.parameters[param].get('mandatory', False) is True:
                             logger.error(self._log_premsg+"'{}' is mandatory, but no valid value was found in /etc/{}".format(param, self._addon_type+YAML_FILE))
                             allparams_ok = False
                         else:
