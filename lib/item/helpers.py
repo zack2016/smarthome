@@ -214,7 +214,7 @@ def cache_read(filename, tz, cformat=CACHE_FORMAT):
             value = pickle.load(f)
 
     elif cformat == CACHE_JSON:
-        with open(filename, 'r') as f:
+        with open(filename, 'r', encoding='UTF-8') as f:
             value = json.load(f, object_hook=json_obj_hook)
 
     return (dt, value)
@@ -226,7 +226,7 @@ def cache_write(filename, value, cformat=CACHE_FORMAT):
                 pickle.dump(value,f)
 
         elif cformat == CACHE_JSON:
-            with open(filename, 'w') as f:
+            with open(filename, 'w', encoding='UTF-8') as f:
                 json.dump(value,f, default=json_serialize)
     except IOError:
         logger.warning("Could not write to {}".format(filename))

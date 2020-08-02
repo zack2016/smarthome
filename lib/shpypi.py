@@ -428,7 +428,7 @@ class Shpypi:
 
         req_dict = {}
         try:
-            fobj = open(file_path)
+            fobj = open(file_path, encoding='utf8')
         except:
             return req_dict
 
@@ -1115,7 +1115,7 @@ class Requirements_files():
 
         package = ''.join((fname.split(os.sep))[-2:-1])
 
-        with open(fname) as ifile:
+        with open(fname, encoding='utf8') as ifile:
             for line in ifile:
                 if len(line.rstrip()) != 0:
                     #                self.setdefault(line.rstrip(), []).append('SmartHomeNG ' + package)
@@ -1252,7 +1252,7 @@ class Requirements_files():
         complete_filename = self.sh_basedir + os.sep + filename
 
         if len(packagelist_consolidated) > 0:
-            with open(complete_filename, 'w') as outfile:
+            with open(complete_filename, 'w', encoding='utf8') as outfile:
                 self._write_header(outfile, filename)
 
                 for pkg in packagelist_consolidated:

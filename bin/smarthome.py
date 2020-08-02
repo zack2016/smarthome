@@ -4,6 +4,7 @@
 # Copyright 2011-2014 Marcus Popp                          marcus@popp.mx
 # Copyright 2016      Christian Strassburg            c.strassburg@gmx.de
 # Copyright 2016-     Martin Sinn                           m.sinn@gmx.de
+# Copyright 2020-     Bernd Meiners                 bernd.meiners@mail.de
 #########################################################################
 #  This file is part of SmartHomeNG.
 #  https://github.com/smarthomeNG/smarthome
@@ -59,7 +60,12 @@ if not os.name == 'nt':
 import argparse
 import datetime
 import gc
-import locale
+import locale       
+# locale.getpreferredencoding() gives back platforms default file encoding
+# this should be UTF-8 for linux and 
+# for windows mostly cp1252 (which is bad for SHNG's UTF-8 files)
+# https://stackoverflow.com/questions/31469707/changing-the-locale-preferred-encoding-in-python-3-in-windows
+
 import logging
 import logging.handlers
 import logging.config
@@ -322,6 +328,10 @@ class SmartHome():
         self._logger.warning("--------------------   Init SmartHomeNG {}   --------------------".format(VERSION))
         self._logger.warning("Running in Python interpreter 'v{}' on {} (pid={})".format(PYTHON_VERSION, platform.platform(), pid))
 
+        default_encoding = locale.getpreferredencoding() # returns cp1252 on windows
+        if default_encoding !=  'UTF8':
+            self._logger.warning("Encoding should be UTF8 but is instead {}".format(default_encoding))
+
         if self._extern_conf_dir != BASE:
             self._logger.warning("Using config dir {}".format(self._extern_conf_dir))
 
@@ -396,13 +406,14 @@ class SmartHome():
 
         # test if a valid locale is set in the operating system
         if os.name != 'nt':
-            try:
-                if not any(utf in os.environ['LANG'].lower() for utf in ['utf-8', 'utf8']):
-                    self._logger.error("Locale for the enviroment is not set to a valid value. Set the LANG environment variable to a value supporting UTF-8")
-            except:
-                self._logger.error("Locale for the enviroment is not set. Defaulting to en_US.UTF-8")
-                os.environ["LANG"] = 'en_US.UTF-8'
-                os.environ["LC_ALL"] = 'en_US.UTF-8'
+            pass
+        try:
+            if not any(utf in os.environ['LANG'].lower() for utf in ['utf-8', 'utf8']):
+                self._logger.error("Locale for the enviroment is not set to a valid value. Set the LANG environment variable to a value supporting UTF-8")
+        except:
+            self._logger.error("Locale for the enviroment is not set. Defaulting to en_US.UTF-8")
+            os.environ["LANG"] = 'en_US.UTF-8'
+            os.environ["LC_ALL"] = 'en_US.UTF-8'
 
         #############################################################
         # Link Tools

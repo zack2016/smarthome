@@ -292,7 +292,7 @@ def build_pluginlist( plugin_type='all' ):
 
 def write_dummyfile(configfile_dir, namelist):
     outf_name = os.path.join(configfile_dir, 'dummy_config.rst')
-    fh_dummy = open(outf_name, "w")
+    fh_dummy = open(outf_name, "w", encoding='UTF-8')
 
     fh_dummy.write(':orphan:\n')
     fh_dummy.write('\n')
@@ -399,7 +399,7 @@ def write_configfile(plg, configfile_dir, language='de'):
     # Create rST file
     # ---------------------------------
     outf_name = os.path.join(configfile_dir, plgname+'.rst')
-    fh = open(outf_name, "w")
+    fh = open(outf_name, "w", encoding='UTF-8')
     fh.write('.. |_| unicode:: 0xA0\n')
     fh.write('\n')
 
