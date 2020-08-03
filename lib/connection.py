@@ -91,7 +91,7 @@ class Connections(Base):
         elif hasattr(select, 'kqueue'):
             self._kqueue = select.kqueue()
         else:
-            logger.warning("Init connections using IOWait")
+            logger.debug("Init connections using IOWait")
             self._connections_found = 0
             self._waitobj = IOWait()
 
@@ -111,7 +111,7 @@ class Connections(Base):
             ]
             self._kqueue.control(event, 0, 0)
         else:
-            logger.warning("register_server: put watch on fileno {}".format(fileno))
+            logger.debug("register_server: put watch on fileno {}".format(fileno))
             self._waitobj.watch(fileno, read=True)
 
     def register_connection(self, fileno, obj):
@@ -129,7 +129,7 @@ class Connections(Base):
             ]
             self._kqueue.control(event, 0, 0)
         else:
-            logger.warning("register_connection: put watch on fileno {}".format(fileno))
+            logger.debug("register_connection: put watch on fileno {}".format(fileno))
             self._waitobj.watch(fileno, read=True)
 
     def unregister_connection(self, fileno):
@@ -142,7 +142,7 @@ class Connections(Base):
             elif hasattr(select, 'kqueue'):
                 pass
             else:
-                logger.warning("unregister_connection: unwatch fileno {}".format(fileno))
+                logger.debug("unregister_connection: unwatch fileno {}".format(fileno))
                 self._waitobj.unwatch(fileno)
         except Exception as e:
             logger.error("unregister a connection with filenumber == {} for epoll failed".format(fileno))
@@ -180,7 +180,7 @@ class Connections(Base):
                 ]
                 self._kqueue.control(event, 0, 0)
             else:
-                logger.error("trigger: Operating System without epoll or kqueue is currently not supported")
+                logger.error("trigger: Operating System without epoll or kqueue is currently not supported, please report this error")
 
     def poll(self):
         time.sleep(0.0000000001)  # give epoll.modify a chance
@@ -299,22 +299,22 @@ class Connections(Base):
             # not using  epoll or kqueue
             n_connections = len(self._connections)
             if self._connections_found != n_connections:
-                logger.warning("lib/connection.py poll() for len(self._connections)={}".format(n_connections))
+                logger.debug("lib/connection.py poll() for len(self._connections)={}".format(n_connections))
                 self._connections_found = n_connections
 
             watched = self._waitobj.get_watched()
             nwatched = len(watched)
-            logger.warning("iowait in alpha status with {} watched connections".format(nwatched))
+            logger.debug("iowait in alpha status with {} watched connections".format(nwatched))
             events = self._waitobj.wait()
             nevents = len(events)
-            logger.warning("iowait reports {} events".format(nevents))
+            logger.debug("iowait reports {} events".format(nevents))
             for fileno, read, write in events:
-                logger.warning("event for fileno={}, read={}, write={}".format(fileno, read, write))
+                logger.debug("event for fileno={}, read={}, write={}".format(fileno, read, write))
                 if fileno in self._servers:
                     server = self._servers[fileno]
                     server.handle_connection()
                 else:
-                    logger.warning("fileno {} not in self._servers".format(fileno))
+                    logger.debug("fileno {} not in self._servers".format(fileno))
                     if read:
                         try:
                             con = self._connections[fileno]
