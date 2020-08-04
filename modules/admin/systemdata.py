@@ -266,7 +266,10 @@ class SystemData:
         response['pypath'] = self._sh.python_bin
         response['ip'] = ip
         response['ipv6'] = ipv6
-        response['pid'] = str(lib.daemon.read_pidfile(self._sh._pidfile))
+        if os.name != 'nt':
+            response['pid'] = str(lib.daemon.read_pidfile(self._sh._pidfile))
+        else:
+            response['pid'] = str(os.getpid())
 
         self.logger.warning("admin: systeminfo_json: response = {}".format(response))
         return json.dumps(response)
