@@ -334,6 +334,9 @@ class Shpypi:
             if not os.path.isfile(pip_command):
                 python_bin_path, python_bin_executable = os.path.split(os.__file__)
                 pip_command = os.path.join(python_bin_path[:python_bin_path.find('/lib')], 'bin', ('pip' + python_bin_path[-3:]))
+                if not os.path.isfile(pip_command):
+                    # use pip3 if pip3.x does not exist
+                    pip_command = os.path.join(python_bin_path[:python_bin_path.find('/lib')], 'bin', 'pip3')
         else:
             pip_command = pathlib.Path(python_bin_path) / 'scripts' / 'pip.exe'
             if not pip_command.is_file():
