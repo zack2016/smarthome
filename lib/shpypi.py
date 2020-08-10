@@ -315,38 +315,32 @@ class Shpypi:
         """
         returns the correct pip command
         """
+        try:
+            pip_command = self.sh._pip_command
+            if logging:
+                self.logger.warning("PIP command read from smarthome.yaml: '{}'".format(pip_command))
+            return pip_command
+        except:
+            pass
+
+        if self.sh:
+            #print("self.sh.python_bin="+self.sh.python_bin)
+            python_bin_path = os.path.split(self.sh.python_bin)[0]
+        else:
+            python_bin_path = os.path.split(sys.executable)[0]
+
         if not os.name == 'nt':
-            if self.sh:
-                python_bin_path = os.path.split(self.sh.python_bin)[0]
-            else:
-                python_bin_path = os.path.split(os.environ['_'])[0]
             pip_command = os.path.join(python_bin_path, 'pip3')
             if not os.path.isfile(pip_command):
                 python_bin_path, python_bin_executable = os.path.split(os.__file__)
                 pip_command = os.path.join(python_bin_path[:python_bin_path.find('/lib')], 'bin', ('pip' + python_bin_path[-3:]))
-            try:
-                pip_command = self.sh._pip_command
-                if logging:
-                    self.logger.warning("PIP command read from smarthome.yaml: '{}'".format(pip_command))
-            except: 
-                self.logger.warning("Using PIP command: '{}'".format(pip_command))
-            return pip_command
         else:
-            if self.sh:
-                print("self.sh.python_bin="+self.sh.python_bin)
-                python_bin_path = os.path.split(self.sh.python_bin)[0]
-            else:
-                python_bin_path = os.path.split(sys.executable)[0]
             pip_command = pathlib.Path(python_bin_path) / 'scripts' / 'pip.exe'
             if not pip_command.is_file():
                 pass
-            try:
-                pip_command = self.sh._pip_command
-                if logging:
-                    self.logger.warning("PIP command read from smarthome.yaml: '{}'".format(pip_command))
-            except: 
-                self.logger.warning("Using PIP command: '{}'".format(pip_command))
-            return str(pip_command)
+
+        self.logger.warning("Using PIP command: '{}'".format(pip_command))
+        return str(pip_command)
 
     def install_requirements(self, req_type, logging=True):
         req_type_display = req_type
