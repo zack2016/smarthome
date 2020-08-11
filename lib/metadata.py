@@ -669,7 +669,7 @@ class Metadata():
                 if is_default:
                     logger.error(self._log_premsg+"Invalid default '{}' in metadata file '{}' for {} '{}' -> using '{}' instead".format( orig, self.relative_filename, definition['_type'], definition['_name'], result ) )
                 else:
-                    logger.warning(self._log_premsg+"Invalid value '{}' for {} -> using '{}' instead {}".format( orig, definition['_type'], result, definition.get('_def_in', '') ) )
+                    logger.warning(self._log_premsg+"Invalid value '{}' for {} '{}' -> using '{}' instead {}".format( orig, definition['_type'], definition['_name'], result, definition.get('_def_in', '') ) )
         return result
 
 
