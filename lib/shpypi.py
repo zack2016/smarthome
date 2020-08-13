@@ -384,7 +384,10 @@ class Shpypi:
             return True
         else:
             if stdout.find("Successfully installed") > -1:
-                if stderr.find("You should consider upgrading via the 'pip install --upgrade pip' command") > -1:
+                # result on windows nt:
+                # WARNING: You are using pip version 19.2.3, however version 20.2.1 is available.
+                # You should consider upgrading via the 'python -m pip install --upgrade pip' command.
+                if stderr.find("You should consider upgrading via") > -1 and stderr.find("pip install --upgrade pip") > -1:
                     if logging:
                         self.logger.warning(stderr)
                     return True
@@ -1298,4 +1301,3 @@ class Requirements_files():
         self.logger.info("create_requirementsfile: selection={}, packagelist_consolidated={}".format(selection, packagelist_consolidated))
 
         return self._write_resultfile(selection, packagelist_consolidated, requirements)
-
