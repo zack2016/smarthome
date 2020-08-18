@@ -60,9 +60,9 @@ if not os.name == 'nt':
 import argparse
 import datetime
 import gc
-import locale       
+import locale
 # locale.getpreferredencoding() gives back platforms default file encoding
-# this should be UTF-8 for linux and 
+# this should be UTF-8 for linux and
 # for windows mostly cp1252 (which is bad for SHNG's UTF-8 files)
 # https://stackoverflow.com/questions/31469707/changing-the-locale-preferred-encoding-in-python-3-in-windows
 
@@ -361,7 +361,7 @@ class SmartHome():
         base_reqs = self.shpypi.test_base_requirements(self)
         if base_reqs == 0:
             self.restart('SmartHomeNG (Python package installation)')
-            exit(0)
+            exit(5)    # exit code 5 -> for systemctl to restart ShamrtHomeNG
         elif base_reqs == -1:
             self._logger.critical("Python package requirements for modules are not met and unable to install base requirements")
             self._logger.critical("Do you have multiple Python3 Versions installed? Maybe PIP3 looks into a wrong Python environment. Try to configure pip_command in etc/smarthome.yaml")
@@ -371,7 +371,7 @@ class SmartHome():
         plugin_reqs = self.shpypi.test_conf_plugins_requirements(self._plugin_conf_basename, self._plugins_dir)
         if plugin_reqs == 0:
             self.restart('SmartHomeNG (Python package installation)')
-            exit(0)
+            exit(5)    # exit code 5 -> for systemctl to restart ShamrtHomeNG
         elif plugin_reqs == -1:
             self._logger.critical("Python package requirements for configured plugins are not met and unable to install those requirements")
             self._logger.critical("Do you have multiple Python3 Versions installed? Maybe PIP3 looks into a wrong Python environment. Try to configure pip_command in etc/smarthome.yaml")
@@ -736,6 +736,7 @@ class SmartHome():
             command = sys.executable + ' ' + os.path.join(self._base_dir, 'bin', 'smarthome.py') + ' -r'
             self._logger.info("Restart command = '{}'".format(command))
             p = subprocess.Popen(command, shell=True)
+            exit(5)  # exit code 5 -> for systemctl to restart ShamrtHomeNG
 
 
     def list_threads(self, txt):
