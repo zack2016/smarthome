@@ -719,7 +719,7 @@ class SmartHome():
         lib.daemon.remove_pidfile(PIDFILE)
 
         logging.shutdown()
-        exit()
+        exit(5)  # exit code 5 -> for systemctl to restart ShamrtHomeNG
 
 
     def restart(self, source=''):
