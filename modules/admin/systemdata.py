@@ -263,7 +263,10 @@ class SystemData:
         response['uptime'] = time.mktime(datetime.datetime.now().timetuple()) - psutil.boot_time()
         response['sh_uptime'] = sh_runtime_seconds
         response['pyversion'] = pyversion
-        response['pypath'] = self._sh.python_bin
+        if self._sh.python_bin == '':
+            response['pypath'] = sys.executable
+        else:
+            response['pypath'] = self._sh.python_bin
         response['ip'] = ip
         response['ipv6'] = ipv6
         if os.name != 'nt':
