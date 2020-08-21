@@ -274,7 +274,7 @@ class SystemData:
         else:
             response['pid'] = str(os.getpid())
 
-        self.logger.warning("admin: systeminfo_json: response = {}".format(response))
+        #self.logger.warning("admin: systeminfo_json: response = {}".format(response))
         return json.dumps(response)
 
 
