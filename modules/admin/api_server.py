@@ -171,8 +171,7 @@ class ServerController(RESTResource):
             if get_process_info("ps cax|grep owserver") != '':
                 daemon = 'owserver'
                 # get version of installed owserver
-                wrk = get_process_info("owserver -V|grep 'owserver version'")
-                self.logger.warning("get_1wire_daemon: owserver - wrk = '{}'".format(wrk))
+                wrk = get_process_info("owserver -V|grep 'owserver version'", append_error=True)
                 wrk = wrk.split()
                 if wrk != []:
                     daemon += ' v' + wrk[2]
