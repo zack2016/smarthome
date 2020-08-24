@@ -361,11 +361,11 @@ class Shpypi:
 
         stdout, stderr = Utils.execute_subprocess(pip_command+' install -r requirements/'+req_type+'.txt --user --no-warn-script-location')
         ####
-        pip_log_name = os.path.join(self.sh_basedir, 'var', 'log', 'pip3_outout.log')
+        pip_log_name = os.path.join(self._sh_dir, 'var', 'log', 'pip3_outout.log')
         with open(pip_log_name, 'w', encoding='utf8') as outfile:
             outfile.write(stdout)
         if stderr != '':
-            pip_log_name = os.path.join(self.sh_basedir, 'var', 'log', 'pip3_error.log')
+            pip_log_name = os.path.join(self._sh_dir, 'var', 'log', 'pip3_error.log')
             with open(pip_log_name, 'w', encoding='utf8') as outfile:
                 outfile.write(stderr)
             if 'virtualenv' in stderr and '--user' in stderr:
