@@ -101,8 +101,14 @@ if shpypi is None:
 core_reqs = shpypi.test_core_requirements(logging=False)
 if core_reqs == 0:
     print("Starting SmartHomeNG again...")
-    command = sys.executable + ' ' + os.path.join(BASE, 'bin', 'smarthome.py')
-    p = subprocess.Popen(command, shell=True)
+    python_bin = sys.executable
+    if ' ' in python_bin:
+        python_bin = '"'+python_bin+'"'
+    command = python_bin + ' ' + os.path.join(BASE, 'bin', 'smarthome.py')
+    try:
+        p = subprocess.Popen(command, shell=True)
+    except subprocess.SubprocessError as e:
+        self._logger.error("Restart command '{}' failed with error {}".format(command,e))
     time.sleep(10)
     print()
     exit(0)
@@ -733,10 +739,17 @@ class SmartHome():
             if source != '':
                 source = ', initiated by ' + source
             self._logger.warning("SmartHomeNG restarting"+source)
-            command = sys.executable + ' ' + os.path.join(self._base_dir, 'bin', 'smarthome.py') + ' -r'
+            # python_bin could contain spaces (at least on windows)
+            python_bin = sys.executable
+            if ' ' in python_bin:
+                python_bin = '"'+python_bin+'"'
+            command = python_bin + ' ' + os.path.join(self._base_dir, 'bin', 'smarthome.py') + ' -r'
             self._logger.info("Restart command = '{}'".format(command))
-            p = subprocess.Popen(command, shell=True)
-            exit(5)  # exit code 5 -> for systemctl to restart ShamrtHomeNG
+            try:
+                p = subprocess.Popen(command, shell=True)
+                exit(5)  # exit code 5 -> for systemctl to restart ShamrtHomeNG
+            except subprocess.SubprocessError as e:
+                self._logger.error("Restart command '{}' failed with error {}".format(command,e))
 
 
     def list_threads(self, txt):
