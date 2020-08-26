@@ -8,7 +8,7 @@ holidays>=0.9.11
 # lib.daemon:
 psutil
 
-# lib.connection
+# lib.connection / lib.network
 iowait
 
 # lib.network:

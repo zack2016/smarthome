@@ -39,7 +39,8 @@ import logging
 import queue
 import re
 import requests
-import select
+from iowait import IOWait   ### BMX
+import select               ### should not be needed
 import socket
 import struct
 import subprocess
@@ -734,19 +735,24 @@ class Tcp_client(object):
             self.logger.warning("TCP connection to {}:{} failed with error {}. Counter: {}/{}".format(self._host, self._port, err, self._connect_counter, self._connect_retries))
 
     def __receive_thread_worker(self):
-        poller = select.poll()
-        poller.register(self._socket, select.POLLIN | select.POLLPRI | select.POLLHUP | select.POLLERR)
+        waitobj = IOWait()
+        waitobj.watch( self._socket, read=True)
+        ### BMX poller = select.poll()
+        ### BMX poller.register(self._socket, select.POLLIN | select.POLLPRI | select.POLLHUP | select.POLLERR)
         __buffer = b''
 
         self._is_receiving = True
         self._receiving_callback and self._receiving_callback(self)
         while self._is_connected and self.__running:
-            events = poller.poll(1000)
-            for fd, event in events:
-                if event & select.POLLHUP:
-                    self.logger.warning("Client socket closed")
+            ### BMX events = poller.poll(1000)
+            events = waitobj.wait(1000)     ### BMX
+            ### BMX for fd, event in events:
+            for fileno, read, write in events:  ### BMX
+                ### BMX if event & select.POLLHUP:
+                ### BMX     self.logger.warning("Client socket closed")
                 # Check if POLLIN event triggered
-                if event & (select.POLLIN | select.POLLPRI):
+                ### BMX if event & (select.POLLIN | select.POLLPRI):
+                if read:
                     msg = self._socket.recv(4096)
                     # Check if incoming message is not empty
                     if msg:
@@ -781,7 +787,8 @@ class Tcp_client(object):
                         # Peer connection closed
                         self.logger.warning("Connection closed by peer {}".format(self._host))
                         self._is_connected = False
-                        poller.unregister(self._socket)
+                        ### BMX poller.unregister()
+                        waitobj.unwatch(self._socket)
                         self._disconnected_callback and self._disconnected_callback(self)
                         if self._autoreconnect:
                             self.logger.debug("Autoreconnect enabled for {}".format(self._host))
