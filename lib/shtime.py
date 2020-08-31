@@ -974,10 +974,10 @@ class Shtime:
                     self.holidays = holidays.CountryHoliday(country, years=self.years, prov=prov, state=state)
                 except KeyError as e:
                     logger.error("Error initializing self.holidays: {}".format(e))
-                    try:
-                        self.public_holidays = holidays.CountryHoliday(country, years=self.years, prov=prov, state=state)
-                    except KeyError as e:
-                        logger.error("Error initializing self.public_holidays: {}".format(e))
+                try:
+                    self.public_holidays = holidays.CountryHoliday(country, years=self.years, prov=prov, state=state)
+                except KeyError as e:
+                    logger.error("Error initializing self.public_holidays: {}".format(e))
             else:
                 self.holidays = holidays.CountryHoliday('US', years=self.years, prov=None, state=None)
                 self.public_holidays = holidays.CountryHoliday('US', years=self.years, prov=None, state=None)
