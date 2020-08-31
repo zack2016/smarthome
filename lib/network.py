@@ -549,7 +549,7 @@ class Tcp_client(object):
 
         # Public properties
         self.name = name
-        self.terminator = None
+        self.terminator = terminator
 
         # "Private" properties
         self._host = host
