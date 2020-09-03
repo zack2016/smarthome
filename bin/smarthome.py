@@ -335,7 +335,7 @@ class SmartHome():
         self._logger.warning("Running in Python interpreter 'v{}' on {} (pid={})".format(PYTHON_VERSION, platform.platform(), pid))
 
         default_encoding = locale.getpreferredencoding() # returns cp1252 on windows
-        if default_encoding !=  'UTF8':
+        if not (default_encoding in  ['UTF8','UTF-8']):
             self._logger.warning("Encoding should be UTF8 but is instead {}".format(default_encoding))
 
         if self._extern_conf_dir != BASE:

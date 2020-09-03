@@ -41,6 +41,21 @@ class Module(SmartObject, Utils):
     _longname = ''      #: Long name of the module; is initialized during loading of the module
 
 
+    def get_parameter_value(self, parameter_name):
+        """
+        Returns the configured value for the given parameter name
+
+        If the parameter is not defined, None is returned
+
+        :param parameter_name: Name of the parameter for which the value should be retrieved
+        :type parameter_name: str
+
+        :return: Configured value
+        :rtype: depends on the type of the parameter definition
+        """
+        return self._parameters.get(parameter_name, None)
+
+
     def translate(self, txt, vars=None):
         """
         Returns translated text
@@ -48,4 +63,5 @@ class Module(SmartObject, Utils):
         txt = str(txt)
 
         return lib_translate(txt, vars, additional_translations='module/'+self._shortname)
+
 

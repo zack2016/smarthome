@@ -68,6 +68,7 @@
     "CONFIGURATION": "Konfiguration",
     "COMMON_SETTINGS": "Allgemein",
     "HTTP_SETTINGS": "Http Modul",
+    "WEBSOCKET_SETTINGS": "Websocket Modul",
     "ADMIN_SETTINGS": "Admin Modul",
     "MQTT_SETTINGS": "MQTT Modul",
     "ADVANCED_SETTINGS": "Advanced",
