@@ -160,6 +160,8 @@ class ConfigController(RESTResource):
             result['websocket'] = {}
             result['websocket']['data'] = self.module_confdata.get('websocket', {})
             result['websocket']['meta'] = self.websocket_conf
+            if result['websocket']['data'].get('enabled', None) is None:
+                result['websocket']['data']['enabled'] = True
             result['admin'] = {}
             result['admin']['data'] = self.module_confdata.get('admin', {})
             result['admin']['meta'] = self.admin_conf
