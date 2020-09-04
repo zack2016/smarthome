@@ -28,7 +28,8 @@
 import threading
 import logging
 import json
-import os
+#import os
+import platform
 import socket    # for gethostbyname
 import inspect
 import datetime
@@ -43,7 +44,7 @@ from lib.scheduler import Scheduler
 
 
 class Mqtt(Module):
-    version = '1.7.2'
+    version = '1.7.3'
     longname = 'MQTT module for SmartHomeNG'
 
     __plugif_CallbackTopics = {}         # for plugin interface
@@ -215,7 +216,7 @@ class Mqtt(Module):
         """
         Establish connection to MQTT broker
         """
-        clientname = os.uname()[1] + '.MQTT-module'
+        clientname = platform.uname()[1] + '.MQTT-module'
         self.logger.info("Connecting to broker '{}:{}'. Starting mqtt client '{}'".format(self.broker_ip, self.broker_port, clientname))
         self._client = mqtt.Client(client_id=clientname)
 
