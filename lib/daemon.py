@@ -116,17 +116,16 @@ def write_pidfile(pid, pidfile):
     :type pidfile: str
     """
 
-    fd = open(pidfile, 'w+')
-    fd.write("%s" % pid)
-    fd.close()
+    with open(pidfile, 'w+') as fh:
+        fh.write("%s" % pid)
 
     try:
-        fd = os.open(pidfile, os.O_RDONLY)
+        fh = open(pidfile, 'r')
         # LOCK_EX - acquire an exclusive lock
         # LOCK_NB - non blocking
-        portalocker.lock(fd, LOCK_EX | LOCK_NB)
-    # don't close fd or lock is gone
-    except OSError as e:
+        portalocker.lock(fh, portalocker.LOCK_EX | portalocker.LOCK_NB)
+    # don't close fh or lock is gone
+    except portalocker.AlreadyLocked:
         print("Could not lock pid file: %d (%s)" % (e.errno, e.strerror) , file=sys.stderr)
 
 def read_pidfile(pidfile):
@@ -164,23 +163,18 @@ def check_sh_is_running(pidfile):
 
     pid = read_pidfile(pidfile)
     isRunning = False
-    if pid > 0 and psutil.pid_exists(pid) and os.name != 'nt':
+    if pid > 0 and psutil.pid_exists(pid):
         try:
-            fd = os.open(pidfile, os.O_RDONLY)
+            fh = open(pidfile, 'r')
             # LOCK_EX - acquire an exclusive lock
             # LOCK_NB - non blocking
-            portalocker.lock(fd, LOCK_EX | LOCK_NB)
+            portalocker.lock(fh, portalocker.LOCK_EX | portalocker.LOCK_NB)
             # pidfile not locked, so sh is terminated
-        except OSError as e:
-            if (e.errno == errno.EWOULDBLOCK):
-                # pidfile is locked, so sh is running
-                isRunning = True
-            else:
-                print("Error while testing lock in pidfile %s: %d (%s)" % (pidfile, e.errno, e.strerror) , file=sys.stderr)
-                sys.exit(1)
+        except portalocker.LockException:
+            isRunning = True
         finally:
-            if fd:
-                os.close(fd)
+            if fh:
+                fh.close()
     return isRunning
 
 
