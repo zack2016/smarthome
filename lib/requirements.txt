@@ -7,6 +7,7 @@ holidays>=0.9.11
 
 # lib.daemon:
 psutil
+portalocker
 
 # lib.connection / lib.network
 iowait

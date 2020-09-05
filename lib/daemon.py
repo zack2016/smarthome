@@ -28,8 +28,7 @@ import os
 import sys
 import psutil
 import errno
-if os.name != 'nt':
-    import fcntl
+import portalocker
 
 logger = logging.getLogger(__name__)
 
@@ -121,16 +120,14 @@ def write_pidfile(pid, pidfile):
     fd.write("%s" % pid)
     fd.close()
 
-    # lock pidfile:
-    if os.name != 'nt':
-        try:
-            fd = os.open(pidfile, os.O_RDONLY)
-            fcntl.flock(fd, fcntl.LOCK_EX | fcntl.LOCK_NB)
-        # don't close fd or lock is gone
-        except OSError as e:
-            print("Could not lock pid file: %d (%s)" % (e.errno, e.strerror) , file=sys.stderr)
-    else:
-        print("Could not lock pid file with windows os")
+    try:
+        fd = os.open(pidfile, os.O_RDONLY)
+        # LOCK_EX - acquire an exclusive lock
+        # LOCK_NB - non blocking
+        portalocker.lock(fd, LOCK_EX | LOCK_NB)
+    # don't close fd or lock is gone
+    except OSError as e:
+        print("Could not lock pid file: %d (%s)" % (e.errno, e.strerror) , file=sys.stderr)
 
 def read_pidfile(pidfile):
     """
@@ -170,7 +167,9 @@ def check_sh_is_running(pidfile):
     if pid > 0 and psutil.pid_exists(pid) and os.name != 'nt':
         try:
             fd = os.open(pidfile, os.O_RDONLY)
-            fcntl.flock(fd, fcntl.LOCK_EX | fcntl.LOCK_NB)
+            # LOCK_EX - acquire an exclusive lock
+            # LOCK_NB - non blocking
+            portalocker.lock(fd, LOCK_EX | LOCK_NB)
             # pidfile not locked, so sh is terminated
         except OSError as e:
             if (e.errno == errno.EWOULDBLOCK):
