@@ -209,7 +209,7 @@ class Shpypi:
         return requirements_met
 
 
-    def test_core_requirements(self, logging=True):
+    def test_core_requirements(self, logging=True, pip3_command=None):
 
         # build an actual requirements file for core+modules
         # req_files = Requirements_files()
@@ -225,15 +225,15 @@ class Shpypi:
             os.remove(complete_filename)
             return 1
         else:
-            if self.install_requirements('core', logging):
+            if self.install_requirements('core', logging, pip3_command):
                 return 0
             else:
                 if logging:
                     self.logger.error("test_core_requirements: Python package requirements not met - Should terminate")
                 else:
                     # no logging, if called before logging is configured
-                    print()
-                    print("Python package requirements not met - SmartHomeNG is terminating")
+                    #print("Python package requirements not met - SmartHomeNG is terminating")
+                    pass
                 return -1
 
 
@@ -328,6 +328,7 @@ class Shpypi:
             python_bin_path = os.path.split(self.sh.python_bin)[0]
         else:
             python_bin_path = os.path.split(sys.executable)[0]
+        print("python_bin_path={}".format(python_bin_path))
 
         if not os.name == 'nt':
             pip_command = os.path.join(python_bin_path, 'pip3')
@@ -342,10 +343,9 @@ class Shpypi:
             if not pip_command.is_file():
                 pass
 
-        self.logger.warning("Using PIP command: '{}'".format(pip_command))
         return str(pip_command)
 
-    def install_requirements(self, req_type, logging=True):
+    def install_requirements(self, req_type, logging=True, pip3_command=None):
         req_type_display = req_type
         if req_type == 'conf_all':
             req_type_display = 'plugin'
@@ -356,8 +356,16 @@ class Shpypi:
             print()
             print("Installing "+req_type_display+" requirements for the current user, please wait...")
 
-        pip_command = self.get_pip_command()
-        self.logger.info('> '+pip_command+' install -r requirements/'+req_type+'.txt --user --no-warn-script-location')
+        if pip3_command:
+            pip_command = pip3_command
+        else:
+            pip_command = self.get_pip_command()
+        self.logger.warning("> using PIP command: '{}'".format(pip_command))
+        if logging:
+            self.logger.info('> '+pip_command+' install -r requirements/'+req_type+'.txt --user --no-warn-script-location')
+        else:
+            #print('> ' + pip_command + ' install -r requirements/' + req_type + '.txt --user --no-warn-script-location')
+            pass
 
         stdout, stderr = Utils.execute_subprocess(pip_command+' install -r requirements/'+req_type+'.txt --user --no-warn-script-location')
         ####
@@ -401,7 +409,8 @@ class Shpypi:
             if logging:
                 self.logger.error(stderr)
             else:
-                print('len(stderr)='+str(len(str(stderr))))
+                #print('len(stderr)='+str(len(str(stderr))))
+                print('ERROR:')
                 print(stderr)
         return False
 

@@ -55,7 +55,7 @@ if not os.name == 'nt':
         # exit()
 
 #####################################################################
-# Import Python Core Modules
+# Import minimum set of Python Core Modules
 #####################################################################
 import argparse
 import datetime
@@ -65,6 +65,35 @@ import locale
 # this should be UTF-8 for linux and
 # for windows mostly cp1252 (which is bad for SHNG's UTF-8 files)
 # https://stackoverflow.com/questions/31469707/changing-the-locale-preferred-encoding-in-python-3-in-windows
+
+#####################################################################
+# Read command line arguments
+#####################################################################
+# argument handling here, because pip3_command is needed before all imports are done
+argparser = argparse.ArgumentParser()
+arggroup = argparser.add_mutually_exclusive_group()
+argparser.add_argument('-p', '--pip3_command', help='set path of pip3 command, if it is not automatically found')
+arggroup.add_argument('-i', '--interactive', help='open an interactive shell with tab completion and with verbose logging to the logfile', action='store_true')
+arggroup.add_argument('-l', '--logics', help='reload all logics', action='store_true')
+arggroup.add_argument('-r', '--restart', help='restart SmartHomeNG', action='store_true')
+arggroup.add_argument('-s', '--stop', help='stop SmartHomeNG', action='store_true')
+arggroup.add_argument('-V', '--version', help='show SmartHomeNG version', action='store_true')
+arggroup.add_argument('--start', help='start SmartHomeNG and detach from console (default)', default=True, action='store_true')
+arggroup.add_argument('-cb', '--create_backup', help='create backup of SmartHomeNG configuration (yaml configuration only)', action='store_true')
+arggroup.add_argument('-cbt', '--create_backup_t', help='create backup of SmartHomeNG configuration with a timestamp in the filename', action='store_true')
+arggroup.add_argument('-rb', '--restore_backup', help='restore backup of configuration to SmartHomeNG installation (yaml configuration only). CAUTION: Existing configuration is overwritten!', action='store_true')
+argparser.add_argument('-c', '--config_dir', help='use external config dir (should contain "etc", "logics" and "items" subdirectories)')
+
+arggroup.add_argument('-v', '--verbose', help='verbose (info output) logging to the logfile - DEPRECATED use logging-configuration', action='store_true')
+arggroup.add_argument('-d', '--debug', help='stay in the foreground with verbose output - DEPRECATED use logging-configuration', action='store_true')
+arggroup.add_argument('-f', '--foreground', help='stay in the foreground', action='store_true')
+arggroup.add_argument('-q', '--quiet', help='reduce logging to the logfile - DEPRECATED use logging-configuration', action='store_true')
+args = argparser.parse_args()
+
+
+#####################################################################
+# Import Python Core Modules
+#####################################################################
 
 import logging
 import logging.handlers
@@ -98,7 +127,7 @@ shpypi = Shpypi.get_instance()
 if shpypi is None:
     shpypi = Shpypi(base=BASE)
 
-core_reqs = shpypi.test_core_requirements(logging=False)
+core_reqs = shpypi.test_core_requirements(logging=False, pip3_command=args.pip3_command)
 if core_reqs == 0:
     print("Starting SmartHomeNG again...")
     python_bin = sys.executable
@@ -108,12 +137,13 @@ if core_reqs == 0:
     try:
         p = subprocess.Popen(command, shell=True)
     except subprocess.SubprocessError as e:
-        self._logger.error("Restart command '{}' failed with error {}".format(command,e))
+        print("Restart command '{}' failed with error {}".format(command,e))
     time.sleep(10)
     print()
     exit(0)
 elif core_reqs == -1:
     print("ERROR: Unable to install core requirements")
+    print("Please use the commandline option -p to specify the path to the pip3 command")
     print()
     exit(1)
 
@@ -139,6 +169,7 @@ from lib.shtime import Shtime
 import lib.shyaml
 
 from lib.constants import (YAML_FILE, CONF_FILE, DEFAULT_FILE)
+
 
 #####################################################################
 # Globals
@@ -710,15 +741,16 @@ class SmartHome():
         if threading.active_count() > 1:
             header_logged = False
             for thread in threading.enumerate():
-                if thread.name != 'Main' and thread.name[0] !=  '_':
+                if thread.name != 'Main' and thread.name[0] !=  '_' and not thread.name.startswith('ThreadPoolExecutor'):
+                #if thread.name != 'Main' and thread.name[0] !=  '_':
                     if not header_logged:
                         self._logger.warning("The following threads have not been terminated properly by their plugins (please report to the plugin's author):")
                         header_logged = True
                     self._logger.warning("-Thread: {}, still alive".format(thread.name))
-            if header_logged:
-                self._logger.warning("SmartHomeNG stopped")
-        else:
-            self._logger.warning("SmartHomeNG stopped")
+#            if header_logged:
+#                self._logger.warning("SmartHomeNG stopped")
+#        else:
+        self._logger.warning("SmartHomeNG stopped")
 
         self.shng_status = {'code': 33, 'text': 'Stopped'}
 
@@ -1266,25 +1298,26 @@ if __name__ == '__main__':
             locale.setlocale(locale.LC_ALL, '')
     except:
         locale.setlocale(locale.LC_ALL, 'en_US.UTF-8')
-    # argument handling
-    argparser = argparse.ArgumentParser()
-    arggroup = argparser.add_mutually_exclusive_group()
-    arggroup.add_argument('-i', '--interactive', help='open an interactive shell with tab completion and with verbose logging to the logfile', action='store_true')
-    arggroup.add_argument('-l', '--logics', help='reload all logics', action='store_true')
-    arggroup.add_argument('-r', '--restart', help='restart SmartHomeNG', action='store_true')
-    arggroup.add_argument('-s', '--stop', help='stop SmartHomeNG', action='store_true')
-    arggroup.add_argument('-V', '--version', help='show SmartHomeNG version', action='store_true')
-    arggroup.add_argument('--start', help='start SmartHomeNG and detach from console (default)', default=True, action='store_true')
-    arggroup.add_argument('-cb', '--create_backup', help='create backup of SmartHomeNG configuration (yaml configuration only)', action='store_true')
-    arggroup.add_argument('-cbt', '--create_backup_t', help='create backup of SmartHomeNG configuration with a timestamp in the filename', action='store_true')
-    arggroup.add_argument('-rb', '--restore_backup', help='restore backup of configuration to SmartHomeNG installation (yaml configuration only). CAUTION: Existing configuration is overwritten!', action='store_true')
-    argparser.add_argument('-c', '--config_dir', help='use external config dir (should contain "etc", "logics" and "items" subdirectories)')
-
-    arggroup.add_argument('-v', '--verbose', help='verbose (info output) logging to the logfile - DEPRECATED use logging-configuration', action='store_true')
-    arggroup.add_argument('-d', '--debug', help='stay in the foreground with verbose output - DEPRECATED use logging-configuration', action='store_true')
-    arggroup.add_argument('-f', '--foreground', help='stay in the foreground', action='store_true')
-    arggroup.add_argument('-q', '--quiet', help='reduce logging to the logfile - DEPRECATED use logging-configuration', action='store_true')
-    args = argparser.parse_args()
+    # # argument handling
+    # argparser = argparse.ArgumentParser()
+    # arggroup = argparser.add_mutually_exclusive_group()
+    # arggroup.add_argument('-i', '--interactive', help='open an interactive shell with tab completion and with verbose logging to the logfile', action='store_true')
+    # arggroup.add_argument('-l', '--logics', help='reload all logics', action='store_true')
+    # arggroup.add_argument('-r', '--restart', help='restart SmartHomeNG', action='store_true')
+    # arggroup.add_argument('-s', '--stop', help='stop SmartHomeNG', action='store_true')
+    # arggroup.add_argument('-V', '--version', help='show SmartHomeNG version', action='store_true')
+    # arggroup.add_argument('--start', help='start SmartHomeNG and detach from console (default)', default=True, action='store_true')
+    # arggroup.add_argument('-cb', '--create_backup', help='create backup of SmartHomeNG configuration (yaml configuration only)', action='store_true')
+    # arggroup.add_argument('-cbt', '--create_backup_t', help='create backup of SmartHomeNG configuration with a timestamp in the filename', action='store_true')
+    # arggroup.add_argument('-rb', '--restore_backup', help='restore backup of configuration to SmartHomeNG installation (yaml configuration only). CAUTION: Existing configuration is overwritten!', action='store_true')
+    # argparser.add_argument('-c', '--config_dir', help='use external config dir (should contain "etc", "logics" and "items" subdirectories)')
+    #
+    # arggroup.add_argument('-v', '--verbose', help='verbose (info output) logging to the logfile - DEPRECATED use logging-configuration', action='store_true')
+    # arggroup.add_argument('-d', '--debug', help='stay in the foreground with verbose output - DEPRECATED use logging-configuration', action='store_true')
+    # arggroup.add_argument('-f', '--foreground', help='stay in the foreground', action='store_true')
+    # arggroup.add_argument('-q', '--quiet', help='reduce logging to the logfile - DEPRECATED use logging-configuration', action='store_true')
+    # args = argparser.parse_args()
+    #args = get_cmdline_parameters()
 
     extern_conf_dir = BASE
     if args.config_dir is not None:
