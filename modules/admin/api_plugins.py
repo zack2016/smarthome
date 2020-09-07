@@ -292,7 +292,7 @@ class PluginsInfoController(RESTResource):
         self._update_bloglinks_active = True
 
         # Start scheduler
-        self._blog_task_name = 'module.admin: Update Blog Links'
+        self._blog_task_name = 'modules.admin.update_blog_links'
         self._sh.scheduler.add(self._blog_task_name, self._test_for_blog_articles_task, cycle=60, offset=0)
         try:
             module.add_stop_method(self.stop, self.__class__.__name__)

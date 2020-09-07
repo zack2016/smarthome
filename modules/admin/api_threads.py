@@ -78,13 +78,13 @@ class ThreadsController(RESTResource):
                 threads_count += 1
 
         if cp_threads > 0:
-            threads.append(self.thread_sum("CherryPy Server", cp_threads))
+            threads.append(self.thread_sum("modules.http.cherrypy_server", cp_threads))
             threads_count += cp_threads
         if http_threads > 0:
-            threads.append(self.thread_sum("HTTPServer", http_threads))
+            threads.append(self.thread_sum("modules.http.http_server", http_threads))
             threads_count += http_threads
         if pool_threads > 0:
-            threads.append(self.thread_sum("asyncio ThreadPoolExecutor", http_threads))
+            threads.append(self.thread_sum("asyncio.ThreadPoolExecutor", http_threads))
             threads_count += pool_threads
         if idle_threads > 0:
             threads.append(self.thread_sum("idle", idle_threads))

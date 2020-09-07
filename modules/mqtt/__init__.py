@@ -190,7 +190,7 @@ class Mqtt(Module):
         self.logger.debug("MQTT client loop started")
         # set the name of the paho thread for this plugin instance
         try:
-            self._client._thread.name = "paho_" + self.longname
+            self._client._thread.name = 'modules.' + self.get_fullname() + ".paho_client"
         except:
             self.logger.warning("Unable to set name for paho thread")
 

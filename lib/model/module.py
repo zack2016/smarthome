@@ -38,6 +38,7 @@ class Module(SmartObject, Utils):
     """
 
     _shortname = ''     #: Short name of the module; is initialized during loading of the module; :Warning: Don't change it
+    _instance = ''      #: Instance name (not used for modules, since they are not multi-instance capable
     _longname = ''      #: Long name of the module; is initialized during loading of the module
 
 
@@ -54,6 +55,44 @@ class Module(SmartObject, Utils):
         :rtype: depends on the type of the parameter definition
         """
         return self._parameters.get(parameter_name, None)
+
+
+    def get_shortname(self):
+        """
+        return the shortname of the module (name of it's directory)
+
+        :note: Only available in SmartHomeNG versions **beyond** v1.7
+
+        :return: shortname of the module
+        :rtype: str
+        """
+        return self._shortname
+
+
+    def get_instance_name(self):
+        """
+        Returns the name of this instance of the module
+
+        :return: instance name
+        :rtype: str
+        """
+        return self._instance
+
+
+    def get_fullname(self):
+        """
+        return the full name of the module (shortname & instancename)
+
+        :note: Only available in SmartHomeNG versions **beyond** v1.7
+
+        :return: full name of the module
+        :rtype: str
+        """
+        if self.get_instance_name() == '':
+            return self.get_shortname()
+        else:
+            #            return self.get_instance_name() + '@' + self.get_shortname()
+            return self.get_shortname() + '_' + self.get_instance_name()
 
 
     def translate(self, txt, vars=None):
