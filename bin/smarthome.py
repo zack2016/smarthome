@@ -143,7 +143,7 @@ if core_reqs == 0:
     exit(0)
 elif core_reqs == -1:
     print("ERROR: Unable to install core requirements")
-    print("Please use the commandline option -p to specify the path to the pip3 command")
+    print("Use the commandline option --pip3_command to specify the path to the command")
     print()
     exit(1)
 

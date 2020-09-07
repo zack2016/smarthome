@@ -698,7 +698,7 @@ class Tcp_client(object):
                         self._connected_callback and self._connected_callback(self)
                         _name='TCP_Client'
                         if self.name is not None:
-                            _name += '_' + self.name
+                            _name = self.name + '.' + _name
                         self.__receive_thread = threading.Thread(target=self.__receive_thread_worker, name=_name)
                         self.__receive_thread.daemon = True
                         self.__receive_thread.start()
@@ -1027,7 +1027,11 @@ class Tcp_server(object):
             self.__coroutine = asyncio.start_server(self.__handle_connection, self._interfaceip, self._port)
             self.__server = self.__loop.run_until_complete(self.__coroutine)
 
-            self.__listening_thread = threading.Thread(target=self.__listening_thread_worker, name='TCP_Server_{}'.format(self.name))
+            _name = 'TCP_Server'
+            if self.name is not None:
+                _name = self.name + '.' + _name
+
+            self.__listening_thread = threading.Thread(target=self.__listening_thread_worker, name=_name)
             self.__listening_thread.daemon = True
             self.__listening_thread.start()
         except:
