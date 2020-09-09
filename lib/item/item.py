@@ -1305,7 +1305,7 @@ class Item():
                 self.__trigger_logics(trigger_source_details)
             for item in self._items_to_trigger:
                 args = {'value': value, 'source': self._path}
-                self._sh.trigger(name=item.id(), obj=item.__run_eval, value=args, by=caller, source=source, dest=dest)
+                self._sh.trigger(name='items.' + item.id(), obj=item.__run_eval, value=args, by=caller, source=source, dest=dest)
         if _changed and self._cache and not self._fading:
             try:
                 cache_write(self._cache, self._value)
