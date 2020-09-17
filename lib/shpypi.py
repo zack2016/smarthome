@@ -36,6 +36,7 @@ import pathlib
 import sys
 import fnmatch
 import datetime
+import time
 import re
 
 
@@ -663,7 +664,7 @@ class Shpypi:
         # check if pypi service is reachable
         if self.pypi_timeout <= 0:
             pypi_available = False
-            #            pypi_unavailable_message = translate('PyPI Prüfung deaktiviert')
+            # pypi_unavailable_message = translate('PyPI Prüfung deaktiviert')
             pypi_unavailable_message = 'PyPI Prüfung deaktiviert'
         else:
             pypi_available = True
@@ -676,38 +677,22 @@ class Shpypi:
                 sock.close()
             except:
                 pypi_available = False
-                #                pypi_unavailable_message = translate('PyPI nicht erreichbar')
+                # pypi_unavailable_message = translate('PyPI nicht erreichbar')
                 pypi_unavailable_message = 'PyPI nicht erreichbar'
 
         # look for PyPI data of the packages
         import xmlrpc
         pypi = xmlrpc.client.ServerProxy('https://pypi.org/pypi')
-        for package in self.package_list:
 
-            ###
-            if pypi_available:
-                try:
-                    available = pypi.package_releases(package['name'])  # (dist.project_name)
-                    self.logger.debug(
-                        "pypi_json: pypi package: project_name {}, availabe = {}".format(package['name'], available))
-                    try:
-                        package['pypi_version'] = available[0]
-                        package['pypi_version_not_available_msg'] = ""
-                        package['pypi_version_ok'] = True
-                        package['pypi_doc_url'] = 'https://pypi.org/pypi/' + package['name']
-
-                    except:
-                        package['pypi_version_not_available_msg'] = '?'
-                        package['pypi_version_ok'] = False
-                        package['pypi_doc_url'] = ''
-
-                except:
-                    package['pypi_version'] = '--'
-                    #                        pkg['pypi_version_not_available_msg'] = [translate('Keine Antwort von PyPI')]
-                    package['pypi_version_not_available_msg'] = ['Keine Antwort von PyPI']
-            else:
-                package['pypi_version_not_available_msg'] = pypi_unavailable_message
-            ###
+        sorted_package_list = sorted(self.package_list, key=lambda k: k['sort'], reverse=False)
+        count = 0
+        for package in sorted_package_list:
+            if (package['is_required'] == True) or True:
+                if pypi_available :
+                    count += 1
+                    self.get_package_releases_data(pypi, package, count)
+                else:
+                    package['pypi_version_not_available_msg'] = 'PyPI nicht erreichbar'
 
             # check if installed version is ok and recent
             if package['vers_installed'] != '-':
@@ -733,8 +718,46 @@ class Shpypi:
                     if not pypi_ok:
                         package['pypi_version_ok'] = False
 
-        sorted_package_list = sorted(self.package_list, key=lambda k: k['sort'], reverse=False)
+        #sorted_package_list = sorted(self.package_list, key=lambda k: k['sort'], reverse=False)
         return sorted_package_list
+
+
+    def get_package_releases_data(self, pypi, package, count):
+        """
+
+        :param instance:
+        :param owner:
+        :return:
+        """
+
+        try:
+            available = pypi.package_releases(package['name'])  # (dist.project_name)
+            self.logger.debug("pypi_json: pypi package: project_name {}, availabe = {}".format(package['name'], available))
+            try:
+                package['pypi_version'] = available[0]
+                package['pypi_version_not_available_msg'] = ""
+                package['pypi_version_ok'] = True
+                package['pypi_doc_url'] = 'https://pypi.org/pypi/' + package['name']
+
+            except:
+                package['pypi_version_not_available_msg'] = '?'
+                package['pypi_version_ok'] = False
+                package['pypi_doc_url'] = ''
+
+        except Exception as e:
+            e_txt = str(e)
+            if e_txt.startswith('<Fault -32500:'):
+                # time.sleep(70)
+                # self.logger.warning("get_packagelist: (count={}) Package {} - Exception {}".format(package, count, 'Fault -32500: HTTPTooManyRequests'))
+                package['pypi_version_not_available_msg'] = e_txt
+            else:
+                self.logger.warning("get_packagelist: Package {} (count={}) - Exception {}".format(package, count, e))
+                package['pypi_version_not_available_msg'] = ['Keine Antwort von PyPI']
+            package['pypi_version'] = '--'
+            #  pkg['pypi_version_not_available_msg'] = [translate('Keine Antwort von PyPI')]
+
+        return
+
 
 
 
