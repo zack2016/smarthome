@@ -204,6 +204,7 @@ class Items():
         # --------------------------------------------------------------------
         # prepare loaded items for run phase of SmartHomeNG
         #
+        self._sh.shng_status = {'code': 14, 'text': 'Starting: Preparing loaded items'}
 
         # Build eval expressions from special functions and triggers before first run
         for item in self.return_items():

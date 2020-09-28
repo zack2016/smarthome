@@ -166,11 +166,12 @@ Version aktuelle Python Version und die zwei Vorgängerversionen.**
   "v1.6",            "Python 3.7",  "Python 3.5, 3.6, 3.7"
   "v1.7",            "Python 3.7",  "Python 3.5, 3.6, 3.7"
   "v1.8",            "Python 3.8",  "Python 3.6, 3.7, 3.8"
+  "v1.9",            "Python 3.9",  "Python 3.7, 3.8, 3.9"
 
 Das bedeutet nicht automatisch, dass SmartHomeNG mit älteren Python Versionen nicht mehr funktioniert,
 die Entwicklung wird nur nicht mehr mit älteren Versionen getestet.
 
-Debian Buster bringt aktuell Python 3.7.x und PHP 7.3 mit und Ubuntu 18.04 LTS Python 3.6 und PHP 7.2
+Debian Buster bringt aktuell Python 3.7.x und PHP 7.3 mit und Ubuntu 20.04 LTS Python 3.8.x sowie PHP 7.4 und PHP 7.3
 
 PHP wird für SmartHomeNG selbst nicht benötigt, ist jedoch eine Voraussetzung für den Einsatz von smartVISU.
 

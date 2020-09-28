@@ -671,7 +671,7 @@ class SmartHome():
         #############################################################
         # Init Logics
         #############################################################
-        self.shng_status = {'code': 14, 'text': 'Starting: Initializing logics'}
+        self.shng_status = {'code': 15, 'text': 'Starting: Initializing logics'}
 
         self.logics = lib.logic.Logics(self, self._logic_conf_basename, self._env_logic_conf_basename)
         # signal.signal(signal.SIGHUP, self.logics.reload_logics)
@@ -689,7 +689,7 @@ class SmartHome():
         #############################################################
         # Start Plugins
         #############################################################
-        self.shng_status = {'code': 15, 'text': 'Starting: Starting plugins'}
+        self.shng_status = {'code': 16, 'text': 'Starting: Starting plugins'}
 
         self.plugins.start()
         self.plugin_start_complete = True
