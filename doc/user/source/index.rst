@@ -66,5 +66,5 @@ oder im `Chat auf gitter.im <https://gitter.im/smarthomeNG/smarthome>`_ .
    impressum
    Entwickler Dokumentation (Englisch) <https://www.smarthomeng.de/developer>
    datenschutz
-   English translation of this documentation <https://translate.google.com/translate?hl=&sl=de&tl=en&u=https://www.smarthomeng.de/user/>
+   English translation of this documentation <https://translate.google.com/translate?hl=&sl=de&tl=en&u=https://www.smarthomeng.de/dev/user/>
 

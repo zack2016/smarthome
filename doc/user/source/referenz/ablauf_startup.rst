@@ -34,8 +34,8 @@ folgenden mit angegeben ist. Nummern kleiner als 10 identifizieren Schritte inne
 Schritte größer-gleich 10 und kleiner als 20 identifizieren Schritte innerhalb der start() Methode.
 
 
-0 - Initialisiert
------------------
+0 - Initialisierung
+-------------------
 
 Das smarthome Objekt wird erzeugt und initialisiert. Dazu werden die grundlegenden Variablen initialisiert.
 Anschließend wird geprüft ob die benötigten Konfigurationsdateien existieren. Falls nicht, werden die
@@ -45,8 +45,8 @@ Es werden die Konfigurationsdateienb **smarthome.yaml** und **logging.yaml** ein
 initialisiert.
 
 
-1 - Initialisiert: Logging initialisiert
-----------------------------------------
+1 - Initialisierung: Logging initialisiert
+------------------------------------------
 
 Dis initialisierung des Logging ist abgeschlossen (ab nun erfolgen die Log Ausgaben in die konfigurieten Log-Dateien)
 
@@ -59,8 +59,8 @@ Es wird geprüft, ob die benötigten Packages für die Module und die konfigurie
 nicht, werden die Packages installiert und SmartHomeNG wird neu gestartet.
 
 
-2 - Initialisiert: Voraussetzungen überprüft
---------------------------------------------
+2 - Initialisierung: Voraussetzungen überprüft
+----------------------------------------------
 
 Die benötigten Python Package sind installiert.
 
@@ -89,8 +89,8 @@ und initialisiert.
 Es wird die Wrapper Class für die Items initialisiert.
 
 
-12 - Initialisiert Plugins
---------------------------
+12 - Startet: Initialisiert Plugins
+-----------------------------------
 
 Es werden die konfigurierten Plugins geladen und es wird je geladenem Plugin ein Worker-Thread erzeugt (falls
 die Plugins nicht disabled sind)-
@@ -141,6 +141,11 @@ Anschließend wird der Maintenance Scheduler **sh.gc** von SmartHomeNG gestartet
 Collection durchführt.
 
 
+Laufzeit von SmartHomeNG
+========================
+
+Der folgende Status tritt nach der Initialisierung ein und bleibt wehalten, bis SmartHomeNG beendet wird:
+
 20 - Aktiv
 ----------
 
@@ -149,6 +154,9 @@ Die Initialisierung ist abgeschlossen und SmartHomeNG arbeitet normal.
 
 Beendigung von SmartHomeNG
 ==========================
+
+Die folgenden Stati treten auf wenn SmartHomeNG beendet oder neu gestartet wird:
+
 
 30 - Startet neu
 ----------------
