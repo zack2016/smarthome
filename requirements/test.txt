@@ -10,7 +10,8 @@
 #   +--------------------------------------------------+
 
 # scrape information from webpages
-#beautifulsoup4>=4.1.0
+# e.g. blockly plugin which is in alpha stadium
+beautifulsoup4>=4.1.0
 
 # Flake8 is a Python static code analysis tool
 #flake8>=2.5.1
