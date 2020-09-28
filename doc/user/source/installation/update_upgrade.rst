@@ -36,9 +36,9 @@ unter Vorbedingungen angegebenen Programme und auf der selben Seite weiter unten
 (ephem, pyyaml, ...) installiert werden.
 
 
-------------------------------------------------------
-Update von SmarthomeNG ab v1.6 und höher :redsup:`neu`
-------------------------------------------------------
+----------------------------------------
+Update von SmarthomeNG ab v1.6 und höher
+----------------------------------------
 
 Wenn von einer Version v1.6 oder höher ein Update durchgeführt werden soll, gibt es eine neue Möglichkeit. Statt
 ein Update durchzuführen, kann bestehende die Konfiguration gesichert werden, eine Neuinstallation durchgeführt werden
