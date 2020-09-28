@@ -540,6 +540,23 @@ class Http(Module):
         """
         return self._servicesport
 
+    def get_service_user(self):
+        """
+        Returns the user with which the webservices can be reached
+
+        :return: user
+        :rtype: str
+        """
+        return self._service_user
+
+    def get_service_password(self):
+        """
+        Returns the hashed password with which the webservices can be reached
+
+        :return: hashed password
+        :rtype: str
+        """
+        return self._service_hashed_password
 
     def _build_hostmaps(self):
         """
