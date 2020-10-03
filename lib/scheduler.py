@@ -57,7 +57,7 @@ except:
 
 logger = logging.getLogger(__name__)
 
-_scheduler_instance = None    # Pointer to the initialized instance of the scheduler class (for use by static methods)
+_scheduler_instance = None    # Pointer to the initialized instance of the scheduler class  (for use by static methods)
 
 
 class _PriorityQueue:
@@ -393,7 +393,7 @@ class Scheduler(threading.Thread):
         :param prio: a priority with default of 3 having 1 as most important and higher numbers less important
         :param cron: a crontab entry of type string or a list of entries
         :param cycle: a time given as integer in seconds or a string with a time given in seconds and a value after an equal sign
-        :param value:
+        :param value: Value that an item should be set to or to be handed to a logic, otherwise: None
         :param offset: an optional offset for cycle. If not given, cycle start point will be varied between 10..15 seconds to prevent too many scheduler entries with the same starting times
         :param next:
         :param from_smartplugin: Only to set to True, if called from the internal method in SmartPlugin class
