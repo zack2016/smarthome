@@ -126,7 +126,7 @@ class Database():
     def __init__(self, name, dbapi, connect, formatting='named'):
         """Create a new database instance
 
-        The 'name' parameter identifies the name for the database access.
+        The 'name' parameter identifies the name for the database access .
         It is also used internally to create versions table (to keep track
         if the database structure is up to date) and logging.
 
@@ -289,7 +289,8 @@ class Database():
 
     def cursor(self):
         """Create a new cursor for executing statements"""
-        return self._conn.cursor()
+        if self._conn is not None:
+            return self._conn.cursor()
 
     def execute(self, stmt, params=(), formatting=None, cur=None):
         """Execute the given statement
@@ -319,8 +320,11 @@ class Database():
         try:
             if cur == None:
                 c = self.cursor()
-                result = c.execute(stmt, args)
-                c.close()
+                if c is not None:
+                    result = c.execute(stmt, args)
+                    c.close()
+                else:
+                    result = []
                 c = None
             else:
                 result = cur.execute(stmt, args)
@@ -397,9 +401,12 @@ class Database():
         """
         if cur == None:
             c = self.cursor()
-            self.execute(stmt, params, formatting=formatting, cur=c)
-            result = c.fetchall()
-            c.close()
+            if c is not None:
+                self.execute(stmt, params, formatting=formatting, cur=c)
+                result = c.fetchall()
+                c.close()
+            else:
+                result = []
         else:
             self.execute(stmt, params, formatting=formatting, cur=cur)
             result = cur.fetchall()
