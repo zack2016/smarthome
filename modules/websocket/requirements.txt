@@ -1,0 +1,2 @@
+# modules: websocket
+websockets>=8.1
