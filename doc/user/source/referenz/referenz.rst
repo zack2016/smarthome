@@ -18,6 +18,6 @@ können.
    :titlesonly:
 
    kommandozeilen_optionen
-   feiertage
    ablauf_startup
+   feiertage
 

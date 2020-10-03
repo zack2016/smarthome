@@ -8,10 +8,10 @@ Es gibt eine Menge neuer Features im Core von SmartHomeNG und den Plugins.
 
     Diese Release Notes sind ein Arbeitsstand.
 
-     - Berücksichtigt sind Commits im smarthome Repository bis incl. 28. September 2020 12:xx Uhr
-       (Documentation updates)
-     - Berücksichtigt sind Commits im plugins Repository bis incl. 15. Juli 2020
-       (plugin casmbi)
+     - Berücksichtigt sind Commits im smarthome Repository bis incl. 28. September 2020
+       (module.http: Added get methods ...)
+     - Berücksichtigt sind Commits im plugins Repository bis incl. 29. September 2020
+       (webservices: Added option ...)
 
 
 
@@ -147,6 +147,8 @@ Updates in the CORE
   * http:
 
     * Set maximum version of cherrypy to avoid problem with cheroot 8.4.4
+    * Added get methods for service user and password. get_service_password always returns the
+      hashed password - which is generated in case the user has entered a plain text password in the yaml file
 
   * mqtt:
 
@@ -163,11 +165,7 @@ Updates in the CORE
     allow click on header of dropdown menu
   * Changed handling of boolean value field in item tree
   * Added tab to configure upcoming websocket module
-
-
-* Plugins:
-
-  * ...
+  * Update to system properties page
 
 
 
@@ -176,12 +174,24 @@ New Plugins
 
 For details of the changes of the individual plugins, please refer to the documentation of the respective plugin.
 
-* <Name>: ...
+* smartvisu: New plugin to replace visu_smartvisu plugin -
 
+  * Not yet feature complete
+  * Checks for the usage of deprecated or removed widgets while generating visu pages
+  * For sv v2.9 and up templates (index.html, rooms.html from sv are used instead of templates of plugin
+  * Structure of smartVISU navigation can optionally be defined in /etc/visu.yaml
 
 
 Plugin Updates
 --------------
+
+* appletv:
+
+  * Complete rewrite
+
+* asterisk:
+
+  * Now has extensive metadata in plugin.yaml
 
 * avm:
 
@@ -192,17 +202,34 @@ Plugin Updates
   * Fixed problem with get_iattr_value for index parameter
   * Added description to meta data avm_wlan_index
   * Added description for avm_wlan_index
+  * **Changed attribute name** "mac" to "avm_mac"
+  * Attribute avm_mac requires instance added now when multiple plugin instances are used
+  * Fixed avm_wlan_index for citem
+  * Fixed attribute definition for wifi index
+  * Adjusted thread name for Monitoring-Service
+  * Replaced deprecated smartVISU widgets in widget_avm
 
 * casambi:
 
   * Cleaned-up webinterface
   * Fixed error when API key is no longer valid
+  * set state from develop to ready
+
+* cli2:
+
+  * Created from cli plugin
+  * Use lib.network
+  * Add a webinterface
 
 * database:
 
   * Added automatic restart if database file could not be opened - That happens often with sqlite3 after
     switching from older Python version to 3.8 or back from 3.8 to older version.
   * Restart shng on stall of db-driver only for sqlite3 databases
+  * Replaced time.sleep by event wait with timeout
+  * Fixed conversion bug for webinterface and comparison
+  * Changed loglevel for entry "Cache not available in database for item ..." to info
+  * Corrected german description of item attribute 'database'
 
 * easymeter:
 
@@ -211,11 +238,15 @@ Plugin Updates
 * enigma2:
 
   * Added item attribute enigma2_remote_command_id to metadata
+  * Replaced deprecated smartVISU widgets in widget_enigma2
 
 * enocean:
 
   * Fixed serial close; added possibility for debug outputs from eepparser
   * Completed plugin metadata
+  * Improved documentation for reading transceiver chip's BaseID
+  * Rework for Eltako Shutter Actor FSB71
+  * Add device name for custom EEPs and small improvements
 
 * garminconnect:
 
@@ -224,20 +255,68 @@ Plugin Updates
 * gpio:
 
   * Fixed recently introduced bug in gpio out control
+
+* homematic:
+
+  * Adjusted thread name (for server thread)
+
 * hue:
 
   * Fixed a "RuntimeError: dictionary changed size during iteration" error
   * Added item attribute definitions to metadata (descriptions are still missing)
+  * Replaced deprecated smartVISU widgets in widget_hue
+
+* knx:
+
+  * Fix for metadata
+  * Suppress get_process_info on windows systems
+  * Correct caller check in update item
+
+* knx2:
+
+  * Created from knx plugin
+  * Using lib/network instead of lib/connection.py
+  * Correct caller check in update item and more verbose debug info
+  * Add a logo to webinterface
+  * Upload a knxproj file and show with linked items in webinterface
 
 * lirc:
 
   * Added definitions of the item_attributes to metadatalirc: Added definitions of the item_attributes to metadata
+  * Replace connection lib by network lib and some minor tweaks.
+    Problem: Version is not detected correctly. Will be fixed in next major update
+
+* mpd:
+
+  * Add item attributes to plugin.yaml
+  * Internal refactoring
+  * Add support thread to metadata
 
 * neato:
 
   * Added debug outputs
   * Completed plugin metadata
   * Catching empty security keys
+
+* network:
+
+  * Improve documentation, add user_doc.rst
+  * prepare for lib\connection removal
+
+* nuki:
+
+  * Added detected nuki ids to web interface
+  * Changed info about updater to self.get_shortname()
+  * Added door sensor states
+  * Show door states in Webinterface
+  * Added trigger for door states
+  * Added some default handling for updating webif
+  * Migration from connection lib to mod_http services interface
+  * Extended error log, if mod_http is not configured
+
+* onewire:
+
+  * Removed sleep and uses threading.event(), added counter options to plugin.yaml
 
 * openweathermap:
 
@@ -248,6 +327,11 @@ Plugin Updates
 
   * Added robonect_remote_index to item attributes of plugin
   * Added valid list for robonect_data_type
+  * Added items for translated texts (in language of shng)
+  * Added some checks for reading weather data
+  * Catching invalid json bug in newest robonect firmware
+  * Added timeout of 15 sec for get_mower_information_from_api to avoid problems with incomplete json
+    returned from robonect module
 
 * rpi1wire:
 
@@ -258,19 +342,37 @@ Plugin Updates
 
   * Create rrd directory if it does not exist
 
+* rtr:
+
+  * Removed some parameter checks which are in core alread and added webinterface
+
 * sonos:
 
   * Added debug outputs
   * Switched to lib.item import Items to be compatible with latest develop core
   * Added item attribute definitions to metadata
   * Completed plugin metadata
+  * Added missing values to valid_lists for item attributes sonos_recv and sonos_send
+
+* squeezebox:
+
+  * Switch from connection lib to network lib
+  * Improve rescan status in plugin.yaml struct
+  * Move readme infos to user_doc
 
 * stateengine:
 
   * Extended metadata with attribute-name prefixes
   * Attribute_prefixes completed and described
   * Allow individual loglevels for each SE item and updated docu accordingly
-  * bump version to 1.7.1
+  * Update user doc: include info on global attribute se_repeat_actions
+  * Fix metadata as most of the attributes can be defined by evals, int, etc.
+  * se_delay has to be type foo, too
+  * Small fix for webinterface
+  * Adjust logging for actions
+  * Add changedby and updatedby
+  * Improve handling of mixed condition checks (items, evals, etc.), logging for incorrect value type definitions
+  * Improve logging for web interface update
 
 * tankerkoenig:
 
@@ -279,6 +381,24 @@ Plugin Updates
 * tasmota:
 
   * Adjusted log level
+
+* telegram:
+
+  * Update to Lib V12.8.0 with refactoring according to changes
+
+* unifi:
+
+  * **Changed item atribute name** from 'mac' to 'unifi_client_mac'
+
+* uzsu:
+
+  * Limited scipy version to v1.5.1 to enable standard install on Raspberry Pis
+  * Added different requirement for Python versions < 3.7
+  * Added requirement for Python 3.8 (for non-Pi installations)
+
+* vacations:
+
+  * Updated requirements as old package of ferien-api seems not to work anymore
 
 * visu_smartvisu:
 
@@ -289,10 +409,26 @@ Plugin Updates
 
   * Bugfix for series_cancel command
 
+* webservices:
+
+  * Added option to activate/deactivate basic auth check via service_user and service_password of mod_http
+
 * withings_health:
 
   * Changed nh_type to withings_type in plugin.yaml
   * Added english translations for BMI
+
+* xmpp:
+
+  * Replace sleekxmpp with slixmpp
+  * Add return type to send method and fix parameters key in plugin.yaml
+  * Add list of supported XEPs to documentation
+  * Create event loop created outside of thread / adjust stop()
+
+* yamaha:
+
+  * Prepare multiinstance and webinterface
+  * Complete metadata in plugin.yaml
 
 
 Outdated Plugins
