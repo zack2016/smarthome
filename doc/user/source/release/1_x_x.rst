@@ -8,10 +8,10 @@ Es gibt eine Menge neuer Features im Core von SmartHomeNG und den Plugins.
 
     Diese Release Notes sind ein Arbeitsstand.
 
-     - Berücksichtigt sind Commits im smarthome Repository bis incl. 28. September 2020
-       (module.http: Added get methods ...)
-     - Berücksichtigt sind Commits im plugins Repository bis incl. 29. September 2020
-       (webservices: Added option ...)
+     - Berücksichtigt sind Commits im smarthome Repository bis incl. 5. Oktober 2020
+       (module.admin: Better handling for exception while testing for blog articles)
+     - Berücksichtigt sind Commits im plugins Repository bis incl. 6. Oktober 2020
+       (knx: fix aclass name bug, added support thread)
 
 
 
@@ -61,6 +61,7 @@ Updates in the CORE
 * Creating var directory and sub directories, if they don't exist
 * Experimental support for running SmartHomeNG on Windows
 * add Python package 'portalocker' for os independant file locking for PID
+* Removed tests for Python 3.5
 
 * bin.smarthome:
 
@@ -79,6 +80,7 @@ Updates in the CORE
 * lib.db:
 
   * Added name of used database driver to log message
+  * Some cursor operations are now done only, if the cursor is not None
 
 * lib.item:
 
@@ -155,6 +157,11 @@ Updates in the CORE
     * Fixed an incompatibility with Windows
     * Thread names adjusted
 
+  * websocket:
+
+    * Initial commit
+    * known issue: periodic updates for series (plots) do not work yet
+
 * shngAdmin:
 
   * Switched to new menu bar
@@ -166,6 +173,8 @@ Updates in the CORE
   * Changed handling of boolean value field in item tree
   * Added tab to configure upcoming websocket module
   * Update to system properties page
+  * Translations for new startup status; adjusted display size of log files to prevent scrolling of browser window.
+  * Better handling for exception while testing for blog articles
 
 
 
@@ -271,14 +280,13 @@ Plugin Updates
   * Fix for metadata
   * Suppress get_process_info on windows systems
   * Correct caller check in update item
-
-* knx2:
-
-  * Created from knx plugin
   * Using lib/network instead of lib/connection.py
   * Correct caller check in update item and more verbose debug info
   * Add a logo to webinterface
   * Upload a knxproj file and show with linked items in webinterface
+  * Able to read knxproj and opc files for comparison of GroupAddresses
+  * Adjusted plugin version
+  * Added support thread
 
 * lirc:
 
@@ -313,6 +321,10 @@ Plugin Updates
   * Added some default handling for updating webif
   * Migration from connection lib to mod_http services interface
   * Extended error log, if mod_http is not configured
+
+* odlinfo:
+
+  * added check if key is present in result data
 
 * onewire:
 
