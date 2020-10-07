@@ -191,6 +191,23 @@ Das Backend Plugin bindet man folgendermaßen ein:
 Die weitere Einrichtung und Konfiguration von Plugins ist unter `Plugins <plugins.html>`_ beschrieben.
 
 
+..
+   Using an older version of a plugin
+   ----------------------------------
+
+   If you are not using the newest version of the SmartHomeNG core, if may be necessary to use an
+   older version of a plugin. Some plugins come with embedded older versions. To load an older
+   version of the plugin, you have to specify the parameter `plugin_version` in the configuration
+   section of the plugin.
+
+   To find out, if a plugin comes with an older version (or versions), take a look at the plugin's
+   directory. if you find a subdirectory with the name starting with ``_pv_`` the plugin comes with
+   an older (previous) version. The rest of the folder name specifies the version number. If you
+   find a subfolder ``_pv_1_3_0``, it contains the v1.3.0 of the plugin. To load that version, just
+   add ``plugin_version: 1.3.0`` to the plugin configuration.
+
+
+
 logic.yaml
 ^^^^^^^^^^
 
