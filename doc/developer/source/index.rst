@@ -51,10 +51,7 @@ any way you want and can.
    :maxdepth: 6
    :hidden:
 
-   items
    logics
-   modules
-   plugins_all
 
 
 .. toctree::
@@ -62,9 +59,7 @@ any way you want and can.
    :hidden:
    :titlesonly:
 
-   logging
    tools
    development
-   release/release
    genindex
    impressum
