@@ -81,7 +81,7 @@ class ServicesController(RESTResource):
 
     def strip_empty_lines(self, txt):
         """
-        Remove \r from text and remove exessive empty lines from end
+        Remove \\r from text and remove exessive empty lines from end
         """
         txt = txt.replace('\r', '').rstrip()
         while txt.endswith('\n'):

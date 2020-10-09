@@ -16,12 +16,12 @@ All three files reside in a folder within the ``/modules`` folder. The name of t
 the name of the module.
 
 
-The **metadata** file is named ``/modules/<name of the plugin>/module.yaml``. It has two main sections:
+The **metadata** file is named ``/modules/<name of the module>/module.yaml``. It has two main sections:
 
 - ``module:`` - Global metadata of the plugin
 - ``parameters:`` - Definition of the parameters that can bei used in ``/etc/plugin.yaml`` to configure the plugin
 
-.. include:: /metadata/module_global.rst
+.. include:: /referenz/metadata/module_global.rst
 
-.. include:: /metadata/parameters.rst
+.. include:: /referenz/metadata/parameters.rst
 

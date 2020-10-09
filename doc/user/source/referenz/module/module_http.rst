@@ -36,6 +36,6 @@ The meta data file:
     :caption: module.yaml
 
 
-.. literalinclude:: ../../../../modules/http/README.md
+.. literalinclude:: /modules/http/README.md
     :caption: README.md
 

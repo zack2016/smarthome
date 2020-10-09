@@ -16,9 +16,19 @@ Bisher existieren die folgenden Module:
    module_mqtt
    module_websocket
 
+
+.. include:: modules_plugins.rst
+
+
 Die Konfiguration der Module ist im Abschnitt :doc:`Konfiguration </konfiguration/module/module>` dieser
 Dokumentation beschrieben.
 
+
+.. include:: modules_readmes.rst
+
+
+Metadaten der Module
+--------------------
 
 Die möglichen Einträge für die Definition der Metadaten der Module sind hier beschrieben:
 
@@ -27,5 +37,7 @@ Die möglichen Einträge für die Definition der Metadaten der Module sind hier 
    :glob:
    :titlesonly:
 
-   module_metadata
+   modul_metadata
+
+
 

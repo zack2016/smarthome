@@ -18,6 +18,7 @@ This module implements a graphical administration interface for SmartHomeNG plug
 
 .. automodule:: modules.admin
     :members:
+    :imported-members:
     :undoc-members:
     :show-inheritance:
     :member-order: bysource
@@ -42,6 +43,6 @@ The meta data file:
     :caption: module.yaml
 
 
-.. literalinclude:: ../../../../modules/admin/README.md
+.. literalinclude:: /modules/admin/README.md
     :caption: README.md
 

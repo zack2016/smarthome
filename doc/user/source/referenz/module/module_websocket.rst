@@ -36,6 +36,6 @@ The meta data file:
     :caption: module.yaml
 
 
-.. literalinclude:: ../../../../modules/websocket/README.md
+.. literalinclude:: /modules/websocket/README.md
     :caption: README.md
 

@@ -18,5 +18,5 @@ erfolgen.
 
    module_http
    module_mqtt
-   modue_websocket
+   module_websocket
 

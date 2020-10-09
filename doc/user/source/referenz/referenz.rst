@@ -19,6 +19,8 @@ können.
 
    kommandozeilen_optionen
    ablauf_startup
+   module/module
+   plugins/plugins
    feiertage
    entwicklung/entwicklung
 

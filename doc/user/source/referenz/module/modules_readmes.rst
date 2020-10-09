@@ -8,7 +8,7 @@ READMEs der Module
    :titlesonly:
 
 
-   ../modules/admin/README.md
-   ../modules/http/README.md
-   ../modules/http/README.md
-   ../modules/websocket/README.md
+   /modules/admin/README.md
+   /modules/http/README.md
+   /modules/http/README.md
+   /modules/websocket/README.md
