@@ -59,7 +59,6 @@ any way you want and can.
    :hidden:
    :titlesonly:
 
-   tools
    development
    genindex
    impressum

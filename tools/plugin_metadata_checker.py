@@ -32,7 +32,7 @@ The result is printed to stdout
 import os
 import argparse
 
-VERSION = '1.7.5'
+VERSION = '1.7.6'
 
 print('')
 print(os.path.basename(__file__) + ' v' + VERSION + ' - Checks the care status of plugin metadata')
@@ -614,7 +614,6 @@ def check_metadata(plg, with_description, check_quiet=False, only_inc=False, lis
         if metadata['plugin'].get('maintainer', None) == None:
             disp_warning('The maintainer of the plugin is not documented', "Add 'maintainer:' to the plugin section")
 
-
     if (plg_type != 'classic' and not list_classic):
 
         if metadata.get('plugin', None) is None:
@@ -622,6 +621,9 @@ def check_metadata(plg, with_description, check_quiet=False, only_inc=False, lis
         else:
             if metadata['plugin'].get('state', None) == None:
                 disp_error('No development state given for the plugin', "Add 'state:' to the plugin section and set it to one of the following values ['develop', 'ready', 'qa-passed']", "The state'qa-passed' should only be set by the shNG core team")
+            elif not metadata['plugin'].get('state', None) in ['qa-passed', 'ready', 'develop', '-']:
+                disp_error('An invalid development state is given for the plugin', "Set'state:' to one of the followind valid values ['develop', 'ready', 'qa-passed']", "The state'qa-passed' should only be set by the shNG core team")
+
             if metadata['plugin'].get('multi_instance', None) == None:
                 disp_warning('It is not documented if wether the plugin is multi-instance capable or not', "Add 'multi_instance:' to the plugin section")
             else:
