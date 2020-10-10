@@ -62,6 +62,7 @@ oder im `Chat auf gitter.im <https://gitter.im/smarthomeNG/smarthome>`_ .
    faq
    release/release
    referenz/referenz
+   entwicklung/entwicklung
    genindex
    impressum
    Entwickler Dokumentation (Englisch) <https://www.smarthomeng.de/developer>

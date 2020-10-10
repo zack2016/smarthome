@@ -67,16 +67,12 @@ Ein guter Editor unterstützt dann auch mit der richtigen Syntaxeinfärbung.
 Verzeichnisse in SmartHomeNG
 ----------------------------
 
-Die Verzeichnisse sind im Hauptverzeichnis von smarthome zu finden, für gewöhnlich im Verzeichnis `/usr/local/smarthome`.
-
-Die Verzeichnisse sind im Hauptverzeichnis von smarthome zu finden, für gewöhnlich im Verzeichnis **`/usr/local/smarthome`**.
-
-Die Verzeichnisse sind im Hauptverzeichnis von smarthome zu finden, für gewöhnlich im Verzeichnis `**/usr/local/smarthome**`.
+Die Verzeichnisse sind im Hauptverzeichnis von smarthome zu finden, für gewöhnlich im Verzeichnis `/usr/local/smarthome``.
 
 +--------------+-----------------------------------------------------------------------------------------------------------------------------+
 | Verzeichnis  | Beschreibung / Inhalt                                                                                                       |
 +==============+=============================================================================================================================+
-| `bin`        | Hauptmodul von SmarthomeNG                                                                                                  |
+| ``bin``      | Hauptmodul von SmarthomeNG                                                                                                  |
 +--------------+-----------------------------------------------------------------------------------------------------------------------------+
 | ``dev``      | Grundgerüst und Infos zur Pluginentwicklung                                                                                 |
 +--------------+-----------------------------------------------------------------------------------------------------------------------------+

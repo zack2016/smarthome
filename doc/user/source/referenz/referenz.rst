@@ -22,5 +22,4 @@ können.
    module/module
    plugins/plugins
    feiertage
-   entwicklung/entwicklung
 

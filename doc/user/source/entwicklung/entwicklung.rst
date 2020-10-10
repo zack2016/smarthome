@@ -1,0 +1,25 @@
+
+.. index:: Entwicklung
+
+.. role:: bluesup
+.. role:: redsup
+
+
+Entwicklung :redsup:`Neu`
+=========================
+
+Hier entsteht nach und nach der Teil der Dokumentation, welcher sich mit der Entwicklung von SmartHomeNG befasst.
+
+
+.. toctree::
+   :maxdepth: 4
+   :hidden:
+   :titlesonly:
+
+   plugins
+   APIs
+   libraries_plugins_logigs
+   module
+   core
+   build_doc
+   virtual_env
