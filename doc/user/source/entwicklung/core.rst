@@ -16,6 +16,7 @@ Dieser Teil der Entwickler Dokumentation enthält Informationen zur Entwicklung 
    :hidden:
    :titlesonly:
 
+   core_shng
    core_libraries
 
 ...
