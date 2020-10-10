@@ -18,7 +18,7 @@ Hier entsteht nach und nach der Teil der Dokumentation, welcher sich mit der Ent
 
    plugins
    APIs
-   libraries_plugins_logigs
+   libraries_plugins_logics
    module
    core
    build_doc
