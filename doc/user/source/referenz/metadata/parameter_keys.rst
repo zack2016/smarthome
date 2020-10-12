@@ -49,6 +49,10 @@ Description of the keys in the section of a parameter/attribute:
 
 - **valid_list:** Optional: List of allowed values for the parameter
 
+- **valid_list_ci:** Optional: List of allowed values (case insensitive) for the parameter.
+  The comparison of the configurerd parameter is case insensitive and the value handed to the plugin is in lower case.
+  When **valid_list_ci** is specified, a specified **valid_list** is ignored.
+
 - **valid_list_description:** Optional: Descriptions of the allowed values defined in **valid_list:**
   if defined, it has to have sub-keys for the different languages (de, en, fr, pl, ..). **de** and **en**
   are required. Other languages are optional. Each language sub-key has to be a list with each entry describing

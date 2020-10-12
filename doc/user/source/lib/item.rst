@@ -59,6 +59,9 @@ class Item
 
 This class implements the item itself:
 
+.. module:: lib.item.item
+   :noindex:
+
 .. autoclass:: Item
    :no-members:
    :noindex:
@@ -70,6 +73,9 @@ class Items
 ^^^^^^^^^^^
 
 This class implements the loading and management of the items in form of the item-tree.
+
+.. module:: lib.item
+   :noindex:
 
 .. autoclass:: Items
    :no-members:

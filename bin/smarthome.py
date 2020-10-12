@@ -57,6 +57,7 @@ if not os.name == 'nt':
 #####################################################################
 # Import minimum set of Python Core Modules
 #####################################################################
+from pathlib import Path
 import argparse
 import datetime
 import gc
@@ -1398,3 +1399,4 @@ if __name__ == '__main__':
     # Starting SmartHomeNG
     sh = SmartHome(extern_conf_dir=extern_conf_dir)
     sh.start()
+

@@ -673,6 +673,38 @@ class Metadata():
         return result
 
 
+    def _test_against_valid_list(self, definition, value):
+        """
+        Test if value is in the valid list(s) of the metadata definition
+        :param definition:
+        :param value:
+        :return:
+        """
+        # test against list of valid entries
+        result = value
+
+        valid_list_ci = definition.get('valid_list_ci', None)
+        if (valid_list_ci is None) or (len(valid_list_ci) == 0):
+            # test case sensitive
+            valid_list = definition.get('valid_list', None)
+            if (valid_list is None) or (len(valid_list) == 0):
+                pass
+            else:
+                if result in valid_list:
+                    pass
+                else:
+                    result = valid_list[0]
+        else:
+            if isinstance(result, str):
+                # test case in-sensitive, return result in lower case
+                if result.lower() in (entry.lower() for entry in valid_list_ci):
+                    result = result.lower()
+                else:
+                    result = str(valid_list_ci[0]).lower()
+
+        return result
+
+
     def _test_validity(self, param, value, definition=None, is_default=False):
         """
         Checks the value against a list of valid values.
@@ -705,14 +737,10 @@ class Metadata():
                         while len(value) < definition['listlen']:
                             value.append('')
                         result = value
-            valid_list = definition.get('valid_list', None)
-            if (valid_list is None) or (len(valid_list) == 0):
-                pass
-            else:
-                if result in valid_list:
-                    pass
-                else:
-                    result = valid_list[0]
+
+            # test against list of valid entries
+            result = self._test_against_valid_list(definition, result)
+
             return result
 
         elif self.parameters[param] != None:
@@ -745,14 +773,8 @@ class Metadata():
         if self.parameters[param] is None:
             logger.warning(self._log_premsg+"_test_validity: param {}".format(param))
         else:
-            valid_list = self.parameters[param].get('valid_list')
-            if (valid_list is None) or (len(valid_list) == 0):
-                pass
-            else:
-                if result in valid_list:
-                    pass
-                else:
-                    result = valid_list[0]
+            # test against list of valid entries
+            result = self._test_against_valid_list(self.parameters[param], result)
         return result
 
     def _get_default_if_none(self, typ):

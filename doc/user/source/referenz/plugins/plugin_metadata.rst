@@ -21,10 +21,10 @@ additional sections:
 
 - ``plugin:`` - Global metadata of the plugin
 - ``parameters:`` - Definition of the parameters that can bei used in ``../etc/plugin.yaml`` to configure the plugin
-- ``item_attributes:`` - ...
-- ``item_structs:`` - ...
-- ``logic_parameters:`` - ...
-- ``plugin_functions:`` - ...
+- ``item_attributes:`` - Definition of the item attributes that are used by the plugin
+- ``item_structs:`` - Definition of item structs that can be used with the plugin
+- ``logic_parameters:`` - Definition of parameters that control how a logic can be used/triggered from the plugin
+- ``plugin_functions:`` - Decscription of public functions that are defined by the plugin
 
 
 .. include:: /referenz/metadata/plugin_global.rst

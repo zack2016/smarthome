@@ -10,9 +10,28 @@ smarthome.py
 
 Das Haupt-Objekt von SmartHomeNG ist im folgenden beschrieben:
 
+..
+   .. module:: bin.smarthome
 
-.. automodule:: bin.smarthome
+XXX
+
+..
+    .. automodule:: bin.smarthome
+        :members:
+        :undoc-members:
+        :show-inheritance:x
+        :member-order: bysource
+
+YYY
+
+.. module:: bin.smarthome
+
+.. autoclass:: SmartHome
     :members:
     :undoc-members:
     :show-inheritance:
     :member-order: bysource
+
+
+ZZZ
+
