@@ -8,7 +8,7 @@
 .. index:: Plugin Metadata; structs
 
 Section `item_structs` :bluesup:`update`
-========================================
+----------------------------------------
 
 The ``item_structs:`` allows to define templates of item-structures (sub-trees) which can be included in the item
 definitions.
@@ -130,7 +130,7 @@ When looking at the loaded item (using the admin interface), **item3** will have
 
 
 Plugins without item-structs
-============================
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 if a plugin has no item struct, this is signaled by the following entry in the plugin.yaml file:
 

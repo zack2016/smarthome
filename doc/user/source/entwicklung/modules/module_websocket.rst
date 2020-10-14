@@ -1,19 +1,20 @@
-.. index:: Module; websocket
-.. index:: websocket; websocket Modul
+.. index:: Modules; websocket
+.. index:: websocket; websocket Module
 
 .. role:: redsup
 .. role:: bluesup
 
-Modul websocket :redsup:`new`
-=============================
+Module websocket
+================
 
-Dieses Modul implementiert das Websocket Protokoll in den Core von SmartHomeNG und macht es nutzbar für
-die Kommunikation mit SmartHomeNG.
+Dieses Modul implementiert die Möglichkeit mit SmartHomeNG über das Websocket Protokoll zu kommunizieren.
+
 
 API des Moduls
 --------------
 
 .. automodule:: modules.websocket
+    :noindex:
     :members:
     :undoc-members:
     :show-inheritance:

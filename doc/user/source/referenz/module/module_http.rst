@@ -7,8 +7,11 @@
 Modul http
 ==========
 
-This module implements the possibility to write web interfaces for SmartHomeNG plugins.
+Dieses Modul implementiert die Möglichkeit das http Protokoll und damit unter anderem die Möglichkeit
+Webinterfaces für Plugins zu erstellen.
 
+API des Moduls
+--------------
 
 .. automodule:: modules.http
     :members:
@@ -17,25 +20,19 @@ This module implements the possibility to write web interfaces for SmartHomeNG p
     :member-order: bysource
 
 
-A formatted version of the sample README.md can be found here:
+README
+------
 
-.. toctree::
-   :maxdepth: 1
-   :glob:
-   :titlesonly:
-
-   /modules/http/README.md
+.. literalinclude:: /modules/http/README.md
+    :caption: README
 
 
-A raw version of the README.md for copy and paste can be found below the metadata file.
+Metadaten
+---------
 
-
-The meta data file:
+Auskommentierte Parameter in den Metadaten sind noch nicht implementiert. Die Implementierung dieser Parameter
+wird im Rahmen der Weiterentwicklung von SmartHomeNG erfolgen:
 
 .. literalinclude:: /modules/http/module.yaml
     :caption: module.yaml
-
-
-.. literalinclude:: /modules/http/README.md
-    :caption: README.md
 

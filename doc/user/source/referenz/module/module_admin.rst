@@ -7,8 +7,12 @@
 Modul admin
 ===========
 
-This module implements a graphical administration interface for SmartHomeNG plugins.
+Dieses Modul implementiert ein graphisches Administrations-Interface für SmartHomeNG. Das ermöglicht die
+vollständige Konfiguration von SmartHomeNG.
 
+
+API des Moduls
+--------------
 
 .. module:: modules.admin
     :noindex:
@@ -24,25 +28,19 @@ This module implements a graphical administration interface for SmartHomeNG plug
     :member-order: bysource
 
 
-A formatted version of the sample README.md can be found here:
+README
+------
 
-.. toctree::
-   :maxdepth: 1
-   :glob:
-   :titlesonly:
-
-   /modules/admin/README.md
+.. literalinclude:: /modules/admin/README.md
+    :caption: README
 
 
-A raw version of the README.md for copy and paste can be found below the metadata file.
+Metadaten
+---------
 
-
-The meta data file:
+Auskommentierte Parameter in den Metadaten sind noch nicht implementiert. Die Implementierung dieser Parameter
+wird im Rahmen der Weiterentwicklung von SmartHomeNG erfolgen:
 
 .. literalinclude:: /modules/admin/module.yaml
     :caption: module.yaml
-
-
-.. literalinclude:: /modules/admin/README.md
-    :caption: README.md
 

@@ -6,7 +6,7 @@
 .. index:: Plugin Metadata; parameters
 
 Section `parameters`
-====================
+--------------------
 
 Parameter metadata is used to check if the configured parameters in ``/etc`` are valid.
 If the configured data is not valid, warnings are logged in the logfile of SmartHomeNG.
@@ -42,6 +42,9 @@ In the future the definitions will be used for a configuration tool for SmartHom
 
 
 .. include:: /referenz/metadata/parameter_keys.rst
+
+Plugins without item-attributes
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 if a plugin has no parameters, this is signaled by the following entry in the plugin.yaml file:
 

@@ -1,18 +1,22 @@
 
-Metadata für Plugins
-====================
+Metadaten für Plugins
+=====================
 
-Plugins are configured in ``etc/plugin.yaml``. The parameters are described in the plugin's documentation.
-files of the modules.
+Plugins werden in der Datei ``../etc/plugin.yaml`` bzw. über die Admit GUI konfiguriert. Die Parameter sind in
+der Dokumentation des Plugins beschrieben.
 
 
-A plugin consists of a minimum of three files:
+Ein Plugin besteht im minimum aus drei Dateien:
 
-- The program code: __init__.py
-- The metadata: plugin.yaml
-- and optional: A short documentation: user_doc.rst
+- Der Plugin Code: ``__init__.py``
+- Die Metadaten: ``plugin.yaml``
+- und optional: Eine kurze Dokumentation: ``user_doc.rst``
 
-All three files reside in a folder within the ``/plugins`` folder. The name of the folder reflects
+Eine genaue Beschreibung welche weiteren Dateien und Unterverzeichnisse ein Plugin haben kann, ist im Abschnitt
+
+
+
+Alle drei Dateien  files reside in a folder within the ``/plugins`` folder. The name of the folder reflects
 the name of the plugin.
 
 

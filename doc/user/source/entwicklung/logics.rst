@@ -1,9 +1,10 @@
-Entwicklung von Logiken
-=======================
+
+Logiken
+=======
 
 
-Introduction
-------------
+Einführung
+----------
 
 Logics itself are just scripts written in Python and they reside in subdirectory ``logics/``.
 All logics will be defined in ``etc/logic.yaml``.

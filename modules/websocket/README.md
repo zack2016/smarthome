@@ -1,11 +1,11 @@
-# Module sample
+# Module websocket (README)
 
 This module allows plugins to do something. The API is described below.
 
 
 ## Requirements
 
-This module is running under SmmartHomeNG versions beyond v1.6. It requires Python >= 3.5.
+This module is running under SmmartHomeNG versions beyond v1.7. It requires Python >= 3.5.
 
 > Note: This module needs the module handling in SmartHomeNG to be activated. Make sure, that `use_modules`in `etc/smarthome.yaml` is **not** set to False!
 
@@ -18,7 +18,7 @@ This module is running under SmmartHomeNG versions beyond v1.6. It requires Pyth
 ```yaml
 # etc/module.yaml
 sample:
-    module_name: sample
+    module_name: websocket
 #    param1: 42
 #    param2: 'example'
 

@@ -7,7 +7,11 @@
 Modul mqtt
 ==========
 
-This module implements the MQTT protocol into the core of SmartHomeNG to make it usable for plugins.
+Dieses Modul implementiert das MQTT Protokoll in den Core von SmartHomeNG und macht es nutzbar für
+Plugins und Logiken.
+
+API des Moduls
+--------------
 
 .. automodule:: modules.mqtt
     :members:
@@ -15,33 +19,19 @@ This module implements the MQTT protocol into the core of SmartHomeNG to make it
     :show-inheritance:
     :member-order: bysource
 
------
-
 README
 ------
 
-A formatted version of the sample README.md can be found here:
-
-.. toctree::
-   :maxdepth: 1
-   :glob:
-   :titlesonly:
-
-   /modules/mqtt/README.md
+.. literalinclude:: /modules/mqtt/README.md
+    :caption: README
 
 
-A raw version of the README.md for copy and paste can be found below the metadata file.
+Metadaten
+---------
 
-
-Metadata
---------
-
-The meta data file:
+Auskommentierte Parameter in den Metadaten sind noch nicht implementiert. Die Implementierung dieser Parameter
+wird im Rahmen der Weiterentwicklung von SmartHomeNG erfolgen:
 
 .. literalinclude:: /modules/mqtt/module.yaml
     :caption: module.yaml
-
-
-.. literalinclude:: /modules/mqtt/README.md
-    :caption: README.md
 

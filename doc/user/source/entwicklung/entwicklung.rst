@@ -16,6 +16,7 @@ Hier entsteht nach und nach der Teil der Dokumentation, welcher sich mit der Ent
    :hidden:
    :titlesonly:
 
+   logics
    plugins
    APIs
    libraries_plugins_logics

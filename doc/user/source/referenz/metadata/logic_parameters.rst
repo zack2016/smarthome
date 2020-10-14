@@ -6,7 +6,7 @@
 .. index:: Plugin Metadata; logic_parameters
 
 Section `logic_parameters`
-==========================
+~~------------------------
 
 Logic-parameter metadata is at the moment only used for generation of user documentation.
 If the configured data is not valid, warnings are logged in the logfile of SmartHomeNG.
@@ -39,7 +39,7 @@ In the future the definitions will be used for a configuration tool for SmartHom
 
 
 Plugins without logic-parameters
-================================
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 if a plugin has no logic_parameters, this is signaled by the following entry in the plugin.yaml file:
 
