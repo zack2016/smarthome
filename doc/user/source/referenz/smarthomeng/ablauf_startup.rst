@@ -1,4 +1,4 @@
-
+d bleibt wehalten, bis SmartHomeNG beendet wi
 .. index:: Ablauf des Startups
 
 .. role:: bluesup
@@ -144,7 +144,7 @@ Collection durchführt.
 Laufzeit von SmartHomeNG
 ========================
 
-Der folgende Status tritt nach der Initialisierung ein und bleibt wehalten, bis SmartHomeNG beendet wird:
+Der folgende Status tritt nach der Initialisierung ein und bleibt erhalten, bis SmartHomeNG beendet wird:
 
 20 - Aktiv
 ----------
