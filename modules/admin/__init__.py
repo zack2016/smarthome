@@ -357,7 +357,6 @@ class WebInterface(SystemData, ItemData, PluginData):
         return
 
 
-
 class WebApi(RESTResource):
 
     exposed = True

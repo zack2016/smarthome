@@ -9,7 +9,7 @@ Funktionen eines Items
 ======================
 
 
-Jedes definierte Item bietet die folgenden Methoden an, die unter anderem in **eval** Ausdrücken
+Jedes definierte Item bietet die folgenden Methoden an, die unter anderem in **eval** Ausdrücken und Logiken
 genutzt werden können.
 
 +--------------------------------+--------------------------------------------------------------------------------+
@@ -28,6 +28,9 @@ genutzt werden können.
 |                                | ab. So wird z.B.: **sh.living.light.fade(100, 1, 2.5)** das Licht im           |
 |                                | Wohnzimmer mit einer Schrittweite von **1** und einem Zeitdelta von **2,5**    |
 |                                | Sekunden auf **100** herunterregeln.                                           |
++--------------------------------+--------------------------------------------------------------------------------+
+| remove_timer()                 | Entfernen eines vorher mit der Funktion timer() gestarteten Timers ohne dessen |
+|                                | Ablauf abzuwarten und die mit dem Ablauf verbundene Aktion auszuführen.        |
 +--------------------------------+--------------------------------------------------------------------------------+
 | return_children()              | Liefert die Item-Pfade der direkt untergeordneten Items zurück. Aufruf:        |
 |                                | for child in sh.item.return_children(): ...                                    |

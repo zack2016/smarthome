@@ -2,12 +2,14 @@
 .. role:: redsup
 .. role:: bluesup
 
-.. index:: Plugin Metadata; Global Metadata
+.. index:: Plugin Metadaten
+.. index:: Metadaten; Plugin
+.. index:: Plugin Metadaten; Globale Metadaten
 
-Section `plugin`
-----------------
+``plugin``
+----------
 
-The global metadata section ``plugin:`` has the following keys:
+Der globale Metadaten Abschnitt ``plugin:`` kennt die folgenden Schlüsselbegriffe:
 
 .. code:: yaml
 
@@ -34,25 +36,30 @@ The global metadata section ``plugin:`` has the following keys:
 
         classname: <plugin_class>   # Name of the class that implements the plugin
 
-Description of the keys in the section ``plugin:``
+Beschreibung der Schlüsselbegriffe im Abschnitt ``plugin:``
 
-    - **type:** The plugin type (classification: gateway, interface, protocol, system, cloud, or *empty* for un-classified
-    - **description:** Multi language Text describing what the plugin does. It is used for generating the plugin pages within this documentation - The texts in the different languages are specified in sub-entries in the form <language>: <text>. Use the standard two letter codes for specifying the language (de, en, fr, pl, ..)
-    - **maintainer:** Who maintains the plugin?
-    - **tester:** Optional: List of testers of the plugin
-    - **state:** State of the plugin development (valid entries are: **develop**, ** **ready**, **qa-passed**)
-    - **keywords:** List of keywords (space separated)
-    - **documentation:** url pointing to additional information/documentation (besides the README.md file)
-    - **support:** url pointing to a support thread or forum
+    - ``type:`` Beschreibt den Typ des Plugins (gültige Werte: ``gateway``, ``interface``, ``protocol``, ``system``, ``cloud`` oder *leer* für ein nicht klassifiziertes Plugin
+    - ``description:`` Mehrsprachiger Text, der die Funktion das Plugins beschreibt. Die Beschreibung wird bei der
+      Generierung des Dokumentations-Seiten des Plugins verwendet - Die Texte in den verschiedenen Sprachen werden
+      als Unter-Einträge in der Form <Sprache>: <Text> erfasst. Zur Identifikation der Sprache werden die 2-stelligen
+      Länder-Kürzel verwendet (``de``, ``en``, ``fr``, ``pl``, ...)
 
-    - **version:** Version number of the plugin. It is checked against the version number defined in the Python source code
-    - **sh_minversion:** Minimum SmartHomeNG version this plugin is compatible with. If *sh_minversion* is left empty, SmartHomeNG assumes that the plugin is compatible with every version of SmartHomeNG [Test not yet implemented]
-    - **sh_maxversion:** Maximum SmartHomeNG version this plugin is compatible with (or empty, if compatible with the actual version of SmartHomeNG) [Test not yet implemented]
-    - **py_minversion:** Minimum Python version this plugin is compatible with. If *py_minversion* is left empty, SmartHomeNG assumes that the plugin is compatible with every older Python version
-    - **py_maxversion:** Maximum Python version this plugin is compatible with (or empty, if compatible with the actual version of Python)
-    - **multi_instance:** Is the plugin multi-instance capable?
-    - **restartable:** Is the plugin restartable?  (valid entries are: **True**, ** **False**, **unknown**)
-    - **classname:** Name of the Python class to initialize (the class that implements the plugin)
+      ``de`` und ``en`` müssen angegeben werden. Weitere Sprachen sind optional.
+    - ``maintainer:`` Hier kann angegeben werden, wer das Plugin pflegt und weiterentwickelt
+    - ``tester:`` Optional können hier die Nutzer angegeben werden, die sich bereit erklärt haben das Plugin zu testen
+    - ``state:`` Entwicklungs-Status des Plugins (gültige Werte: ``develop``, ``ready``, ``qa-passed``)
+    - ``keywords:`` Liste der Schlüsselwörter die das Plugin beschreiben (durch Leerzeichen getrennt)
+    - ``documentation:`` url die auf eine weiterführende Dokumentation verweist (gemeint ist nicht die Datei user_doc.rst oder README.md)
+    - ``support:`` url die auf einen Support Thread oder ein Support Forum verweist
 
-    - **classpath:** **Usually not specified.** Only needed, if the plugin resides outside the ``/plugins`` folder
+    - ``version:`` VersionsNumber des Plugins. Sie wird beim Laden mit der Versionsnummer die im Code definierert ist verglichen.
+    - ``sh_minversion:`` Minimale SmartHomeNG Version mit der das Plugin kmpatibel ist. Falls `sh_minversion`` leer ist, nimmt SmartHomeNG an, dass das Plugin mit jeder älteren Version von SmartHomeNG kompatibel ist.
+    - ``sh_maxversion:`` Maximale SmartHomeNG Version mit der das Plugin kmpatibel ist. Falls `sh_maxversion`` leer ist, nimmt SmartHomeNG an, dass das Plugin mit jeder neueren Version von SmartHomeNG kompatibel ist.
+    - ``py_minversion:`` Minimale Python Version mit der das Plugin kmpatibel ist. Falls `py_minversion`` leer ist, nimmt SmartHomeNG an, dass das Plugin mit jeder älteren Python Version komatibel ist die von SmartHomeNG unterstützt wird.
+    - ``py_maxversion:`` Maximale Python Version mit der das Plugin kmpatibel ist. Falls `py_maxversion`` leer ist, nimmt SmartHomeNG an, dass das Plugin mit jeder neueren Python Version komatibel ist die von SmartHomeNG unterstützt wird.
+    - ``multi_instance:`` Ist das Plugin in der Lage in mehreren Instanzen gestartet zu werden? (``True``, ``False``)
+    - ``restartable:`` Is the Plugin Restart bzw. Reload fählg?  (gültige Werte: ``True``, ``False``, ``unknown``)
+    - ``classname:`` Name der Python Klasse die das Plugin implementiert un die zum Start des Plugins initialisiert wird
+
+    - ``classpath:`` **Wird normalerweise nicht angegeben** - Nur angeben, wenn das Plugin außerhalb des ``../plugins`` Verzeichnisses gespeichert ist,
 

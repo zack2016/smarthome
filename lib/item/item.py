@@ -1369,18 +1369,32 @@ class Item():
         return self.__methods_to_trigger
 
 
+    def timer(self, time, value, auto=False, compat=ATTRIB_COMPAT_DEFAULT):
+        time = self._cast_duration(time)
+        value = self._castvalue_to_itemtype(value, compat)
+        if auto:
+            caller = 'Autotimer'
+            self._autotimer = [(time, value), compat, None, None]
+        else:
+            caller = 'Timer'
+        next = self.shtime.now() + datetime.timedelta(seconds=time)
+        self._sh.scheduler.add(self._itemname_prefix+self.id() + '-Timer', self.__call__, value={'value': value, 'caller': caller}, next=next)
+
+
+    def remove_timer(self):
+        self._sh.scheduler.remove(self._itemname_prefix+self.id() + '-Timer')
+
+
     def autotimer(self, time=None, value=None, compat=ATTRIB_COMPAT_V12):
         if time is not None and value is not None:
             self._autotimer = [(time, value), compat, None, None]
         else:
             self._autotimer = False
 
+
     def fade(self, dest, step=1, delta=1):
         dest = float(dest)
         self._sh.trigger(self._path, fadejob, value={'item': self, 'dest': dest, 'step': step, 'delta': delta})
-
-    def remove_timer(self):
-        self._sh.scheduler.remove(self._itemname_prefix+self.id() + '-Timer')
 
     def return_children(self):
         for child in self.__children:
@@ -1417,17 +1431,6 @@ class Item():
         self._lock.release()
         return
 
-
-    def timer(self, time, value, auto=False, compat=ATTRIB_COMPAT_DEFAULT):
-        time = self._cast_duration(time)
-        value = self._castvalue_to_itemtype(value, compat)
-        if auto:
-            caller = 'Autotimer'
-            self._autotimer = [(time, value), compat, None, None]
-        else:
-            caller = 'Timer'
-        next = self.shtime.now() + datetime.timedelta(seconds=time)
-        self._sh.scheduler.add(self._itemname_prefix+self.id() + '-Timer', self.__call__, value={'value': value, 'caller': caller}, next=next)
 
     def get_children_path(self):
         return [item._path

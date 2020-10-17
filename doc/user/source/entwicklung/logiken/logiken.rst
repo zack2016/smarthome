@@ -1,4 +1,10 @@
 
+.. index:: Entwicklung; Logiken
+
+.. role:: bluesup
+.. role:: redsup
+
+
 Logiken
 =======
 

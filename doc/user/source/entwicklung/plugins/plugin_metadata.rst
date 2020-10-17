@@ -86,15 +86,10 @@ If writing a core module, the metadata file has a section ``module:`` instead of
 
 The metadata file has the following sections:
 
-.. toctree::
-   :maxdepth: 3
-   :titlesonly:
-
-   /referenz/metadata/plugin_global
-   /referenz/metadata/parameters
-   /referenz/metadata/item_attributes
-   /referenz/metadata/item_structs
-   /referenz/metadata/logic_parameters
-   /referenz/metadata/plugin_functions
-   /referenz/metadata/module_global
+.. include:: /referenz/metadata/plugin_global.rst
+.. include:: /referenz/metadata/parameters.rst
+.. include:: /referenz/metadata/item_attributes.rst
+.. include:: /referenz/metadata/item_structs.rst
+.. include:: /referenz/metadata/logic_parameters.rst
+.. include:: /referenz/metadata/plugin_functions.rst
 

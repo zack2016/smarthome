@@ -1,3 +1,12 @@
+
+.. index:: Referenz; Plugins
+.. Index:: Plugins; Referenz
+
+.. role:: bluesup
+.. role:: redsup
+
+
+=======
 Plugins
 =======
 
@@ -12,7 +21,7 @@ eine Datei im restructured-Text Format (user_doc.rst) ergänzt werden.
 Die möglichen Einträge für die Definition der Metadaten der Plugins sind hier beschrieben:
 
 .. toctree::
-   :maxdepth: 1
+   :maxdepth: 3
    :glob:
    :titlesonly:
 

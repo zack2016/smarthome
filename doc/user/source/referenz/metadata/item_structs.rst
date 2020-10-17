@@ -2,19 +2,18 @@
 .. role:: redsup
 .. role:: bluesup
 
-.. index:: item_structs; Plugin Metadata
-.. index:: structs; Plugin Metadata
-.. index:: Plugin Metadata; item_structs
-.. index:: Plugin Metadata; structs
+.. index:: item_structs; Plugin Metadaten
+.. index:: structs; Plugin Metadaten
+.. index:: Plugin Metadaten; item_structs
+.. index:: Plugin Metadaten; structs
 
-Section `item_structs` :bluesup:`update`
-----------------------------------------
+``item_structs``
+----------------
 
-The ``item_structs:`` allows to define templates of item-structures (sub-trees) which can be included in the item
-definitions.
+Der Abschnitt ``item_structs:`` erlaubt die Definition von Structure Templates, also von Sub-Trees von Items,
+die an verschiedenen Stellen in den Item Tree eingefügt werden können.
 
-
-The definitions in the ``item_structs:`` have the following format:
+Definitionen von ``item_structs:`` haben das folgende Format:
 
 .. code:: yaml
 
@@ -37,8 +36,8 @@ The definitions in the ``item_structs:`` have the following format:
             ... (sub-tree with item definitions)
 
 
-For the configuration of SmartHomeNG these structs are configured/included in the item configuration files in the
-``/items`` folder:
+Zur Konfiguration von SmartHomeNG werden diese structs durch die Angabe einer Referenz in den Item Tree eingefügt.
+Das erfolgt in den Konfigurationsdateien für Items im Verzeichnis ``../items``:
 
 .. code:: yaml
 
@@ -47,8 +46,8 @@ For the configuration of SmartHomeNG these structs are configured/included in th
 
 
 
-If **struct1** of the struct definitions above ist defined in a plugin named **example_plugin**, it is included in
-the following form:
+Falls ``struct1`` des oben angegebenen Beispiels in einem Plugin mit dem Namen ``example_plugin`` definiert wurde,
+sieht die Konfiguration um die Structure einzufügen folgendermaßen aus:
 
 .. code:: yaml
 
@@ -56,48 +55,53 @@ the following form:
        struct: example_plugin.struct1
 
 
-Nested struct definitions
--------------------------
+Geschachtelte Structuren
+~~~~~~~~~~~~~~~~~~~~~~~~
 
-Starting with SmartHomeNG v1.7 struct definitions can be nested. Like items that reference a struct definition by using
-the attribute **struct:**, structs can now do this too.
+Beginnend mit SmartHomeNG v1.7 können Struktur Definitionen ineinander geschatelt werden.
 
-SmartHomeNG resolves all sub-struct references before loading the item tree, to speed up loading of the item definitions.
+Wie Items die eine Struktur mit dem ``struct`` Attribut referenzieren, kann auch eine Struktur Definition eine
+eine andere Struktur referenzieren. SmartHomeNG löst alle Struktur Referenzen in Strukturen auf, bevor der
+Item Tree geladen wird.
 
 .. note::
 
-   Please note: When sub-struct definitions are resolved, there are two differences to the way item definitions are
-   loaded. The differences only surface, if structs/sub-structs redefine attributes.
+   Bitte beachten: Wenn Sub-Struktur Referenzen aufgelöst werden, gibt es zwei Unterschiede in der Art wie
+   Item Definitionen geladen werden. Diese Unterschiede werden nur sichtbar, falls Strukturen Item Attribute
+   redefinieren.
 
 
-Redefining Attributes
-~~~~~~~~~~~~~~~~~~~~~
+Redefininieren von Attributen
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-When defining items, it is possible to define the same attribute for an item in multiple item yaml files. When reading
-the item definition, the attribute definition wins, that is read in last. In struct/sub-struct definitions, the
-attribute definition that is read in first wins.
+Wenn Items definiert werden ist es möglich, das selbe Attribut eines Items in mehreren YAML Dateien zu definieren.
+Beim Einlesen der Item Definitionen "gewinnt" die Attribut Definition die zuletzt eingelesen wurde.
 
-When resolving sub-structs, usually the definition of the upper level struct should win. This enables an "overwriting"
-of attribute values that have been defined in a sub-struct. To make this happen, the attribute in the upperlevel struct
-has to be defined before the **struct** attribute. if the attribute is defined after the **struct** attribute, the
-definition in the sub-struct wins.
+In struct/sub-struct Definitionen hingegen, "gewinnt" die erste Definition eines Attributes.
+
+Beim auflösen von sub-structs soll normalerweise der übergeordnete Level gewinnen. Das ermöglicht es zm Beispiel
+in einer Item Definition eine Attribut Definition zu überschreiben, welche in einer Structure bereits festgelegt wurde.
+Damit das so erfolgt, muss das betreffende Attribut im Item in der Reihenfolge vor dem ``struct`` Attribut definiert
+werden. Falls das Attribut im Item erst nach dem ``struct`` Attribut definiert wird, "gewinnt" die Definition in der
+Structure. Dieses Verhalten gilt analog beim verschachteln von Strukturen.
 
 
-Redefining list-Attributes
-~~~~~~~~~~~~~~~~~~~~~~~~~~
+Redefininieren von list-Attributen
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-When redefining attributes which are lists, no "overwriting" takes place. Instead, the lists are joined. The order of
-the list entries are determinded by the order the attribute definitions are read in.
+Wenn Attribute die redefiniert werden Listen sind, findet kein überschreiben der Definition statt. Stattdessen werden
+die Listen aneinander gehängt. Das geschieht in der Reihenfolge in der die Attribut Definitionen eingelesen werden.
 
 
 Definitions for multi-instance plugins
---------------------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-When writing a multi-instance plugin, it is likely that item-structs will have items with instance-specific attributes.
-In item definitions, those attributes have `'@<instance-name> `` added to the attribute name.
+Wenn ein Plugin Multi-Instance fähig ist, ist es wahrscheinlich, dass Item Strukturen Instanz-spezifische Attribute
+enthalten. In Item Definitionen wird bei solchen Attributen `'@<instance-name>`` an den Attribut Namen angefügt.
 
-To signal which attribute names will have the instance name added, in structs the attribute name have the constant string
-``@instance`` added. This string will be replaced by the real instance name at load time.
+Um in Strukturen zu kennzeichnen, welche Attribute einen Instanz Namen hinzugefügt bekommen sollen, wird bei diesen
+Attributen der konstante String ``@instance`` hinzugefügt. Dieser String wird beim Aufbau des Item Trees durch den
+realen Instanz Namen ersetzt.
 
 .. code:: yaml
 
@@ -116,7 +120,8 @@ To signal which attribute names will have the instance name added, in structs th
                     initial_value: True
 
 
-The configuration in the item configuration files in the ``/items`` folder looks like this:
+In der Item Konfiguration in den Dateien im Verzeichnis ``../items`` wird der Instanz Name der Struktur mitgegeben.
+Das sieht z.B. folgendermaßen aus:
 
 .. code:: yaml
 
@@ -125,14 +130,15 @@ The configuration in the item configuration files in the ``/items`` folder looks
        instance: plg_instance
 
 
-When looking at the loaded item (using the admin interface), **item3** will have an attribute called
-**plg_attr1@plg_instance**.
+Im geladenen Item (bei Verwendung der Admin GUI), wird ``item3`` dann ein Attribut haben, das
+``plg_attr1@plg_instance`` benannt ist.
 
 
-Plugins without item-structs
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Plugins ohne item-structs
+~~~~~~~~~~~~~~~~~~~~~~~~~
 
-if a plugin has no item struct, this is signaled by the following entry in the plugin.yaml file:
+Falls ein Plugin keine Item Attribute hat, wird das durch den folgenden Eintrag in der
+Datei ``plugin.yaml`` angezeigt:
 
 .. code:: yaml
 
@@ -140,5 +146,5 @@ if a plugin has no item struct, this is signaled by the following entry in the p
 
 .. hint::
 
-    Please note, that NONE has to be written in Uppercase.
+    Bitte beachten, dass hier ``NONE`` vollständig in Großbuchstaben geschrieben werden muss.
 

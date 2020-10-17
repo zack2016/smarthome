@@ -1,70 +1,76 @@
 
-Description of the keys in the section of a parameter/attribute:
+Beschreibung der Schlüssel im Abschnitt für einen Parameter bzw. ein Attribut:
 
-- **type:** specifies the datatype of the parameter/attribute. Valid data types are:
+- ``type:`` Beschreibt den Datatyp des Parameters bzw. Attributes. Gültige Datentypen sind:
 
-   Simple data types:
-    - *bool* - a boolean value
-    - *int* - an integer value
-    - *scene* - an integer in the range between 0 and 255, representing a scene number
-    - *float* - a float value
-    - *num* - an equivalent to float
-    - *str* - a string
-    - *ip* - a string, representing a hostname, an ipv4-address or an ipv6-address
-    - *ipv4* - a string, representing strictly an ipv4-address
-    - *ipv6* - a string, representing strictly an ipv6-address
-    - *mac* - a string, representing a mac-address
-    - *knx_ga* - a string, representing a KNX group address (eg.: 31/7/255)
-    - *foo* - the universal datatype
+   Einfache Datentypen:
+    - ``bool`` - ein boolscher Wert
+    - ``int`` - ein ganzzahliger Wert
+    - ``scene`` - ein ganzzahliger Wert im Bereich von 0 bis 63, der eine Szenen Nummer repräsentiert
+    - ``float`` - ein numerischer Wert der Nachkommastellen enthalten darf
+    - ``num`` - das Equivalent zum Typ ```float``
+    - ``str`` - ein String`
+    - ``ip`` - ein String, der einen Hostnamen, eine ipv4-Adresse oder eine ipv6-Adresse repräsentiert
+    - ``ipv4`` - ein String, der eine ipv4-Adresse repräsentiert
+    - ``ipv6`` - ein String, der eine ipv6-Adresse repräsentiert
+    - ``mac`` - ein String, der eine MAC Adresse repräsentiert
+    - ``knx_ga`` - ein string, der eine KNX Gruppen Adresse (z.B..: 31/7/255) repräsentiert
+    - ``foo`` - der universelle Datatyp
 
-   Complex data types:
-    - *dict* - a dictionary
-    - *list* - a list with each entry of the datatype **foo**
-    - *list(len)* - a list of a fixed length **len** must be an integer value > 0
-    - *list(subtype)* - a list with each entry of the same specified subtype :sup:`1` (e.g: *list(int)*
-      or *list(ipv4)*)
-    - *list(subtype, subtype, ...)* - a list with each entry of a specified type. If the list
-      is longer than the given list of subtypes :sup:`1`, the last given subtype will be used for all
-      subsequent list entries.
-    - *list(len,subtype, subtype, ...)* - a list of a fixed length with each entry of a specified
-      type. If the list is longer than the given list of subtypes :sup:`1`  the last given subtype will
-      be used for all subsequent list entries.
+   Komplexe Datentypen:
+    - ``dict`` - ein Dictionary
+    - ``list`` - eine Liste bei der jedes Element vom Datentyp ``foo`` ist
+    - ``list(len)`` - eine Liste fester Länge bei der jedes Element vom Datentyp ``foo`` ist und deren Anzahl Elemente **len** ist
+    - ``list(subtype)`` - eine Liste bei der jedes Element vom Datentyp *+subtype** ist :sup:`1` (z.B.: ``list(int)``
+      or ``list(ipv4)``)
+    - ``list(subtype, subtype, ...)`` - eine Liste bei der jedes Element von einem angegebenen  Datentyp ist.
+      Falls die Liste länger ist als die Anzahl angegebener subtypes :sup:`1`, wird der letzte angegebene subtype
+      für alle weiteren Elemente verwendet.
+    - ``list(len,subtype, subtype, ...)`` - eine Liste fester Länge bei der bei der für jedes Element ein subtype
+      angegeben wird. Falls die Liste länger ist als die Anzahl angegebener subtypes :sup:`1`, wird der letzte
+      angegebene subtype für alle weiteren Elemente verwendet.
 
-    :sup:`1` *subtype* can only be a simple datatype
+    :sup:`1` *subtype* kann nur ein einfacher Datentyp sein
 
-- **gui_type:** Optional: Specifies how the parameter is handled in the admin gui shngadmin. The handling of parameters
-  in the admin gui is determined by **type**. **type** is restricted to datatypes that are known to/handled by
-  SmartHomeNG. For editing it may me desirable to have different editors for values of the same **type**.
+- ``gui_type:`` Optional: Spezifiziert genauer, wie der Parameter in der Admin GUI shngadmin behandelt werden soll.
+  Die Handhabung der Parameter in der Admin GUI wird durch den Parameter ``type`` bestimmt. ``type`` ist jedoch
+  auf die Datentypen beschränkt, die SmartHomeNG kennt. Für das Editieren kann es jedoch wünschenswert sein,
+  unterschiedlche Feld-Editoren für den selben Datentyp zu verwenden.
 
-  At the moment, only one value for gui_type is implemented:
+  Bisher wird nur ein Wert für ``gui_type`` unterstützt:
 
-  - **wide_str:** Is used to have a wider edtor field for potentially long strings
+  - ``wide_str`` wird benutzt, um ein breiteres Editor Feld zu verwenden (z.B. für Strings die einen längeren Inhalt
+    haben können/sollen.
 
-- **default**: Optional: Specifies the default value to be used, if no value is given in in the
-  configuration file `/etc/plugin.yaml` or `/etc/module.yaml`
+- ``default:`` Optional: Gibt einen Standardwert vor, der verwendet wird, falls bei der Konfiguration des
+  Parameters in ``../etc/plugin.yaml`` bzw. ``../etc/module.yaml`` kein Wert angegeben wird.
 
-- **description:** is a multi language text. - The texts in the different languages are specified
-  in sub-entries in the form <language>: <text>. Use the standard two letter codes for specifying
-  the language (de, en, fr, pl, ..). **de** and **en** are required. Other languages are optional
+- ``description:`` Mehrsprachiger Text, der die Funktion das Plugins beschreibt. Die Beschreibung wird bei der
+  Generierung des Dokumentations-Seiten des Plugins verwendet - Die Texte in den verschiedenen Sprachen werden
+  als Unter-Einträge in der Form <Sprache>: <Text> erfasst. Zur Identifikation der Sprache werden die 2-stelligen
+  Länder-Kürzel verwendet (``de``, ``en``, ``fr``, ``pl``, ...)
 
-- **valid_list:** Optional: List of allowed values for the parameter
+  ``de`` und ``en`` müssen angegeben werden. Weitere Sprachen sind optional
 
-- **valid_list_ci:** Optional: List of allowed values (case insensitive) for the parameter.
-  The comparison of the configurerd parameter is case insensitive and the value handed to the plugin is in lower case.
-  When **valid_list_ci** is specified, a specified **valid_list** is ignored.
+- ``valid_list:`` Optional: Liste der erlaubten Werte für den Parameter (case sensitive)
 
-- **valid_list_description:** Optional: Descriptions of the allowed values defined in **valid_list:**
-  if defined, it has to have sub-keys for the different languages (de, en, fr, pl, ..). **de** and **en**
-  are required. Other languages are optional. Each language sub-key has to be a list with each entry describing
-  the corresponding entry in **valid_list:**.
+- ``valid_list_ci:*`` Optional: Liste der erlaubten Werte für den Parameter (nicht case sensitive)
+  Der Wert wird dem Plugin/Modul in lower case übergeben.
+  Falls ``valid_list_ci`` angegeben ist, wird eine evtl spezifizierte ``valid_list`` ignoriert.
 
-- **valid_min:** Optional: For data types *int*, *pint*, *float*, *pfloat*, *num* and *scene*:
-  minimum allowed value for the parameter
+- ``valid_list_description:`` Optional: Beschreibung der Werte, die in ``valid_list:`` bzw. ``valid_list_ci:*``
+  spezifiziert sind.
+  Falls definiert, muss ``valid_list_description:`` Sub-Keys haben, um die Beschreibung in mehreren Sprachen
+  (``de``, ``en``, ``fr``, ``pl``, ...) anzugeben.
 
-- **valid_max:** Optional: For data types *int*, *pint*, *float*, *pfloat*, *num* and *scene*:
-  maximum allowed value for the parameter
+  Jeder Sprach-Sub-Key muss eine Liste sein, die für jeden Eintrag in ``valid_list`` eine Beschreibung enthält.
 
-- **mandatory:** Optional: If set to True, a value must be configured for the plugin/module to
-  get loaded an initialized. If a value for a parameter that is marked as mandatory is missing,
-  the plugin will not be loaded.
+- ``valid_min:`` Optional: Für die Datentypen ``int``, ``pint``, ``float``, ``pfloat``, ``num`` und  ``scene`` kann
+  hier ein minimal Wert angegeben werden
+
+- ``valid_miax`` Optional: Für die Datentypen ``int``, ``pint``, ``float``, ``pfloat``, ``num`` und  ``scene`` kann
+  hier ein maximal Wert angegeben werden
+
+- ``mandatory:`` Optional: Falls auf ``True`` gesetzt, muss dieser Wert konfiguriert werden, damit das Plugin/Modul
+  geladen/initialisiert wird. Diese Einschränkung ist wirkungslos, falls ein Wert für ``default:`` definiert ist.
 

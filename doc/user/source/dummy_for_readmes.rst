@@ -16,6 +16,7 @@
    /modules/admin/README.md
    /modules/http/README.md
    /modules/mqtt/README.md
+   /modules/websocket/README.md
    /vorlagen/*
 
 .. toctree::

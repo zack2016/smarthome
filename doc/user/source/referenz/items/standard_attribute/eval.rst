@@ -183,18 +183,14 @@ Hier gibt es nun ein Attribut **eval_trigger** mit dem Item Namen
 **TemperaturFahrenheit**. Sobald sich dieses Item ändert, wird auch der
 Wert von **TemperaturCelsius** neu berechnet.
 
-Im Attribut **eval_trigger** kann eine Liste mehrerer Items angegeben
-werden. Die Items müssen für das alte *.conf Format jeweils durch ein
-‘\|’ voneinander getrennt werden. In der*.yaml kann eine Liste angegeben
-werden (siehe oben). Der Ausdruck unter **eval** wird neu berechnet,
-wenn sich eines dieser Items verändert. Die Items können auch mit einem
-Stern generalisiert werden. Temperatur.\* bedeutet, dass alle
-Kinderitems des Temperatur-Items zum Evaluieren des Items führen. Oder
-\*.Trigger sorgt dafür, dass das Item durch alle Kind-Items mit dem
-Namen “Trigger” aktualisiert werden kann, also z.B. durch
-Temperatur.Trigger, Licht.OG.Trigger, etc.
+Im Attribut **eval_trigger** kann eine Liste mehrerer Items angegeben werden.
+(Die Items müssen für das alte *.conf Format jeweils durch ein ‘\|’ voneinander getrennt werden.)
+Der Ausdruck unter **eval** wird neu berechnet, wenn sich eines dieser Items verändert. Die Items können auch mit
+einem Stern generalisiert werden. ``temperatur.\*`` bedeutet, dass alle Kinderitems des Temperatur-Items zum
+Evaluieren des Items führen. Oder ``\*.trigger`` sorgt dafür, dass das Item durch alle Kind-Items mit dem
+Namen “trigger” aktualisiert werden kann, also z.B. durch ``temperatur.trigger``, ``Licht.OG.trigger``, etc.
 
-Seit SmartHomeNG v1.3 können für **eval_trigger** auch :doc:`Relative Item Referenzen </konfiguration/items/attributes_relative_referenzen>`
+Seit SmartHomeNG v1.3 können für **eval_trigger** auch :doc:`Relative Item Referenzen </referenz/items/attributes_relative_referenzen>`
 
 `Relative
 Item

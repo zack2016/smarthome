@@ -2,18 +2,19 @@
 .. role:: redsup
 .. role:: bluesup
 
-.. index:: item_attributes; Plugin Metadata
-.. index:: Plugin Metadata; item_attributes
+.. index:: item_attributes; Plugin Metadaten
+.. index:: Plugin Metadaten; item_attributes
 
-Section `item_attributes`
--------------------------
+``item_attributes``
+-------------------
 
-The ``item_attributes:`` section has a section for each attribute that is additionally implemented for am item.
-The name of that section is the name of the attribute.
+Der Abschnitt ``item_attributes:`` hat für jedes definierte Item Attribut einen Unter-Abschnitt, der das Attribut genauer
+beschreibt. Der Schlüssel des Unter-Abschnitts ist der Name des Attributes. Attribut Namen sollten keine
+Großbuchstaben und Sonderzeichen enthalten. Sie dürfen nicht mit einer Ziffer beginnen.
 
-For the configuration of SmartHomeNG these attributes are configured in the item configuration files in the ``/items`` folder.
-
-The definitions in the ``item_attributes:`` section are used in the future for a configuration tool for SmartHomeNG.
+Die Definitionen im Abschnitt ``item_attributes:``  werden für die Gültigkeitsprüfung der konfigurierten Werte in den
+Konfigurationsdateien im Verzeichnis ``../items``, sowie zur Dokumentation und in der Zukunft zur Konfiguration
+in der Admin GUI benutzt.
 
 .. code:: yaml
 
@@ -36,10 +37,11 @@ The definitions in the ``item_attributes:`` section are used in the future for a
 .. include:: /referenz/metadata/parameter_keys.rst
 
 
-Plugins without item-attributes
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Plugins ohne item-attributes
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-if a plugin has no item attributes, this is signaled by the following entry in the plugin.yaml file:
+Falls ein Plugin keine Item Attribute hat, wird das durch den folgenden Eintrag in der
+Datei ``plugin.yaml`` angezeigt:
 
 .. code:: yaml
 
@@ -47,5 +49,5 @@ if a plugin has no item attributes, this is signaled by the following entry in t
 
 .. hint::
 
-    Please note, that NONE has to be written in Uppercase.
+    Bitte beachten, dass hier ``NONE`` vollständig in Großbuchstaben geschrieben werden muss.
 

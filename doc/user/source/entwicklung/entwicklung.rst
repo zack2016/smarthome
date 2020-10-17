@@ -16,11 +16,11 @@ Hier entsteht nach und nach der Teil der Dokumentation, welcher sich mit der Ent
    :hidden:
    :titlesonly:
 
-   logics
-   plugins
+   logiken/logiken
+   plugins/plugins
    APIs
    libraries_plugins_logics
-   module
-   core
+   module/module
+   core/core
    build_doc
    virtual_env

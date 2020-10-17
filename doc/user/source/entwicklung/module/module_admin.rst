@@ -16,6 +16,8 @@ This module implements a graphical administration interface for SmartHomeNG plug
 .. module:: modules.admin.rest
     :noindex:
 
+.. currentmodule:: modules.admin
+
 .. automodule:: modules.admin
     :noindex:
     :members:

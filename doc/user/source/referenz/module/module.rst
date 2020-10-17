@@ -1,3 +1,11 @@
+
+.. index:: Referenz; Module
+.. Index:: Module; Referenz
+
+.. role:: bluesup
+.. role:: redsup
+
+
 Module
 ======
 

@@ -2,20 +2,22 @@
 .. role:: redsup
 .. role:: bluesup
 
-.. index:: plugin_functions; Plugin Metadata
-.. index:: Plugin Metadata; plugin_functions
+.. index:: plugin_functions; Plugin Metadaten
+.. index:: Plugin Metadaten; plugin_functions
 
-Section `plugin_functions`
---------------------------
+``plugin_functions``
+--------------------
 
-This sections describes the public functions that are defined by the plugin.
+Dieser Abschnitt beschreibt dir öffentlichen Funktionen, die in einem Plugin implementiert sind.
 
-The ``plugin_functions:`` section has a section for each function that is implemented. The name of that section
-is the name of the function. Each function has a section ``parameters:`` which describes each parameter in detail.
+``plugin_functions:`` enthält einen Abschnitt für jede implementierte Funktion, die öffenlich (also von außerhalb
+des Plugins aufrufbar) sein soll. Der Name des Abschnitts ist der Name der Funktion.
 
+Jede Funktionsdefinition enhält einen Abschnitt ``parameters:``, welcher die Parameter der Funktion im Detail
+beschreibt.
 
-The definitions in the ``plugin_functions:`` section are used for generating the documentation.
-In the future the definitions will be used for a configuration tool for SmartHomeNG.
+Die Definitionen im Abschnitt ``plugin_functions:`` werden für die Erstellung der Dokumentation genutzt. In der
+Zukunft sollen die Definitionen für die Konfiguration in der Admin GUI genutzt werden.
 
 .. code:: yaml
 
@@ -44,10 +46,11 @@ In the future the definitions will be used for a configuration tool for SmartHom
 .. include:: /referenz/metadata/parameter_keys.rst
 
 
-Plugins without plugin-functions
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Plugins ohne Plugin Funktionen
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-if a plugin has no public functions, this is signaled by the following entry in the plugin.yaml file:
+Falls ein Plugin keine öffentlichen Plugin Funktionen definiert, wird das durch den folgenden Eintrag in
+der Datei ``plugin.yaml`` angezeigt:
 
 .. code:: yaml
 
@@ -55,5 +58,5 @@ if a plugin has no public functions, this is signaled by the following entry in 
 
 .. hint::
 
-    Please note, that NONE has to be written in Uppercase.
+    Bitte beachten, dass hier ``NONE`` vollständig in Großbuchstaben geschrieben werden muss.
 

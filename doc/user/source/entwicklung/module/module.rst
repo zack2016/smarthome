@@ -5,9 +5,9 @@
 .. role:: redsup
 
 
-============================
-Entwicklung von Core Modulen
-============================
+======
+Module
+======
 
 Ladbare Code Module (SmartHomeNG Module) stellen zusätzliche Funktionalitäten zur Verfügung, die zur Programmierung
 von Plugins und Logiken genutzt werden können. Sie implementieren Funktionalitäten, die nicht unbedingt benötigt
@@ -15,7 +15,6 @@ werden und deshalb nicht direkt im Core implementiert und zwangsweise geladen we
 
 Module werden in der Datei ``../etc/modules.yaml`` oder in der Admin GUI konfiguriert. Die Parameter sind in
 der jeweiligen README.md beschrieben.
-files of the modules.
 
 Bisher existieren die folgenden Module:
 
@@ -23,10 +22,10 @@ Bisher existieren die folgenden Module:
    :maxdepth: 3
    :titlesonly:
 
-   modules/module_http
-   modules/module_admin
-   modules/module_mqtt
-   modules/module_websocket
+   module_http
+   module_admin
+   module_mqtt
+   module_websocket
 
 
 Ein Modul besteht aus mindestens zwei Dateien:
@@ -36,6 +35,10 @@ Ein Modul besteht aus mindestens zwei Dateien:
 
 Beide Dateien lliegen in einem Unterordnet des Ordners ``../modules`` und dieser Unterordnet trägt den Namen des
 Mooduls.
+
+Metadaten
+=========
+
 Die **Metadaten** Datei trägt den Namen ``../modules/<name of the module>/module.yaml``. Sie hat zwei
 Haupt Abschnitte:
 
@@ -51,5 +54,4 @@ Haupt Abschnitte:
 
 Falls ein Modul ein Python Package nutzt, welches nicht in der Standardinstallation von Python enthalten ist,
 muss diese Anforderung in der Datei ``../modules/<name of the module>/requirements.txt`` dokumentiert werden.
-
 

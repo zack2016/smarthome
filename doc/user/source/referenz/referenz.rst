@@ -17,9 +17,9 @@ können.
    :hidden:
    :titlesonly:
 
-   kommandozeilen_optionen
-   ablauf_startup
+   smarthomeng/smarthomeng
+   items/items
    module/module
    plugins/plugins
-   feiertage
+   metadata/metadata
 

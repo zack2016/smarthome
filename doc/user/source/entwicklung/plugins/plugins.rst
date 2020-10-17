@@ -5,9 +5,9 @@
 .. role:: redsup
 
 
-=======================
-Entwicklung von Plugins
-=======================
+=======
+Plugins
+=======
 
 Informationen über das Schreiben von Plugins und wie sie in SmartHomeNG eingebunden werden, kann hier
 gefunden werden:
@@ -28,7 +28,7 @@ enthalten sind.
    :titlesonly:
    :hidden:
 
-   plugins/plugin_in5minutes.md
+   plugin_in5minutes.md
 
 
 Ein Plugin besteht im absoluten Minimum aus zwei Dateien. Alle Dateien eines Plugins befinden sich in einem
@@ -116,7 +116,7 @@ von ``SmartPlugin`` sind hier dokumentiert:
    :maxdepth: 5
    :titlesonly:
 
-   plugins/smartplugin
+   smartplugin
 
 Plugins welche MQTT nutzen, sollten stattdessen von ``class MqttPlugin`` abgeleitet werden. ``MqttPlugin`` ist
 eine subclass von ``SmartPlugin``, die um Methoden zur MQTT Nutzung erweitert ist. Die Methoden von
@@ -126,7 +126,7 @@ eine subclass von ``SmartPlugin``, die um Methoden zur MQTT Nutzung erweitert is
    :maxdepth: 5
    :titlesonly:
 
-   plugins/mqttplugin
+   mqttplugin
 
 
 .. toctree::
@@ -134,14 +134,13 @@ eine subclass von ``SmartPlugin``, die um Methoden zur MQTT Nutzung erweitert is
    :titlesonly:
    :hidden:
 
-   plugins/plugin_metadata
-   plugins/plugin_documentation_files
-   plugins/webinterface
-   plugins/multilanguage
-   plugins/sampleplugin
-   plugins/samplemqttplugin
-   modules/modules_plugins
-   plugins/libraries_plugins
+   plugin_metadata
+   plugin_documentation_files
+   webinterface
+   multilanguage
+   sampleplugin
+   samplemqttplugin
+   libraries_plugins
 
 
 

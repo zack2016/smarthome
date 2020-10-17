@@ -2,26 +2,27 @@
 .. role:: redsup
 .. role:: bluesup
 
-.. index:: parameters; Plugin Metadata
-.. index:: Plugin Metadata; parameters
+.. index:: Parameter; Modul Metadaten
+.. index:: Modul Metadaten; Parameter
+.. index:: Parameter; Plugin Metadaten
+.. index:: Plugin Metadaten; Parameter
 
-Section `parameters`
---------------------
+``parameters``
+--------------
 
-Parameter metadata is used to check if the configured parameters in ``/etc`` are valid.
-If the configured data is not valid, warnings are logged in the logfile of SmartHomeNG.
+Parameter Metadaten werden benutzt um die Gültigkeit von Parametern zu prüfen, die im Verzeichnis ``../etc``
+konfiguriert wurden. Falls für einen Parameter ein ungültiger Wert konfiguriert wurde, wird eine Warnung im Logfile
+von SmartHomeNG eingetragen.
 
-If the configuration is valid, the parameters are handed over to the plugin/module through
-a dict, that contains a value for each parameter (defined in the metadata file). The datatype
-of those values correspond to the type-definitions in the metadata.
+Wenn ein gültiger Wert konfiguriert wurde, wird der Parameter an das Plugin/Modul übergeben, und zwar als der Datentyp,
+der in den Metadaten definiert wurde.
 
-Metadata is supported in SmartHomeNG v1.4 and up.
+Der ``parameters:`` Abschnitt hat für jeden definierten Parameter einen Unter-Abschnitt, der den Parameter genauer
+beschreibt. Der Schlüssel des Unter-Abschnitts ist der Name des Parameters. Parameter Namen sollten keine
+Großbuchstaben und Sonderzeichen enthalten. Sie dürfen nicht mit einer Ziffer beginnen.
 
-The ``parameters:`` section has a section for each parameter that is implemented. The name of that
-section is the name of the parameter.
-
-The definitions in the ``parameters:`` section are used for validity checking of the plugin/module configuration.
-In the future the definitions will be used for a configuration tool for SmartHomeNG.
+Die Definitionen im Abschnitt ``parameters:``  werden für die Gültigkeitsprüfung der konfigurierten Werte, sowie
+zur Dokumentation und zur Konfiguration in der Admin GUI benutzt.
 
 .. code:: yaml
 
@@ -43,10 +44,12 @@ In the future the definitions will be used for a configuration tool for SmartHom
 
 .. include:: /referenz/metadata/parameter_keys.rst
 
-Plugins without item-attributes
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-if a plugin has no parameters, this is signaled by the following entry in the plugin.yaml file:
+Plugins/Module ohne Parameter
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Falls ein Plugin oder Modul keine Parameter hat, wird das durch den folgenden Eintrag in der
+Datei ``plugin.yaml`` angezeigt:
 
 .. code:: yaml
 
@@ -54,5 +57,5 @@ if a plugin has no parameters, this is signaled by the following entry in the pl
 
 .. hint::
 
-    Please note, that NONE has to be written in upper case.
+    Bitte beachten, dass hier ``NONE`` vollständig in Großbuchstaben geschrieben werden muss.
 

@@ -13,22 +13,26 @@ Ein Plugin besteht im minimum aus drei Dateien:
 - und optional: Eine kurze Dokumentation: ``user_doc.rst``
 
 Eine genaue Beschreibung welche weiteren Dateien und Unterverzeichnisse ein Plugin haben kann, ist im Abschnitt
+:doc:`Entwicklung </entwicklung/plugins/plugins>` beschrieben.
+
+Alle drei Dateien sind in einem Verzeichnis unterhalb von ``../plugins`` gespeichert, welches den Namen des
+Plugins trägt (nur in Kleinbuchstaben).
 
 
-
-Alle drei Dateien  files reside in a folder within the ``/plugins`` folder. The name of the folder reflects
-the name of the plugin.
-
-
-The **metadata** file is named ``/plugins/<name of the plugin>/plugin.yaml``. It has two main and four
+Die **Metadaten** Datei eines Plugins heißt ``/plugins/<name of the plugin>/plugin.yaml``. Die bis zu sieben
+Abschnitte, die im folgenden beschrieben sind.
 additional sections:
 
-- ``plugin:`` - Global metadata of the plugin
-- ``parameters:`` - Definition of the parameters that can bei used in ``../etc/plugin.yaml`` to configure the plugin
-- ``item_attributes:`` - Definition of the item attributes that are used by the plugin
-- ``item_structs:`` - Definition of item structs that can be used with the plugin
-- ``logic_parameters:`` - Definition of parameters that control how a logic can be used/triggered from the plugin
-- ``plugin_functions:`` - Decscription of public functions that are defined by the plugin
+- ``plugin:`` - Globale Metadaten des Plugins
+- ``parameters:`` - Definition der Parameter, welche zur Konfiguration des Pluginsin der Datei ``../etc/plugin.yaml``
+  benutzt werden können
+- ``item_attributes:`` - Definition der Item Attribute, die durch das Plugin genutzt/unterstützt werden
+- ``item_structs:`` - Definition von Item Strukturen, welche im Zusammenhang mit dem Plugin genutzt werden können
+- ``item_attribute_prefixes:`` - Definition von Item Attributen elche nur einen genmeinsamen Namens-Beginn haben
+- ``logic_parameters:`` - Definition von Parameters welche steuern wie Logiken durch das Plugin genutzt/getriggert
+  werden können
+- ``plugin_functions:`` - Beschreibung öffentlicher Funktionen des Plugins, die durch Logiken oder andere Plugins
+  genutzt werden können
 
 
 .. include:: /referenz/metadata/plugin_global.rst
@@ -39,6 +43,9 @@ additional sections:
 
 .. include:: /referenz/metadata/item_structs.rst
 
+.. include:: /referenz/metadata/item_attribute_prefixes.rst
+
 .. include:: /referenz/metadata/logic_parameters.rst
 
 .. include:: /referenz/metadata/plugin_functions.rst
+

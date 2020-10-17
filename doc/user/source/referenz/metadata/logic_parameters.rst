@@ -2,20 +2,18 @@
 .. role:: redsup
 .. role:: bluesup
 
-.. index:: logic_parameters; Plugin Metadata
-.. index:: Plugin Metadata; logic_parameters
+.. index:: logic_parameters; Plugin Metadaten
+.. index:: Plugin Metadaten; logic_parameters
 
-Section `logic_parameters`
-~~------------------------
+``logic_parameters``
+--------------------
 
-Logic-parameter metadata is at the moment only used for generation of user documentation.
-If the configured data is not valid, warnings are logged in the logfile of SmartHomeNG.
+Die Daten der Logic Parameter werden für die Generierung der Dokumentation verwendet. Außerdem werden diese
+Parameter für die Konfiguration von Logiken in der Admin GUI verwendet. Falls die konfigurierten Daten nicht gültig
+sind, werden Warnungen in das Logfile von SmartHomeNG geschrieben.
 
-The ``logic_parameters:`` section has a section for each parameter for logics that is implemented. The name of that
-section is the name of the logic-parameter.
-
-The definitions in the ``logic_parameters:`` section are used for documentation generation.
-In the future the definitions will be used for a configuration tool for SmartHomeNG.
+Der Abschnitt ``logic_parameters:`` enthält einen Abschnitt für jeden Parameter der für eine Logik verwendet
+werden kann. Der Name dieses Unter-Abschnitts ist der Name des Parameters der Logik.
 
 .. code:: yaml
 
@@ -38,10 +36,11 @@ In the future the definitions will be used for a configuration tool for SmartHom
 .. include:: /referenz/metadata/parameter_keys.rst
 
 
-Plugins without logic-parameters
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Plugins ohne Logic Parameter
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-if a plugin has no logic_parameters, this is signaled by the following entry in the plugin.yaml file:
+Falls ein Plugin keine Logik Parameter hat, wird das durch den folgenden Eintrag in der Datei ``plugin.yaml``
+angezeigt:
 
 .. code:: yaml
 
@@ -49,5 +48,5 @@ if a plugin has no logic_parameters, this is signaled by the following entry in 
 
 .. hint::
 
-    Please note, that NONE has to be written in Uppercase.
+    Bitte beachten, dass hier ``NONE`` vollständig in Großbuchstaben geschrieben werden muss.
 
