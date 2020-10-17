@@ -155,7 +155,7 @@ Die Initialisierung ist abgeschlossen und SmartHomeNG arbeitet normal.
 Beendigung von SmartHomeNG
 ==========================
 
-Die folgenden Stati treten auf wenn SmartHomeNG beendet oder neu gestartet wird:
+Die folgenden Stati treten auf, wenn SmartHomeNG beendet oder neu gestartet wird:
 
 
 30 - Startet neu
