@@ -62,7 +62,7 @@ nicht, werden die Packages installiert und SmartHomeNG wird neu gestartet.
 2 - Initialisierung: Voraussetzungen überprüft
 ----------------------------------------------
 
-Die benötigten Python Package sind installiert.
+Die benötigten Python Packages sind installiert.
 
 Es werden die definierten Feiertage geladen.
 
