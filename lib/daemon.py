@@ -115,6 +115,8 @@ def write_pidfile(pid, pidfile):
     :type pid: int
     :type pidfile: str
     """
+    if os.name == 'nt':
+        return
 
     with open(pidfile, 'w+') as fh:
         fh.write("%s" % pid)

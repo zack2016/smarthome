@@ -29,6 +29,7 @@ New helper-functions are going to be implemented in this library.
 
 import logging
 
+import sys
 import re
 import hashlib
 import ipaddress
@@ -556,6 +557,14 @@ class Utils(object):
 
 
 
+
+
+def get_python_version():
+
+    PYTHON_VERSION = str(sys.version_info[0])+'.'+str(sys.version_info[1])+'.'+str(sys.version_info[2])+' '+str(sys.version_info[3])
+    if sys.version_info[3] != 'final':
+        PYTHON_VERSION += ' '+str(sys.version_info[4])
+    return PYTHON_VERSION
 
 
 def execute_subprocess(commandline, wait=True):
