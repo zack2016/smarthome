@@ -77,10 +77,9 @@ class SmarthomeTest(unittest.TestCase):
 
             for sh_config in [None, ext_conf]:
                 if sh_config is None:
-                    sh = lib.smarthome.SmartHome()
+                    sh = lib.smarthome.SmartHome(MODE=bin.smarthome.MODE)
                     conf_dir = sh.base_dir
                 else:
-                    sh = lib.smarthome.SmartHome(extern_conf_dir=sh_config)
                     sh = lib.smarthome.SmartHome(MODE=bin.smarthome.MODE, extern_conf_dir=sh_config)
                     conf_dir = sh_config
                 logger.warning("    test with config files in folder {}".format(conf_dir))

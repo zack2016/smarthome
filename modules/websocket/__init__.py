@@ -176,9 +176,17 @@ class Websocket(Module):
         try:
             self.loop.run_forever()
         finally:
-            self.loggeer.warning("_ws_server_thread: finally")
-            self.loop.run_until_complete(self.loop.shutdown_asyncgens())
-            self.loop.close()
+            self.logger.warning("_ws_server_thread: finally")
+            try:
+                self.loop.run_until_complete(self.loop.shutdown_asyncgens())
+            except:
+                self.logger.warning("_ws_server_thread: finally *1")
+            self.logger.warning("_ws_server_thread: finally *1x")
+            try:
+                self.loop.close()
+            except:
+                self.logger.warning("_ws_server_thread: finally *2")
+            self.logger.warning("_ws_server_thread: finally *2x")
 
     USERS = set()
 
