@@ -1139,7 +1139,10 @@ class Tcp_server(object):
         """ Closes running listening socket """
         self.logger.info("Shutting down listening socket on interface {} port {}".format(self._interface, self._port))
         asyncio.set_event_loop(self.__loop)
-        active_connections = len([task for task in asyncio.Task.all_tasks() if not task.done()])
+        try:
+            active_connections = len([task for task in asyncio.Task.all_tasks() if not task.done()])
+        except:
+            active_connections = 0
         if active_connections > 0:
             self.logger.info('Tcp_server still has {} active connection(s), cleaning up'.format(active_connections))
         self.__running = False
