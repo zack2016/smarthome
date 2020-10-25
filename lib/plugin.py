@@ -88,6 +88,7 @@ class Plugins():
 
     def __init__(self, smarthome, configfile):
         self._sh = smarthome
+        self._configfile = configfile
 
         global _plugins_instance
         if _plugins_instance is not None:
@@ -155,7 +156,7 @@ class Plugins():
                     instance = self._get_instancename(_conf[plugin]).lower()
                     dummy = self._test_duplicate_pluginconfiguration(plugin, classname, instance)
                     try:
-                        plugin_thread = PluginWrapper(smarthome, plugin, classname, classpath, args, instance, self.meta)
+                        plugin_thread = PluginWrapper(smarthome, plugin, classname, classpath, args, instance, self.meta, self._configfile)
                         if plugin_thread._init_complete == True:
                             try:
                                 self._plugins.append(plugin_thread.plugin)
@@ -530,12 +531,11 @@ class PluginWrapper(threading.Thread):
     :type meta: object
     """
 
-    def __init__(self, smarthome, name, classname, classpath, args, instance, meta):
+    def __init__(self, smarthome, name, classname, classpath, args, instance, meta, configfile):
         """
         Initialization of wrapper class
         """
         logger.debug('PluginWrapper __init__: Section {}, classname {}, classpath {}'.format( name, classname, classpath ))
-
         threading.Thread.__init__(self, name=name)
 
         self._init_complete = False
@@ -566,6 +566,7 @@ class PluginWrapper(threading.Thread):
             logger.warning("Plugin '{}' (section '{}') is deprecated. Consider to use a replacement instead".format(classpath.split('.')[1], name))
         # initialize attributes of the newly created plugin object instance
         if isinstance(self.get_implementation(), SmartPlugin):
+            self.get_implementation()._configfilename = configfile
             self.get_implementation()._set_configname(name)
 #            self.get_implementation()._config_section = name
             self.get_implementation()._set_shortname(str(classpath).split('.')[1])
@@ -588,6 +589,7 @@ class PluginWrapper(threading.Thread):
         else:
             # classic plugin
 #            self.get_implementation()._config_section = name
+            self.get_implementation()._configfilename = configfile
             self.get_implementation()._configname = name
             self.get_implementation()._shortname = str(classpath).split('.')[1]
             self.get_implementation()._classpath = classpath
