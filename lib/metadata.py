@@ -559,7 +559,8 @@ class Metadata():
                 return result
             return (type(value) is list)
         elif typ == 'dict':
-            return (type(value) is dict)
+            #return (type(value) is dict)
+            return (isinstance(value,dict))
         elif typ == 'ip':
             if Utils.is_ipv4(value):
                 return True
