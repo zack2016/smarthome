@@ -37,10 +37,12 @@ Beschreibung der Schlüssel im Abschnitt für einen Parameter bzw. ein Attribut:
   auf die Datentypen beschränkt, die SmartHomeNG kennt. Für das Editieren kann es jedoch wünschenswert sein,
   unterschiedlche Feld-Editoren für den selben Datentyp zu verwenden.
 
-  Bisher wird nur ein Wert für ``gui_type`` unterstützt:
+  Bisher werden nur zwei Werte für ``gui_type`` unterstützt:
 
   - ``wide_str`` wird benutzt, um ein breiteres Editor Feld zu verwenden (z.B. für Strings die einen längeren Inhalt
     haben können/sollen.
+  - ``readonly`` wird benutzt, wenn der Parameter nicht in der GUI konfiguriert werden soll, z.B. wenn das Webinterface
+    des Plugins diesen Parameter konfiguriert.
 
 - ``default:`` Optional: Gibt einen Standardwert vor, der verwendet wird, falls bei der Konfiguration des
   Parameters in ``../etc/plugin.yaml`` bzw. ``../etc/module.yaml`` kein Wert angegeben wird.
