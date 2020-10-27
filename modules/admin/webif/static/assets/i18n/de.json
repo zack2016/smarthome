@@ -342,6 +342,7 @@
     "DOCUMENTATION": "Dokumentation",
     "PLUGIN_CONFIGURATION": "Plugin Konfiguration",
     "PLUGIN_DISABLED": "Plugin wird bei Neustart nicht geladen!",
+    "LOADCONFIG": "Lade Infos zu den konfigurierten Plugins",
     "LOADLIST": "Lade Liste der installierten Plugins",
     "CLASSIC_NOT_CONFIGURABLE": "Classic Plugins können hier nicht konfiguriert werden!",
     "NAME_CONFIGURATION": "Konfiguration des Plugins '{{selected_plugin}}' benennen",

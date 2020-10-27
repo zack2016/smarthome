@@ -148,6 +148,7 @@ class PluginsInstalledController(RESTResource):
                                 self.plugin_data[p]['state'] = plg_data.get('state', '')
                                 self.plugin_data[p]['documentation'] = plg_data.get('documentation', '')
                                 self.plugin_data[p]['multi_instance'] = plg_data.get('multi_instance', '')
+                                self.plugin_data[p]['configuration_needed'] = plg_data.get('configuration_needed', True)
                     else:
                         self.logger.info("- no plugin.yaml: {}".format(p))
         self.logger.warning("PluginsInstalledController.read(): Plugin Liste (sollte sortiert sein), json.dumps(self.plugin_data) = '{}'".format(json.dumps(self.plugin_data)))
