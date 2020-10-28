@@ -1160,7 +1160,7 @@ class SmartHome():
         """
 
         self._deprecated_warning('Shtime-API')
-        return sh.shtime.now()
+        return self.shtime.now()
 
     def tzinfo(self):
         """
@@ -1187,7 +1187,7 @@ class SmartHome():
         """
 
         self._deprecated_warning('Shtime-API')
-        return sh.shtime.utcnow()
+        return self.shtime.utcnow()
 
 
     def utcinfo(self):
@@ -1201,7 +1201,7 @@ class SmartHome():
         """
 
         self._deprecated_warning('Shtime-API')
-        return sh.shtime.utcinfo()
+        return self.shtime.utcinfo()
 
 
     def runtime(self):
