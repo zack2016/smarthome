@@ -23,6 +23,8 @@ default_language: de     # default_language is used, where multiple languages ar
 # Additional directory for modules - is added to sys.path (should not be needed)
 #module_paths: /usr/local/python/lib    # list of path-entries is possible
 
+# Crontab entry for schedule task in shpypi
+#shpypi_crontab: '9 5 * *'
 
 #-----------------------------------------
 # develop (might be altered for release)

@@ -117,9 +117,14 @@ class Shpypi:
             return _shpypi_instance
 
 
-    def set_scheduler_crontab(self, crontab='7 4 * *'):
-        if crontab is not None:
-            self.scheduler_crontab = ['init', crontab]
+    def set_scheduler_crontab(self, crontab):
+        """
+        Set schedule for shpypi task
+
+        :param crontab: crontab entry for the update task for PyPI releases
+        """
+        self.scheduler_crontab = ['init', crontab]
+
 
     def get_installed_packages(self):
         """

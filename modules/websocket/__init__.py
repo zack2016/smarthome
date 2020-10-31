@@ -30,6 +30,7 @@ import websockets
 import time
 
 import os
+import sys
 import logging
 import json
 import collections
@@ -159,17 +160,35 @@ class Websocket(Module):
         The websocket server itself is using asyncio
         """
         self.loop = asyncio.new_event_loop()
-        # Python 3.7+:
-        self.loop.create_task(self.ws_server(self.ip, self.port), name='ws_server')
+        python_version = str(sys.version_info[0]) + '.' + str(sys.version_info[1])
+
+        if python_version == '3.6':
+            self.loop.ensure_future(self.ws_server(self.ip, self.port))
+        elif python_version == '3.7':
+            self.loop.create_task(self.ws_server(self.ip, self.port))
+        else:
+            self.loop.create_task(self.ws_server(self.ip, self.port), name='ws_server')
         # self.loop.ensure_future(self.ws_server(self.ip, self.port))
         if self.ssl_context is not None:
-            # Python 3.7+:
-            self.loop.create_task(self.ws_server(self.ip, self.tls_port, self.ssl_context), name='wss_server')
+            if python_version == '3.6':
+                self.loop.ensure_future(self.ws_server(self.ip, self.tls_port, self.ssl_context))
+            elif python_version == '3.7':
+                self.loop.create_task(self.ws_server(self.ip, self.tls_port, self.ssl_context))
+            else:
+                self.loop.create_task(self.ws_server(self.ip, self.tls_port, self.ssl_context), name='wss_server')
+
             # self.loop.ensure_future(self.ws_server(self.ip, self.tls_port, self.ssl_context))
 
-        # Python 3.7+:
-        self.loop.create_task(self.update_visu(), name='update_visu')
-        self.loop.create_task(self.update_all_series(), name='update_all_series')
+        if python_version == '3.6':
+            self.loop.ensure_future(self.update_visu())
+            self.loop.ensure_future(self.update_all_series())
+        elif python_version == '3.7':
+            self.loop.create_task(self.update_visu())
+            self.loop.create_task(self.update_all_series())
+        else:
+            self.loop.create_task(self.update_visu(), name='update_visu')
+            self.loop.create_task(self.update_all_series(), name='update_all_series')
+
         # self.loop.ensure_future(self.update_visu())
         # self.loop.ensure_future(self.update_all_series())
 

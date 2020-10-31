@@ -341,7 +341,6 @@ class SmartHome():
         self.shpypi = Shpypi.get_instance()
         if self.shpypi is None:
             self.shpypi = Shpypi(self)
-
         if hasattr(self, '_shpypi_crontab'):
             self.shpypi.set_scheduler_crontab(self._shpypi_crontab)
 
