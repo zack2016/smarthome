@@ -79,6 +79,7 @@ class Http(Module):
     gtemplates_dir = ''
     gstatic_dir = ''
 
+    webif_mount_prefix = '/plugin'  # changes <ip>:<port>/<plugin_name> to <ip>:<port>/plugin/<plugin_name>
 
     # def __init__(self, sh, port=None, servicesport=None, ip='', threads=8, starturl='',
     #                    showpluginlist='True', showservicelist='False', showtraceback='False',
@@ -656,7 +657,7 @@ class Http(Module):
         return result_list
 
 
-    def register_webif(self, app, pluginname, conf, pluginclass='', instance='', description='', webifname='', use_global_basic_auth=True):
+    def register_webif(self, app, pluginname, conf, pluginclass='', instance='', description='', webifname='', use_global_basic_auth=True, useprefix=True):
         """
         Register an application for CherryPy
 
@@ -670,7 +671,8 @@ class Http(Module):
                                self.get_classname(), self.get_instance_name(),
                                description,
                                webifname,
-                               use_global_basic_auth)
+                               use_global_basic_auth,
+                               useprefix)
 
 
         :param app: Instance of the application object
@@ -681,6 +683,7 @@ class Http(Module):
         :param description: Description of the functionallity of the webif. If left empty, a generic description will be generated
         :param webifname: Name of the webinterface. If left empty, the pluginname is used
         :param use_global_basic_auth: if True, global basic_auth settings from the http module are used. If False, registering plugin provides its own basic_auth
+        :param useprefix: if False, no webif_mount_prefix is added to the turl
         :type app: object
         :type pluginname: str
         :type conf: dict
@@ -688,7 +691,8 @@ class Http(Module):
         :type istance: str
         :type description: str
         :type webifname: str
-        :type: use_global_basic_auth: bool
+        :type use_global_basic_auth: bool
+        :type useprefix: bool
 
         """
         pluginname = pluginname.lower()
@@ -699,6 +703,8 @@ class Http(Module):
             webifname = webifname + '_' + instance
 
         mount = '/' + webifname
+        if useprefix:
+            mount = self.webif_mount_prefix + mount
         if description == '':
            description = 'Webinterface {} of plugin {}'.format(webifname, pluginname)
 
@@ -872,7 +878,7 @@ class _PluginsApp:
     """
 
     def __init__(self, mod):
-        self.mod = mod
+        self.module = mod
 
     @cherrypy.expose
     def index(self):
@@ -880,8 +886,9 @@ class _PluginsApp:
         This method is exposed to CherryPy. It implements the page 'plugins/index.html'
         """
 
-        tmpl = self.mod.tplenv.get_template('plugins.html')
-        result = tmpl.render( webinterfaces=self.mod._applications )
+        tmpl = self.module.tplenv.get_template('plugins.html')
+        result = tmpl.render( webinterfaces=self.module._applications,
+                              prefix=self.module.webif_mount_prefix)
         return result
 
 

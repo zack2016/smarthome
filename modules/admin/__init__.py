@@ -188,7 +188,8 @@ class Admin(Module):
                                self.get_classname(), self.get_instance_name(),
                                description,
                                webifname,
-                               use_global_basic_auth)
+                               use_global_basic_auth
+                               useprefix)
 
 
         :param app: Instance of the application object
@@ -208,7 +209,8 @@ class Admin(Module):
                                      'admin', '',
                                      description='Administrationsoberfläche für SmartHomeNG',
                                      webifname='',
-                                     use_global_basic_auth=False)
+                                     use_global_basic_auth=False,
+                                     useprefix=False)
 
         # Register the web interface as a cherrypy app
         self.mod_http.register_webif(WebApi(self.webif_dir, self, self.shng_url_root, self.api_url_root),
@@ -217,7 +219,8 @@ class Admin(Module):
                                      'api', '',
                                      description='API der Administrationsoberfläche für SmartHomeNG',
                                      webifname='',
-                                     use_global_basic_auth=False)
+                                     use_global_basic_auth=False,
+                                     useprefix=False)
 
         return
 
