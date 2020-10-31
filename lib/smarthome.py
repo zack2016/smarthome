@@ -342,6 +342,9 @@ class SmartHome():
         if self.shpypi is None:
             self.shpypi = Shpypi(self)
 
+        if hasattr(self, '_shpypi_crontab'):
+            self.shpypi.set_scheduler_crontab(self._shpypi_crontab)
+
         base_reqs = self.shpypi.test_base_requirements(self)
         if base_reqs == 0:
             self.restart('SmartHomeNG (Python package installation)')

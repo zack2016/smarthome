@@ -74,6 +74,8 @@ class Shpypi:
         _shpypi_instance = self
         self.req_files = Requirements_files()
 
+        self.scheduler_crontab = ['init', '7 3 * *']
+
         self.sh = sh
         if sh is None:
             self.logger.debug("SmartHomeNG is None")
@@ -114,6 +116,10 @@ class Shpypi:
         else:
             return _shpypi_instance
 
+
+    def set_scheduler_crontab(self, crontab='7 4 * *'):
+        if crontab is not None:
+            self.scheduler_crontab = ['init', crontab]
 
     def get_installed_packages(self):
         """
@@ -687,7 +693,7 @@ class Shpypi:
         from lib.scheduler import Scheduler
         if self.pypi_timeout > 0:
             self.scheduler = Scheduler.get_instance()
-            self.scheduler.add('shpypi.get_releasedata', self.lookup_pypi_releasedata, cron = ['init', '7 3 * *'])
+            self.scheduler.add('shpypi.get_releasedata', self.lookup_pypi_releasedata, cron = self.scheduler_crontab)
         else:
             self.lookup_pypi_releasedata(False)
 
