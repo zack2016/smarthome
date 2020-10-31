@@ -546,7 +546,7 @@ class Shpypi:
 
             package['vers_ok'] = False
             package['vers_recent'] = False
-            package['pypi_version'] = ''
+            package['pypi_version'] = '--'
             package['pypi_version_ok'] = True
             package['pypi_version_not_available_msg'] = ''
             package['pypi_doc_url'] = ''
