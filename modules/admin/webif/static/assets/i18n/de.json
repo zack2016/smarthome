@@ -58,7 +58,7 @@
     "MAXIMUM VERSION": "Max. Version",
     "REQUIREMENTS": "Anforderungen",
     "NEWEST VERSION": "Neueste Version",
-    "PACKAGES_REQ_PLUGINS": "Pakete die von Plugins benötigt werden",
+    "PACKAGES_REQ_PLUGINS": "Pakete die vom Core oder Plugins benötigt werden",
     "PACKAGES_REQ_DOCUMENTATION": "Pakete für den Bau der Dokumentation",
     "PACKAGES_REQ_TESTSUITE": "Pakete für die Testsuite",
     "PACKAGES_WO_REQ": "Pakete ohne Requirements",

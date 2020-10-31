@@ -571,7 +571,9 @@ class SmartHome():
         #############################################################
         # Start Scheduler
         #############################################################
-        self.scheduler = lib.scheduler.Scheduler(self)
+        self.scheduler = lib.scheduler.Scheduler.get_instance()
+        if self.scheduler is None:
+            self.scheduler = lib.scheduler.Scheduler(self)
         self.trigger = self.scheduler.trigger
         self.scheduler.start()
 

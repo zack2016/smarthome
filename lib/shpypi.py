@@ -39,6 +39,8 @@ import datetime
 import time
 import re
 
+import requests
+import xmltodict
 
 from lib.utils import Utils
 from lib.constants import (YAML_FILE)
@@ -67,7 +69,6 @@ class Shpypi:
 
         _shpypi_instance = self
         self.req_files = Requirements_files()
-
 
         self.sh = sh
         if sh is None:
@@ -569,7 +570,7 @@ class Shpypi:
 
         # process required base packages
         required_packages = self.parse_requirementsfile(os.path.join(self._sh_dir, 'requirements', 'base.txt'))
-        # self.logger.warning("get_packagelist: required_packages = {}".format(required_packages))
+        self.logger.warning("get_packagelist: required_packages = {}".format(required_packages))
 
         for pkg_name in required_packages:
             if required_packages[pkg_name] != {}:   # ignore empty requirements (e.g. requirement exists only for other Python version
@@ -589,7 +590,7 @@ class Shpypi:
 
         # process installed packages
         installed_packages = self.get_installed_packages()
-        # self.logger.warning("get_packagelist: installed_packages = {}".format(installed_packages))
+        self.logger.warning("get_packagelist: installed_packages = {}".format(installed_packages))
         for pkg_name in installed_packages:
             index = self.set_packagedata(pkg_name, add=True)
             if index != None:
@@ -597,12 +598,12 @@ class Shpypi:
 
                 package['vers_installed'] = installed_packages[pkg_name]
 
-        # self.logger.warning("get_packagelist: package_list = {}".format(self.package_list))
+        self.logger.warning("get_packagelist: package_list = {}".format(self.package_list))
 
 
         # process required (all) packages
         required_packages = self.parse_requirementsfile(os.path.join(self._sh_dir, 'requirements', 'all.txt'))
-        # self.logger.warning("get_packagelist: required_packages = {}".format(required_packages))
+        self.logger.warning("get_packagelist: required_packages = {}".format(required_packages))
 
         for pkg_name in required_packages:
             if required_packages[pkg_name] != {}:   # ignore empty requirements (e.g. requirement exists only for other Python version
@@ -622,7 +623,7 @@ class Shpypi:
 
         # process required doc-packages
         required_packages = self.parse_requirementsfile(os.path.join(self._sh_dir, 'doc', 'requirements.txt'))
-        # self.logger.warning("get_packagelist: required_doc_packages = {}".format(required_packages))
+        self.logger.warning("get_packagelist: required_doc_packages = {}".format(required_packages))
 
         for pkg_name in required_packages:
             if required_packages[pkg_name] != {}:   # ignore empty requirements (e.g. requirement exists only for other Python version
@@ -643,7 +644,7 @@ class Shpypi:
 
         # process required test-packages
         required_packages = self.parse_requirementsfile(os.path.join(self._sh_dir, 'requirements', 'test.txt'))
-        # self.logger.warning("get_packagelist: required_test_packages = {}".format(required_packages))
+        self.logger.warning("get_packagelist: required_test_packages = {}".format(required_packages))
 
         for pkg_name in required_packages:
             if required_packages[pkg_name] != {}:   # ignore empty requirements (e.g. requirement exists only for other Python version
@@ -672,57 +673,92 @@ class Shpypi:
                 import socket
                 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
                 sock.settimeout(self.pypi_timeout)
-                #                sock.connect(('pypi.python.org', 443))
+                # sock.connect(('pypi.python.org', 443))
                 sock.connect(('pypi.org', 443))
                 sock.close()
             except:
                 pypi_available = False
-                # pypi_unavailable_message = translate('PyPI nicht erreichbar')
-                pypi_unavailable_message = 'PyPI nicht erreichbar'
 
-        # look for PyPI data of the packages
-        import xmlrpc
-        pypi = xmlrpc.client.ServerProxy('https://pypi.org/pypi')
+        # look for PyPI release data of the packages
+        from lib.scheduler import Scheduler
+        if self.pypi_timeout > 0:
+            self.scheduler = Scheduler.get_instance()
+            self.scheduler.add('shpypi.get_releasedata', self.lookup_pypi_releasedata, cron = ['init', '7 3 * *'])
+        else:
+            self.lookup_pypi_releasedata(False)
 
         sorted_package_list = sorted(self.package_list, key=lambda k: k['sort'], reverse=False)
-        count = 0
-        for package in sorted_package_list:
-            if (package['is_required'] == True) or True:
-                if pypi_available :
-                    count += 1
-                    self.get_package_releases_data(pypi, package, count)
-                else:
-                    package['pypi_version_not_available_msg'] = 'PyPI nicht erreichbar'
-
-            # check if installed version is ok and recent
-            if package['vers_installed'] != '-':
-                min = package['vers_req_min']
-                max = package['vers_req_max']
-                recent = package['pypi_version']
-                inst_vers = package['vers_installed']
-                if min == '*':
-                    min_met = True
-                else:
-                    min_met = self._compare_versions(min, inst_vers, '<=')
-                if max == '*':
-                    max_met = True
-                else:
-                    max_met = self._compare_versions(inst_vers, max, '<=')
-                if min_met and max_met:
-                    package['vers_ok'] = True
-                recent_met = self._compare_versions(inst_vers, recent, '==')
-                if recent_met:
-                    package['vers_recent'] = True
-                if max != '*':
-                    pypi_ok = self._compare_versions(recent, max, '<=')
-                    if not pypi_ok:
-                        package['pypi_version_ok'] = False
-
-        #sorted_package_list = sorted(self.package_list, key=lambda k: k['sort'], reverse=False)
+        self.logger.warning("get_packagelist: Returning sorted_package_list = {}".format(sorted_package_list))
         return sorted_package_list
 
 
-    def get_package_releases_data(self, pypi, package, count):
+    def lookup_pypi_releasedata(self, pypi_available=True):
+        self.logger.debug("lookup_pypi_releasedata: pypi_available={}".format(pypi_available))
+        for package in self.package_list:
+            if (package['is_required'] == True) or True:
+                if pypi_available :
+                    self.get_package_releases_data(package)
+                    #scheduler.add(self, name, obj, prio=3, cron=None, cycle=None, value=None, offset=None, next=None, from_smartplugin=False):
+                    #self._sh.scheduler.add(self._itemname_prefix + self._path, self, cron=self._crontab, cycle=cycle)
+                else:
+                    self.logger.warning("get_packagelist ({}): PyPI nicht erreichbar".format(package))
+                    if package['pypi_version'] == '':
+                        package['pypi_version'] = '--'
+                    package['pypi_version_not_available_msg'] = 'PyPI nicht erreichbar'
+
+            # check if installed version is ok and recent
+            self.check_package_version_data(package)
+        return
+
+
+    def check_package_version_data(self, package):
+        # check if installed version is ok and recent
+        if package['vers_installed'] != '-':
+            min = package['vers_req_min']
+            max = package['vers_req_max']
+            recent = package['pypi_version']
+            inst_vers = package['vers_installed']
+            if min == '*':
+                min_met = True
+            else:
+                min_met = self._compare_versions(min, inst_vers, '<=')
+            if max == '*':
+                max_met = True
+            else:
+                max_met = self._compare_versions(inst_vers, max, '<=')
+            if min_met and max_met:
+                package['vers_ok'] = True
+            recent_met = self._compare_versions(inst_vers, recent, '==')
+            if recent_met:
+                package['vers_recent'] = True
+            if max != '*':
+                pypi_ok = self._compare_versions(recent, max, '<=')
+                if not pypi_ok:
+                    package['pypi_version_ok'] = False
+        return
+
+
+    def get_releasedata_frompypi(self, package):
+        """
+        Get data of available releases from pypi.org via
+        :param package:
+        :return:
+        """
+        result = []
+        r = requests.get('https://pypi.org/rss/project/' + package + '/releases.xml')
+        if r.status_code == 200:
+            xmldict = xmltodict.parse(r.text)
+
+            pypi_item_list = xmldict['rss']['channel']['item']
+            if isinstance(pypi_item_list, dict):
+                pypi_item_list = [pypi_item_list]
+            for i in pypi_item_list:
+                result.append(dict(i))
+
+        return result
+
+
+    def get_package_releases_data(self, package):
         """
 
         :param instance:
@@ -730,35 +766,27 @@ class Shpypi:
         :return:
         """
 
-        try:
-            available = pypi.package_releases(package['name'])  # (dist.project_name)
-            self.logger.debug("pypi_json: pypi package: project_name {}, availabe = {}".format(package['name'], available))
+        version_read = False
+        while version_read == False:
+            package['pypi_version'] = '--'
+            package['pypi_version_not_available_msg'] = '?'
+            package['pypi_version_ok'] = False
+            package['pypi_doc_url'] = ''
+
+            available = self.get_releasedata_frompypi(package['name'])
+            self.logger.debug("get_package_releases_data: -> pypi package: project_name {}, availabe = {}".format(package['name'], available))
             try:
-                package['pypi_version'] = available[0]
+                package['pypi_version'] = available[0]['title']
                 package['pypi_version_not_available_msg'] = ""
                 package['pypi_version_ok'] = True
                 package['pypi_doc_url'] = 'https://pypi.org/pypi/' + package['name']
-
+                version_read = True
             except:
-                package['pypi_version_not_available_msg'] = '?'
-                package['pypi_version_ok'] = False
-                package['pypi_doc_url'] = ''
+                pass
 
-        except Exception as e:
-            e_txt = str(e)
-            if e_txt.startswith('<Fault -32500:'):
-                # time.sleep(70)
-                # self.logger.warning("get_packagelist: (count={}) Package {} - Exception {}".format(package, count, 'Fault -32500: HTTPTooManyRequests'))
-                package['pypi_version_not_available_msg'] = e_txt
-            else:
-                self.logger.warning("get_packagelist: Package {} (count={}) - Exception {}".format(package, count, e))
-                package['pypi_version_not_available_msg'] = ['Keine Antwort von PyPI']
-            package['pypi_version'] = '--'
-            #  pkg['pypi_version_not_available_msg'] = [translate('Keine Antwort von PyPI')]
+            self.logger.debug("get_package_releases_data ({}): Version {}".format(package['name'], package['pypi_version']))
 
         return
-
-
 
 
     def _build_sortstring(self, package):
