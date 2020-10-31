@@ -34,12 +34,12 @@ pytest>=3.6.0
 # coveralls.io is a service for publishing coverage stats online
 #coveralls>=1.1
 
-# Betamax intercepts every request you make and 
-# attempts to find a matching request that has already been intercepted and recorded. 
+# Betamax intercepts every request you make and
+# attempts to find a matching request that has already been intercepted and recorded.
 # old requirement: betamax==0.5.1
 #betamax
 
-# pydocstyle is a static analysis tool for checking compliance 
+# pydocstyle is a static analysis tool for checking compliance
 # with Python docstring conventions
 #pydocstyle>=1.0.0
 

@@ -39,8 +39,12 @@ import datetime
 import time
 import re
 
-import requests
-import xmltodict
+# to be able to run first pypi check in commandline mode
+try:
+    import requests
+    import xmltodict
+except:
+    pass
 
 from lib.utils import Utils
 from lib.constants import (YAML_FILE)
