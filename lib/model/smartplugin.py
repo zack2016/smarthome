@@ -344,12 +344,9 @@ class SmartPlugin(SmartObject, Utils):
         :return:
         """
         param_names = list(self.metadata.parameters.keys())
-        self.logger.warning("update_config_section: Beginning to update section '{}' of ../etc/plugin.yaml".format(self._configname))
-        self.logger.warning("update_config_section: Config file = '{}'".format(self._configfilename))
-        self.logger.warning("update_config_section: param_dict = {}".format(param_dict))
-
-        self.logger.warning("update_config_section: metadata = {}".format(self.metadata.parameters))
-        self.logger.warning("update_config_section: parameter names = {}".format(param_names))
+        self.logger.debug("update_config_section: Beginning to update section '{}' of ../etc/plugin.yaml".format(self._configname))
+        self.logger.debug("update_config_section: valid parameter names to update = {}".format(param_names))
+        self.logger.info("update_config_section: Config file = '{}', update data = {}".format(self._configfilename, param_dict))
 
         # read plugin.yaml
         plugin_conf = shyaml.yaml_load_roundtrip(self._configfilename)
@@ -357,15 +354,11 @@ class SmartPlugin(SmartObject, Utils):
         if sect is None:
             self.logger.error("update_config_section: Config section '{}' not found in ../etc/plugin.yaml".format(self._configname))
             return
-        self.logger.warning("update_config_section: Config file content = '{}'".format(plugin_conf))
-        self.logger.warning("update_config_section: Config section content = '{}'".format(sect))
 
         parameters_changed = False
         for param in param_dict:
             if param in param_names:
-                self.logger.warning("update_config_section: Parameter '{}' -> type = '{}'".format(param, self.metadata.parameters[param]['type']))
-
-                self.logger.warning("update_config_section: Updating parameter '{}' = '{}'".format(param, param_dict[param]))
+                self.logger.info("update_config_section: Changing Parameter '{}' -> type = '{}' from '{}' to '{}'".format(param, self.metadata.parameters[param]['type'], sect.get(param, None), param_dict[param]))
                 if param_dict[param] == '' or param_dict[param] == {} or param_dict[param] == []:
                     del sect[param]
                 else:
@@ -374,11 +367,11 @@ class SmartPlugin(SmartObject, Utils):
             else:
                 self.logger.error("update_config_section: Invalid parameter '{}' specified for update".format(param, param_dict[param]))
 
-        self.logger.warning("update_config_section: Config section content = '{}'".format(sect))
+        self.logger.debug("update_config_section: Config section content = '{}'".format(sect))
         # write plugin.yaml
         if parameters_changed:
             shyaml.yaml_save_roundtrip(self._configfilename, plugin_conf, True)
-            self.logger.warning("update_config_section: Finished updating section '{}' of ../etc/plugin.yaml".format(self._configname))
+        self.logger.debug("update_config_section: Finished updating section '{}' of ../etc/plugin.yaml".format(self._configname))
         return
 
 #---
