@@ -100,6 +100,7 @@ class ServicesController(RESTResource):
         # set up environment for calculating eval-expression
         sh = self._sh
         shtime = Shtime.get_instance()
+        items = Items.get_instance()
 
         eval_code = eval_code.replace('\r', '').replace('\n', ' ').replace('  ', ' ').strip()
         if relative_to == '':

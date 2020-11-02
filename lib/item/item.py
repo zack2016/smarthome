@@ -1100,7 +1100,7 @@ class Item():
     #                logger.info("__run_eval: item = {}, value = {}, self._eval = {}".format(self._path, value, self._eval))
                 sh = self._sh  # noqa
                 shtime = self.shtime
-
+                items = _items_instance
                 import math as mymath
                 try:
                     value = eval(self._eval)
