@@ -1086,7 +1086,11 @@ class Item():
             if self._trigger_condition is not None:
 #                logger.warning("Item {}: Evaluating trigger condition {}".format(self._path, self._trigger_condition))
                 try:
+                    # set up environment for calculating eval-expression
                     sh = self._sh
+                    shtime = self.shtime
+                    items = _items_instance
+                    import math
                     cond = eval(self._trigger_condition)
                     logger.warning("Item {}: Condition result '{}' evaluating trigger condition {}".format(self._path, cond, self._trigger_condition))
                 except Exception as e:
@@ -1098,10 +1102,11 @@ class Item():
             if cond == True:
     #            if self._path == 'wohnung.flur.szenen_helper':
     #                logger.info("__run_eval: item = {}, value = {}, self._eval = {}".format(self._path, value, self._eval))
-                sh = self._sh  # noqa
+                # set up environment for calculating eval-expression
+                sh = self._sh
                 shtime = self.shtime
                 items = _items_instance
-                import math as mymath
+                import math
                 try:
                     value = eval(self._eval)
                 except Exception as e:
@@ -1127,7 +1132,13 @@ class Item():
 
         :type attr: str
         """
+
+        # set up environment for calculating eval-expression
         sh = self._sh
+        shtime = self.shtime
+        items = _items_instance
+        import math
+
         logger.info("Item {}: '{}' evaluating {} = {}".format(self._path, attr, on_dest, on_eval))
 
         # if syntax without '=' is used, add caller and source to the item assignement
@@ -1174,7 +1185,7 @@ class Item():
         evaluate all 'on_update' entries of the actual item
         """
         if self._on_update:
-            sh = self._sh  # noqa
+            # sh = self._sh  # noqa
 #            logger.info("Item {}: 'on_update' evaluating {} = {}".format(self._path, self._on_update_dest_var, self._on_update))
             for on_update_dest, on_update_eval in zip(self._on_update_dest_var, self._on_update):
                 self._run_on_xxx(self._path, value, on_update_dest, on_update_eval, 'On_Update')
@@ -1185,7 +1196,7 @@ class Item():
         evaluate all 'on_change' entries of the actual item
         """
         if self._on_change:
-            sh = self._sh  # noqa
+            # sh = self._sh  # noqa
 #            logger.info("Item {}: 'on_change' evaluating lists {} = {}".format(self._path, self._on_change_dest_var, self._on_change))
             for on_change_dest, on_change_eval in zip(self._on_change_dest_var, self._on_change):
                 self._run_on_xxx(self._path, value, on_change_dest, on_change_eval, 'On_Change')
