@@ -515,6 +515,7 @@ class Item():
         else:
             self._eval_unexpanded = value
             value = self.get_stringwithabsolutepathes(value, 'sh.', '(', KEY_EVAL)
+            value = self.get_stringwithabsolutepathes(value, 'sh.', '.property', KEY_EVAL)
             self._eval = value
 
 
@@ -546,6 +547,7 @@ class Item():
             #                        val = 'sh.'+dest_item+'( '+ self.get_stringwithabsolutepathes(val, 'sh.', '(', KEY_ON_CHANGE) +' )'
             val_list_unexpanded.append(val)
             val = self.get_stringwithabsolutepathes(val, 'sh.', '(', KEY_ON_CHANGE)
+            val = self.get_stringwithabsolutepathes(val, 'sh.', '.property', KEY_ON_CHANGE)
             #                        logger.warning("Item __init__: {}: for attr '{}', dest_item '{}', val '{}'".format(self._path, attr, dest_item, val))
             val_list.append(val)
             dest_var_list.append(dest_item)
@@ -945,6 +947,7 @@ class Item():
 
                         # expand relative item paths
                         wrk = self.get_stringwithabsolutepathes(wrk, 'sh.', '(', KEY_CONDITION)
+                        wrk = self.get_stringwithabsolutepathes(wrk, 'sh.', '.property', KEY_CONDITION)
 
                         and_cond.append(wrk)
 
@@ -1469,5 +1472,3 @@ class Item():
 
     def to_json(self):
        return json.dumps(self.jsonvars(), sort_keys=True, indent=2)
-
-
