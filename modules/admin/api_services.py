@@ -110,7 +110,7 @@ class ServicesController(RESTResource):
             rel_to_item = sh.return_item(relative_to)
             if rel_to_item is not None:
                 expanded_code = rel_to_item.get_stringwithabsolutepathes(eval_code, 'sh.', '(')
-                expanded_code = rel_to_item.get_stringwithabsolutepathes(expanded_ code, 'sh.', '.property')
+                expanded_code = rel_to_item.get_stringwithabsolutepathes(expanded_code, 'sh.', '.property')
             else:
                 expanded_code = "Error: Item {} does not exist!".format(relative_to)
         try:
