@@ -12,9 +12,9 @@ Attribut *on_update*
 ====================
 
 Ermöglicht das Setzen des Wertes anderer Items, wenn das aktuelle Item ein Update erhält
-(auch wenn sich der Wert des aktuellen Items dabei nicht ändert).
+(auch wenn sich der Wert des aktuellen Items dabei nicht ändert und enforce_updates nicht aktiviert ist).
 Das ist der Unterschied zu **on_change**, welches nur ausgelöst
-wird wenn sich bei einem Update der Wert des Items auch ändert. **Seit SmartHomeNG v1.4**
+wird wenn sich bei einem Update der Wert des Items auch ändert oder **enforce_updates** aktiviert ist. **Seit SmartHomeNG v1.4**
 
 Die Syntax ist wie folgt:
 
@@ -29,18 +29,18 @@ Die Syntax ist wie folgt:
 +-------------------------+----------------------------------------------------------------------+
 
 
-- Expressions (eval Ausdrücke) können die gleiche Syntax nutzen wie das **eval** Attribut.
-- Expressions können relative Item Adressierungen nutzen.
+- Expressions (eval Ausdrücke) können die gleiche Syntax nutzen wie das :doc:`eval Attribut </referenz/items/standard_attribute/eval>`.
+- Expressions können :doc:`relative Item Referenzen </referenz/items/attributes_relative_referenzen>` nutzen.
 - Auch die Item Angabe in **<item> = <expression>** kann eine relative Angabe sein.
 - Zu beachten ist, dass <item> eine reine Item Pfad Angabe ist, während in einem Ausdruck
-  (wie auch bei eval), ein Item in der Form **sh.<item>()** adressiert werden muss.
+  (wie auch bei eval), ein Item in der Form **sh.<item>()** oder **sh.<item>.property.value** adressiert werden muss.
 - **on_update** kann zusammen mit **eval** im selben Item genutzt werden, wobei **eval** vor
   **on_update** ausgeführt wird. Dadurch enthält **value** in dem **on_update** eval-Ausdruck den
   aktualisierten Wert des Items. Im Gegensatz dazu enthält **value** im eval-Ausdruck des **eval**
   Attributs den vorangegangenen Wert des Items. Wenn im **on_update** Ausdruck auf den vorangegangenen
-  Wert des Items zugegriffen werden soll, geht das mit der Item-Methode **prev_value()**. Um das
-  Item selbst zu adressieren kann am einfachsten die relative Adressierung eingesetzt werden.
-  Den vorangegangenen Wert des Items erhält man mit **sh..prev_value()**.
+  Wert des Items zugegriffen werden soll, geht das mit der Item-Methode **prev_value()** oder dem
+  Item Property **property.last_value**. Um das Item selbst zu adressieren kann am einfachsten
+  die relative Adressierung mittels **sh.self.prev_value()** eingesetzt werden.
 
 .. attention::
 
@@ -70,7 +70,7 @@ Beispiel:
        # eine Liste mehrerer Zuweisungen
        on_change:
        - itemC = False                       # nur wenn sich der Wert von itemA2 ändert
-       - itemD = sh.itemB()                  #
+       - itemD = sh.itemB()                  # oder sh.itemB.property.value
        - itemE = sh.itemB() if value else 0  #
        ...
 
@@ -86,7 +86,7 @@ Attribut *on_change*
 
 Ermöglicht das Setzen des Wertes anderer Items, wenn der Wert des aktuellen Items verändert wird.
 Im Gegensatz zu **on_update** wird **on_change** nur ausgelöst, wenn sich beim Update
-eines Items der Wert auch ändert. **Seit SmartHomeNG v1.4**
+eines Items der Wert auch ändert oder **enforce_updates** aktiviert ist. **Seit SmartHomeNG v1.4**
 
 Der Syntax ist äquivalent zum Attribut **on_update**.
 
@@ -103,8 +103,9 @@ Berechnung, wird dem Item das Ergebnis zugewiesen. Anschließend werden die Ausd
 **value**) bereits den neuen Wert.
 
 Wenn in **eval** Ausdrücken in **on_change** oder **on_update** Attributen auf den alten Wert
-des Items zugegriffen werden soll, muss dazu die Item Funktion **prev_value()** genutzt werden.
-Auf den alten Wert des aktuellen Items kann ohne die Angabe der vollständigen Item Pfades durch
+des Items zugegriffen werden soll, muss dazu die Item Funktion **prev_value()** oder
+das Item Property **property.last_value** genutzt werden.
+Auf den alten Wert des aktuellen Items kann ohne die Angabe des vollständigen Item Pfades durch
 den Ausdruck **sh.self.prev_value()** zugegriffen werden.
 
 
