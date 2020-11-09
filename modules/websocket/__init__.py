@@ -500,8 +500,10 @@ class Websocket(Module):
                     try:
                         await websocket.send(reply)
                         self.logger.warning("visu >REPLY: '{}'   -   to {}".format(answer, websocket.remote_address))
+                    except (asyncio.IncompleteReadError, asyncio.connection_closed_exc) as e:
+                        self.logger.error("smartVISU_protocol_v4: Error in 'await websocket.send(reply)': {}".format(e))
                     except Exception as e:
-                        self.logger.exception("Error in 'await websocket.send(reply)': {}".format(e))
+                        self.logger.exception("smartVISU_protocol_v4: Exception in 'await websocket.send(reply)': {}".format(e))
 
         except Exception as e:
             if not str(e).startswith('code = 1006'):
@@ -662,8 +664,10 @@ class Websocket(Module):
                         try:
                             await websocket.send(reply)
                             self.logger.warning(">SerUp {}: {}".format(websocket.remote_address, reply))
+                        except (asyncio.IncompleteReadError, asyncio.connection_closed_exc) as e:
+                            self.logger.error("update_all_series: Error in 'await websocket.send(reply)': {}".format(e))
                         except Exception as e:
-                            self.logger.exception("update_all_series: Error in 'await websocket.send(reply)': {}".format(e))
+                            self.logger.exception("update_all_series: Exception in 'await websocket.send(reply)': {}".format(e))
                 else:
                     self.logger.warning("update_all_series: Client {} is not active any more".format(client_addr))
                     remove.append(client_addr)
