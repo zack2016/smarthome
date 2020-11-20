@@ -275,6 +275,9 @@ class Item():
                         elif fromitem == '...':
                             #self.conf[attr] = self._get_attr_from_grandparent(fromattr)
                             value = self._get_attr_from_grandparent(fromattr)
+                        elif fromitem == '....':
+                            #self.conf[attr] = self._get_attr_from_greatgrandparent(fromattr)
+                            value = self._get_attr_from_greatgrandparent(fromattr)
 
                     # Test if the plugin-specific attribute contains a valid value
                     # and set the default value, if needed
@@ -911,10 +914,24 @@ class Item():
         """
         pitem = self.return_parent()
         gpitem = pitem.return_parent()
-        gpattr_value = pitem.get(attr, '')
+        gpattr_value = gpitem.conf.get(attr, '')
 #        logger.warning("_get_attr_from_grandparent Item {}: for attr '{}'".format(self._path, attr))
 #        logger.warning("_get_attr_from_grandparent Item {}: for grandparent '{}', gpattr_value '{}'".format(self._path, gpitem._path, gpattr_value))
         return gpattr_value
+
+
+    def _get_attr_from_greatgrandparent(self, attr):
+        """
+        Get value from grandparent
+
+        :param attr: Get the value from this attribute of the grandparent item
+        :return: value from attribute of grandparent item
+        """
+        pitem = self.return_parent()
+        gpitem = pitem.return_parent()
+        ggpitem = gpitem.return_parent()
+        ggpattr_value = ggpitem.conf.get(attr, '')
+        return ggpattr_value
 
 
     def _build_trigger_condition_eval(self, trigger_condition):
