@@ -204,18 +204,36 @@ class Items():
         # --------------------------------------------------------------------
         # prepare loaded items for run phase of SmartHomeNG
         #
-        self._sh.shng_status = {'code': 14, 'text': 'Starting: Preparing loaded items'}
+        self._sh.shng_status = {'code': 14, 'text': 'Starting: Preparing loaded items (init prerun)'}
 
         # Build eval expressions from special functions and triggers before first run
         for item in self.return_items():
             item._init_prerun()
+
+        self._sh.shng_status = {'code': 14, 'text': 'Starting: Preparing loaded items (start scheduler)'}
         # Start schedulers of the items which have a crontab or a cycle attribute
         for item in self.return_items():
             item._init_start_scheduler()
+        self._sh.shng_status = {'code': 14, 'text': 'Starting: Preparing loaded items (init eval-run))'}
         # Run initial eval to set an initial value for the item
+        #import time
+        #gstart = time.time()
+        #gduration = 0.0
+        #gcount = 0
         for item in self.return_items():
             item._init_run()
+            #start = time.time()
+            #calculated = item._init_run()
+            #end = time.time()
+            #if calculated:
+            #    duration = end - start
+            #    self.logger.warning(f"_init_run: {item._path}, execution time = {duration}")
+            #    gduration += duration
+            #    gcount += 1
+        #gend = time.time()
+        #self.logger.warning(f"_init_run: Totals: duration {gend-gstart}, eval execution time = {gduration} for {gcount} items")
 
+        self._sh.shng_status = {'code': 14, 'text': 'Starting: Preparing loaded items'}
 #        self.item_count = len(self.__items)
 #        self._sh.item_count = self.item_count()
 

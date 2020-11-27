@@ -1095,6 +1095,8 @@ class Item():
             if self._eval:
                 # Only if item has an eval expression
                 self._sh.trigger(name=self._path, obj=self.__run_eval, by='Init', value={'value': self._value, 'caller': 'Init'})
+                return True
+        return False
 
 
     def __run_eval(self, value=None, caller='Eval', source=None, dest=None):
@@ -1104,7 +1106,7 @@ class Item():
         if self._eval:
             # Test if a conditional trigger is defined
             if self._trigger_condition is not None:
-#                logger.warning("Item {}: Evaluating trigger condition {}".format(self._path, self._trigger_condition))
+                #logger.warning("Item {}: Evaluating trigger condition {}".format(self._path, self._trigger_condition))
                 try:
                     # set up environment for calculating eval-expression
                     sh = self._sh
@@ -1128,6 +1130,7 @@ class Item():
                 items = _items_instance
                 import math
                 try:
+                    #logger.warning("Item {}: Evaluating item value {}".format(self._path, self._eval))
                     value = eval(self._eval)
                 except Exception as e:
                     logger.warning("Item {}: problem evaluating {}: {}".format(self._path, self._eval, e))
