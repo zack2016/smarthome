@@ -55,6 +55,7 @@ import locale
 # Import Python Core Modules
 #####################################################################
 
+import json
 import logging
 import logging.handlers
 import logging.config
@@ -133,6 +134,7 @@ class SmartHome():
     # default values, if values are not specified in smarthome.yaml
     _default_language = 'de'
     _fallback_language_order = 'en,de'
+    _threadinfo_export = False
 
     # for scheduler
     _restart_on_num_workers = 30
@@ -636,6 +638,7 @@ class SmartHome():
         # Start Connections
         #############################################################
         self.scheduler.add('sh.connections', self.connections.check, cycle=10, offset=0)
+        self._export_threadinfo()
 
         #############################################################
         # Start Plugins
@@ -649,6 +652,8 @@ class SmartHome():
         # Execute Maintenance Method
         #############################################################
         self.scheduler.add('sh.garbage_collection', self._maintenance, prio=8, cron=['init', '4 2 * *'], offset=0)
+        if self._threadinfo_export:
+            self.scheduler.add('sh.thread_info', self._export_threadinfo, prio=8, cycle=120, offset=0)
 
         #############################################################
         # Main Loop
@@ -846,6 +851,30 @@ class SmartHome():
         c = gc.collect()
         self._logger.debug("Garbage collector: collected {0} objects.".format(c))
 
+
+    def _export_threadinfo(self):
+
+        filename = os.path.join(self.base_dir, 'var', 'run','threadinfo.json')
+        if self._threadinfo_export:
+            all_threads = []
+            for t in threading.enumerate():
+                # create thread list to be written to ../var/run
+                at = {}
+                at['id'] = t.ident
+                try:
+                    at['native_id'] = t.native_id
+                except:
+                    at['native_id'] = ''
+                at['name'] = t.name
+                all_threads.append(at)
+
+            # write thread list to ../var/run
+            with open(filename, 'w', encoding='utf-8') as f:
+                json.dump(all_threads, f, ensure_ascii=False, indent=4)
+
+        else:
+            if os.path.exists(filename):
+                os.remove(filename)
 
     def object_refcount(self):
         """

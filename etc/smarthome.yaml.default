@@ -39,6 +39,9 @@ default_language: de     # default_language is used, where multiple languages ar
 # (Attributes that are no statdard-attributes and not defined by a configured plugin)
 #undef_item_attr_loglevel_info: True
 
+# To get info which thread consumes how many cpu when using shng tool 'cpuusage.py'
+#threadinfo_export: True
+
 
 #-----------------------------------------
 # not used? - following entries are probably not used
