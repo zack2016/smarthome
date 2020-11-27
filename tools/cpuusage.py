@@ -57,35 +57,39 @@ if print_info == True:
 
 proc = psutil.Process(int(shng_pid))
 
+initial_loop = True
 while True:
     threadinfo = get_threadinfo()
-    clear()
-    print("SmartHomeNG in directory '{}'".format(base_dir))
     try:
         threads = get_threads_cpu_percent(proc)
         threads.sort(reverse=True)
-        print("- process id = {}   ({} threads)".format(shng_pid, len(threads)))
-        print()
-        print("   Percent   PID     Thread Id      Thread Name")
-        for line in threads:
-            l = line
-            thread = threadinfo.get(int(l[1]), {'id': '?', 'name':l[2]})
-            if thread is not None:
-                thread_name = thread['name']
-                thread_id = thread['id']
-            elif int(l[1]) == int(shng_pid):
-                thread_name = 'SmartHomeNG'
-                thread_id = '   __Main__    '
-            else:
-                thread_name = '?'
-                thread_id = '       ?       '
-            percent = float(l[0])
-            pid = int(l[1])
-            if not (thread_name.startswith( ('CP Server','HTTPServer', 'ThreadPoolExecutor') ) and percent <= 0.08):
-                if percent >= 0.0:
-                    print("{p:10.6f}%{pid:6} {id} - {t:15}".format(p=percent, pid=pid, id=thread_id, t=thread_name))
-            if thread_name.lower().startswith('python'):
-                print_info = True
+        if initial_loop or threads[0][0] > 0.0:
+            clear()
+            print("SmartHomeNG in directory '{}'".format(base_dir))
+            print("- process id = {}   ({} threads)".format(shng_pid, len(threads)))
+            print()
+            print("   Percent   PID     Thread Id      Thread Name")
+            for line in threads:
+                l = line
+                thread = threadinfo.get(int(l[1]), {'id': '?', 'name':l[2]})
+                if thread is not None:
+                    thread_name = thread['name']
+                    thread_id = thread['id']
+                elif int(l[1]) == int(shng_pid):
+                    thread_name = 'SmartHomeNG'
+                    thread_id = '   __Main__    '
+                else:
+                    thread_name = '?'
+                    thread_id = '       ?       '
+                percent = float(l[0])
+                pid = int(l[1])
+                if not (thread_name.startswith( ('CP Server','HTTPServer', 'ThreadPoolExecutor') ) and percent <= 0.08):
+                    if percent >= 0.0:
+                        print("{p:10.6f}%{pid:6} {id} - {t:15}".format(p=percent, pid=pid, id=thread_id, t=thread_name))
+                if thread_name.lower().startswith('python'):
+                    print_info = True
+
+        initial_loop = False
         time.sleep(2)
 
     except KeyboardInterrupt:
