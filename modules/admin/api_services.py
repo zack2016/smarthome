@@ -107,7 +107,7 @@ class ServicesController(RESTResource):
         if relative_to == '':
             expanded_code = eval_code
         else:
-            rel_to_item = sh.return_item(relative_to)
+            rel_to_item = items.return_item(relative_to)
             if rel_to_item is not None:
                 expanded_code = rel_to_item.get_stringwithabsolutepathes(eval_code, 'sh.', '(')
                 expanded_code = rel_to_item.get_stringwithabsolutepathes(expanded_code, 'sh.', '.property')
