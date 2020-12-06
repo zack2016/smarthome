@@ -664,6 +664,8 @@ class Metadata():
             result = self._convert_valuetotype(typ, value)
 
             orig = result
+            if 'valid_list_ci' in definition.keys():
+                orig = str(orig).lower()
             result = self._test_validity('', result, definition, is_default)
             if result != orig:
                 # Für non-default Prüfung nur Warning
