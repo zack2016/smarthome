@@ -60,12 +60,18 @@ class ThreadsController(RESTResource):
 
         threads = []
         for t in threading.enumerate():
+            # create thread list for admin gui
             if t.name.find("CP Server") != 0 and t.name.find("HTTPServer") != 0 and \
                t.name.find("ThreadPoolExecutor") != 0 and t.name.find("idle") != 0:
                 thread = dict()
                 thread['name'] = t.name
                 thread['sort'] = str(t.name).lower()
                 thread['id'] = t.ident
+                try:
+                    # get_native_id() is supported for Python 3.8 and newer
+                    thread['native_id'] = t.native_id
+                except:
+                    thread['native_id'] = ''
                 try:
                     if t.is_alive():
                         thread['alive'] = 'True'
@@ -74,6 +80,7 @@ class ThreadsController(RESTResource):
                 except AssertionError:
                     thread['alive'] = 'AssertionError'
 
+                # self.logger.warning("get_thread_list: {}".format(thread))
                 threads.append(thread)
                 threads_count += 1
 
@@ -100,6 +107,7 @@ class ThreadsController(RESTResource):
             thread['name'] = name
             thread['sort'] = str(thread['name']).lower()
             thread['id'] = "(" + str(count) + " threads" + ")"
+            thread['native_id'] = ''
             thread['alive'] = 'True'
         return thread
 

@@ -54,6 +54,7 @@ ATTRIB_COMPAT_DEFAULT_FALLBACK = ATTRIB_COMPAT_V12
 ATTRIB_COMPAT_DEFAULT = ''
 
 logger = logging.getLogger(__name__)
+items_count = 0
 
 #####################################################################
 # Item Class
@@ -95,6 +96,12 @@ class Item():
 
         self.plugins = Plugins.get_instance()
         self.shtime = Shtime.get_instance()
+
+        #count items on creation
+        global items_count
+        items_count += 1
+        if items_count % 50 == 0:
+            self._sh.shng_status['details'] = str(items_count)  # Item Zähler übertragen
 
         self._filename = None
         self._autotimer = False
@@ -1319,8 +1326,8 @@ class Item():
         # ms: call run_on_update() from here
         self.__run_on_update(value)
         if _changed or self._enforce_updates or self._type == 'scene':
-            # ms: call run_on_change() from here
-            self.__run_on_change(value)
+            # ms: call run_on_change() from here -> noved down
+            #self.__run_on_change(value)
             for method in self.__methods_to_trigger:
                 try:
                     method(self, caller, source, dest)
@@ -1340,6 +1347,9 @@ class Item():
             for item in self._items_to_trigger:
                 args = {'value': value, 'source': self._path}
                 self._sh.trigger(name='items.' + item.id(), obj=item.__run_eval, value=args, by=caller, source=source, dest=dest)
+            # ms: call run_on_change() from here - after eval is run
+            self.__run_on_change(value)
+
         if _changed and self._cache and not self._fading:
             try:
                 cache_write(self._cache, self._value)

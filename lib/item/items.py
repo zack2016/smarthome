@@ -170,12 +170,14 @@ class Items():
         # and from ../etc/struct.yaml
         #
         # Read in item structs from ../etc/struct.yaml
+        self._sh.shng_status['details'] = 'Structs'
         self.structs.load_struct_definitions(etc_dir)
 
 
         # --------------------------------------------------------------------
         # Read in item definitions
         #
+        self._sh.shng_status['details'] = 'Items'
         item_conf = None
         item_conf = lib.config.parse_itemsdir(env_dir, item_conf)
         item_conf = lib.config.parse_itemsdir(items_dir, item_conf, addfilenames=True, struct_dict=self.structs._struct_definitions)

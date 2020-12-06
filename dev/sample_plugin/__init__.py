@@ -148,11 +148,8 @@ class SamplePlugin(SmartPlugin):
             self.logger.info("Update item: {}, item has been changed outside this plugin".format(item.id()))
 
             if self.has_iattr(item.conf, 'foo_itemtag'):
-                self.logger.debug(
-                    "update_item was called with item '{}' from caller '{}', source '{}' and dest '{}'".format(item,
-                                                                                                               caller,
-                                                                                                               source,
-                                                                                                               dest))
+                self.logger.debug("update_item was called with item '{}' from caller '{}', source '{}' and dest '{}'".format(item,
+                                                                                                               caller, source, dest))
             pass
 
     def poll_device(self):

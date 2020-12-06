@@ -386,6 +386,7 @@
     "THREAD": "Thread",
     "TOTAL": "gesamt",
     "THREAD-ID": "Thread-Id",
+    "SYSTEM-PID": "Prozess-Id",
     "ACTIVE": "Aktiv"
   },
   "LOGS": {

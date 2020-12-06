@@ -383,6 +383,7 @@
     "THREAD": "Tâches",
     "TOTAL": "total",
     "THREAD-ID": "Id de tâche",
+    "SYSTEM-PID": "Id de processus",
     "ACTIVE": "Actif"
   },
   "LOGS": {

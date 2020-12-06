@@ -117,6 +117,8 @@ class Plugins():
         for plugin in _conf:
             logger.debug("Plugins, section: {}".format(plugin))
             plugin_name, self.meta = self._get_pluginname_and_metadata(plugin, _conf[plugin])
+            self._sh.shng_status['details'] = plugin_name   # Namen des Plugins übertragen
+            #self._sh.shng_status['details'] = plugin        # Namen der Plugin Section übertragen
 
             # test if plugin defines item attributes
             item_attributes = self.meta.itemdefinitions
