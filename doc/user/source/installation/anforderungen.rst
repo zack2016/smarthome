@@ -148,7 +148,7 @@ Ab SmartHomeNG v1.6 sollte eine Installation unter MacOS möglich sein.
 weitere Software
 ----------------
 
-Die aktuelle Version von SmartHomeNG setzt Python der Version 3.5 oder neuer voraus.
+Die aktuelle Version von SmartHomeNG setzt Python der Version 3.6 oder neuer voraus.
 
 Die Grundregel nach der sich der Support für Python Versionen richten
 soll ist folgende:
@@ -170,6 +170,10 @@ Version aktuelle Python Version und die zwei Vorgängerversionen.**
 
 Das bedeutet nicht automatisch, dass SmartHomeNG mit älteren Python Versionen nicht mehr funktioniert,
 die Entwicklung wird nur nicht mehr mit älteren Versionen getestet.
+
+Python 3.6 jedoch hat eine Reihe sehr interessanter Features und Verbesserungen gebracht, die nur dann in SmartHomeNG
+genutzt werden können, wenn sichergestellt ist dass SmartHomeNG mindestens unter Python 3.6 gestartet wurde. Daher
+wurde für SmartHomeNG v1.8 die **Absolute Minimum Python Version** auf 3.6 angehoben.
 
 Debian Buster bringt aktuell Python 3.7.x und PHP 7.3 mit und Ubuntu 20.04 LTS Python 3.8.x sowie PHP 7.4 und PHP 7.3
 

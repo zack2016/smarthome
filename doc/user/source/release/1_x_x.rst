@@ -8,10 +8,10 @@ Es gibt eine Menge neuer Features im Core von SmartHomeNG und den Plugins.
 
     Diese Release Notes sind ein Arbeitsstand.
 
-     - Berücksichtigt sind Commits im smarthome Repository bis incl. 5. Oktober 2020
-       (module.admin: Better handling for exception while testing for blog articles)
-     - Berücksichtigt sind Commits im plugins Repository bis incl. 6. Oktober 2020
-       (knx: fix aclass name bug, added support thread)
+     - Berücksichtigt sind Commits im smarthome Repository bis incl. 6. Dezember 2020
+       (test.mock: Added shng_status to MockSmarthome)
+     - Berücksichtigt sind Commits im plugins Repository bis incl. 6. Dezember 2020
+       (Merge pull request #423 from onkelandy/kodi ...)
 
 
 
@@ -48,11 +48,34 @@ der neueren Python Versionen (3.7 oder 3.8) aufzusetzen.
    angehoben werden. Sollten die Features nur in Plugins genutzt werden, so können nur solche Plugins nicht genutzt
    werden, wenn eine ältere Python Version als 3.6 eingesetzt wird.
 
+   Außerdem hat Python 3.5 am 30. September 2020 sein End-of-Life erreicht. Es wird für Python 3.5 also keine Updates
+   (auch keine Security Updates) mehr geben. Der Stand wurde von den Entwicklern eingefroren und es gibt für die
+   Version keinen Branch mehr im Repository.
+
 
 Bugfixes in the CORE
 --------------------
 
-* ...
+* lib.item:
+
+  * Fixed setting of 'updated_by' property, if value was changed by on_update/on_change and syntax
+    without assignement was used
+  * Fixed merging structs with same attribute/item in subtree
+  * Fixed relative item evaluation when usind '.property'
+  * Fixed bug in referencing an attribute of grandpartent item
+
+* lib.shpypi
+
+  * Fix to be able to handle first run of smarthomeng (without any installed requirements)
+
+* lib.shtime:
+
+  * Bugfix for public holidays
+
+* lib.smarthome
+
+  * Fix in deprecated methods to call self.<method> instead of sh.<method>
+
 
 
 Updates in the CORE
@@ -68,6 +91,7 @@ Updates in the CORE
   * Changed exitcode to 5 for restarts to signal systemctl that the service should be restarted
   * added commandline parameter 'pip3_command' to be able to install core requirements if the
     pip3 command is not at the default location
+  * streamlined bin.smarthome.py after isolating SmartHome class from bin/smarthome.py to lib.smarthome.py
 
 * Items:
 
@@ -88,11 +112,11 @@ Updates in the CORE
   * Added log_change output during initialization phase
   * Added Methods for validity checking of plugin specific attributes
   * Added filename to attribute-not-defined warning; excluded env.* items from warnings
-  * Fixed setting of 'updated_by' property, if value was changed by on_update/on_change and syntax
-    without assignement was used
-  * Fixed merging structs with same attribute/item in subtree
   * Implemented check for datatype of plugin-specific item attributes
   * Changed Thread name for calls to scheduler.trigger()
+  * eval, on_update, on_change, eval_trigger: Now support shtime.*, items.* and math.*
+  * implemented referencing attributes of greatgrandparent items
+  * Added further info to shng_status text
 
 * lib.metadata:
 
@@ -100,6 +124,14 @@ Updates in the CORE
   * Make sure, itemprefixdefinitions exists
   * Implemented check for datatype of plugin-specific item attributes
   * Implemented item-attribute checking valid_min, valid_max, valid_list
+  * Added valid_list_ci for case insensitive plugin parameters and item attributes
+  * Plugin parameters can now be dicts
+
+* lib.model.smartplugin:
+
+  * SmartPlugins can now update their own section in ../etc/plugin.yaml (only parameters that are defined
+    in their metadata (<plugin>/plugin.yaml)
+  * Changed logging in update_config_section()
 
 * lib.module:
 
@@ -110,6 +142,7 @@ Updates in the CORE
   * Introduced iowait instead of select.poll() which is not platform portable
   * terminator not ignored anymore
   * Changed building of thread names for tcp_client and tcp_server
+  * Added try/except when getting number of active connections
 
 * lib.plugin:
 
@@ -125,10 +158,18 @@ Updates in the CORE
   * If getting path to pip from path to os package (os.__file__), try file 'pip3', if file 'pip 3.<x>' is not found
   * Write output of PIP3 command to file in log directory
   * Requesting newest version of a package in the order they are displayed in the admin gui
+  * Changed access to pypi.org because the rpc api is deprecated. Now using rss feed data
+  * newest release is updated daily (not only on first access)
+  * Adjusted some log levels
+  * crontab for scheduler can be configured in etc/smarthome.yaml
 
-* lib.shtime:
+* lib.smarthome
 
-  * Bugfix for public holidays
+  * Isolated SmartHome class from bin/smarthome.py to lib.smarthome.py (to enable documentation in Sphinx)
+  * changed foreground (-f) option to write a pidfile (to enable showing od pid and to restart with Admin GUI
+    when in foreground mode)
+  * Added export of threadinfo to support tool cpuusage
+  * Added support for tool cpuusage.py
 
 * lib.tools:
 
@@ -145,12 +186,19 @@ Updates in the CORE
     * Changed var name to build pip_log_name
     * Added 'waiting...' on Core Restart and adjusted timing of messages
     * Thread names adjusted
+    * eval / eval checker: Allows API access through items.<method> instead of having to use sh.items.<method>
+    * eval checker: Now support shtime.*, items.* and math.*
+    * Added details to information while restarting core
+    * added display of system pid for threads (when running under Python 3.8 and up)
 
   * http:
 
     * Set maximum version of cherrypy to avoid problem with cheroot 8.4.4
     * Added get methods for service user and password. get_service_password always returns the
       hashed password - which is generated in case the user has entered a plain text password in the yaml file
+    * Updated bootstrap from 4.3.1 to 4.5.3
+    * Changed global template for plugin webinterface to support up to 6 tabs
+    * Webinterfaces now have a prefix '/plugin' in the url -> http://<ip>:<port>/plugin/<plugin_name>
 
   * mqtt:
 
@@ -161,6 +209,9 @@ Updates in the CORE
 
     * Initial commit
     * known issue: periodic updates for series (plots) do not work yet
+    * Added janus to requirements
+    * Changed loop.create_task() for Python 3.7
+    * Improved exception handling on network hickups
 
 * shngAdmin:
 
@@ -175,6 +226,15 @@ Updates in the CORE
   * Update to system properties page
   * Translations for new startup status; adjusted display size of log files to prevent scrolling of browser window.
   * Better handling for exception while testing for blog articles
+  * Added gui_type 'readonly' for plugin parameters that are configured by the plugin itself
+  * implemented handling for plugin parameter 'configuration_needed'
+  * added spinner when loading information of configured plugins
+
+* tests:
+
+  * Changed plugin test for cli to reflect change to multi-instance
+  * Adjusted test_smarthome to reflect changes (bin.smarthome -> lib.smarthome)
+  * Added shng_status to MockSmarthome
 
 
 
@@ -182,6 +242,25 @@ New Plugins
 -----------
 
 For details of the changes of the individual plugins, please refer to the documentation of the respective plugin.
+
+* bsblan:
+
+  * This plugin connects your BSB-LPB-LAN-Adapter (https://github.com/1coderookie/BSB-LPB-LAN/) to SmarthomeNG
+  * BSB-LPB-LAN is a LAN Interface for Boiler-System-Bus (BSB) that enables you to control heating systems from
+    Elco or Brötje and similar Systems
+  * Reads out all available Boiler data
+
+* hue2:
+
+  * New plugin for Philips Hue
+  * Has a web interface and extensive documentation
+  * Authorization at a Hue bride integrated into the plugin and is done through the web interface
+  * The plugin has a feature to find acive Hue bridges in the local network
+  * The plugin support only one bridge per instance. It ia multi instance capable though
+  * The plugin comes with structure templates to ease the configuration of items
+  * Added two smartVISU widgets (color_control and attributes)
+  * It is no direct replacement for the old hue plugin, since it is not configuration compatible
+  * Not yet feature complete
 
 * smartvisu: New plugin to replace visu_smartvisu plugin -
 
@@ -191,8 +270,8 @@ For details of the changes of the individual plugins, please refer to the docume
   * Structure of smartVISU navigation can optionally be defined in /etc/visu.yaml
 
 
-Plugin Updates
---------------
+Plugin Updates and Bugfixes
+---------------------------
 
 * appletv:
 
@@ -217,18 +296,30 @@ Plugin Updates
   * Fixed attribute definition for wifi index
   * Adjusted thread name for Monitoring-Service
   * Replaced deprecated smartVISU widgets in widget_avm
+  * Avoid double exception, Initialize dictionary
+  * fixed typo in metadata
+  * fixed exception occurring on error in hkr device readout
+
+* buderus:
+
+  * Improved the documentation and added structs
+  * Removed some non working URLs
+  * Improved and tested
 
 * casambi:
 
   * Cleaned-up webinterface
   * Fixed error when API key is no longer valid
   * set state from develop to ready
+  * added user_doc
 
-* cli2:
+* cli:
 
-  * Created from cli plugin
-  * Use lib.network
   * Add a webinterface
+  * now uses lib.network instead of lib.connection
+  * Uses now latest shtime API
+  * Adjusted name of tcp_server thread
+
 
 * database:
 
@@ -239,6 +330,30 @@ Plugin Updates
   * Fixed conversion bug for webinterface and comparison
   * Changed loglevel for entry "Cache not available in database for item ..." to info
   * Corrected german description of item attribute 'database'
+  * Changed valid_list item attributes to valid_list_ci
+  * Greyed out delete button for most recent value
+  * fix that delete button is only greyed out on most recent day ("now")
+  * fix for zero padded numbers in if comparison
+  * fix for day = None
+  * Added mouse-over text for greyed delete button
+  * corrected typos in metadata
+  * disabled item delete button for first AND second item as both cannot be deleted until next value comes in
+
+* dashbutton:
+
+  * use latest shtime API
+
+* datalog:
+
+  * Uses now latest shtime API
+
+* drexelundweiss:
+
+  * improve reading of txt files if line ending format differs
+  * include PANEL pcb to set and get room temperature, etc.
+  * fix line endings in txt files
+  * fix x2_plus lineendings and update PANEL info
+  * Addes user_doc
 
 * easymeter:
 
@@ -256,6 +371,7 @@ Plugin Updates
   * Improved documentation for reading transceiver chip's BaseID
   * Rework for Eltako Shutter Actor FSB71
   * Add device name for custom EEPs and small improvements
+  * completed metadata
 
 * garminconnect:
 
@@ -268,6 +384,11 @@ Plugin Updates
 * homematic:
 
   * Adjusted thread name (for server thread)
+  * Fixed bug in items display of web interface
+
+* helios:
+
+  * logic uses shtime now
 
 * hue:
 
@@ -287,6 +408,12 @@ Plugin Updates
   * Able to read knxproj and opc files for comparison of GroupAddresses
   * Adjusted plugin version
   * Added support thread
+  * update docs and set js+css resource to local source
+  * Modified prompts in web interface to be usable on (tablet) devices with smaller viewport (1024 pixels wide)
+
+* kodi:
+
+  * expand valid list for kodi_item
 
 * lirc:
 
@@ -305,6 +432,17 @@ Plugin Updates
   * Added debug outputs
   * Completed plugin metadata
   * Catching empty security keys
+  * added new Oauth2 based authentication feature for Vorwerk robots (compatible with MyKobold APP's interface)
+  * added WebInterface with OAuth2 step-by-step guide
+  * robustness improvements
+  * improved vendor selection
+  * fixed plugin.yaml
+  * changed attribute charge_percentage from string to integer
+  * preliminary fix for number of robots readout with legacy login
+  * Adapted readme and fixed roboter count
+  * completed metadata
+  * new feature to write token obtained via WebIf directly to plugin.yaml with new function update_config_section()
+  * added alert text output, e.g. dustbin full
 
 * network:
 
@@ -321,6 +459,7 @@ Plugin Updates
   * Added some default handling for updating webif
   * Migration from connection lib to mod_http services interface
   * Extended error log, if mod_http is not configured
+  * adapted copyright header, removed MultiInstance from code
 
 * odlinfo:
 
@@ -334,6 +473,11 @@ Plugin Updates
 
   * Added x, y, and z attributes to item attribute definition
   * Added example of rain_layer and cloud_layer to README
+
+* operationlog:
+
+  * refined metadata
+  * clean up, improve inline docu, scaffold webif and tests
 
 * robonect:
 
@@ -358,6 +502,21 @@ Plugin Updates
 
   * Removed some parameter checks which are in core alread and added webinterface
 
+* simulation:
+
+  * fix plugin.yaml, include struct. Create user_doc and sv_widget based on README
+
+* sma_em:
+
+  * Updated to newest code in SMA-EM project
+  * added logger.error instead of print
+  * Reformatted code
+  * updated version
+
+* solarlog:
+
+  * Uses now latest shtime API
+
 * sonos:
 
   * Added debug outputs
@@ -365,12 +524,20 @@ Plugin Updates
   * Added item attribute definitions to metadata
   * Completed plugin metadata
   * Added missing values to valid_lists for item attributes sonos_recv and sonos_send
+  * Updated plugin core to recently released SoCo v20
+  * Fixed error in sonos widget with popups having hardcoded ID
+  * Fixed memory leak
+  * fixed default handling for param discover_cycle
+  * completed metadata
+  * Added missing values to valid_list for sonos_recv attribute
 
 * squeezebox:
 
   * Switch from connection lib to network lib
   * Improve rescan status in plugin.yaml struct
   * Move readme infos to user_doc
+  * fix scantype typo in plugin.yaml
+  * fix structs for random and shuffle
 
 * stateengine:
 
@@ -385,6 +552,16 @@ Plugin Updates
   * Add changedby and updatedby
   * Improve handling of mixed condition checks (items, evals, etc.), logging for incorrect value type definitions
   * Improve logging for web interface update
+  * replace some sh. functions by shtime lib
+  * add additional suspend_end formats (datetime stamp and unix_timestamp)= as well as suspend_start and
+    supsendduration duration_format to use with the new clock.countdown widget from smartvisu
+  * fix suspend_end and start if value is empty
+  * improve metadata in plugin.yaml
+  * replace deprecated functions and implement functions for SV clock.countdown
+  * convert source for actions/item changes to string, otherwise this can create errors e.g. when
+    using log_change attribute
+  * docu update for current.state_id etc.
+  * small tweak in plugin.yaml for suspend_end/start time
 
 * tankerkoenig:
 
@@ -397,6 +574,10 @@ Plugin Updates
 * telegram:
 
   * Update to Lib V12.8.0 with refactoring according to changes
+
+* thz:
+
+  * add some more logging for debug purposes and minor information
 
 * unifi:
 
@@ -524,6 +705,9 @@ Tools
 
   * Added option -v to list shng and Python min/max versions; added structs to listing of
     metadata of a plugin (options -d and -dd)
+
+* Added tool cpuusage.py
+
 
 Documentation
 -------------
