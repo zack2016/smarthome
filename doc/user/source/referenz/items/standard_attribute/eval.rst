@@ -41,7 +41,7 @@ Das Eval Attribut kann auch bis zu einem gewissen Grad Logiken
 beinhalten. Wichtig ist, dass bei der Angabe eines **if** auch ein **else**
 implementiert sein muss. Außerdem ist dem Item ein **sh.** voran zu
 setzen. Die () Klammern hinter dem Item sind nötig, um den Item-Wert
-abzufragen.
+abzufragen. Anstelle der Klammern kann auch property.value genutzt werden.
 
 .. code-block:: yaml
 
@@ -50,6 +50,7 @@ abzufragen.
            # Wird wahr, wenn die Temperatur über 20 Grad wird und falsch, wenn nicht.
            type: bool
            eval: 1 if sh.Temperatur() > 20 else 0
+           # alternativ eval: 1 if sh.Temperatur.property.value > 20 else 0
            eval_trigger: Temperatur
 
 Weiter ist es möglich, direkt die Werte der eval_trigger im eval
@@ -97,7 +98,12 @@ Beispiel:
 
 Seit SmartHomeNG v1.3 wird das Python Modul
 `math <https://docs.python.org/3.4/library/math.html>`__ bereitgestellt
-und es können entsprechende Funktionen genutzt werden.
+und es können entsprechende Funktionen genutzt werden. Außerdem sind seit
+SmarthomeNG v1.7.3 die
+:doc:`Items-API </logiken/objekteundmethoden_item_methoden>`
+als **items** (z.B. items.return_item('bla')) und das
+:doc:`shtime Modul </logiken/objekteundmethoden_feiertage_datum_zeit>`
+mittels **shtime** (z.B. shtime.now()) verfügbar.
 
 Beispiel:
 
@@ -107,8 +113,8 @@ Beispiel:
      type: num
      eval: ceil(sh.otheritem() / 60.0)
 
-Seit SmartHomeNG v1.3 können für **eval** auch relative `Relative Item
-Referenzen <https://github.com/smarthomeNG/smarthome/wiki/Items:-Relative-Item-Referenzen>`__
+Seit SmartHomeNG v1.3 können für **eval** auch
+:doc:`Relative Item Referenzen </referenz/items/attributes_relative_referenzen>`
 genutzt werden. Dann müssen Bezüge auf andere Items nicht mehr absolut
 angegeben werden sondern können sich relative auf andere Items beziehen.
 
@@ -190,12 +196,7 @@ einem Stern generalisiert werden. ``temperatur.\*`` bedeutet, dass alle Kinderit
 Evaluieren des Items führen. Oder ``\*.trigger`` sorgt dafür, dass das Item durch alle Kind-Items mit dem
 Namen “trigger” aktualisiert werden kann, also z.B. durch ``temperatur.trigger``, ``Licht.OG.trigger``, etc.
 
-Seit SmartHomeNG v1.3 können für **eval_trigger** auch :doc:`Relative Item Referenzen </referenz/items/attributes_relative_referenzen>`
-
-`Relative
-Item
-Referenzen <https://github.com/smarthomeNG/smarthome/wiki/Items:-Relative-Item-Referenzen>`__
-genutzt werden. Dann müssen Bezüge auf andere Items nicht mehr absolut
+Seit SmartHomeNG v1.3 können für **eval_trigger** auch :doc:`Relative Item Referenzen </referenz/items/attributes_relative_referenzen>` genutzt werden. Dann müssen Bezüge auf andere Items nicht mehr absolut
 angegeben werden sondern können sich relative auf andere Items beziehen.
 
 .. note::
@@ -204,19 +205,19 @@ angegeben werden sondern können sich relative auf andere Items beziehen.
     bei **eval_trigger** auch den vollen Python-Pfad zu einem SmartHomeNG Item zu verwenden, wie
     im **eval** Ausdruck.
 
-    Richtig ist es, bei **eval_trigger** nur der Item-Pfad zu nutzen (ohne führendes **sh.** und
+    Richtig ist es, bei **eval_trigger** nur den Item-Pfad zu nutzen (ohne führendes **sh.** und
     ohne folgende **()**).
 
 
     **Korrekt**:
 
-    - eval: **sh.** my.value **()**
-    - eval_trigger: my.value | my.other.value
+    - eval: **sh.** my.item **()** oder sh.my.item.property.value
+    - eval_trigger: my.item | my.other.item
 
     **Falsch**:
 
-    - eval: sh.my.value
-    - eval_trigger: **sh.** my.value | **sh.** my.other.value
+    - eval: sh.my.item
+    - eval_trigger: **sh.** my.item | **sh.** my.other.item
 
 
 Gemeinsame Verwendung von eval und on\_\.\.\. Item Attributen
@@ -231,7 +232,8 @@ Berechnung, wird dem Item das Ergebnis zugewiesen. Anschließend werden die Ausd
 **value**) bereits den neuen Wert.
 
 Wenn in **eval** Ausdrücken in **on_change** oder **on_update** Attributen auf den alten Wert
-des Items zugegriffen werden soll, muss dazu die Item Funktion **prev_value()** genutzt werden.
+des Items zugegriffen werden soll, muss dazu die Item Funktion **prev_value()** oder das
+Item Property **property.last_value** genutzt werden.
 Auf den alten Wert des aktuellen Items kann ohne die Angabe der vollständigen Item Pfades durch
 den Ausdruck **sh.self.prev_value()** zugegriffen werden.
 
