@@ -499,7 +499,7 @@ class Websocket(Module):
                 if answer != {}:
                     try:
                         await websocket.send(reply)
-                        self.logger.warning("visu >REPLY: '{}'   -   to {}".format(answer, websocket.remote_address))
+                        self.logger.info("visu >REPLY: '{}'   -   to {}".format(answer, websocket.remote_address))
                     except (asyncio.IncompleteReadError, asyncio.connection_closed_exc) as e:
                         self.logger.error("smartVISU_protocol_v4: Error in 'await websocket.send(reply)': {}".format(e))
                     except Exception as e:
