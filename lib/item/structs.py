@@ -173,21 +173,24 @@ class Structs():
         if substruct_name.startswith('test_'):
             self.logger.info("merge_substruct_to_struct: ->substruct_name='{}'".format(substruct_name))
         substruct = self._struct_definitions.get(substruct_name, None)
-        # merge in the sub-struct
-        for key in substruct:
-            if main_struct.get(key, None) is None:
-                if substruct_name.startswith('test_'):
-                    self.logger.info("merge_substruct_to_struct: - key='{}', value='{}' -> new_struct='{}'".format(key, substruct[key], main_struct))
-                main_struct[key] = copy.deepcopy(substruct[key])
-            elif isinstance(main_struct.get(key, None), dict):
-                if substruct_name.startswith('test_'):
-                    self.logger.info("merge_substruct_to_struct: - merge key='{}', value='{}' -> new_struct='{}'".format(key, substruct
-                [key], main_struct))
-                self.merge(substruct[key], main_struct[key], substruct_name + '.' + key, main_struct_name + '.' + key)
-            elif isinstance(main_struct.get(key, None), list) or isinstance(substruct.get(key, None), list):
-                main_struct[key] = self.merge_structlists(main_struct[key], substruct[key], key)
-            else:
-                self.logger.debug("merge_substruct_to_struct: - key='{}', value '{}' is ignored'".format(key, substruct[key]))
+        if substruct is None:
+            self.logger.error("struct '{}' not found in structdefinitions (used in '{}')".format(substruct_name, main_struct_name))
+        else:
+            # merge in the sub-struct
+            for key in substruct:
+                if main_struct.get(key, None) is None:
+                    if substruct_name.startswith('test_'):
+                        self.logger.info("merge_substruct_to_struct: - key='{}', value='{}' -> new_struct='{}'".format(key, substruct[key], main_struct))
+                    main_struct[key] = copy.deepcopy(substruct[key])
+                elif isinstance(main_struct.get(key, None), dict):
+                    if substruct_name.startswith('test_'):
+                        self.logger.info("merge_substruct_to_struct: - merge key='{}', value='{}' -> new_struct='{}'".format(key, substruct
+                    [key], main_struct))
+                    self.merge(substruct[key], main_struct[key], substruct_name + '.' + key, main_struct_name + '.' + key)
+                elif isinstance(main_struct.get(key, None), list) or isinstance(substruct.get(key, None), list):
+                    main_struct[key] = self.merge_structlists(main_struct[key], substruct[key], key)
+                else:
+                    self.logger.debug("merge_substruct_to_struct: - key='{}', value '{}' is ignored'".format(key, substruct[key]))
         return
 
 

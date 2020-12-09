@@ -192,6 +192,7 @@ class Item():
         # Item Attributes
         #############################################################
         self._filename = dict(config.items()).get('_filename', None)
+        setattr(self, '_type', dict(config.items()).get(KEY_TYPE))
         for attr, value in config.items():
             if not isinstance(value, dict):
                 if attr in [KEY_CYCLE, KEY_NAME, KEY_TYPE, KEY_STRUCT, KEY_VALUE, KEY_INITVALUE]:
@@ -1110,6 +1111,8 @@ class Item():
         """
         evaluate the 'eval' entry of the actual item
         """
+        if (self._sh.shng_status['code'] != 20) and (caller != 'Init'):
+            logger.info(f"Item {self._path}: Running __run_eval before initialization is finished - caller={caller}, source={source}")
         if self._eval:
             # Test if a conditional trigger is defined
             if self._trigger_condition is not None:
@@ -1123,7 +1126,11 @@ class Item():
                     cond = eval(self._trigger_condition)
                     logger.warning("Item {}: Condition result '{}' evaluating trigger condition {}".format(self._path, cond, self._trigger_condition))
                 except Exception as e:
-                    logger.warning("Item {}: problem evaluating trigger condition {}: {}".format(self._path, self._trigger_condition, e))
+                    log_msg = "Item {}: Xroblem evaluating trigger condition '{}': {}".format(self._path, self._trigger_condition, e)
+                    if (self._sh.shng_status['code'] != 20) and (caller != 'Init'):
+                        logger.debug(log_msg)
+                    else:
+                        logger.warning(log_msg)
                     return
             else:
                 cond = True
@@ -1140,7 +1147,11 @@ class Item():
                     #logger.warning("Item {}: Evaluating item value {}".format(self._path, self._eval))
                     value = eval(self._eval)
                 except Exception as e:
-                    logger.warning("Item {}: problem evaluating {}: {}".format(self._path, self._eval, e))
+                    log_msg = "Item {}: problem evaluating '{}': {}".format(self._path, self._eval, e)
+                    if (self._sh.shng_status['code'] != 20) and (caller != 'Init'):
+                        logger.debug(log_msg + " (status_code={}/caller={})".format(self._sh.shng_status['code'], caller))
+                    else:
+                        logger.warning(log_msg)
                 else:
                     if value is None:
                         logger.debug("Item {}: evaluating {} returns None".format(self._path, self._eval))

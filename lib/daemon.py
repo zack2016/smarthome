@@ -166,11 +166,13 @@ def check_sh_is_running(pidfile):
     pid = read_pidfile(pidfile)
     isRunning = False
     if pid > 0 and psutil.pid_exists(pid):
+        #print("daemon.check_sh_is_running: pid={}, psutil.pid_exists(pid)={}".format(pid, psutil.pid_exists(pid)))
         try:
             fh = open(pidfile, 'r')
             # LOCK_EX - acquire an exclusive lock
             # LOCK_NB - non blocking
             portalocker.lock(fh, portalocker.LOCK_EX | portalocker.LOCK_NB)
+            #print("daemon.check_sh_is_running: portalocker.lock erfolgreich")
             # pidfile not locked, so sh is terminated
         except portalocker.LockException:
             isRunning = True
