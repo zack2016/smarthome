@@ -60,9 +60,9 @@ oder im `Chat auf gitter.im <https://gitter.im/smarthomeNG/smarthome>`_ .
    tools/tools.rst
    fehlersuche
    faq
-   release/release
    referenz/referenz
    entwicklung/entwicklung
+   release/release
    genindex
    impressum
    datenschutz
