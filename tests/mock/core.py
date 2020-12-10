@@ -48,7 +48,7 @@ class MockSmartHome():
     base_dir = _base_dir     # for external modules using that var (backend, ...?)
     _default_language = 'de'
 
-    shng_status = {}
+    shng_status = {'code': 20, 'text': 'Running'}
 
     _restart_on_num_workers = 30
 
