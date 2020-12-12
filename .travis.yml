@@ -1,17 +1,27 @@
-sudo: false
 language: python
-python:
-#    - "3.2"
-    - "3.3"
-    - "3.4"
-    - "3.5"
-    - "3.6"
+cache: pip
+
+jobs:
+    include:
+      - python: 3.6
+        dist: bionic
+      - python: 3.7
+        dist: bionic
+      - python: 3.8
+        dist: focal
+
+env:
+    - REPOSITORY_ORIGIN=smarthome
 
 before_install:
-    - git submodule update --init --remote --recursive
-
+    - sudo apt-get update
+    - sudo apt-get install libudev-dev
+    - sudo apt-get install librrd-dev libpython3-dev
+    - sudo apt-get install gcc --only-upgrade
+    - python3 -m pip install --upgrade pip==19.3.1
 install:
-    - pip install tox-travis "virtualenv<14.0.0"
+    - pip install tox-travis virtualenv>=20.0.8 --upgrade
+    - pip install sphinx sphinx_rtd_theme recommonmark
 
 script:
-    - tox
+    - sh .travis.sh

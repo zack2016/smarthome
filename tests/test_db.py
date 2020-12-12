@@ -1,5 +1,5 @@
 
-import common
+from . import common
 import unittest
 import sqlite3
 import threading
@@ -23,19 +23,21 @@ class TestDbTests(unittest.TestCase, TestDbBase):
         self.db(paramstyle='pyformat')
 
     def test_paramstyle_not_supported(self):
-        with self.assertRaisesRegex(Exception, 'driver format style .* not supported'):
-            self.db(paramstyle='wrongformat')
+#        with self.assertRaisesRegex(Exception, 'driver format style .* not supported'):
+#            self.db(paramstyle='wrongformat')
+        test_db = self.db(paramstyle='wrongformat') # 'driver format style .* not supported'
+        self.assertFalse(test_db.api_initialized)
 
     def test_connect(self):
         db = self.db(connect='host:server | user:username | password:secret')
         db.connect()
         args = db._dbapi.connect_kwargs
         self.assertTrue('host' in args)
-        self.assertEquals('server', args['host'])
+        self.assertEqual('server', args['host'])
         self.assertTrue('user' in args)
-        self.assertEquals('username', args['user'])
+        self.assertEqual('username', args['user'])
         self.assertTrue('password' in args)
-        self.assertEquals('secret', args['password'])
+        self.assertEqual('secret', args['password'])
 
     def test_connect_set_connected(self):
         db = self.db()
@@ -102,30 +104,34 @@ class TestDbTests(unittest.TestCase, TestDbBase):
           2 : ['ROLLOUT 2', 'ROLLBACK 2']
         })
 
-        # Statement 0: SELECT version
-        self.assertEquals("ROLLOUT 1", db._conn.cursor_return.execute_kwargs[1][0])
-        # Statement 2: INSERT version
-        self.assertEquals("ROLLOUT 2", db._conn.cursor_return.execute_kwargs[3][0])
-        # Statement 4: INSERT version
+        # Statement 0: SELECT version - ignore
+        # Statement 1: Rollout statment 1 - check:
+        self.assertEqual("ROLLOUT 1", db._conn.cursor_return.execute_kwargs[1][0])
+        # Statement 2: INSERT version - ignore
+        # Statement 3: Rollout statment 2 - check:
+        self.assertEqual("ROLLOUT 2", db._conn.cursor_return.execute_kwargs[3][0])
+        # Statement 4: INSERT version - check
+        self.assertEqual("INSERT INTO test_version", db._conn.cursor_return.execute_kwargs[4][0][0:24])
+        self.assertEqual(2, db._conn.cursor_return.execute_kwargs[4][1][0])
 
     def test_execute_internal_cursor(self):
         db = self.db()
         db.connect()
         db.execute("select 1")
-        self.assertEquals("select 1", db._conn.cursor_return.execute_kwargs[0][0])
+        self.assertEqual("select 1", db._conn.cursor_return.execute_kwargs[0][0])
 
     def test_execute_custom_cursor(self):
         db = self.db()
         db.connect()
         cur = db.cursor()
         db.execute("select 1", cur=cur)
-        self.assertEquals("select 1", cur.execute_kwargs[0][0])
+        self.assertEqual("select 1", cur.execute_kwargs[0][0])
 
     def test_verify(self):
         db = self.db()
         db.connect()
         db.verify()
-        self.assertEquals("SELECT 1", db._conn.cursor_return.execute_kwargs[0][0])
+        self.assertEqual("SELECT 1", db._conn.cursor_return.execute_kwargs[0][0])
 
     def test_fetchone(self):
         db = self.db()

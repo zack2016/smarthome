@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # vim: set encoding=utf-8 tabstop=4 softtabstop=4 shiftwidth=4 expandtab
 #########################################################################
-# Copyright 2016 Christian Strassburg  c.strassburg@gmx.de
+# Copyright 2018-       Martin Sinn                         m.sinn@gmx.de
 #########################################################################
 #  This file is part of SmartHomeNG
 #
@@ -19,48 +19,64 @@
 #  along with SmartHomeNG  If not, see <http://www.gnu.org/licenses/>.
 #########################################################################
 
+"""
+This script assembles a complete list of requirements for the SmartHomeNG core and all plugins.
+
+The list is not tested for correctness nor checked for contrary 
+requirements. 
+
+The procedure is as following:
+1) walks the plugins subdirectory and collect all files with requirements
+2) read the requirements for the core 
+3) read all files with requirements and add them with source of requirement to a dict
+4) write it all to a file all.txt in requirements directory
+
+"""
+
 import os
-import fnmatch
+import sys
 
-files = []
-requirements = {}
-SEP='/'
-workdir = SEP.join(os.path.realpath(__file__).split(SEP)[:-2])
+sh_basedir = os.sep.join(os.path.realpath(__file__).split(os.sep)[:-2])
+sys.path.insert(0, sh_basedir)
 
-if not os.path.exists(workdir + SEP+"plugins"):
-    print ("plugins directory not found!")
+program_name = sys.argv[0]
+arguments = sys.argv[1:]
+if "-debug_tox" in arguments:
+    import logging
+    logging.basicConfig(level=logging.DEBUG)
+    logger = logging.getLogger('build_requirements')
+    logger.setLevel(logging.DEBUG)
+    logger.debug("sys.path = {}".format(sys.path))
+
+import lib.shpypi as shpypi
+
+
+# ==========================================================================
+
+
+selection = 'all'
+
+
+if not os.path.exists(os.path.join(sh_basedir, 'modules')):
+    print ("Directory <shng-root>/modules not found!")
     exit(1)
-if not os.path.exists(workdir + SEP+"requirements"):
-    print ("requirements directory not found!")
+if not os.path.exists(os.path.join(sh_basedir, 'plugins')):
+    print ("Directory <shng-root>/plugins not found!")
+    exit(1)
+if not os.path.exists(os.path.join(sh_basedir, 'requirements')):
+    print ("Directory <shng-root>/requirements not found!")
     exit(1)
 
+req_files = shpypi.Requirements_files()
 
-for root, dirnames, filenames in os.walk(workdir + SEP + 'plugins'):
-    for filename in fnmatch.filter(filenames, 'requirements.txt'):
-        files.append(os.path.join(root, filename))
+# req_files.create_requirementsfile('core')
+# print("File 'requirements" + os.sep + "core.txt' created.")
+# req_files.create_requirementsfile('modules')
+# print("File 'requirements" + os.sep + "modules.txt' created.")
+fn = req_files.create_requirementsfile('base')
+print("File {} created.".format(fn))
 
-with open(workdir + SEP + "requirements"+SEP+"base.txt") as infile:
-    for line in infile:
-        if len(line.rstrip()) != 0:
-            requirements.setdefault(line.rstrip(), []).append("SmartHomeNG Core")
-for fname in files:
-    module = ''.join((fname.split(SEP))[-2:-1])
-
-    with open(fname) as infile:
-        for line in infile:
-            if len(line.rstrip()) != 0:
-                requirements.setdefault(line.rstrip(), []).append(module)
-
-for key in requirements:
-    requirements[key] = sorted(requirements[key], key=lambda name: (len(name.split('.')), name))
-with open(workdir + SEP + 'requirements' + SEP+'all.txt', 'w') as outfile:
-    outfile.write("# !!!       SmartHomeNG      !!!\n")
-    outfile.write("# !!!  DON'T EDIT THIS FILE  !!!\n")
-    outfile.write("# !!! THIS FILE IS GENERATED !!!\n")
-
-    for pkg, requirement in sorted(requirements.items(), key=lambda item: item[0]):
-        for req in sorted(requirement,
-                          key=lambda name: (len(name.split('.')), name)):
-           outfile.write('\n# {}'.format(req))
-        outfile.write('\n{}\n'.format(pkg))
-print("File 'requirements"+SEP+"all.txt' created.")
+# req_files.create_requirementsfile('plugins')
+# print("File 'requirements" + os.sep + "plugins.txt' created.")
+fn = req_files.create_requirementsfile('all')
+print("File {} created.".format(fn))

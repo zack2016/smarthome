@@ -21,6 +21,13 @@
 # Anpassungen 2016 Michael Würtenberger
 # Error Item für Verbindungsfehler bei fetch_url
 
+"""
+This library contains the Tools-class from the original smarthome.py
+
+:Note: These functions **should be concidered deprecated**. New helper-functions are going to be implemented in the utils.lib.
+
+"""
+
 import base64
 import datetime
 import http.client
@@ -28,6 +35,7 @@ import logging
 import math
 import subprocess
 import time
+import os
 
 logger = logging.getLogger(__name__)
 
@@ -38,14 +46,31 @@ class Tools():
         self._start = datetime.datetime.now()
 
     def ping(self, host):
-        try:
-            retcode = subprocess.call("ping -W 1 -c 1 " + host + " > /dev/null", shell=True)
-            if retcode == 0:
-                return True
-            else:
+        if os.name != 'nt':
+            try:
+                retcode = subprocess.call("ping -W 1 -c 1 " + host + " > /dev/null", shell=True)
+                if retcode == 0:
+                    return True
+                else:
+                    return False
+            except OSError:
                 return False
-        except OSError:
-            return False
+        else:
+            try:
+                ping_response = subprocess.run(["ping", host, "-n", "1"], stdout=subprocess.PIPE, timeout = 5)
+                if ping_response.returncode == 0:
+                    # need to inspect the returned output since it could be that
+                    # **destination is unreachable** anyway which does not generate an error code
+                    # as the result is a bytearray which codepage might vary between cp850, cp1252 and utf8, 
+                    # it is a quick hack to just look if ms is inside this string.
+                    # if not, it is sure that destination could not be reached
+                    if b'ms' in ping_response.stdout:
+                        return True
+                    return False
+                else:
+                    return False
+            except (OSError, subprocess.TimeoutExpired):
+                return False
 
     def dewpoint(self, t, rf):
         log = math.log((rf + 0.01) / 100)  # + 0.01 to 'cast' float
@@ -100,6 +125,25 @@ class Tools():
         mix = 18.0160 / 28.9660 * rf * sat / (100000 - rf * sat)
         rhov = 100000 / (287.0 * (1 - mix) + 462.0 * mix) / t
         return mix * rhov * 1000
+    
+    def abs2rel(self,t,ah):
+        """
+        Return the relative humidity from the absolute humidity (g/cm3) and temperature (Celsius)
+        
+        :param t: temperature in celsius
+        :type t: float
+        :param ah: absolute humidity (g/cm3)
+        :type t: float
+        
+        :return: val = relative humidity (in percent)
+        :rtype: dict
+        """
+        T=t+273.15
+        ah=ah/1000
+        sat_p=math.exp(77.3450 + 0.0057* T - 7235 / T) / math.pow(T,8.2   )
+        sat_density=0.0022*sat_p/T
+        rel=ah/sat_density*100
+        return rel
 
     def runtime(self):
         return datetime.datetime.now() - self._start

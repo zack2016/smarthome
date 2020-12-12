@@ -28,8 +28,6 @@ import threading
 import collections
 import re
 
-logger = logging.getLogger('')
-
 
 class Database():
     """A database abstraction layer based on DB-API2 specification.
@@ -46,6 +44,8 @@ class Database():
     'fetchone()' - execute statement and return first row from result
     'fetchall()' - execute statement and reeturn all rows from result
     'cursor()' - create a cursor object to execute multiple statements
+    'commit()' - commit a transaction (if the selcted database supports it)
+    'rollback()' - rollback a transaction (if the selcted database supports it)
     'lock()' - acquire the database lock (prevent simultaneous reads/writes)
     'release()' - release the database lock
     'verify()' - check database connection and reconnect if required
@@ -126,34 +126,51 @@ class Database():
     def __init__(self, name, dbapi, connect, formatting='named'):
         """Create a new database instance
 
-        The 'name' parameter identifies the name for the database access.
+        The 'name' parameter identifies the name for the database access .
         It is also used internally to create versions table (to keep track
         if the database structure is up to date) and logging.
 
-        Use the 'dbapi' parameter to specify the name of the database type
-        to use (registered in the common configuration, e.g. 'sqlite').
+        Use the 'dbapi' parameter to specify the DB-API2 module of the
+        database type to use (e.g. import the sqlite3 module and pass it
+        directly as parameter or as name 'sqlite3').
 
         How the database is accessed is specified by the 'connect' parameter
-        which supports key/value pairs separated by '|'. These named
+        which supports key/value pairs specified as dict. These named
         parameters will be used as 'connect()' parameters of the DB-API driver
         implementation.
 
         The 'formatting' parameter can be used to specify a different type
         of formatting (see DB-API spec) which defaults to 'pyformat'.
         """
+        self.logger = logging.getLogger(__name__)
+
         self._name = name
         self._dbapi = dbapi
+        self._dbapi_name = dbapi
         self._format_input = formatting
         self._connected = False
         self._conn = None
 
+        self.api_initialized = False
+
+        if type(dbapi) is str:
+            try:
+                self._dbapi = __import__(dbapi)
+            except ImportError as e:
+                self.logger.error("DB-API import failed for \"{}\": {} - module installed?".format(dbapi, e))
+                return
+
         if self._format_input not in self._styles:
-            raise Exception("Database [{}]: SQL format style {} not supported (only {})".format(self._name, self._format_input, self._styles))
+            self.logger.error("Database [{}]: SQL format style {} not supported (only {})".format(self._name, self._format_input, self._styles))
+            return
 
         self._params = {}
+
+        # Deprecated, remove with 1.7 or 1.8
         if type(connect) is str:
             connect = [p.strip() for p in connect.split('|')]
 
+        # Deprecated, remove with 1.7 or 1.8
         if type(connect) is list:
             for arg in connect:
                key, sep, value = arg.partition(':')
@@ -165,17 +182,21 @@ class Database():
                    pass
                self._params[key] = v
 
-        elif type(connect) is dict:
+        elif type(connect) in [dict, collections.OrderedDict]:
             self._params = connect
 
         self._format_output = self._dbapi.paramstyle
         if self._format_output not in self._styles:
-            raise Exception("Database [{}]: DB-API driver format style {} not supported (only {})".format(self._name, self._format_output, self._styles))
+            self.logger.error("Database [{}]: DB-API driver format style {} not supported (only {})".format(self._name, self._format_output, self._styles))
+            return
 
         self._translation = self._translations[self._format_input][self._format_output]
         self._translation_param_type = self._translation_param_types[self._format_output]
 
         self._fdb_lock = threading.Lock()
+
+        self.api_initialized = True
+        return
 
     def connect(self):
         """Connects to the database"""
@@ -183,12 +204,12 @@ class Database():
         try:
             self._conn = self._dbapi.connect(**self._params)
         except Exception as e:
-            logger.error("Database [{}]: Could not connect to the database: {}".format(self._name, e))
+            self.logger.error("Database [{}]: Could not connect to the database using '{}': {}".format(self._name, self._dbapi_name, e))
             raise
         finally:
             self.release()
         self._connected = True
-        logger.info("Database [{}]: Connected with {} using \"{}\" style".format(self._name, self._conn, self._format_output))
+        self.logger.info("Database [{}]: Connected with {} using \"{}\" style".format(self._name, self._conn, self._format_output))
 
     def close(self):
         """Closes the database connection"""
@@ -230,15 +251,16 @@ class Database():
         version_table = re.sub('[^a-z0-9_]', '', self._name.lower()) + "_version";
         try:
             version, = self.fetchone("SELECT MAX(version) FROM " + version_table + ";", cur=cur)
+            if version == None:
+               version = 0
         except Exception as e:
+            self.logger.info("Missing table " + version_table + " error can be ignored, will be created now!");
             self.execute("CREATE TABLE " + version_table + "(version NUMERIC, updated BIGINT, rollout TEXT, rollback TEXT)", cur=cur)
-            version, = self.fetchone("SELECT MAX(version) FROM " + version_table + ";", cur=cur)
-        if version == None:
             version = 0
-        logger.info("Database [{}]: Version {} found".format(self._name, version))
+        self.logger.info("Database [{}]: Version {} found".format(self._name, version))
         for v in sorted(queries.keys()):
             if float(v) > version:
-                logger.info("Database [{}]: Upgrading to version {}".format(self._name, v))
+                self.logger.info("Database [{}]: Upgrading to version {}".format(self._name, v))
                 self.execute(queries[v][0], cur=cur)
 
                 dt = datetime.datetime.utcnow()
@@ -267,7 +289,8 @@ class Database():
 
     def cursor(self):
         """Create a new cursor for executing statements"""
-        return self._conn.cursor()
+        if self._conn is not None:
+            return self._conn.cursor()
 
     def execute(self, stmt, params=(), formatting=None, cur=None):
         """Execute the given statement
@@ -290,27 +313,30 @@ class Database():
         try:
             stmt, args = self._prepare(stmt, params, formatting)
         except Exception as e:
-            logger.error("Can not prepare query: {} (args {}): {}".format(stmt, params, e))
+            self.logger.error("Can not prepare query: {} (args {}): {}".format(stmt, params, e))
             raise
 
         c = None
         try:
             if cur == None:
                 c = self.cursor()
-                result = c.execute(stmt, args)
-                c.close()
+                if c is not None:
+                    result = c.execute(stmt, args)
+                    c.close()
+                else:
+                    result = []
                 c = None
             else:
                 result = cur.execute(stmt, args)
             return result
         except Exception as e:
-            logger.error("Can not execute query: {} (args {}): {}".format(stmt, args, e))
+            self.logger.error("Can not execute query: {} (args {}): {}".format(stmt, args, e))
             raise
         finally:
             if c is not None:
                 c.close()
 
-    def verify(self, retry=5):
+    def verify(self, retry=5, delay=5):
         """Verifies the connection status and reconnets if required
 
         The connected status of the connection will be checked by executing
@@ -320,6 +346,9 @@ class Database():
         In case the reconnect fails you can specify how many times a
         reconnect will be executed until it will give up. This can be
         specified by the 'retry' parameter.
+
+        To specify the delay between retries use the `delay` parameter,
+        which defaults to 5 seconds.
         """
         while retry > 0:
             locked = False
@@ -336,11 +365,14 @@ class Database():
                     self.release()
 
             except Exception as e:
-                logger.warning("Database [{}]: Connection error {}".format(self._name, e))
+                self.logger.warning("Database [{}]: Connection error {}".format(self._name, e))
                 if locked:
                     self.release()
                 self.close()
                 retry = retry - 1
+
+            if retry > 0:
+                time.sleep(delay)
 
         return retry
 
@@ -369,9 +401,12 @@ class Database():
         """
         if cur == None:
             c = self.cursor()
-            self.execute(stmt, params, formatting=formatting, cur=c)
-            result = c.fetchall()
-            c.close()
+            if c is not None:
+                self.execute(stmt, params, formatting=formatting, cur=c)
+                result = c.fetchall()
+                c.close()
+            else:
+                result = []
         else:
             self.execute(stmt, params, formatting=formatting, cur=cur)
             result = cur.fetchall()
